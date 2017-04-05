@@ -1,13 +1,24 @@
 package com.pixlee.pixleeandroidsdk;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.pixlee.pixleesdk.PXLAlbum;
+import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
+import com.pixlee.pixleesdk.PXLAlbumSortOptions;
+import com.pixlee.pixleesdk.PXLAlbumSortType;
+import com.pixlee.pixleesdk.PXLClient;
+import com.pixlee.pixleesdk.PXLPhoto;
+
+import java.util.ArrayList;
 
 public class SampleActivity extends AppCompatActivity {
 
@@ -48,5 +59,34 @@ public class SampleActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void createAlbum() {
+        Context c = this.getApplicationContext();
+        PXLClient.initialize("zk4wWCOaHAo4Hi8HsE", c);
+        PXLAlbum album = new PXLAlbum("1568132");
+        PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
+        fo.minTwitterFollowers = 0;
+        fo.minInstagramFollowers = 3147141;
+        PXLAlbumSortOptions so = new PXLAlbumSortOptions();
+        so.sortType = PXLAlbumSortType.PHOTORANK;
+        so.descending = true;
+        album.setFilterOptions(fo);
+        album.setSortOptions(so);
+        album.loadNextPageOfPhotos(new PXLAlbum.RequestHandlers() {
+            @Override
+            public void DataLoadedHandler(ArrayList<PXLPhoto> photos) {
+                for (int i = 0; i < photos.size(); i++) {
+                    Log.d("sampleactivity", photos.get(i).toString());
+                }
+            }
+
+            @Override
+            public void DataLoadFailedHandler(String error) {
+
+            }
+        });
+
+        Log.w("sampleactivity", "created album");
     }
 }
