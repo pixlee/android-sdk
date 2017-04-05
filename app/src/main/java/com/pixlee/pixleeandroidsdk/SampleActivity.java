@@ -37,6 +37,8 @@ public class SampleActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        this.createAlbum();
     }
 
     @Override
