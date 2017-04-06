@@ -36,6 +36,7 @@ public class PXLAlbum {
         this.perPage = DefaultPerPage;
         this.hasMore = true;
         this.lastPageLoaded = 0;
+        this.photos = new ArrayList<PXLPhoto>();
         this.pagesLoading = new HashMap<Integer, Boolean>();
         Log.v("pxlalbum", "album initialized with id " + id);
     }
@@ -46,10 +47,15 @@ public class PXLAlbum {
         }
         if (this.hasMore) {
             int desiredPage = this.lastPageLoaded + 1;
+            if (pagesLoading.get(desiredPage) != null && pagesLoading.get(desiredPage)) {
+                Log.d("pxlalbum", String.format("page %s already loading", desiredPage));
+                return false;
+            }
             //TODO: add pagination logic
             PXLClient pxlClient = PXLClient.getInstance();
             String requestPath = String.format("albums/%s/photos", this.id);
             Log.w("pxlalbum", String.format("making a request to %s", requestPath));
+            this.pagesLoading.put(desiredPage, true);
             pxlClient.makeCall(requestPath, getRequestParams(desiredPage), this, new RequestCallbacks() {
                 @Override
                 public void JsonReceived(Object caller, JSONObject response) {
@@ -60,8 +66,16 @@ public class PXLAlbum {
                         parent.perPage = response.getInt(("per_page"));
                         parent.totalPages = response.getInt(("total"));
                         parent.hasMore = response.getBoolean(("next"));
-                        parent.photos = PXLPhoto.fromJsonArray(response.getJSONArray("data"));
-                        parent.lastPageLoaded = parent.page;
+                        //add placeholders for photos if they haven't been loaded yet
+                        //TODO: is this possible?
+                        if (parent.photos.size() < (parent.page - 1) * parent.perPage) {
+                            for (int i = parent.photos.size(); i < (parent.page - 1) * parent.perPage; i++) {
+                                parent.photos.add(null);
+                            }
+                        }
+                        parent.photos.addAll(parent.photos.size(), PXLPhoto.fromJsonArray(response.getJSONArray("data")));
+                        //parent.photos = PXLPhoto.fromJsonArray(response.getJSONArray("data"));
+                        parent.lastPageLoaded = Math.max(parent.page, parent.lastPageLoaded);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -86,17 +100,24 @@ public class PXLAlbum {
 
     public void setPerPage(int perPage) {
         this.perPage = perPage;
-        //TODO: reset/reload
+        this.resetState();
     }
 
     public void setFilterOptions(PXLAlbumFilterOptions filterOptions) {
         this.filterOptions = filterOptions;
-        //TODO: reset/reload
+        this.resetState();
     }
 
     public void setSortOptions(PXLAlbumSortOptions sortOptions) {
         this.sortOptions = sortOptions;
-        //TODO: reset/reload
+        this.resetState();
+    }
+
+    private void resetState() {
+        this.photos.clear();
+        this.lastPageLoaded = 0;
+        this.hasMore = true;
+        this.pagesLoading.clear();
     }
 
     private HashMap<String, Object> getRequestParams(int desiredPage) {
