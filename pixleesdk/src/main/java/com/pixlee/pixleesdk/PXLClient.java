@@ -95,7 +95,7 @@ public class PXLClient {
      * @param callbacks - ugh, shouldn't need both
      * @return false if no api key set yet, true otherwise
      */
-    public boolean makeCall(final Object caller, final PXLAlbum.RequestHandlers requestHandlers, String requestPath, final RequestCallbacks callbacks, HashMap<String, Object> parameters) {
+    public boolean makeCall(String requestPath, HashMap<String, Object> parameters, final Object caller, final RequestCallbacks callbacks) {
         if (PXLClient.apiKey == null) {
             return false;
         }
@@ -111,7 +111,7 @@ public class PXLClient {
             @Override
             public void onResponse(JSONObject response) {
                 Log.v("pxlclient", "got a success response, making callback");
-                callbacks.JsonReceived(requestHandlers, caller, response);
+                callbacks.JsonReceived(caller, response);
             }
         }, new Response.ErrorListener() {
 

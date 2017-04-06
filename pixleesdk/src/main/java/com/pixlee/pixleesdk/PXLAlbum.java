@@ -31,17 +31,17 @@ public class PXLAlbum {
         Log.v("pxlalbum", "album initialized with id " + id);
     }
 
-    public boolean loadNextPageOfPhotos(RequestHandlers handlers) {
+    public boolean loadNextPageOfPhotos(final RequestHandlers handlers) {
         if (id == null) {
             return false;
         }
-
-        PXLClient s = PXLClient.getInstance();
+        //TODO: add pagination logic
+        PXLClient pxlClient = PXLClient.getInstance();
         String requestPath = String.format("albums/%s/photos", this.id);
         Log.w("pxlalbum", String.format("making a request to %s", requestPath));
-        s.makeCall(this, handlers, requestPath, new RequestCallbacks() {
+        pxlClient.makeCall(requestPath, getRequestParams(), this, new RequestCallbacks() {
             @Override
-            public void JsonReceived(RequestHandlers requestHandlers, Object caller, JSONObject response) {
+            public void JsonReceived(Object caller, JSONObject response) {
                 Log.w("pxlalbum", response.toString());
                 PXLAlbum parent = (PXLAlbum) caller;
                 try {
@@ -49,27 +49,30 @@ public class PXLAlbum {
                     parent.perPage = response.getInt(("per_page"));
                     parent.totalPages = response.getInt(("total"));
                     parent.hasMore = response.getBoolean(("next"));
-                    parent.photos = PXLPhoto.fromJsonArray(response.getJSONArray("data"));//PXLAlbum.parseResponse(response.getJSONArray("data"));
+                    parent.photos = PXLPhoto.fromJsonArray(response.getJSONArray("data"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                if (requestHandlers != null) {
-                    requestHandlers.DataLoadedHandler(parent.photos);
+                if (handlers != null) {
+                    handlers.DataLoadedHandler(parent.photos);
                 }
             }
 
             @Override
             public void ErrorResponse(VolleyError error) {
                 Log.e("pxlalbum", "failed to make call");
+                if (handlers != null) {
+                    handlers.DataLoadFailedHandler(error.toString());
+                }
             }
-        }, getRequestParams());
+        });
         return true;
     }
 
     public void setPerPage(int perPage) {
         this.perPage = perPage;
-        //clear and reload???
+        //TODO: reset/reload
     }
 
     public void setFilterOptions(PXLAlbumFilterOptions filterOptions) {

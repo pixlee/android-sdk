@@ -9,6 +9,6 @@ import org.json.JSONObject;
  */
 
 public interface RequestCallbacks {
-    public void JsonReceived(PXLAlbum.RequestHandlers requestCallbacks, Object caller, JSONObject response);
+    public void JsonReceived(Object caller, JSONObject response);
     public void ErrorResponse(VolleyError error);
 }
