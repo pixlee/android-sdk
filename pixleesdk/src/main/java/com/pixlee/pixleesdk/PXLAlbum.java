@@ -12,14 +12,18 @@ import java.util.HashMap;
  */
 
 public class PXLAlbum {
+    public static final int DefaultPerPage = 20;
+
     private String id = null;
-    private int page = 1;
-    private int perPage = 20;
+    private int page;
+    private int perPage;
     private int totalPages;
     private boolean hasMore;
+    private int lastPageLoaded;
     private ArrayList<PXLPhoto> photos;
     private PXLAlbumFilterOptions filterOptions;
     private PXLAlbumSortOptions sortOptions;
+    private HashMap<Integer, Boolean> pagesLoading;
 
     public interface RequestHandlers {
         public void DataLoadedHandler(ArrayList<PXLPhoto> photos);
@@ -28,6 +32,11 @@ public class PXLAlbum {
 
     public PXLAlbum(String id) {
         this.id = id;
+        this.page = 0;
+        this.perPage = DefaultPerPage;
+        this.hasMore = true;
+        this.lastPageLoaded = 0;
+        this.pagesLoading = new HashMap<Integer, Boolean>();
         Log.v("pxlalbum", "album initialized with id " + id);
     }
 
@@ -35,38 +44,43 @@ public class PXLAlbum {
         if (id == null) {
             return false;
         }
-        //TODO: add pagination logic
-        PXLClient pxlClient = PXLClient.getInstance();
-        String requestPath = String.format("albums/%s/photos", this.id);
-        Log.w("pxlalbum", String.format("making a request to %s", requestPath));
-        pxlClient.makeCall(requestPath, getRequestParams(), this, new RequestCallbacks() {
-            @Override
-            public void JsonReceived(Object caller, JSONObject response) {
-                Log.w("pxlalbum", response.toString());
-                PXLAlbum parent = (PXLAlbum) caller;
-                try {
-                    parent.page = response.getInt("page");
-                    parent.perPage = response.getInt(("per_page"));
-                    parent.totalPages = response.getInt(("total"));
-                    parent.hasMore = response.getBoolean(("next"));
-                    parent.photos = PXLPhoto.fromJsonArray(response.getJSONArray("data"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        if (this.hasMore) {
+            int desiredPage = this.lastPageLoaded + 1;
+            //TODO: add pagination logic
+            PXLClient pxlClient = PXLClient.getInstance();
+            String requestPath = String.format("albums/%s/photos", this.id);
+            Log.w("pxlalbum", String.format("making a request to %s", requestPath));
+            pxlClient.makeCall(requestPath, getRequestParams(desiredPage), this, new RequestCallbacks() {
+                @Override
+                public void JsonReceived(Object caller, JSONObject response) {
+                    Log.w("pxlalbum", response.toString());
+                    PXLAlbum parent = (PXLAlbum) caller;
+                    try {
+                        parent.page = response.getInt("page");
+                        parent.perPage = response.getInt(("per_page"));
+                        parent.totalPages = response.getInt(("total"));
+                        parent.hasMore = response.getBoolean(("next"));
+                        parent.photos = PXLPhoto.fromJsonArray(response.getJSONArray("data"));
+                        parent.lastPageLoaded = parent.page;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (handlers != null) {
+                        handlers.DataLoadedHandler(parent.photos);
+                    }
                 }
 
-                if (handlers != null) {
-                    handlers.DataLoadedHandler(parent.photos);
+                @Override
+                public void ErrorResponse(VolleyError error) {
+                    Log.e("pxlalbum", "failed to make call");
+                    if (handlers != null) {
+                        handlers.DataLoadFailedHandler(error.toString());
+                    }
                 }
-            }
+            });
+        }
 
-            @Override
-            public void ErrorResponse(VolleyError error) {
-                Log.e("pxlalbum", "failed to make call");
-                if (handlers != null) {
-                    handlers.DataLoadFailedHandler(error.toString());
-                }
-            }
-        });
         return true;
     }
 
@@ -85,7 +99,7 @@ public class PXLAlbum {
         //TODO: reset/reload
     }
 
-    private HashMap<String, Object> getRequestParams() {
+    private HashMap<String, Object> getRequestParams(int desiredPage) {
         HashMap<String, Object> paramMap = new HashMap<>();
         if (filterOptions != null) {
             paramMap.put(PXLClient.KeyFilters, filterOptions.toParamString());
@@ -94,7 +108,7 @@ public class PXLAlbum {
             paramMap.put(PXLClient.KeySort, sortOptions.toParamString());
         }
         paramMap.put(PXLClient.KeyPerPage, perPage);
-        paramMap.put(PXLClient.KeyPage, page);
+        paramMap.put(PXLClient.KeyPage, desiredPage);
         return paramMap;
     }
 }

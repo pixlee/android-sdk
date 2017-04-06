@@ -73,9 +73,10 @@ public class SampleActivity extends AppCompatActivity {
         PXLAlbumSortOptions so = new PXLAlbumSortOptions();
         so.sortType = PXLAlbumSortType.PHOTORANK;
         so.descending = true;
+        album.setPerPage(2);
         album.setFilterOptions(fo);
         album.setSortOptions(so);
-        album.loadNextPageOfPhotos(new PXLAlbum.RequestHandlers() {
+        PXLAlbum.RequestHandlers rh = new PXLAlbum.RequestHandlers() {
             @Override
             public void DataLoadedHandler(ArrayList<PXLPhoto> photos) {
                 for (int i = 0; i < photos.size(); i++) {
@@ -87,7 +88,9 @@ public class SampleActivity extends AppCompatActivity {
             public void DataLoadFailedHandler(String error) {
 
             }
-        });
+        };
+        album.loadNextPageOfPhotos(rh);
+        album.loadNextPageOfPhotos(rh);
 
         Log.w("sampleactivity", "created album");
     }
