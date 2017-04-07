@@ -25,7 +25,6 @@ import java.util.ArrayList;
 
 public class SampleActivity extends AppCompatActivity implements PXLAlbum.RequestHandlers {
     private ArrayList<CreateList> imageList;
-    private PXLAlbum album;
     private final String image_titles[] = {
             "Img1",
             "Img2",
@@ -113,31 +112,17 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     private void createAlbum() {
         Context c = this.getApplicationContext();
         PXLClient.initialize("zk4wWCOaHAo4Hi8HsE", c);
-        album = new PXLAlbum("1568132");
+        PXLAlbum album = new PXLAlbum("1568132");
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 3147141;
         PXLAlbumSortOptions so = new PXLAlbumSortOptions();
         so.sortType = PXLAlbumSortType.PHOTORANK;
         so.descending = true;
-        album.setPerPage(2);
+        album.setPerPage(10);
         album.setFilterOptions(fo);
         album.setSortOptions(so);
-        /*
-        PXLAlbum.RequestHandlers rh = new PXLAlbum.RequestHandlers() {
-            @Override
-            public void DataLoadedHandler(ArrayList<PXLPhoto> photos) {
-                for (int i = 0; i < photos.size() && i < this.image_titles.length; i++) {
-                    Log.d("sampleactivity", photos.get(i).toString());
-                }
-            }
 
-            @Override
-            public void DataLoadFailedHandler(String error) {
-
-            }
-        };
-        */
         PXLAlbum.RequestHandlers rh = this;
         album.loadNextPageOfPhotos(rh);
         album.loadNextPageOfPhotos(rh);
@@ -154,9 +139,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
             Log.d("sampleactivity", photo.toString());
             this.imageList.get(i).setImage_title(photo.photoTitle);
             this.imageList.get(i).setImagePath(photo.thumbnailUrl);
-           // il.get(photo.thumbnailUrl)
         }
-       // il.get()
         recyclerView.getAdapter().notifyDataSetChanged();
     }
 
