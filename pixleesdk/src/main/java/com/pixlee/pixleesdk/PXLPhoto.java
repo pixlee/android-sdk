@@ -157,7 +157,15 @@ public class PXLPhoto {
             case "instagram":
                 return R.drawable.instagram_2x;
             case "facebook":
-                return R.drawable.fb_2x;
+                return R.drawable.facebook_2x;
+            case "pinterest":
+                return R.drawable.pinterest_2x;
+            case "tumblr":
+                return R.drawable.tumblr_2x;
+            case "twitter":
+                return R.drawable.twitter_2x;
+            case "vine":
+                return R.drawable.vine_2x;
             default:
                 return null;
         }
