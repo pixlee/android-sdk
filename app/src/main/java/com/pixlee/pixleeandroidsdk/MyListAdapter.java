@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Created by andy on 4/4/17.
  */
 
-class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder> {
+class MyListAdapter extends RecyclerView.Adapter<MyViewHolder> {
     private ArrayList<CreateList> galleryList;
     private Context context;
 
@@ -24,18 +24,17 @@ class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder> {
     }
 
     @Override
-    public MyListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row, viewGroup, false);
-        //View view = R.layout.row;
-        return new MyListAdapter.ViewHolder(view);
+        return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(MyListAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(MyViewHolder viewHolder, int i) {
         viewHolder.title.setText(galleryList.get(i).getImage_title());
-        viewHolder.description.setText("Sample text hello there");
-        viewHolder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        viewHolder.img.setImageResource((galleryList.get(i).getImage_ID()));
+        //viewHolder.description.setText("Sample text hello there");
+        viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        //viewHolder.img.setImageResource((galleryList.get(i).getImage_ID()));
     }
 
     @Override
@@ -43,18 +42,7 @@ class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder> {
         return galleryList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView title;
-        private TextView description;
-        private ImageView img;
-        public ViewHolder(View view) {
-            super(view);
-            description = (TextView)view.findViewById(R.id.description);
-            title = (TextView)view.findViewById(R.id.title);
-            img = (ImageView)view.findViewById(R.id.img);
-        }
-    }
-    private Context mContext;
-    private String[]  Title;
-    private int[] imge;
+    //private Context mContext;
+    //private String[]  Title;
+    //private int[] imge;
 }

@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * Created by andy on 4/4/17.
  */
 
-public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.ViewHolder> {
+public class MyRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder> {
     private ArrayList<CreateList> galleryList;
     private Context context;
     private ImageLoader imageLoader;
@@ -34,17 +34,17 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     }
 
     @Override
-    public MyRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_layout, viewGroup, false);
-        return new ViewHolder(view);
+        return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(MyRecyclerAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(MyViewHolder viewHolder, int i) {
         CreateList photo = galleryList.get(i);
         viewHolder.title.setText(photo.getImage_title());
-        viewHolder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        viewHolder.img.setImageResource((photo.getImage_ID()));
+        //viewHolder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        //viewHolder.img.setImageResource((photo.getImage_ID()));
         if (photo.getImagePath() !=  null) {
             viewHolder.netImg.setImageUrl(photo.getImagePath().toString(), imageLoader);
         }
@@ -53,25 +53,5 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     @Override
     public int getItemCount() {
         return galleryList.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView title;
-        private ImageView img;
-        private NetworkImageView netImg;
-        public ViewHolder(View view) {
-            super(view);
-
-            title = (TextView) view.findViewById(R.id.title);
-            img = (ImageView) view.findViewById(R.id.img);
-            netImg = (NetworkImageView) view.findViewById(R.id.netimg);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    netImg.setLayoutParams(new LinearLayout.LayoutParams(2000, 2000));
-                    img.setLayoutParams(new LinearLayout.LayoutParams(2000, 2000));
-                }
-            });
-        }
     }
 }
