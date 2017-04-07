@@ -139,6 +139,30 @@ public class PXLPhoto {
         return String.format("photo id %s, \"%s\" by %s, on %s", this.id, this.photoTitle, this.userName, this.source);
     }
 
+    public URL getUrlForSize(PXLPhotoSize size) {
+        switch (size) {
+            case THUMBNAIL:
+                return this.thumbnailUrl;
+            case MEDIUM:
+                return this.mediumUrl;
+            case BIG:
+                return this.bigUrl;
+            default:
+                return null;
+        }
+    }
+
+    public Integer sourceIconImage() {
+        switch (this.source) {
+            case "instagram":
+                return R.drawable.instagram_2x;
+            case "facebook":
+                return R.drawable.fb_2x;
+            default:
+                return null;
+        }
+    }
+
     private URL getURL(String fieldName, JSONObject json) throws MalformedURLException {
         String url = json.optString(fieldName);
         if (URLUtil.isValidUrl(url)) {

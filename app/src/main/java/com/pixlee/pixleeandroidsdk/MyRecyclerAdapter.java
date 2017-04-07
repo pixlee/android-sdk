@@ -48,6 +48,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder> {
         if (photo.thumbnailUrl !=  null) {
             viewHolder.netImg.setImageUrl(photo.thumbnailUrl.toString(), imageLoader);
             viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            viewHolder.sourceIcon.setImageResource(photo.sourceIconImage());
         }
     }
 

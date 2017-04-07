@@ -19,11 +19,13 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     public TextView title;
     public NetworkImageView netImg;
     public Date updatedAt;
+    public ImageView sourceIcon;
 
     public MyViewHolder(View view) {
         super(view);
         title = (TextView) view.findViewById(R.id.title);
         netImg = (NetworkImageView) view.findViewById(R.id.netimg);
+        sourceIcon = (ImageView) view.findViewById(R.id.sourceIcon);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
