@@ -8,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.pixlee.pixleesdk.PXLClient;
+import com.pixlee.pixleesdk.PXLPhoto;
+
 import java.util.ArrayList;
 
 /**
@@ -15,12 +19,14 @@ import java.util.ArrayList;
  */
 
 class MyListAdapter extends RecyclerView.Adapter<MyViewHolder> {
-    private ArrayList<CreateList> galleryList;
+    private ArrayList<PXLPhoto> galleryList;
     private Context context;
+    private ImageLoader imageLoader;
 
-    public MyListAdapter(Context context, ArrayList<CreateList> galleryList) {
+    public MyListAdapter(Context context, ArrayList<PXLPhoto> galleryList) {
         this.galleryList = galleryList;
         this.context = context;
+        this.imageLoader = PXLClient.getInstance(context).getImageLoader();
     }
 
     @Override
@@ -31,10 +37,12 @@ class MyListAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     @Override
     public void onBindViewHolder(MyViewHolder viewHolder, int i) {
-        viewHolder.title.setText(galleryList.get(i).getImage_title());
+        PXLPhoto photo = galleryList.get(i);
+        viewHolder.title.setText(photo.photoTitle);
         //viewHolder.description.setText("Sample text hello there");
         viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        //viewHolder.img.setImageResource((galleryList.get(i).getImage_ID()));
+        viewHolder.netImg.setImageUrl(photo.thumbnailUrl.toString(), imageLoader);
+        //viewHolder.netImg.setImageResource((galleryList.get(i).thumbnailUrl.toString())));
     }
 
     @Override

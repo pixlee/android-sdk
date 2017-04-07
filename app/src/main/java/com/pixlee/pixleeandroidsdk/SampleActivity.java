@@ -81,7 +81,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         recyclerView2.setLayoutManager(layoutManager2);
         ArrayList<CreateList> createLists = prepareData();
         MyRecyclerAdapter adapter = new MyRecyclerAdapter(getApplicationContext(), photoList);
-        MyListAdapter adapter2 = new MyListAdapter(getApplicationContext(), imageList);
+        MyListAdapter adapter2 = new MyListAdapter(getApplicationContext(), photoList);
         recyclerView.setAdapter(adapter);
         recyclerView2.setAdapter(adapter2);
 
@@ -90,12 +90,11 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-                //loadNextDataFromApi(page);
-
                 loadMorePhotos();
             }
         };
         recyclerView.addOnScrollListener(scrollListener);
+        recyclerView2.addOnScrollListener(scrollListener);
     }
 
     private ArrayList<CreateList> prepareData(){
