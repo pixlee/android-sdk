@@ -1,13 +1,15 @@
 package com.pixlee.pixleeandroidsdk;
 
+import java.net.URL;
+
 /**
  * Created by andy on 4/4/17.
  */
 
 public class CreateList {
-
     private String image_title;
     private Integer image_id;
+    private URL imagePath;
 
     public String getImage_title() {
         return image_title;
@@ -23,5 +25,13 @@ public class CreateList {
 
     public void setImage_ID(Integer android_image_url) {
         this.image_id = android_image_url;
+    }
+
+    public URL getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(URL imagePath) {
+        this.imagePath = imagePath;
     }
 }

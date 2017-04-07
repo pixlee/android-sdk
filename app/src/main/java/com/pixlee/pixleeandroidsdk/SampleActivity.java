@@ -3,7 +3,6 @@ package com.pixlee.pixleeandroidsdk;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.ViewSwitcher;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;
@@ -24,7 +24,8 @@ import com.pixlee.pixleesdk.PXLPhoto;
 
 import java.util.ArrayList;
 
-public class SampleActivity extends AppCompatActivity {
+public class SampleActivity extends AppCompatActivity implements PXLAlbum.RequestHandlers {
+    private ArrayList<CreateList> imageList;
     private final String image_titles[] = {
             "Img1",
             "Img2",
@@ -71,10 +72,11 @@ public class SampleActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
         RecyclerView.LayoutManager layoutManager2 = new GridLayoutManager(getApplicationContext(), 1);
         recyclerView.setLayoutManager(layoutManager);
+        imageList = prepareData();
         recyclerView2.setLayoutManager(layoutManager2);
         ArrayList<CreateList> createLists = prepareData();
-        MyRecyclerAdapter adapter = new MyRecyclerAdapter(getApplicationContext(), createLists);
-        MyListAdapter adapter2 = new MyListAdapter(getApplicationContext(), createLists);
+        MyRecyclerAdapter adapter = new MyRecyclerAdapter(getApplicationContext(), imageList);
+        MyListAdapter adapter2 = new MyListAdapter(getApplicationContext(), imageList);
         recyclerView.setAdapter(adapter);
         recyclerView2.setAdapter(adapter2);
     }
@@ -116,33 +118,40 @@ public class SampleActivity extends AppCompatActivity {
 
     private void createAlbum() {
         Context c = this.getApplicationContext();
-        PXLClient.initialize("zk4wWCOaHAo4Hi8HsE", c);
-        PXLAlbum album = new PXLAlbum("1568132");
+        PXLClient.initialize("zk4wWCOaHAo4Hi8HsE");
+        PXLAlbum album = new PXLAlbum("1568132", c);
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 3147141;
         PXLAlbumSortOptions so = new PXLAlbumSortOptions();
         so.sortType = PXLAlbumSortType.PHOTORANK;
         so.descending = true;
-        album.setPerPage(2);
+        album.setPerPage(10);
         album.setFilterOptions(fo);
         album.setSortOptions(so);
-        PXLAlbum.RequestHandlers rh = new PXLAlbum.RequestHandlers() {
-            @Override
-            public void DataLoadedHandler(ArrayList<PXLPhoto> photos) {
-                for (int i = 0; i < photos.size(); i++) {
-                    Log.d("sampleactivity", photos.get(i).toString());
-                }
-            }
 
-            @Override
-            public void DataLoadFailedHandler(String error) {
-
-            }
-        };
+        PXLAlbum.RequestHandlers rh = this;
         album.loadNextPageOfPhotos(rh);
         album.loadNextPageOfPhotos(rh);
 
         Log.w("sampleactivity", "created album");
+    }
+
+    @Override
+    public void DataLoadedHandler(ArrayList<PXLPhoto> photos) {
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.imagegallery);
+        ImageLoader il = PXLClient.getInstance(this).getImageLoader();
+        for (int i = 0; i < photos.size() && i < this.imageList.size(); i++) {
+            PXLPhoto photo = photos.get(i);
+            Log.d("sampleactivity", photo.toString());
+            this.imageList.get(i).setImage_title(photo.photoTitle);
+            this.imageList.get(i).setImagePath(photo.thumbnailUrl);
+        }
+        recyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public void DataLoadFailedHandler(String error) {
+
     }
 }

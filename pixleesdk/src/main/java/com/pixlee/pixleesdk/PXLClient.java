@@ -1,6 +1,7 @@
 package com.pixlee.pixleesdk;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 import android.util.Log;
@@ -33,11 +34,12 @@ public class PXLClient {
     private static PXLClient mInstance;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
-    private static Context mCtx;
+    private Context mCtx;
     private static final String url = "https://distillery.pixlee.com/api/v2";
     private static String apiKey = null;
 
-    private PXLClient() {
+    private PXLClient(Context context) {
+        mCtx = context;
         mRequestQueue = getRequestQueue();
         mImageLoader = new ImageLoader(mRequestQueue,
                 new ImageLoader.ImageCache() {
@@ -56,14 +58,13 @@ public class PXLClient {
                 });
     }
 
-    public static void initialize(String apiKey, Context context) {
+    public static void initialize(String apiKey) {
         PXLClient.apiKey = apiKey;
-        PXLClient.mCtx = context;
     }
 
-    public static synchronized PXLClient getInstance() {
+    public static synchronized PXLClient getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new PXLClient();
+            mInstance = new PXLClient(context);
         }
         return mInstance;
     }
@@ -89,13 +90,11 @@ public class PXLClient {
 
     /***
      * makes a call to the pixlee api
-     * @param caller - gives callbacks access to the caller object
-     * @param requestHandlers - ugh, shouldn't need both
      * @param requestPath - path to hit (will be appended to the base pixlee api endpoint)
-     * @param callbacks - ugh, shouldn't need both
+     * @param callbacks - called after request succeeds or fails
      * @return false if no api key set yet, true otherwise
      */
-    public boolean makeCall(String requestPath, HashMap<String, Object> parameters, final Object caller, final RequestCallbacks callbacks) {
+    public boolean makeCall(String requestPath, HashMap<String, Object> parameters, final RequestCallbacks callbacks) {
         if (PXLClient.apiKey == null) {
             return false;
         }
@@ -111,7 +110,7 @@ public class PXLClient {
             @Override
             public void onResponse(JSONObject response) {
                 Log.v("pxlclient", "got a success response, making callback");
-                callbacks.JsonReceived(caller, response);
+                callbacks.JsonReceived(response);
             }
         }, new Response.ErrorListener() {
 

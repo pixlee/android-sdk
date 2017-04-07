@@ -1,5 +1,6 @@
 package com.pixlee.pixleesdk;
 
+import android.content.Context;
 import android.util.Log;
 import com.android.volley.VolleyError;
 import org.json.JSONException;
@@ -11,36 +12,76 @@ import java.util.HashMap;
  * Created by jason on 4/4/2017.
  */
 
-public class PXLAlbum {
+public class PXLAlbum implements RequestCallbacks {
     public static final int DefaultPerPage = 20;
 
     private String id = null;
     private int page;
     private int perPage;
-    private int totalPages;
     private boolean hasMore;
     private int lastPageLoaded;
     private ArrayList<PXLPhoto> photos;
     private PXLAlbumFilterOptions filterOptions;
     private PXLAlbumSortOptions sortOptions;
     private HashMap<Integer, Boolean> pagesLoading;
+    private RequestHandlers handlers;
+    private Context context;
 
-    public interface RequestHandlers {
-        public void DataLoadedHandler(ArrayList<PXLPhoto> photos);
-        public void DataLoadFailedHandler(String error);
+    @Override
+    public void JsonReceived(JSONObject response) {
+        Log.w("pxlalbum", response.toString());
+        try {
+            this.page = response.getInt("page");
+            this.perPage = response.getInt(("per_page"));
+            this.hasMore = response.getBoolean(("next"));
+            //add placeholders for photos if they haven't been loaded yet
+            //TODO: is this possible?
+            if (this.photos.size() < (this.page - 1) * this.perPage) {
+                for (int i = this.photos.size(); i < (this.page - 1) * this.perPage; i++) {
+                    this.photos.add(null);
+                }
+            }
+            this.photos.addAll(this.photos.size(), PXLPhoto.fromJsonArray(response.getJSONArray("data"), this));
+            this.lastPageLoaded = Math.max(this.page, this.lastPageLoaded);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if (handlers != null) {
+            handlers.DataLoadedHandler(this.photos);
+        }
     }
 
-    public PXLAlbum(String id) {
+    @Override
+    public void ErrorResponse(VolleyError error) {
+        Log.e("pxlalbum", "failed to make call");
+        if (handlers != null) {
+            handlers.DataLoadFailedHandler(error.toString());
+        }
+    }
+
+    public interface RequestHandlers {
+        void DataLoadedHandler(ArrayList<PXLPhoto> photos);
+        void DataLoadFailedHandler(String error);
+    }
+
+    public PXLAlbum(String id, Context context) {
         this.id = id;
         this.page = 0;
         this.perPage = DefaultPerPage;
         this.hasMore = true;
         this.lastPageLoaded = 0;
-        this.photos = new ArrayList<PXLPhoto>();
-        this.pagesLoading = new HashMap<Integer, Boolean>();
+        this.photos = new ArrayList<>();
+        this.pagesLoading = new HashMap<>();
+        this.context = context;
         Log.v("pxlalbum", "album initialized with id " + id);
     }
 
+    /***
+     * requests the next page of photos from the Pixlee album
+     * @param handlers - called upon success/failure of the request
+     * @return true if the request was attempted, false if aborted before the attempt was made
+     */
     public boolean loadNextPageOfPhotos(final RequestHandlers handlers) {
         if (id == null) {
             return false;
@@ -51,48 +92,12 @@ public class PXLAlbum {
                 Log.d("pxlalbum", String.format("page %s already loading", desiredPage));
                 return false;
             }
-            //TODO: add pagination logic
-            PXLClient pxlClient = PXLClient.getInstance();
+            PXLClient pxlClient = PXLClient.getInstance(context);
             String requestPath = String.format("albums/%s/photos", this.id);
             Log.w("pxlalbum", String.format("making a request to %s", requestPath));
             this.pagesLoading.put(desiredPage, true);
-            pxlClient.makeCall(requestPath, getRequestParams(desiredPage), this, new RequestCallbacks() {
-                @Override
-                public void JsonReceived(Object caller, JSONObject response) {
-                    Log.w("pxlalbum", response.toString());
-                    PXLAlbum parent = (PXLAlbum) caller;
-                    try {
-                        parent.page = response.getInt("page");
-                        parent.perPage = response.getInt(("per_page"));
-                        parent.totalPages = response.getInt(("total"));
-                        parent.hasMore = response.getBoolean(("next"));
-                        //add placeholders for photos if they haven't been loaded yet
-                        //TODO: is this possible?
-                        if (parent.photos.size() < (parent.page - 1) * parent.perPage) {
-                            for (int i = parent.photos.size(); i < (parent.page - 1) * parent.perPage; i++) {
-                                parent.photos.add(null);
-                            }
-                        }
-                        parent.photos.addAll(parent.photos.size(), PXLPhoto.fromJsonArray(response.getJSONArray("data")));
-                        //parent.photos = PXLPhoto.fromJsonArray(response.getJSONArray("data"));
-                        parent.lastPageLoaded = Math.max(parent.page, parent.lastPageLoaded);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (handlers != null) {
-                        handlers.DataLoadedHandler(parent.photos);
-                    }
-                }
-
-                @Override
-                public void ErrorResponse(VolleyError error) {
-                    Log.e("pxlalbum", "failed to make call");
-                    if (handlers != null) {
-                        handlers.DataLoadFailedHandler(error.toString());
-                    }
-                }
-            });
+            this.handlers = handlers;
+            pxlClient.makeCall(requestPath, getRequestParams(desiredPage), this);
         }
 
         return true;
