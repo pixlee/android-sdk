@@ -81,6 +81,10 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         recyclerView2.setAdapter(adapter2);
     }
 
+    public void imageClick(View view) {
+        Log.v("!", "reached imageClick");
+    }
+
     private ArrayList<CreateList> prepareData(){
         ArrayList<CreateList> theimage = new ArrayList<>();
         for(int i = 0; i< image_titles.length; i++){
@@ -98,8 +102,6 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         getMenuInflater().inflate(R.menu.menu_sample, menu);
         return true;
     }
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

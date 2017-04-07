@@ -9,12 +9,12 @@
         android:adjustViewBounds="true"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_margin="10dp"/>
+        android:layout_margin="10dp" />
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/netimg"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_margin="10dp"/>
+        android:layout_margin="10dp" />
     <TextView
         android:id="@+id/title"
         android:layout_gravity="center"

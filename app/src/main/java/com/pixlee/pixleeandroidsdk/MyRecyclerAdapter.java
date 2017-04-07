@@ -3,6 +3,7 @@ package com.pixlee.pixleeandroidsdk;
 import android.content.Context;
 import android.media.Image;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,16 +54,22 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         return galleryList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
         private ImageView img;
         private NetworkImageView netImg;
         public ViewHolder(View view) {
             super(view);
 
-            title = (TextView)view.findViewById(R.id.title);
+            title = (TextView) view.findViewById(R.id.title);
             img = (ImageView) view.findViewById(R.id.img);
             netImg = (NetworkImageView) view.findViewById(R.id.netimg);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("test", view.toString());
+                }
+            });
         }
     }
 }
