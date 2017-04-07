@@ -28,7 +28,6 @@ public class AlbumTests {
     private PXLAlbum testAlbum;
     private Random random;
 
-
     @Before
     public void setup() {
         Context c = InstrumentationRegistry.getTargetContext();

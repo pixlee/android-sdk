@@ -41,7 +41,7 @@ public class PXLAlbum implements RequestCallbacks {
                     this.photos.add(null);
                 }
             }
-            this.photos.addAll(this.photos.size(), PXLPhoto.fromJsonArray(response.getJSONArray("data")));
+            this.photos.addAll(this.photos.size(), PXLPhoto.fromJsonArray(response.getJSONArray("data"), this));
             this.lastPageLoaded = Math.max(this.page, this.lastPageLoaded);
         } catch (JSONException e) {
             e.printStackTrace();
