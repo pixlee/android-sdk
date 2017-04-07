@@ -23,7 +23,7 @@ import com.pixlee.pixleesdk.PXLPhoto;
 
 import java.util.ArrayList;
 
-public class SampleActivity extends AppCompatActivity {
+public class SampleActivity extends AppCompatActivity implements PXLAlbum.RequestHandlers {
     private final String image_titles[] = {
             "Img1",
             "Img2",
@@ -121,10 +121,11 @@ public class SampleActivity extends AppCompatActivity {
         album.setPerPage(2);
         album.setFilterOptions(fo);
         album.setSortOptions(so);
+        /*
         PXLAlbum.RequestHandlers rh = new PXLAlbum.RequestHandlers() {
             @Override
             public void DataLoadedHandler(ArrayList<PXLPhoto> photos) {
-                for (int i = 0; i < photos.size(); i++) {
+                for (int i = 0; i < photos.size() && i < this.image_titles.length; i++) {
                     Log.d("sampleactivity", photos.get(i).toString());
                 }
             }
@@ -134,9 +135,24 @@ public class SampleActivity extends AppCompatActivity {
 
             }
         };
+        */
+        PXLAlbum.RequestHandlers rh = this;
         album.loadNextPageOfPhotos(rh);
         album.loadNextPageOfPhotos(rh);
 
         Log.w("sampleactivity", "created album");
+    }
+
+    @Override
+    public void DataLoadedHandler(ArrayList<PXLPhoto> photos) {
+        for (int i = 0; i < photos.size() && i < this.image_titles.length; i++) {
+            Log.d("sampleactivity", photos.get(i).toString());
+            this.image_titles[i] = photos.get(i).photoTitle;
+        }
+    }
+
+    @Override
+    public void DataLoadFailedHandler(String error) {
+
     }
 }

@@ -26,8 +26,8 @@ public class PXLAlbum {
     private HashMap<Integer, Boolean> pagesLoading;
 
     public interface RequestHandlers {
-        public void DataLoadedHandler(ArrayList<PXLPhoto> photos);
-        public void DataLoadFailedHandler(String error);
+        void DataLoadedHandler(ArrayList<PXLPhoto> photos);
+        void DataLoadFailedHandler(String error);
     }
 
     public PXLAlbum(String id) {
@@ -36,8 +36,8 @@ public class PXLAlbum {
         this.perPage = DefaultPerPage;
         this.hasMore = true;
         this.lastPageLoaded = 0;
-        this.photos = new ArrayList<PXLPhoto>();
-        this.pagesLoading = new HashMap<Integer, Boolean>();
+        this.photos = new ArrayList<>();
+        this.pagesLoading = new HashMap<>();
         Log.v("pxlalbum", "album initialized with id " + id);
     }
 
