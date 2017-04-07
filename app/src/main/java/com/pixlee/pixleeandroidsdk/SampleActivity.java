@@ -28,6 +28,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     private ArrayList<CreateList> imageList;
     private ArrayList<PXLPhoto> photoList;
     private EndlessRecyclerViewScrollListener scrollListener;
+    private EndlessRecyclerViewScrollListener scrollListener2;
     private PXLAlbum album;
 
     private final String image_titles[] = {
@@ -94,7 +95,16 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
             }
         };
         recyclerView.addOnScrollListener(scrollListener);
-        recyclerView2.addOnScrollListener(scrollListener);
+        scrollListener2 = new EndlessRecyclerViewScrollListener(layoutManager2) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadMorePhotos();
+            }
+        };
+
+        recyclerView2.addOnScrollListener(scrollListener2);
     }
 
     private ArrayList<CreateList> prepareData(){
@@ -163,6 +173,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         this.photoList.clear();
         this.photoList.addAll(photos);
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.imagegallery);
+        RecyclerView recyclerViewList = (RecyclerView)findViewById(R.id.imagelist);
         /*
         for (int i = 0; i < photos.size(); i++) {
             PXLPhoto photo = photos.get(i);
@@ -172,6 +183,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         }
         */
         recyclerView.getAdapter().notifyDataSetChanged();
+        recyclerViewList.getAdapter().notifyDataSetChanged();
     }
 
     @Override

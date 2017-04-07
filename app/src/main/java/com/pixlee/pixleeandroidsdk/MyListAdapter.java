@@ -2,6 +2,7 @@ package com.pixlee.pixleeandroidsdk;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,9 @@ class MyListAdapter extends RecyclerView.Adapter<MyViewHolder> {
         PXLPhoto photo = galleryList.get(i);
         viewHolder.title.setText(photo.photoTitle);
         //viewHolder.description.setText("Sample text hello there");
+        if (photo.thumbnailUrl == null) {
+            Log.e("listadapter", "failed to get thumbnail url for photo " + photo.id);
+        }
         viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
         viewHolder.netImg.setImageUrl(photo.thumbnailUrl.toString(), imageLoader);
         //viewHolder.netImg.setImageResource((galleryList.get(i).thumbnailUrl.toString())));

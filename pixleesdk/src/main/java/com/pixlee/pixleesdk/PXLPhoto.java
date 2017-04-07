@@ -22,7 +22,7 @@ import java.util.ListIterator;
  */
 
 public class PXLPhoto {
-    private String id;
+    public String id;
     public String photoTitle;
     private double latitude;
     private double longitude;
