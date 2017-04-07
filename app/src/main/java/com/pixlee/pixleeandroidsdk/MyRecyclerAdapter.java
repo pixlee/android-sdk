@@ -15,6 +15,7 @@ import com.android.volley.Network;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.pixlee.pixleesdk.PXLClient;
+import com.pixlee.pixleesdk.PXLPhoto;
 
 import java.util.ArrayList;
 
@@ -23,11 +24,11 @@ import java.util.ArrayList;
  */
 
 public class MyRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder> {
-    private ArrayList<CreateList> galleryList;
+    private ArrayList<PXLPhoto> galleryList;
     private Context context;
     private ImageLoader imageLoader;
 
-    public MyRecyclerAdapter(Context context, ArrayList<CreateList> galleryList) {
+    public MyRecyclerAdapter(Context context, ArrayList<PXLPhoto> galleryList) {
         this.galleryList = galleryList;
         this.context = context;
         this.imageLoader = PXLClient.getInstance(context).getImageLoader();
@@ -41,18 +42,21 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     @Override
     public void onBindViewHolder(MyViewHolder viewHolder, int i) {
-        CreateList photo = galleryList.get(i);
-        viewHolder.title.setText(photo.getImage_title());
+        PXLPhoto photo = galleryList.get(i);
+        viewHolder.title.setText(photo.photoTitle);//.getImage_title());
 
-        if (photo.getImagePath() !=  null) {
-            viewHolder.netImg.setImageUrl(photo.getImagePath().toString(), imageLoader);
+        if (photo.thumbnailUrl !=  null) {
+            viewHolder.netImg.setImageUrl(photo.thumbnailUrl.toString(), imageLoader);
             viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
     }
 
     @Override
     public int getItemCount() {
-        return galleryList.size();
+        if (galleryList  != null) {
+            return galleryList.size();
+        }
+        return 0;
     }
 
 }

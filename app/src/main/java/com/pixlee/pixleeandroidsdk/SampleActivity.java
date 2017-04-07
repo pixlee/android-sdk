@@ -26,6 +26,10 @@ import java.util.ArrayList;
 
 public class SampleActivity extends AppCompatActivity implements PXLAlbum.RequestHandlers {
     private ArrayList<CreateList> imageList;
+    private ArrayList<PXLPhoto> photoList;
+    private EndlessRecyclerViewScrollListener scrollListener;
+    private PXLAlbum album;
+
     private final String image_titles[] = {
             "Img1",
             "Img2",
@@ -69,16 +73,29 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         recyclerView.setHasFixedSize(true);
         recyclerView2.setHasFixedSize(true);
 
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
+        final RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
         RecyclerView.LayoutManager layoutManager2 = new GridLayoutManager(getApplicationContext(), 1);
         recyclerView.setLayoutManager(layoutManager);
-        imageList = prepareData();
+        imageList = this.prepareData();
+        photoList = new ArrayList<>();
         recyclerView2.setLayoutManager(layoutManager2);
         ArrayList<CreateList> createLists = prepareData();
-        MyRecyclerAdapter adapter = new MyRecyclerAdapter(getApplicationContext(), imageList);
+        MyRecyclerAdapter adapter = new MyRecyclerAdapter(getApplicationContext(), photoList);
         MyListAdapter adapter2 = new MyListAdapter(getApplicationContext(), imageList);
         recyclerView.setAdapter(adapter);
         recyclerView2.setAdapter(adapter2);
+
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                //loadNextDataFromApi(page);
+
+                loadMorePhotos();
+            }
+        };
+        recyclerView.addOnScrollListener(scrollListener);
     }
 
     private ArrayList<CreateList> prepareData(){
@@ -117,7 +134,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     private void createAlbum() {
         Context c = this.getApplicationContext();
         PXLClient.initialize("zk4wWCOaHAo4Hi8HsE");
-        PXLAlbum album = new PXLAlbum("1568132", c);
+        album = new PXLAlbum("1568132", c);
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 3147141;
@@ -135,16 +152,26 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         Log.w("sampleactivity", "created album");
     }
 
+    private void loadMorePhotos() {
+        this.album.loadNextPageOfPhotos(this);
+    }
+
     @Override
     public void DataLoadedHandler(ArrayList<PXLPhoto> photos) {
+        if (photos == null) {
+            return;
+        }
+        this.photoList.clear();
+        this.photoList.addAll(photos);
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.imagegallery);
-        ImageLoader il = PXLClient.getInstance(this).getImageLoader();
-        for (int i = 0; i < photos.size() && i < this.imageList.size(); i++) {
+        /*
+        for (int i = 0; i < photos.size(); i++) {
             PXLPhoto photo = photos.get(i);
             Log.d("sampleactivity", photo.toString());
             this.imageList.get(i).setImage_title(photo.photoTitle);
             this.imageList.get(i).setImagePath(photo.thumbnailUrl);
         }
+        */
         recyclerView.getAdapter().notifyDataSetChanged();
     }
 
