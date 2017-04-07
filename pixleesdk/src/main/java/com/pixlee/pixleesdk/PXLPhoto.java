@@ -37,7 +37,7 @@ public class PXLPhoto {
     private String dataFileName;
     private URL mediumUrl;
     private URL bigUrl;
-    private URL thumnailUrl;
+    public URL thumbnailUrl;
     private URL sourceUrl;
     private String mediaId;
     private int existIn;
@@ -101,7 +101,7 @@ public class PXLPhoto {
             }
             url = obj.optString("thumbnail_url");
             if (url != "") {
-                this.thumnailUrl = new URL(url);
+                this.thumbnailUrl = new URL(url);
             }
             url = obj.optString("source_url");
             if (url != "") {

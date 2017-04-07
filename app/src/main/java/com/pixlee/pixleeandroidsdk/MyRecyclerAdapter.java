@@ -1,12 +1,18 @@
 package com.pixlee.pixleeandroidsdk;
 
 import android.content.Context;
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.android.volley.Network;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+import com.pixlee.pixleesdk.PXLClient;
 
 import java.util.ArrayList;
 
@@ -17,10 +23,12 @@ import java.util.ArrayList;
 public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.ViewHolder> {
     private ArrayList<CreateList> galleryList;
     private Context context;
+    private ImageLoader imageLoader;
 
     public MyRecyclerAdapter(Context context, ArrayList<CreateList> galleryList) {
         this.galleryList = galleryList;
         this.context = context;
+        this.imageLoader = PXLClient.getInstance().getImageLoader();
     }
 
     @Override
@@ -31,9 +39,13 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
 
     @Override
     public void onBindViewHolder(MyRecyclerAdapter.ViewHolder viewHolder, int i) {
-        viewHolder.title.setText(galleryList.get(i).getImage_title());
+        CreateList photo = galleryList.get(i);
+        viewHolder.title.setText(photo.getImage_title());
         viewHolder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        viewHolder.img.setImageResource((galleryList.get(i).getImage_ID()));
+        viewHolder.img.setImageResource((photo.getImage_ID()));
+        if (photo.getImagePath() !=  null) {
+            viewHolder.netImg.setImageUrl(photo.getImagePath().toString(), imageLoader);
+        }
     }
 
     @Override
@@ -44,11 +56,13 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView title;
         private ImageView img;
+        private NetworkImageView netImg;
         public ViewHolder(View view) {
             super(view);
 
             title = (TextView)view.findViewById(R.id.title);
             img = (ImageView) view.findViewById(R.id.img);
+            netImg = (NetworkImageView) view.findViewById(R.id.netimg);
         }
     }
 }
