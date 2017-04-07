@@ -43,10 +43,10 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder> {
     public void onBindViewHolder(MyViewHolder viewHolder, int i) {
         CreateList photo = galleryList.get(i);
         viewHolder.title.setText(photo.getImage_title());
-        //viewHolder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        //viewHolder.img.setImageResource((photo.getImage_ID()));
+
         if (photo.getImagePath() !=  null) {
             viewHolder.netImg.setImageUrl(photo.getImagePath().toString(), imageLoader);
+            viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
     }
 
@@ -54,4 +54,5 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder> {
     public int getItemCount() {
         return galleryList.size();
     }
+
 }

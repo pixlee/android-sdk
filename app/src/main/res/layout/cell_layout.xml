@@ -4,14 +4,9 @@
     android:background="#FFFFFF"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <ImageView
-        android:id="@+id/img"
-        android:adjustViewBounds="true"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_margin="10dp" />
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/netimg"
+        android:adjustViewBounds="true"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_margin="10dp" />
