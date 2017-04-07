@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="?attr/actionBarSize"
         android:inAnimation="@android:anim/slide_in_left" >
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -46,7 +47,7 @@
                 android:id="@+id/imagelist"
                 android:layout_width="fill_parent"
                 android:layout_height="495dp"
-                android:layout_marginTop="60dp"
+
                 android:layout_marginLeft="7dp"
                 tools:layout_editor_absoluteY="8dp"
                 tools:layout_editor_absoluteX="8dp" />
