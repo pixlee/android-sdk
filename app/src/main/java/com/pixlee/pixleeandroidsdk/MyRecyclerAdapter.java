@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Network;
@@ -67,7 +68,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("test", view.toString());
+                    netImg.setLayoutParams(new LinearLayout.LayoutParams(2000, 2000));
+                    img.setLayoutParams(new LinearLayout.LayoutParams(2000, 2000));
                 }
             });
         }
