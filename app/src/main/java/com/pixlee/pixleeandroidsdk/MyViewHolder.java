@@ -15,10 +15,8 @@ import java.util.Date;
  */
 
 public class MyViewHolder extends RecyclerView.ViewHolder {
-    public String username;
     public TextView title;
     public NetworkImageView netImg;
-    public Date updatedAt;
     public ImageView sourceIcon;
 
     public MyViewHolder(View view) {
