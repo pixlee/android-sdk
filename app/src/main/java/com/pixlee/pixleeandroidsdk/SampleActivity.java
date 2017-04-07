@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.ViewSwitcher;
 
 import com.pixlee.pixleesdk.PXLAlbum;
@@ -63,14 +64,19 @@ public class SampleActivity extends AppCompatActivity {
         this.createAlbum();
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.imagegallery);
+        RecyclerView recyclerView2 = (RecyclerView)findViewById(R.id.imagelist);
         recyclerView.setHasFixedSize(true);
+        recyclerView2.setHasFixedSize(true);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
+        RecyclerView.LayoutManager layoutManager2 = new GridLayoutManager(getApplicationContext(), 1);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView2.setLayoutManager(layoutManager2);
         ArrayList<CreateList> createLists = prepareData();
         MyRecyclerAdapter adapter = new MyRecyclerAdapter(getApplicationContext(), createLists);
         MyListAdapter adapter2 = new MyListAdapter(getApplicationContext(), createLists);
         recyclerView.setAdapter(adapter);
+        recyclerView2.setAdapter(adapter2);
     }
 
     private ArrayList<CreateList> prepareData(){

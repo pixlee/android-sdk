@@ -25,13 +25,15 @@ class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder> {
 
     @Override
     public MyListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_layout, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row, viewGroup, false);
+        //View view = R.layout.row;
         return new MyListAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(MyListAdapter.ViewHolder viewHolder, int i) {
         viewHolder.title.setText(galleryList.get(i).getImage_title());
+        viewHolder.description.setText("Sample text hello there");
         viewHolder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
         viewHolder.img.setImageResource((galleryList.get(i).getImage_ID()));
     }
@@ -43,12 +45,16 @@ class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView title;
+        private TextView description;
         private ImageView img;
         public ViewHolder(View view) {
             super(view);
-
+            description = (TextView)view.findViewById(R.id.description);
             title = (TextView)view.findViewById(R.id.title);
-            img = (ImageView) view.findViewById(R.id.img);
+            img = (ImageView)view.findViewById(R.id.img);
         }
     }
+    private Context mContext;
+    private String[]  Title;
+    private int[] imge;
 }

@@ -27,28 +27,31 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:inAnimation="@android:anim/slide_in_left" >
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/imagegallery"
-                android:layout_width="368dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:choiceMode="singleChoice"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0dp"
+                android:background="#cc0100cc" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/imagelist"
+                android:layout_width="fill_parent"
                 android:layout_height="495dp"
                 android:layout_marginTop="60dp"
                 android:layout_marginLeft="7dp"
                 tools:layout_editor_absoluteY="8dp"
                 tools:layout_editor_absoluteX="8dp" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/text"
-                android:text="@string/dummy_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-            </TextView>
-        </LinearLayout>
+        </RelativeLayout>
+
     </ViewSwitcher>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
