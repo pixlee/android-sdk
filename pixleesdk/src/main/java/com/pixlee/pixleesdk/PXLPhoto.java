@@ -92,41 +92,23 @@ public class PXLPhoto {
             this.email_address = obj.optString("email_address");
             this.instagramFollowers = obj.optInt("instagram_followers");
             this.twitterFollowers = obj.optInt("twitter_followers");
-            String url = obj.optString("avatar_url");
-            if (URLUtil.isValidUrl(url)) {
-                this.avatarUrl = new URL(url);
-            }
+            this.avatarUrl = this.getURL("avatar_url", obj);
             this.userName = obj.getString("user_name");
             this.connectedUserId = obj.optInt("connected_user_id");
             this.source = obj.getString("source");
             this.contentType = obj.optString("contentType");
             this.dataFileName = obj.optString("data_file_name");
-            url = obj.optString("medium_url");
-            if (URLUtil.isValidUrl(url)) {
-                this.mediumUrl = new URL(url);
-            }
-            url = obj.optString("big_url");
-            if (URLUtil.isValidUrl(url)) {
-                this.bigUrl = new URL(url);
-            }
-            url = obj.optString("thumbnail_url");
-            if (URLUtil.isValidUrl(url)) {
-                this.thumbnailUrl = new URL(url);
-            }
-            url = obj.optString("source_url");
-            if (URLUtil.isValidUrl(url)) {
-                this.sourceUrl = new URL(url);
-            }
+            this.mediumUrl = this.getURL("medium_url", obj);
+            this.bigUrl = this.getURL("big_url", obj);
+            this.thumbnailUrl = this.getURL("thumbnail_url", obj);
+            this.sourceUrl = this.getURL("source_url", obj);
             this.mediaId = obj.optString("media_id");
             this.existIn = obj.optInt("exist_in");
             this.collectTerm = obj.optString("collect_term");
             this.albumPhotoId = obj.optString("album_photo_id");
             this.likeCount = obj.optInt("like_count");
             this.shareCount = obj.optInt("share_count");
-            url = obj.optString("action_link");
-            if (URLUtil.isValidUrl(url)) {
-                this.actionLink = new URL(url);
-            }
+            this.actionLink = this.getURL("action_link", obj);
             this.actionLinkText = obj.optString("action_link_text");
             this.actionLinkTitle = obj.optString("action_link_title");
             this.actionLinkPhoto = obj.optString("action_link_photo");
@@ -138,19 +120,13 @@ public class PXLPhoto {
             this.isFlagged = obj.optBoolean("is_flagged");
             this.album = album;
             this.unreadCount = obj.optInt("unread_count");
-            url = obj.optString("album_action_link");
-            if (URLUtil.isValidUrl(url)) {
-                this.albumActionLink = new URL(url);
-            }
+            this.albumActionLink = this.getURL("album_action_link", obj);
             this.title = obj.getString("title");
             this.messaged = obj.optBoolean("messaged");
             this.hasPermission = obj.optBoolean("has_permission");
             this.awaitingPermission = obj.optBoolean("awaiting_permission");
             this.instUserHasLiked = obj.optBoolean("inst_user_has_liked");
-            url = obj.optString("platform_link");
-            if (URLUtil.isValidUrl(url)) {
-                this.platformLink = new URL(url);
-            }
+            this.platformLink = this.getURL("platform_link", obj);
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (MalformedURLException e) {
@@ -161,5 +137,13 @@ public class PXLPhoto {
     @Override
     public String toString() {
         return String.format("photo id %s, \"%s\" by %s, on %s", this.id, this.photoTitle, this.userName, this.source);
+    }
+
+    private URL getURL(String fieldName, JSONObject json) throws MalformedURLException {
+        String url = json.optString(fieldName);
+        if (URLUtil.isValidUrl(url)) {
+            return new URL(url);
+        }
+        return null;
     }
 }
