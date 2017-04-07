@@ -30,15 +30,6 @@ public class PXLAlbumFilterOptions {
     public Date submittedDateStart;
     public Date submittedDateEnd;
 
-    public HashMap<String, String> getMap() {
-        HashMap<String, String> params = new HashMap<String, String>();
-        if (minInstagramFollowers != null) {
-            params.put("min_instagram_followers", minInstagramFollowers.toString());
-        }
-
-        return params;
-    }
-
     public String toParamString() {
         JSONObject jsonFilters = new JSONObject();
         try {

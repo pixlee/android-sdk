@@ -28,7 +28,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     public MyRecyclerAdapter(Context context, ArrayList<CreateList> galleryList) {
         this.galleryList = galleryList;
         this.context = context;
-        this.imageLoader = PXLClient.getInstance().getImageLoader();
+        this.imageLoader = PXLClient.getInstance(context).getImageLoader();
     }
 
     @Override

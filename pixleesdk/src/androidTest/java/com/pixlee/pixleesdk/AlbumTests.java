@@ -32,8 +32,8 @@ public class AlbumTests {
     @Before
     public void setup() {
         Context c = InstrumentationRegistry.getTargetContext();
-        PXLClient.initialize(TestApiKey, c);
-        testAlbum = new PXLAlbum(TestAlbumId);
+        PXLClient.initialize(TestApiKey);
+        testAlbum = new PXLAlbum(TestAlbumId, c);
         this.random = new Random();
     }
 

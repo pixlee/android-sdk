@@ -111,8 +111,8 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
 
     private void createAlbum() {
         Context c = this.getApplicationContext();
-        PXLClient.initialize("zk4wWCOaHAo4Hi8HsE", c);
-        PXLAlbum album = new PXLAlbum("1568132");
+        PXLClient.initialize("zk4wWCOaHAo4Hi8HsE");
+        PXLAlbum album = new PXLAlbum("1568132", c);
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 3147141;
@@ -133,7 +133,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     @Override
     public void DataLoadedHandler(ArrayList<PXLPhoto> photos) {
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.imagegallery);
-        ImageLoader il = PXLClient.getInstance().getImageLoader();
+        ImageLoader il = PXLClient.getInstance(this).getImageLoader();
         for (int i = 0; i < photos.size() && i < this.imageList.size(); i++) {
             PXLPhoto photo = photos.get(i);
             Log.d("sampleactivity", photo.toString());
