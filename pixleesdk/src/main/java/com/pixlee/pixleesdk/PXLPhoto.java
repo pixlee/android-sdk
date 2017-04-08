@@ -1,6 +1,5 @@
 package com.pixlee.pixleesdk;
 
-import android.support.annotation.NonNull;
 import android.webkit.URLUtil;
 
 import org.json.JSONArray;
@@ -9,13 +8,8 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by jason on 4/4/2017.

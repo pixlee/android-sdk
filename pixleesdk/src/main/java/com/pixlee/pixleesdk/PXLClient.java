@@ -1,7 +1,6 @@
 package com.pixlee.pixleesdk;
 
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 import android.util.Log;
@@ -18,7 +17,6 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by jason on 3/30/2017.

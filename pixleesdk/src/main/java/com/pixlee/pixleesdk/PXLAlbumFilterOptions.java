@@ -1,15 +1,10 @@
 package com.pixlee.pixleesdk;
 
-import android.net.Uri;
-import android.net.UrlQuerySanitizer;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by jason on 4/4/2017.
