@@ -11,10 +11,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
 import android.widget.ViewSwitcher;
 
-import com.android.volley.toolbox.ImageLoader;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;
@@ -27,8 +25,8 @@ import java.util.ArrayList;
 public class SampleActivity extends AppCompatActivity implements PXLAlbum.RequestHandlers {
     private ArrayList<CreateList> imageList;
     private ArrayList<PXLPhoto> photoList;
-    private EndlessRecyclerViewScrollListener scrollListener;
-    private EndlessRecyclerViewScrollListener scrollListener2;
+    private RecyclerViewEndlessScrollListener scrollListener;
+    private RecyclerViewEndlessScrollListener scrollListener2;
     private PXLAlbum album;
 
     private final String image_titles[] = {
@@ -86,7 +84,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         recyclerView.setAdapter(adapter);
         recyclerView2.setAdapter(adapter2);
 
-        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+        scrollListener = new RecyclerViewEndlessScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
@@ -95,7 +93,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
             }
         };
         recyclerView.addOnScrollListener(scrollListener);
-        scrollListener2 = new EndlessRecyclerViewScrollListener(layoutManager2) {
+        scrollListener2 = new RecyclerViewEndlessScrollListener(layoutManager2) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list

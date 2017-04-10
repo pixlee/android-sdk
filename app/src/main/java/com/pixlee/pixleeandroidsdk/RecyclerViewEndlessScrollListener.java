@@ -10,7 +10,7 @@ import android.text.Layout;
  * Created by jason on 4/7/2017.
  */
 
-public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
+public abstract class RecyclerViewEndlessScrollListener extends RecyclerView.OnScrollListener {
     // The minimum amount of items to have below your current scroll position
     // before loading more.
     private int visibleThreshold = 5;
@@ -23,22 +23,22 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     // Sets the starting page index
     private int startingPageIndex = 0;
 
-    RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.LayoutManager mLayoutManager;
 
-    public EndlessRecyclerViewScrollListener(RecyclerView.LayoutManager layoutManager) {
+    public RecyclerViewEndlessScrollListener(RecyclerView.LayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
     }
 
-    public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
+    public RecyclerViewEndlessScrollListener(LinearLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
     }
 
-    public EndlessRecyclerViewScrollListener(GridLayoutManager layoutManager) {
+    public RecyclerViewEndlessScrollListener(GridLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
         visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
     }
 
-    public EndlessRecyclerViewScrollListener(StaggeredGridLayoutManager layoutManager) {
+    public RecyclerViewEndlessScrollListener(StaggeredGridLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
         visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
     }
