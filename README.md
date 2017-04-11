@@ -10,29 +10,52 @@ This repo includes both the Pixlee Android SDK and an example project to show yo
 
 Before accessing the Pixlee API, you must initialize the `PXLClient`. To set the API key, call the static method initialize:
 
-  ```PXLClient.initialize("abcdefghi123456789");```
+
+```
+#!java
+
+PXLClient.initialize("abcdefghi123456789");
+```
+
 
 You can then use the singleton instance to make calls against the Pixlee API:
 
-  ```PXLClient pxlClient = PXLClient.getInstance(context);```
+
+```
+#!java
+
+PXLClient pxlClient = PXLClient.getInstance(context);
+```
+
 
 To load the photos in an album, you'll want to use the `PXLAlbum` class. Instantiate one with your album ID and context:
 
-  ```PXLAlbum pxlAlbum = new PXLAlbum(<ALBUM ID>, context);```
+
+```
+#!java
+
+PXLAlbum pxlAlbum = new PXLAlbum(<ALBUM ID>, context);
+```
+
 
 You can then set sort and filter options as necessary and use `loadNextPageOfPhotos` to kick off the async request.
 
-  ```PXLAlbumFilterOptions filterOptions = new PXLAlbumFilterOptions();
-     filterOptions.minTwitterFollowers = 1000;
-     filterOptions.minInstagramFollowers = 2000;
-     PXLAlbumSortOptions sortOptions = new PXLAlbumSortOptions();
-     sortOptions.sortType = PXLAlbumSortType.PHOTORANK;
-     sortOptions.descending = true;
-     album.setPerPage(15);
-     album.setFilterOptions(filterOptions);
-     album.setSortOptions(sortOptions);
-     album.loadNextPageOfPhotos(this);
-  ```
+
+```
+#!java
+
+PXLAlbumFilterOptions filterOptions = new PXLAlbumFilterOptions();
+filterOptions.minTwitterFollowers = 1000;
+filterOptions.minInstagramFollowers = 2000;
+PXLAlbumSortOptions sortOptions = new PXLAlbumSortOptions();
+sortOptions.sortType = PXLAlbumSortType.PHOTORANK;
+sortOptions.descending = true;
+album.setPerPage(15);
+album.setFilterOptions(filterOptions);
+album.setSortOptions(sortOptions);
+album.loadNextPageOfPhotos(this);
+```
+
 
 Each successive call of `loadNextPageOfPhotos` will load the next page of photos. Be sure to set all of your request options (filters, sort, etc) before calling `loadNextPageOfPhotos`.  See the source for more implementation details.
 
