@@ -1,5 +1,7 @@
 package com.pixlee.pixleeandroidsdk;
 
+import android.app.Activity;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,7 +21,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     public NetworkImageView netImg;
     public ImageView sourceIcon;
 
-    public MyViewHolder(View view) {
+    public MyViewHolder(View view, final SampleActivity sampleActivity) {
         super(view);
         title = (TextView) view.findViewById(R.id.title);
         netImg = (NetworkImageView) view.findViewById(R.id.netimg);
@@ -27,7 +29,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                netImg.setLayoutParams(new LinearLayout.LayoutParams(2000, 2000));
+                sampleActivity.switchVisibilities();
             }
         });
     }

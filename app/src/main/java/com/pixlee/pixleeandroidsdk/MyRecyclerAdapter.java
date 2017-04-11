@@ -27,17 +27,19 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder> {
     private ArrayList<PXLPhoto> galleryList;
     private Context context;
     private ImageLoader imageLoader;
+    private SampleActivity saref;
 
-    public MyRecyclerAdapter(Context context, ArrayList<PXLPhoto> galleryList) {
+    public MyRecyclerAdapter(Context context, ArrayList<PXLPhoto> galleryList, SampleActivity sa) {
         this.galleryList = galleryList;
         this.context = context;
         this.imageLoader = PXLClient.getInstance(context).getImageLoader();
+        this.saref = sa;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_layout, viewGroup, false);
-        return new MyViewHolder(view);
+        return new MyViewHolder(view, this.saref);
     }
 
     @Override

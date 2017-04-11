@@ -49,6 +49,16 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
             R.drawable.img6
     };
 
+    public void switchVisibilities() {
+        if (findViewById(R.id.detailview).getVisibility() == View.VISIBLE) {
+            findViewById(R.id.detailview).setVisibility(View.GONE);
+            findViewById(R.id.viewSwitcher1).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.detailview).setVisibility(View.VISIBLE);
+            findViewById(R.id.viewSwitcher1).setVisibility(View.GONE);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,8 +91,8 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         photoList = new ArrayList<>();
         recyclerView2.setLayoutManager(layoutManager2);
         ArrayList<CreateList> createLists = prepareData();
-        MyRecyclerAdapter adapter = new MyRecyclerAdapter(getApplicationContext(), photoList);
-        MyListAdapter adapter2 = new MyListAdapter(getApplicationContext(), photoList);
+        MyRecyclerAdapter adapter = new MyRecyclerAdapter(getApplicationContext(), photoList, this);
+        MyListAdapter adapter2 = new MyListAdapter(getApplicationContext(), photoList, this);
         recyclerView.setAdapter(adapter);
         recyclerView2.setAdapter(adapter2);
 

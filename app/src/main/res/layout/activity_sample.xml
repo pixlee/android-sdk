@@ -7,6 +7,7 @@
     tools:context="com.pixlee.pixleeandroidsdk.SampleActivity">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -27,7 +28,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="?attr/actionBarSize"
-        android:inAnimation="@android:anim/slide_in_left" >
+        android:inAnimation="@android:anim/slide_in_left"
+        android:visibility="visible">
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -47,13 +49,32 @@
                 android:id="@+id/imagelist"
                 android:layout_width="fill_parent"
                 android:layout_height="495dp"
-
                 android:layout_marginLeft="7dp"
                 tools:layout_editor_absoluteY="8dp"
                 tools:layout_editor_absoluteX="8dp" />
         </RelativeLayout>
-
     </ViewSwitcher>
+    <LinearLayout
+        android:id="@+id/detailview"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/detailImage"
+            android:layout_alignParentTop="true"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/img1" />
+        <TextView
+            android:layout_alignParentBottom="true"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="yo mama\nhi"/>
+    </LinearLayout>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
