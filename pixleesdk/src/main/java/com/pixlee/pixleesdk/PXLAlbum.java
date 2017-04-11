@@ -11,10 +11,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by jason on 4/4/2017.
+/***
+ * Represents a Pixlee album. Constructs appropriate API calls to fetch the desired set of photos.
+ * Specify all sort/filter/etc. parameters before calling 'loadNextPageOfPhotos'. Basic usage:
+ * --construct an album object
+ * --specify photos per page, sort options, and filter options
+ * --call 'loadNextPageOfPhotos'
  */
-
 public class PXLAlbum implements RequestCallbacks {
     public static final int DefaultPerPage = 20;
 
@@ -30,15 +33,18 @@ public class PXLAlbum implements RequestCallbacks {
     private RequestHandlers handlers;
     private Context context;
 
+    /***
+     * Callback for a successful call to the api.  Parses the response and converts the json data
+     * to PXLPhoto objects.
+     * @param response - JSONObject from the request
+     */
     @Override
     public void JsonReceived(JSONObject response) {
-        Log.w("pxlalbum", response.toString());
         try {
             this.page = response.getInt("page");
             this.perPage = response.getInt(("per_page"));
             this.hasMore = response.getBoolean(("next"));
             //add placeholders for photos if they haven't been loaded yet
-            //TODO: is this possible?
             if (this.photos.size() < (this.page - 1) * this.perPage) {
                 for (int i = this.photos.size(); i < (this.page - 1) * this.perPage; i++) {
                     this.photos.add(null);
@@ -46,28 +52,41 @@ public class PXLAlbum implements RequestCallbacks {
             }
             this.photos.addAll(this.photos.size(), PXLPhoto.fromJsonArray(response.getJSONArray("data"), this));
             this.lastPageLoaded = Math.max(this.page, this.lastPageLoaded);
+
+            //handlers set when making the original 'loadNextPageOfPhotos' call
+            if (handlers != null) {
+                handlers.DataLoadedHandler(this.photos);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        if (handlers != null) {
-            handlers.DataLoadedHandler(this.photos);
-        }
     }
 
+    /***
+     * Callback for errors that occur during the api request
+     * @param error - error from volley
+     */
     @Override
     public void ErrorResponse(VolleyError error) {
-        Log.e("pxlalbum", "failed to make call");
         if (handlers != null) {
             handlers.DataLoadFailedHandler(error.toString());
         }
     }
 
+    /***
+     * Interface for callbacks for loadNextPageOfPhotos
+     */
     public interface RequestHandlers {
         void DataLoadedHandler(ArrayList<PXLPhoto> photos);
         void DataLoadFailedHandler(String error);
     }
 
+    /***
+     * Constructor requires the album id and context, which will be passed along to the PXLClient
+     * for volley configuration.
+     * @param id - album id
+     * @param context - context which will be used for volley configuration
+     */
     public PXLAlbum(String id, Context context) {
         this.id = id;
         this.page = 0;
@@ -77,16 +96,17 @@ public class PXLAlbum implements RequestCallbacks {
         this.photos = new ArrayList<>();
         this.pagesLoading = new HashMap<>();
         this.context = context;
-        Log.v("pxlalbum", "album initialized with id " + id);
     }
 
     /***
-     * requests the next page of photos from the Pixlee album
+     * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
+     * sort order, and filter options before calling.
      * @param handlers - called upon success/failure of the request
      * @return true if the request was attempted, false if aborted before the attempt was made
      */
     public boolean loadNextPageOfPhotos(final RequestHandlers handlers) {
         if (id == null) {
+            Log.w("PXLAlbum", "No album id specified");
             return false;
         }
         if (this.hasMore) {
@@ -106,16 +126,31 @@ public class PXLAlbum implements RequestCallbacks {
         return true;
     }
 
+    /***
+     * Sets the amount of photos fetched per call of 'loadNextPageOfPhotos'.  Will purge previously
+     * fetched photos. Call 'loadNextPageOfPhotos' after setting.
+     * @param perPage - number of photos per page
+     */
     public void setPerPage(int perPage) {
         this.perPage = perPage;
         this.resetState();
     }
 
+    /***
+     * Sets the filter options for the album. Will purge previously fetched photos. Call
+     * 'loadNextPageOfPhotos' after setting.
+     * @param filterOptions
+     */
     public void setFilterOptions(PXLAlbumFilterOptions filterOptions) {
         this.filterOptions = filterOptions;
         this.resetState();
     }
 
+    /***
+     * Sets the sort options for the album. Will purge previously fetched photos. Call
+     * 'loadNextPageOfPhotos' after setting.
+     * @param sortOptions
+     */
     public void setSortOptions(PXLAlbumSortOptions sortOptions) {
         this.sortOptions = sortOptions;
         this.resetState();

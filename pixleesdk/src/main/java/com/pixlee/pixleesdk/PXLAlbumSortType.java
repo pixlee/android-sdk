@@ -1,9 +1,8 @@
 package com.pixlee.pixleesdk;
 
-/**
- * Created by jason on 4/5/2017.
+/***
+ * An enum of the possible sort criteria. Value is used to construct the actual API call.
  */
-
 public enum PXLAlbumSortType {
     RECENCY ("recency"),
     RANDOM ("random"),

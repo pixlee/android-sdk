@@ -6,10 +6,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
- * Created by jason on 4/4/2017.
+/***
+ * Represents the filter options for a PXLAlbum. Initialize an instance then set the desired
+ * filter values. Finally, use the PXLAlbum method setFilterOptions to update the album.
  */
-
 public class PXLAlbumFilterOptions {
     //TODO: check types of all params in api documentation
     public Integer minInstagramFollowers;
@@ -25,6 +25,10 @@ public class PXLAlbumFilterOptions {
     public Date submittedDateStart;
     public Date submittedDateEnd;
 
+    /***
+     * Generates the JSON string representing the filter options.
+     * @return a JSON string with the desired filter options.
+     */
     public String toParamString() {
         JSONObject jsonFilters = new JSONObject();
         try {
@@ -53,8 +57,6 @@ public class PXLAlbumFilterOptions {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        //TODO: check for empty
 
         return jsonFilters.toString();
     }

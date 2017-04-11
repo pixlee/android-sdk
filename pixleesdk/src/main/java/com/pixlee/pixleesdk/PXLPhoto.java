@@ -11,59 +11,59 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
- * Created by jason on 4/4/2017.
+/***
+ * PXLPhoto represents an individual photo. Exposes all the data retrieved from an API call.
  */
-
 public class PXLPhoto {
     public String id;
     public String photoTitle;
-    private double latitude;
-    private double longitude;
-    private Date taggedAt;
-    private String email_address;
-    private int instagramFollowers;
-    private int twitterFollowers;
-    private URL avatarUrl;
-    private String userName;
-    private int connectedUserId;
-    private String source;
-    private String contentType;
-    private String dataFileName;
-    private URL mediumUrl;
-    private URL bigUrl;
+    public double latitude;
+    public double longitude;
+    public Date taggedAt;
+    public String email_address;
+    public int instagramFollowers;
+    public int twitterFollowers;
+    public URL avatarUrl;
+    public String userName;
+    public int connectedUserId;
+    public String source;
+    public String contentType;
+    public String dataFileName;
+    public URL mediumUrl;
+    public URL bigUrl;
     public URL thumbnailUrl;
-    private URL sourceUrl;
-    private String mediaId;
-    private int existIn;
-    private String collectTerm;
-    private String albumPhotoId;
-    private int likeCount;
-    private int shareCount;
-    private URL actionLink;
-    private String actionLinkText;
-    private String actionLinkTitle;
-    private String actionLinkPhoto;
-    private Date updatedAt;
-    private boolean isStarred;
-    private boolean approved;
-    private boolean archived;
-    private boolean isFlagged;
-    private PXLAlbum album;
-    private int unreadCount;
-    private URL albumActionLink;
-    private String title;
-    private Boolean messaged;
-    private Boolean hasPermission;
-    private Boolean awaitingPermission;
-    private Boolean instUserHasLiked;
-    private URL platformLink;
-    /*
-    private custom_order": 1;
-    private locality": "Los Angeles";
-    private country": "United States";
-    */
+    public URL sourceUrl;
+    public String mediaId;
+    public int existIn;
+    public String collectTerm;
+    public String albumPhotoId;
+    public int likeCount;
+    public int shareCount;
+    public URL actionLink;
+    public String actionLinkText;
+    public String actionLinkTitle;
+    public String actionLinkPhoto;
+    public Date updatedAt;
+    public boolean isStarred;
+    public boolean approved;
+    public boolean archived;
+    public boolean isFlagged;
+    public PXLAlbum album;
+    public int unreadCount;
+    public URL albumActionLink;
+    public String title;
+    public Boolean messaged;
+    public Boolean hasPermission;
+    public Boolean awaitingPermission;
+    public Boolean instUserHasLiked;
+    public URL platformLink;
 
+    /***
+     * Generates an ArrayList of PXLPhoto from the given JSON array.
+     * @param data - JSONArray of Pixlee photos
+     * @param album - the PXLAlbum the photos belong to
+     * @return
+     */
     public static ArrayList<PXLPhoto> fromJsonArray(JSONArray data, PXLAlbum album) {
         ArrayList<PXLPhoto> photos = new ArrayList<PXLPhoto>();
         for (int i = 0; i < data.length(); i++) {
@@ -133,6 +133,11 @@ public class PXLPhoto {
         return String.format("photo id %s, \"%s\" by %s, on %s", this.id, this.photoTitle, this.userName, this.source);
     }
 
+    /***
+     * Returns the appropriate url for the desired photo size
+     * @param size
+     * @return
+     */
     public URL getUrlForSize(PXLPhotoSize size) {
         switch (size) {
             case THUMBNAIL:
@@ -146,6 +151,10 @@ public class PXLPhoto {
         }
     }
 
+    /***
+     * Returns a resource ID to an image representing the current photo's source
+     * @return
+     */
     public Integer sourceIconImage() {
         switch (this.source) {
             case "instagram":

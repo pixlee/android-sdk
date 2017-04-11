@@ -1,9 +1,8 @@
 package com.pixlee.pixleesdk;
 
-/**
- * Created by jason on 4/4/2017.
+/***
+ * enum representing the valid Pixlee content types
  */
-
 public enum PXLContentType {
     VIDEO ("video"),
     IMAGE ("image");
