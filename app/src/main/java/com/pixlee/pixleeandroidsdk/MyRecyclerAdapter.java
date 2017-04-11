@@ -1,19 +1,13 @@
 package com.pixlee.pixleeandroidsdk;
 
 import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.android.volley.Network;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLPhoto;
 
@@ -39,18 +33,24 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder> {
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_layout, viewGroup, false);
-        return new MyViewHolder(view, this.saref);
+        return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder viewHolder, int i) {
-        PXLPhoto photo = galleryList.get(i);
+        final PXLPhoto photo = galleryList.get(i);
         viewHolder.title.setText(photo.photoTitle);//.getImage_title());
 
         if (photo.thumbnailUrl !=  null) {
             viewHolder.netImg.setImageUrl(photo.thumbnailUrl.toString(), imageLoader);
             viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            viewHolder.sourceIcon.setImageResource(photo.sourceIconImage());
+            //viewHolder.sourceIcon.setImageResource(photo.sourceIconImage());
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    saref.switchVisibilities(photo);//photo);
+                }
+            });
         }
     }
 

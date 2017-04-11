@@ -10,10 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_margin="10dp" />
-    <ImageView
-        android:id="@+id/sourceIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
     <TextView
         android:id="@+id/title"
         android:layout_gravity="center"

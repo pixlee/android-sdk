@@ -8,18 +8,22 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortType;
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.PXLPhotoSize;
 
 import java.util.ArrayList;
 
@@ -29,6 +33,9 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     private RecyclerViewEndlessScrollListener scrollListener;
     private RecyclerViewEndlessScrollListener scrollListener2;
     private PXLAlbum album;
+    private NetworkImageView detailImage;
+    private TextView detailText;
+    private ImageView detailSourceIcon;
 
     private final String image_titles[] = {
             "Img1",
@@ -48,12 +55,13 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
             R.drawable.img6
     };
 
-    public void switchVisibilities() {
+    public void switchVisibilities(PXLPhoto photo) {
         if (findViewById(R.id.detailview).getVisibility() == View.VISIBLE) {
             findViewById(R.id.detailview).setVisibility(View.GONE);
             findViewById(R.id.viewSwitcher1).setVisibility(View.VISIBLE);
         } else {
             findViewById(R.id.detailview).setVisibility(View.VISIBLE);
+            updateDetailView(photo);
             findViewById(R.id.viewSwitcher1).setVisibility(View.GONE);
         }
     }
@@ -77,6 +85,10 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         });
 
         this.createAlbum();
+
+        this.detailImage = (NetworkImageView) findViewById(R.id.detailImage);
+        this.detailText = (TextView) findViewById(R.id.detailText);
+        this.detailSourceIcon = (ImageView) findViewById(R.id.detailSourceIcon);
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.imagegallery);
         RecyclerView recyclerView2 = (RecyclerView)findViewById(R.id.imagelist);
@@ -207,5 +219,11 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     @Override
     public void DataLoadFailedHandler(String error) {
 
+    }
+
+    private void updateDetailView(PXLPhoto photo) {
+        this.detailSourceIcon.setImageResource(photo.sourceIconImage());
+        this.detailImage.setImageUrl(photo.getUrlForSize(PXLPhotoSize.MEDIUM).toString(), PXLClient.getInstance(this).getImageLoader());
+        this.detailText.setText(photo.photoTitle);
     }
 }

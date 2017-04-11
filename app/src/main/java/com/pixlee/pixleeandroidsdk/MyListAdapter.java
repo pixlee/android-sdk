@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.pixlee.pixleesdk.PXLClient;
@@ -36,7 +35,7 @@ class MyListAdapter extends RecyclerView.Adapter<MyViewHolder> {
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row, viewGroup, false);
-        return new MyViewHolder(view, this.saref);
+        return new MyViewHolder(view);
     }
 
     @Override
