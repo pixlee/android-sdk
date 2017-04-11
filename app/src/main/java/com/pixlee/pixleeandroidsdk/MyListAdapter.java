@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.PXLPhotoSize;
 
 import java.util.ArrayList;
 
@@ -44,6 +45,8 @@ class MyListAdapter extends RecyclerView.Adapter<MyViewHolder> {
         viewHolder.title.setText(photo.photoTitle);
         if (photo.thumbnailUrl == null) {
             Log.e("listadapter", "failed to get thumbnail url for photo " + photo.id);
+        } else {
+            Log.d("listadapter", String.format("setting url for photo %s: %s", i, photo.getUrlForSize(PXLPhotoSize.THUMBNAIL).toString()));
         }
         viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
         viewHolder.netImg.setImageUrl(photo.thumbnailUrl.toString(), imageLoader);

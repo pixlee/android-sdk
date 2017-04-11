@@ -1,7 +1,6 @@
 package com.pixlee.pixleesdk;
 
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 import android.util.Log;
@@ -18,12 +17,11 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
-/**
- * Created by jason on 3/30/2017.
+/***
+ * Manages the configuration of volley and calls to the api. Intended to be used as a singleton,
+ * so access should occur via the getInstance() method.
  */
-
 public class PXLClient {
     public static final String KeyFilters = "filters";
     public static final String KeySort = "sort";
@@ -58,10 +56,19 @@ public class PXLClient {
                 });
     }
 
+    /***
+     * Must be called before use. Sets the api key.
+     * @param apiKey
+     */
     public static void initialize(String apiKey) {
         PXLClient.apiKey = apiKey;
     }
 
+    /***
+     * Gets the PXLClient instance or creates it if it doesn't exist.
+     * @param context - used for generating the volley request queue.
+     * @return
+     */
     public static synchronized PXLClient getInstance(Context context) {
         if (mInstance == null) {
             mInstance = new PXLClient(context);
@@ -69,6 +76,10 @@ public class PXLClient {
         return mInstance;
     }
 
+    /***
+     * Returns or generates the volley request queue.
+     * @return
+     */
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
@@ -78,19 +89,27 @@ public class PXLClient {
         return mRequestQueue;
     }
 
-
-
+    /***
+     * Adds a request to the volley request queue.
+     * @param req
+     * @param <T>
+     */
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
     }
 
+    /***
+     * Returns the volley image loader.
+     * @return
+     */
     public ImageLoader getImageLoader() {
         return mImageLoader;
     }
 
     /***
-     * makes a call to the pixlee api
-     * @param requestPath - path to hit (will be appended to the base pixlee api endpoint)
+     * Makes a call to the Pixlee API. Appends api key to the request. Invokes the given callbacks
+     * on success/error.
+     * @param requestPath - path to hit (will be appended to the base Pixlee api endpoint)
      * @param callbacks - called after request succeeds or fails
      * @return false if no api key set yet, true otherwise
      */

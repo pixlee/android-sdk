@@ -1,9 +1,8 @@
 package com.pixlee.pixleesdk;
 
-/**
- * Created by jason on 4/7/2017.
+/***
+ * enum representing the valid Pixlee photo sizes
  */
-
 public enum PXLPhotoSize {
     THUMBNAIL,
     MEDIUM,
