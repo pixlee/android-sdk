@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.ViewSwitcher;
 
 import com.pixlee.pixleesdk.PXLAlbum;
@@ -93,6 +94,15 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         MyListAdapter adapter2 = new MyListAdapter(getApplicationContext(), photoList, this);
         recyclerView.setAdapter(adapter);
         recyclerView2.setAdapter(adapter2);
+
+        LinearLayout detailLayout = (LinearLayout) findViewById(R.id.detailview);
+        detailLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switchVisibilities();
+            }
+        });
+
 
         scrollListener = new RecyclerViewEndlessScrollListener(layoutManager) {
             @Override
