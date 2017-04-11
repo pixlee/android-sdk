@@ -82,7 +82,7 @@ public class PXLPhoto {
             this.photoTitle = obj.optString("photo_title");
             this.latitude = obj.optDouble("latitude");
             this.longitude = obj.optDouble("longitude");
-            this.taggedAt = new Date(obj.optInt("tagged_at"));
+            this.taggedAt = new Date(obj.optLong("tagged_at"));
             this.email_address = obj.optString("email_address");
             this.instagramFollowers = obj.optInt("instagram_followers");
             this.twitterFollowers = obj.optInt("twitter_followers");
@@ -106,7 +106,7 @@ public class PXLPhoto {
             this.actionLinkText = obj.optString("action_link_text");
             this.actionLinkTitle = obj.optString("action_link_title");
             this.actionLinkPhoto = obj.optString("action_link_photo");
-            Long date = obj.optLong("updatedAt");
+            Long date = obj.optLong("updated_at");
             this.updatedAt = new Date(date);
             this.isStarred = obj.optBoolean("is_starred");
             this.approved = obj.optBoolean("approved");

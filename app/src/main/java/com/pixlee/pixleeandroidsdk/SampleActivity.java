@@ -26,6 +26,7 @@ import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.PXLPhotoSize;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class SampleActivity extends AppCompatActivity implements PXLAlbum.RequestHandlers {
     private ArrayList<CreateList> imageList;
@@ -36,6 +37,8 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     private NetworkImageView detailImage;
     private TextView detailText;
     private ImageView detailSourceIcon;
+    private TextView detailUser;
+    private TextView detailLastMod;
 
     private final String image_titles[] = {
             "Img1",
@@ -89,6 +92,8 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         this.detailImage = (NetworkImageView) findViewById(R.id.detailImage);
         this.detailText = (TextView) findViewById(R.id.detailText);
         this.detailSourceIcon = (ImageView) findViewById(R.id.detailSourceIcon);
+        this.detailUser = (TextView) findViewById(R.id.userName);
+        this.detailLastMod = (TextView) findViewById(R.id.lastModified);
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.imagegallery);
         RecyclerView recyclerView2 = (RecyclerView)findViewById(R.id.imagelist);
@@ -111,7 +116,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         detailLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switchVisibilities();
+                switchVisibilities(null);
             }
         });
 
@@ -225,5 +230,26 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         this.detailSourceIcon.setImageResource(photo.sourceIconImage());
         this.detailImage.setImageUrl(photo.getUrlForSize(PXLPhotoSize.MEDIUM).toString(), PXLClient.getInstance(this).getImageLoader());
         this.detailText.setText(photo.photoTitle);
+        this.detailUser.setText(String.format("@%s", photo.userName));
+        int num = 0;
+        String unit = "hour";
+        Date now = new Date();
+        //ms
+        long elapsed = now.getTime() - photo.taggedAt.getTime();
+        //s
+        elapsed /= 1000;
+        //hrs
+        elapsed /= 60 * 60;
+        if (elapsed > 1) {
+            unit += "s";
+        }
+        if (elapsed >= 24) {
+            elapsed /= 24;
+            unit = "day";
+            if (elapsed > 1) {
+                unit += "s";
+            }
+        }
+        this.detailLastMod.setText(String.format("%s %s ago", elapsed, unit));
     }
 }

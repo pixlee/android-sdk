@@ -40,7 +40,7 @@ class MyListAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     @Override
     public void onBindViewHolder(MyViewHolder viewHolder, int i) {
-        PXLPhoto photo = galleryList.get(i);
+        final PXLPhoto photo = galleryList.get(i);
         viewHolder.title.setText(photo.photoTitle);
         if (photo.thumbnailUrl == null) {
             Log.e("listadapter", "failed to get thumbnail url for photo " + photo.id);
@@ -50,6 +50,12 @@ class MyListAdapter extends RecyclerView.Adapter<MyViewHolder> {
         viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
         viewHolder.netImg.setImageUrl(photo.thumbnailUrl.toString(), imageLoader);
         //viewHolder.netImg.setImageResource((galleryList.get(i).thumbnailUrl.toString())));
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saref.switchVisibilities(photo);//photo);
+            }
+        });
     }
 
     @Override
