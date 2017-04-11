@@ -125,6 +125,7 @@ public class PXLClient {
         }
         String finalUrl = String.format("%s/%s?%s", url, requestPath, paramString);
         Log.w("pxlclient", String.format("making a call to %s", finalUrl));
+        //System.err.println(String.format("making a call to %s", finalUrl));
         JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, finalUrl, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
