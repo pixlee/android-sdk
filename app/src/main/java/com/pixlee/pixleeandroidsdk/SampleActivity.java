@@ -39,6 +39,10 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     private ImageView detailSourceIcon;
     private TextView detailUser;
     private TextView detailLastMod;
+    private ViewSwitcher viewSwitcher;
+    private ImageView gridToggleButton;
+    private int lastImg;
+    //private FloatingActionButton
 
     private final String image_titles[] = {
             "Img1",
@@ -61,11 +65,13 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     public void switchVisibilities(PXLPhoto photo) {
         if (findViewById(R.id.detailview).getVisibility() == View.VISIBLE) {
             findViewById(R.id.detailview).setVisibility(View.GONE);
-            findViewById(R.id.viewSwitcher1).setVisibility(View.VISIBLE);
+            viewSwitcher.setVisibility(View.VISIBLE);
+            gridToggleButton.setVisibility(View.VISIBLE);
         } else {
             findViewById(R.id.detailview).setVisibility(View.VISIBLE);
             updateDetailView(photo);
-            findViewById(R.id.viewSwitcher1).setVisibility(View.GONE);
+            viewSwitcher.setVisibility(View.GONE);
+            gridToggleButton.setVisibility(View.GONE);
         }
     }
 
@@ -75,15 +81,29 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         setContentView(R.layout.activity_sample);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        viewSwitcher = (ViewSwitcher)findViewById(R.id.viewSwitcher1);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                 //       .setAction("Action", null).show();
-                ViewSwitcher viewSwitcher = (ViewSwitcher)findViewById(R.id.viewSwitcher1);
                 viewSwitcher.showNext();
+            }
+        });
+
+        gridToggleButton = (ImageView) findViewById(R.id.gridToggle);
+        lastImg = R.drawable.grid_2x;
+        gridToggleButton.setImageResource(lastImg);
+        gridToggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewSwitcher.showNext();
+                if (lastImg == R.drawable.grid_2x) {
+                    lastImg = R.drawable.column_2x;
+                } else {
+                    lastImg = R.drawable.grid_2x;
+                }
+                gridToggleButton.setImageResource(lastImg);
             }
         });
 
