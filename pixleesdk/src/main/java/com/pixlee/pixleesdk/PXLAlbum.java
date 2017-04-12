@@ -19,6 +19,7 @@ import java.util.HashMap;
  * --call 'loadNextPageOfPhotos'
  */
 public class PXLAlbum implements RequestCallbacks {
+    private static final String TAG = "PXLAlbum";
     public static final int DefaultPerPage = 20;
 
     private String id = null;
@@ -106,18 +107,17 @@ public class PXLAlbum implements RequestCallbacks {
      */
     public boolean loadNextPageOfPhotos(final RequestHandlers handlers) {
         if (id == null) {
-            Log.w("PXLAlbum", "No album id specified");
+            Log.w(TAG, "No album id specified");
             return false;
         }
         if (this.hasMore) {
             int desiredPage = this.lastPageLoaded + 1;
             if (pagesLoading.get(desiredPage) != null && pagesLoading.get(desiredPage)) {
-                Log.d("pxlalbum", String.format("page %s already loading", desiredPage));
+                Log.d(TAG, String.format("page %s already loading", desiredPage));
                 return false;
             }
             PXLClient pxlClient = PXLClient.getInstance(context);
             String requestPath = String.format("albums/%s/photos", this.id);
-            Log.w("pxlalbum", String.format("making a request to %s", requestPath));
             this.pagesLoading.put(desiredPage, true);
             this.handlers = handlers;
             pxlClient.makeCall(requestPath, getRequestParams(desiredPage), this);

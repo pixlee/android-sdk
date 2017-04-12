@@ -23,6 +23,7 @@ import java.util.Map;
  * so access should occur via the getInstance() method.
  */
 public class PXLClient {
+    private static final String TAG = "PXLClient";
     public static final String KeyFilters = "filters";
     public static final String KeySort = "sort";
     public static final String KeyApiKey = "api_key";
@@ -124,19 +125,16 @@ public class PXLClient {
             }
         }
         String finalUrl = String.format("%s/%s?%s", url, requestPath, paramString);
-        Log.w("pxlclient", String.format("making a call to %s", finalUrl));
-        //System.err.println(String.format("making a call to %s", finalUrl));
         JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, finalUrl, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.v("pxlclient", "got a success response, making callback");
                 callbacks.JsonReceived(response);
             }
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.v("pxlclient", "got an error response");
+                Log.w(TAG, "got an error response");
                 callbacks.ErrorResponse(error);
             }
         });
