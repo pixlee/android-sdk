@@ -11,7 +11,7 @@ public enum PXLContentSource {
     DESKTOP ("desktop"),
     EMAIL ("email");
 
-    private final String value;
+    public final String value;
 
     PXLContentSource(String val) {
         this.value = val;

@@ -7,7 +7,7 @@ public enum PXLContentType {
     VIDEO ("video"),
     IMAGE ("image");
 
-    private final String value;
+    public final String value;
     PXLContentType(String val) {
         this.value = val;
     }

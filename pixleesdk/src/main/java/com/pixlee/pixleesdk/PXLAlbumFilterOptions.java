@@ -1,5 +1,6 @@
 package com.pixlee.pixleesdk;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,12 +41,20 @@ public class PXLAlbumFilterOptions {
             jsonFilters.putOpt("flagged_photos", flaggedPhotos);
             //TODO: handle the arrays and dates properly
             if (contentSource != null && contentSource.size() > 0) {
-                jsonFilters.put("content_source", contentSource);
+                JSONArray sources = new JSONArray();
+                for (int i = 0; i < contentSource.size(); i++) {
+                    sources.put(contentSource.get(i).value);
+                }
+                jsonFilters.put("content_source", sources);
             }
             if (contentType != null && contentType.size() > 0) {
-                jsonFilters.put("content_type", contentType);
+                JSONArray types = new JSONArray();
+                for (int i = 0; i < contentType.size(); i++) {
+                    types.put(contentType.get(i).value);
+                }
+                jsonFilters.put("content_type", types);
             }
-            jsonFilters.putOpt("filter_by_subcpation", filterBySubcaption);
+            jsonFilters.putOpt("filter_by_subcaption", filterBySubcaption);
             jsonFilters.putOpt("has_action_link", hasActionLink);
             if (submittedDateStart != null) {
                 jsonFilters.put("submitted_date_start", Math.round(submittedDateStart.getTime() / 1000));
