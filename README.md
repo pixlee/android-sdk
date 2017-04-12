@@ -64,36 +64,20 @@ Once an album has loaded photos from the server, it will instantiate `PXLPhoto` 
 To help you get up and running quickly, we've also built an sample application featuring a grid view, list view, and detail view.  The adapters simply maintain an ArrayList of PXLPhoto, which is updated via calls to `loadNextPageOfPhotos`.  Since the data source contains the full PXLPhoto object, you can easily customize your own widgets to display the desired images and text.  The sample also implements a scroll listener which times calls to `loadNextPageOfPhotos` to provide the endless scroll effect.
 
 ### Including the Pixlee Android SDK
-##### If you're building for iOS, tvOS, or watchOS
-1. Create a Cartfile that lists the frameworks you’d like to use in your project.
-1. Run `carthage update`. This will fetch dependencies into a Carthage/Checkouts folder, then build each one or download a pre-compiled framework.
-1. On your application targets’ “General” settings tab, in the “Linked Frameworks and Libraries” section, drag and drop each framework you want to use from the Carthage/Build folder on disk.
-1. On your application targets’ “Build Phases” settings tab, click the “+” icon and choose “New Run Script Phase”. Create a Run Script in which you specify your shell (ex: `/bin/sh`), add the following contents to the script area below the shell:
+#### Using in a preexisting project
+1. Open your existing project in Android Studio
+2. Go to Import Module (File -> New -> Import Module)
+3. Enter the path of the pixlee-android-sdk directory
+4. Select the modules you would like to import and click Finish.
 
-  ```sh
-    /usr/local/bin/carthage copy-frameworks
-      ```
+#### Loading the project as is
+1. Start Android Studio and select **Import Project**
+2. Select the path of the pixlee-android-sdk repo
 
-        and add the paths to the frameworks you want to use under “Input Files”, e.g.:
-
-	  ```
-	    $(SRCROOT)/Carthage/Build/iOS/Box.framework
-	      $(SRCROOT)/Carthage/Build/iOS/Result.framework
-	        $(SRCROOT)/Carthage/Build/iOS/ReactiveCocoa.framework
-		  ```
-		    This script works around an [App Store submission bug](http://www.openradar.me/radar?id=6409498411401216) triggered by universal binaries and ensures that necessary bitcode-related files and dSYMs are copied when archiving.
-
-		    With the debug information copied into the built products directory, Xcode will be able to symbolicate the stack trace whenever you stop at a breakpoint. This will also enable you to step through third-party code in the debugger.
-
-		    When archiving your application for submission to the App Store or TestFlight, Xcode will also copy these files into the dSYMs subdirectory of your application’s `.xcarchive` bundle.
-
-		    ### Example
-
-		    To run the example project, clone the repo, and run `carthage update` from the Example directory first. Then in `PXLAppDelegate.m` set `PXLClientAPIKey` to your API key (available from the Pixlee dashboard). Then in `PXLExampleAlbumViewController.m` set the album id that you wish to display as `PXLAlbumIdentifier`.
-
-		    To run the project, open example.xcodeproj in Xcode.
-
-		    Run the project and you should see a grid of photos from that album.
+### Running the Sample Application
+1. After loading the project as described above, navigate to the app module.
+2. If you would like to display your own album, navigate to the `createAlbum` method in SampleActivity.java. Replace the album id and api key with your own values (available from the Pixlee dashboard).
+3. Run the module.
 
 ## License
 pixlee-android-sdk is available under the MIT license.
