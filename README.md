@@ -14,7 +14,7 @@ Before accessing the Pixlee API, you must initialize the `PXLClient`. To set the
 ```
 #!java
 
-PXLClient.initialize("abcdefghi123456789");
+PXLClient.initialize(<API KEY>);
 ```
 
 
@@ -38,7 +38,7 @@ PXLAlbum pxlAlbum = new PXLAlbum(<ALBUM ID>, context);
 ```
 
 
-You can then set sort and filter options as necessary and use `loadNextPageOfPhotos` to kick off the async request.
+You can then set sort and filter options if desired and use `loadNextPageOfPhotos` to kick off the async request.
 
 
 ```
@@ -61,20 +61,9 @@ Each successive call of `loadNextPageOfPhotos` will load the next page of photos
 
 Once an album has loaded photos from the server, it will instantiate `PXLPhoto` objects that can be consumed by your UI. `PXLPhoto` exposes all of the data for a photo available through the Pixlee API and offers several image url sizes depending on your needs.
 
+To help you get up and running quickly, we've also built an sample application featuring a grid view, list view, and detail view.  The adapters simply maintain an ArrayList of PXLPhoto, which is updated via calls to `loadNextPageOfPhotos`.  Since the data source contains the full PXLPhoto object, you can easily customize your own widgets to display the desired images and text.  The sample also implements a scroll listener which times calls to `loadNextPageOfPhotos` to provide the endless scroll effect.
 
-------------todo: update
-
-To help you quickly get started, we've also built an album view controller and photo detail view controller that can be used and customized in your app. `PXLAlbumViewController` uses a `UICollectionView` to display the photos in an album and includes a toggle to switch between a grid and list view. Use `albumViewControllerWithAlbumId:` to create an instance or set the `album` property if you need to create an instance through other means. Once the album has been set, you can call `loadNextPageOfPhotos` to start the loading process. The album view controller is set up to automatically load more pages of photos as the user scrolls, giving it an infinite scroll effect.
-
-If a user taps on a photo in the `PXLAlbumViewController`, we present a detail view with `PXLPhotoDetailViewController`. You may present a detail view yourself by instantiating an instance of `PXLPhotoDetailViewController` and setting its `photo` property. The photo detail view is configured to display:
-* the large photo
-* the username of the poster
-* a timestamp showing when the photo was posted
-* the platform source of the photo (e.g. Instagram)
-* the photo's caption (if one is available)
-* any products associated with that photo (displayed as a horizontal list of products)
-
-### Including Pixlee SDK
+### Including the Pixlee Android SDK
 ##### If you're building for iOS, tvOS, or watchOS
 1. Create a Cartfile that lists the frameworks you’d like to use in your project.
 1. Run `carthage update`. This will fetch dependencies into a Carthage/Checkouts folder, then build each one or download a pre-compiled framework.
@@ -106,6 +95,5 @@ If a user taps on a photo in the `PXLAlbumViewController`, we present a detail v
 
 		    Run the project and you should see a grid of photos from that album.
 
-		    ## License
-
-		    pixlee-ios-sdk is available under the MIT license.
+## License
+pixlee-android-sdk is available under the MIT license.
