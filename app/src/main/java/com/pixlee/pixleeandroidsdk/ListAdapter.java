@@ -13,10 +13,6 @@ import com.pixlee.pixleesdk.PXLPhoto;
 
 import java.util.ArrayList;
 
-/**
- * Created by andy on 4/4/17.
- */
-
 class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
     private ArrayList<PXLPhoto> galleryList;
     private Context context;

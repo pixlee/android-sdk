@@ -20,10 +20,8 @@ import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Instrumentation test, which will execute on an Android device.
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+/***
+ * PXLAlbum tests
  */
 @RunWith(AndroidJUnit4.class)
 public class AlbumTests {
@@ -31,6 +29,7 @@ public class AlbumTests {
     private final static String TestApiKey = "zk4wWCOaHAo4Hi8HsE";
     private PXLAlbum testAlbum;
     private Random random;
+    private int requestCount;
 
     @Before
     public void setup() {
@@ -38,6 +37,7 @@ public class AlbumTests {
         PXLClient.initialize(TestApiKey);
         testAlbum = new PXLAlbum(TestAlbumId, c);
         this.random = new Random();
+        requestCount = 0;
     }
 
     @Test
@@ -53,33 +53,45 @@ public class AlbumTests {
         for (PXLAlbumFilterOptions fo : filterOptions) {
             testAlbum.setFilterOptions(fo);
             Log.d("AlbumTests", "making call");
+            requestCount++;
             testAlbum.loadNextPageOfPhotos(new PXLAlbum.RequestHandlers() {
                 @Override
                 public void DataLoadedHandler(ArrayList<PXLPhoto> photos) {
-                    for (PXLPhoto p : photos) {
-                        Log.d("testFilters", p.toString());
-                    }
+                    Log.d("testFilters", String.format("Fetched %s photos", photos.size()));
+                    requestCount--;
                 }
 
                 @Override
                 public void DataLoadFailedHandler(String error) {
                     Log.d("testFilters", "test failure");
                     Assert.fail("unable to load photos");
+                    requestCount--;
                 }
             });
         }
+        while (requestCount >  0) {
+            Thread.sleep(100);
+        }
+    }
+
+    public void testOtherFilter() throws Exception {
+        PXLAlbumFilterOptions filterOptions = new PXLAlbumFilterOptions();
+        filterOptions.contentSource = new ArrayList<>();
+        filterOptions.contentSource.add(PXLContentSource.INSTAGRAM);
+        filterOptions.contentType.add(PXLContentType.IMAGE);
 
     }
 
     private ArrayList<PXLAlbumFilterOptions> getTestFilterOptions() throws IllegalAccessException {
         ArrayList<PXLAlbumFilterOptions> testCases = new ArrayList<PXLAlbumFilterOptions>();
-        int numTests = 1;
         Field[] fields = PXLAlbumFilterOptions.class.getDeclaredFields();
         for (int i = 0; i < fields.length; i++) {
             PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
             Object val = this.getTestVal(fields[i]);
             if (val != null) {
                 fields[i].set(fo, val);
+            } else {
+                Log.d("pxlAlbumTest", String.format("failed to get options for %s", fields[i].getName()));
             }
             testCases.add(fo);
         }
@@ -117,6 +129,8 @@ public class AlbumTests {
                 }
             }
             return null;
+        } else if (type.equals(String.class)) {
+            return "work";
         } else {
             return null;
         }

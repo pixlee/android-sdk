@@ -6,10 +6,6 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 
-/**
- * Created by andy on 4/7/17.
- */
-
 public class GridViewHolder extends RecyclerView.ViewHolder {
     public TextView title;
     public NetworkImageView netImg;

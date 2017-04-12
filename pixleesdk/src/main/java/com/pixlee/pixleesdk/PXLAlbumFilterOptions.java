@@ -62,7 +62,6 @@ public class PXLAlbumFilterOptions {
             if (submittedDateEnd != null) {
                 jsonFilters.put("submitted_date_end", Math.round(submittedDateEnd.getTime() / 1000));
             }
-            jsonFilters.putOpt("submitted_date_end", submittedDateEnd);
         } catch (JSONException e) {
             e.printStackTrace();
         }
