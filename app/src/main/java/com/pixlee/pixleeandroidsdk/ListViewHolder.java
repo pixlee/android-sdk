@@ -7,18 +7,16 @@ import android.widget.TextView;
 import com.android.volley.toolbox.NetworkImageView;
 
 /**
- * Created by andy on 4/7/17.
+ * Created by jason on 4/11/2017.
  */
 
-public class MyViewHolder extends RecyclerView.ViewHolder {
+public class ListViewHolder extends RecyclerView.ViewHolder {
     public TextView title;
     public NetworkImageView netImg;
-    //public ImageView sourceIcon;
 
-    public MyViewHolder(View view) {
+    public ListViewHolder(View view) {
         super(view);
         title = (TextView) view.findViewById(R.id.title);
         netImg = (NetworkImageView) view.findViewById(R.id.netimg);
-       // sourceIcon = (ImageView) view.findViewById(R.id.sourceIcon);
     }
 }

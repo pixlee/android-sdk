@@ -2,7 +2,6 @@ package com.pixlee.pixleeandroidsdk;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import com.android.volley.toolbox.ImageLoader;
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLPhoto;
-import com.pixlee.pixleesdk.PXLPhotoSize;
 
 import java.util.ArrayList;
 
@@ -19,41 +17,35 @@ import java.util.ArrayList;
  * Created by andy on 4/4/17.
  */
 
-class MyListAdapter extends RecyclerView.Adapter<MyViewHolder> {
+class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
     private ArrayList<PXLPhoto> galleryList;
     private Context context;
     private ImageLoader imageLoader;
-    private SampleActivity saref;
+    private SampleActivity saRef;
 
-    public MyListAdapter(Context context, ArrayList<PXLPhoto> galleryList, SampleActivity sa) {
+    public ListAdapter(Context context, ArrayList<PXLPhoto> galleryList, SampleActivity sa) {
         this.galleryList = galleryList;
         this.context = context;
         this.imageLoader = PXLClient.getInstance(context).getImageLoader();
-        this.saref = sa;
+        this.saRef = sa;
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public ListViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row, viewGroup, false);
-        return new MyViewHolder(view);
+        return new ListViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder viewHolder, int i) {
+    public void onBindViewHolder(ListViewHolder viewHolder, int i) {
         final PXLPhoto photo = galleryList.get(i);
         viewHolder.title.setText(photo.photoTitle);
-        if (photo.thumbnailUrl == null) {
-            Log.e("listadapter", "failed to get thumbnail url for photo " + photo.id);
-        } else {
-            Log.d("listadapter", String.format("setting url for photo %s: %s", i, photo.getUrlForSize(PXLPhotoSize.THUMBNAIL).toString()));
-        }
         viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
         viewHolder.netImg.setImageUrl(photo.thumbnailUrl.toString(), imageLoader);
-        //viewHolder.netImg.setImageResource((galleryList.get(i).thumbnailUrl.toString())));
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saref.switchVisibilities(photo);//photo);
+                saRef.switchVisibilities(photo);
             }
         });
     }

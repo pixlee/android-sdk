@@ -17,13 +17,13 @@ import java.util.ArrayList;
  * Created by andy on 4/4/17.
  */
 
-public class MyRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder> {
+public class GridAdapter extends RecyclerView.Adapter<GridViewHolder> {
     private ArrayList<PXLPhoto> galleryList;
     private Context context;
     private ImageLoader imageLoader;
     private SampleActivity saref;
 
-    public MyRecyclerAdapter(Context context, ArrayList<PXLPhoto> galleryList, SampleActivity sa) {
+    public GridAdapter(Context context, ArrayList<PXLPhoto> galleryList, SampleActivity sa) {
         this.galleryList = galleryList;
         this.context = context;
         this.imageLoader = PXLClient.getInstance(context).getImageLoader();
@@ -31,24 +31,23 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder> {
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public GridViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_layout, viewGroup, false);
-        return new MyViewHolder(view);
+        return new GridViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder viewHolder, int i) {
+    public void onBindViewHolder(GridViewHolder viewHolder, int i) {
         final PXLPhoto photo = galleryList.get(i);
-        viewHolder.title.setText(photo.photoTitle);//.getImage_title());
+        viewHolder.title.setText(photo.photoTitle);
 
         if (photo.thumbnailUrl !=  null) {
             viewHolder.netImg.setImageUrl(photo.thumbnailUrl.toString(), imageLoader);
             viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            //viewHolder.sourceIcon.setImageResource(photo.sourceIconImage());
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    saref.switchVisibilities(photo);//photo);
+                    saref.switchVisibilities(photo);
                 }
             });
         }
@@ -61,5 +60,4 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder> {
         }
         return 0;
     }
-
 }

@@ -2,7 +2,6 @@ package com.pixlee.pixleeandroidsdk;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,10 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class SampleActivity extends AppCompatActivity implements PXLAlbum.RequestHandlers {
-    private ArrayList<CreateList> imageList;
     private ArrayList<PXLPhoto> photoList;
-    private RecyclerViewEndlessScrollListener scrollListener;
-    private RecyclerViewEndlessScrollListener scrollListener2;
     private PXLAlbum album;
     private NetworkImageView detailImage;
     private TextView detailText;
@@ -42,38 +38,8 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     private ViewSwitcher viewSwitcher;
     private ImageView gridToggleButton;
     private int lastImg;
-    //private FloatingActionButton
-
-    private final String image_titles[] = {
-            "Img1",
-            "Img2",
-            "Img3",
-            "Img4",
-            "Img5",
-            "Img6"
-    };
-
-    private final Integer image_ids[] = {
-            R.drawable.img1,
-            R.drawable.img2,
-            R.drawable.img3,
-            R.drawable.img4,
-            R.drawable.img5,
-            R.drawable.img6
-    };
-
-    public void switchVisibilities(PXLPhoto photo) {
-        if (findViewById(R.id.detailview).getVisibility() == View.VISIBLE) {
-            findViewById(R.id.detailview).setVisibility(View.GONE);
-            viewSwitcher.setVisibility(View.VISIBLE);
-            gridToggleButton.setVisibility(View.VISIBLE);
-        } else {
-            findViewById(R.id.detailview).setVisibility(View.VISIBLE);
-            updateDetailView(photo);
-            viewSwitcher.setVisibility(View.GONE);
-            gridToggleButton.setVisibility(View.GONE);
-        }
-    }
+    private RecyclerView gridView;
+    private RecyclerView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,18 +47,20 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         setContentView(R.layout.activity_sample);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        photoList = new ArrayList<>();
+
         viewSwitcher = (ViewSwitcher)findViewById(R.id.viewSwitcher1);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                viewSwitcher.showNext();
-            }
-        });
-
         gridToggleButton = (ImageView) findViewById(R.id.gridToggle);
         lastImg = R.drawable.grid_2x;
+        this.detailImage = (NetworkImageView) findViewById(R.id.detailImage);
+        this.detailText = (TextView) findViewById(R.id.detailText);
+        this.detailSourceIcon = (ImageView) findViewById(R.id.detailSourceIcon);
+        this.detailUser = (TextView) findViewById(R.id.userName);
+        this.detailLastMod = (TextView) findViewById(R.id.lastModified);
+        gridView = (RecyclerView)findViewById(R.id.imagegallery);
+        listView = (RecyclerView)findViewById(R.id.imagelist);
+
         gridToggleButton.setImageResource(lastImg);
         gridToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,70 +75,25 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
             }
         });
 
-        this.createAlbum();
-
-        this.detailImage = (NetworkImageView) findViewById(R.id.detailImage);
-        this.detailText = (TextView) findViewById(R.id.detailText);
-        this.detailSourceIcon = (ImageView) findViewById(R.id.detailSourceIcon);
-        this.detailUser = (TextView) findViewById(R.id.userName);
-        this.detailLastMod = (TextView) findViewById(R.id.lastModified);
-
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.imagegallery);
-        RecyclerView recyclerView2 = (RecyclerView)findViewById(R.id.imagelist);
-        recyclerView.setHasFixedSize(true);
-        recyclerView2.setHasFixedSize(true);
-
-        final RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
-        RecyclerView.LayoutManager layoutManager2 = new GridLayoutManager(getApplicationContext(), 1);
-        recyclerView.setLayoutManager(layoutManager);
-        imageList = this.prepareData();
-        photoList = new ArrayList<>();
-        recyclerView2.setLayoutManager(layoutManager2);
-        ArrayList<CreateList> createLists = prepareData();
-        MyRecyclerAdapter adapter = new MyRecyclerAdapter(getApplicationContext(), photoList, this);
-        MyListAdapter adapter2 = new MyListAdapter(getApplicationContext(), photoList, this);
-        recyclerView.setAdapter(adapter);
-        recyclerView2.setAdapter(adapter2);
-
-        LinearLayout detailLayout = (LinearLayout) findViewById(R.id.detailview);
-        detailLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switchVisibilities(null);
-            }
-        });
-
-
-        scrollListener = new RecyclerViewEndlessScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
-                loadMorePhotos();
-            }
-        };
-        recyclerView.addOnScrollListener(scrollListener);
-        scrollListener2 = new RecyclerViewEndlessScrollListener(layoutManager2) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
-                loadMorePhotos();
-            }
-        };
-
-        recyclerView2.addOnScrollListener(scrollListener2);
+        createAlbum();
+        configureViews();
     }
 
-    private ArrayList<CreateList> prepareData(){
-        ArrayList<CreateList> theimage = new ArrayList<>();
-        for(int i = 0; i< image_titles.length; i++){
-            CreateList createList = new CreateList();
-            createList.setImage_title(image_titles[i]);
-            createList.setImage_ID(image_ids[i]);
-            theimage.add(createList);
+    /***
+     * Toggles between grid/list view and the detail view
+     * @param photo
+     */
+    public void switchVisibilities(PXLPhoto photo) {
+        if (findViewById(R.id.detailview).getVisibility() == View.VISIBLE) {
+            findViewById(R.id.detailview).setVisibility(View.GONE);
+            viewSwitcher.setVisibility(View.VISIBLE);
+            gridToggleButton.setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.detailview).setVisibility(View.VISIBLE);
+            updateDetailView(photo);
+            viewSwitcher.setVisibility(View.GONE);
+            gridToggleButton.setVisibility(View.GONE);
         }
-        return theimage;
     }
 
     @Override
@@ -195,6 +118,71 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         return super.onOptionsItemSelected(item);
     }
 
+    /***
+     * Callback for loadNextPageOfPhotos.  Update our list of photos and notify the adapters.
+     * @param photos - the complete list of photos (both the latest page and all previous)
+     */
+    @Override
+    public void DataLoadedHandler(ArrayList<PXLPhoto> photos) {
+        if (photos == null) {
+            return;
+        }
+        this.photoList.clear();
+        this.photoList.addAll(photos);
+        gridView.getAdapter().notifyDataSetChanged();
+        listView.getAdapter().notifyDataSetChanged();
+    }
+
+    /***
+     * Callback for a failed call to loadNextPageOfPhotos
+     * @param error
+     */
+    @Override
+    public void DataLoadFailedHandler(String error) {
+        Log.e("pixlee", String.format("Failed to fetch next page of photos: %s", error));
+    }
+
+    private void configureViews() {
+        gridView.setHasFixedSize(true);
+        listView.setHasFixedSize(true);
+
+        RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
+        RecyclerView.LayoutManager listLayoutManager = new GridLayoutManager(getApplicationContext(), 1);
+        gridView.setLayoutManager(gridLayoutManager);
+        listView.setLayoutManager(listLayoutManager);
+        GridAdapter gridAdapter = new GridAdapter(getApplicationContext(), photoList, this);
+        ListAdapter listAdapter = new ListAdapter(getApplicationContext(), photoList, this);
+        gridView.setAdapter(gridAdapter);
+        listView.setAdapter(listAdapter);
+
+        LinearLayout detailLayout = (LinearLayout) findViewById(R.id.detailview);
+        detailLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switchVisibilities(null);
+            }
+        });
+
+        RecyclerViewEndlessScrollListener gridScrollListener = new RecyclerViewEndlessScrollListener(gridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                loadMorePhotos();
+            }
+        };
+        RecyclerViewEndlessScrollListener listScrollListener = new RecyclerViewEndlessScrollListener(listLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                loadMorePhotos();
+            }
+        };
+
+        gridView.addOnScrollListener(gridScrollListener);
+        listView.addOnScrollListener(listScrollListener);
+    }
+
+    /***
+     * Initializes the PXLClient and creates the PXLAlbum
+     */
     private void createAlbum() {
         Context c = this.getApplicationContext();
         PXLClient.initialize("zk4wWCOaHAo4Hi8HsE");
@@ -208,42 +196,15 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         album.setPerPage(10);
         album.setFilterOptions(fo);
         album.setSortOptions(so);
-
         PXLAlbum.RequestHandlers rh = this;
         album.loadNextPageOfPhotos(rh);
-        album.loadNextPageOfPhotos(rh);
-
-        Log.w("sampleactivity", "created album");
     }
 
+    /***
+     * callback for endless scroller
+     */
     private void loadMorePhotos() {
         this.album.loadNextPageOfPhotos(this);
-    }
-
-    @Override
-    public void DataLoadedHandler(ArrayList<PXLPhoto> photos) {
-        if (photos == null) {
-            return;
-        }
-        this.photoList.clear();
-        this.photoList.addAll(photos);
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.imagegallery);
-        RecyclerView recyclerViewList = (RecyclerView)findViewById(R.id.imagelist);
-        /*
-        for (int i = 0; i < photos.size(); i++) {
-            PXLPhoto photo = photos.get(i);
-            Log.d("sampleactivity", photo.toString());
-            this.imageList.get(i).setImage_title(photo.photoTitle);
-            this.imageList.get(i).setImagePath(photo.thumbnailUrl);
-        }
-        */
-        recyclerView.getAdapter().notifyDataSetChanged();
-        recyclerViewList.getAdapter().notifyDataSetChanged();
-    }
-
-    @Override
-    public void DataLoadFailedHandler(String error) {
-
     }
 
     private void updateDetailView(PXLPhoto photo) {
@@ -251,7 +212,6 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         this.detailImage.setImageUrl(photo.getUrlForSize(PXLPhotoSize.MEDIUM).toString(), PXLClient.getInstance(this).getImageLoader());
         this.detailText.setText(photo.photoTitle);
         this.detailUser.setText(String.format("@%s", photo.userName));
-        int num = 0;
         String unit = "hour";
         Date now = new Date();
         //ms
