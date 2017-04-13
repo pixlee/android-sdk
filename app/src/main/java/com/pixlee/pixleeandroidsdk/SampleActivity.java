@@ -247,7 +247,9 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     private void populateDetailActions(PXLPhoto photo) {
         ImageLoader iloader = PXLClient.getInstance(this).getImageLoader();
         for (int i = 0; i < photo.products.size(); i++) {
-           //TODO: instantiate the product widgets
+            PXLProductView pxlProductView = new PXLProductView(this, null);
+            pxlProductView.populate(photo.products.get(i), iloader);
+            actionLinksLayout.addView(pxlProductView);
         }
     }
 }

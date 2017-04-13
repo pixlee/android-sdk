@@ -135,7 +135,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
+                    <!--
                     <com.android.volley.toolbox.NetworkImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
@@ -144,6 +144,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Action link" />
+                    -->
+                    <com.pixlee.pixleeandroidsdk.PXLProductView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </HorizontalScrollView>
         </LinearLayout>
