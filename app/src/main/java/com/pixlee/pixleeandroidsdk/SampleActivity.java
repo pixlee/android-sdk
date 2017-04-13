@@ -2,6 +2,7 @@ package com.pixlee.pixleeandroidsdk;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.transition.Visibility;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
@@ -40,6 +42,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     private int lastImg;
     private RecyclerView gridView;
     private RecyclerView listView;
+    private LinearLayout actionLinksLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         this.detailLastMod = (TextView) findViewById(R.id.lastModified);
         gridView = (RecyclerView)findViewById(R.id.imagegallery);
         listView = (RecyclerView)findViewById(R.id.imagelist);
+        actionLinksLayout = (LinearLayout) findViewById(R.id.actionLinksLayout);
 
         gridToggleButton.setImageResource(lastImg);
         gridToggleButton.setOnClickListener(new View.OnClickListener() {
@@ -193,7 +197,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         PXLAlbumSortOptions so = new PXLAlbumSortOptions();
         so.sortType = PXLAlbumSortType.PHOTORANK;
         so.descending = true;
-        album.setPerPage(10);
+        album.setPerPage(20);
         album.setFilterOptions(fo);
         album.setSortOptions(so);
         PXLAlbum.RequestHandlers rh = this;
@@ -231,5 +235,19 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
             }
         }
         this.detailLastMod.setText(String.format("%s %s ago", elapsed, unit));
+
+        if (photo.products.size() > 0) {
+            actionLinksLayout.setVisibility(View.VISIBLE);
+        } else {
+            actionLinksLayout.setVisibility(View.GONE);
+        }
+        this.populateDetailActions(photo);
+    }
+
+    private void populateDetailActions(PXLPhoto photo) {
+        ImageLoader iloader = PXLClient.getInstance(this).getImageLoader();
+        for (int i = 0; i < photo.products.size(); i++) {
+           //TODO: instantiate the product widgets
+        }
     }
 }

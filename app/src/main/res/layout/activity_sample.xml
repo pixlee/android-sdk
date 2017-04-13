@@ -33,6 +33,7 @@
             android:layout_height="60dp"
             android:layout_gravity="right"
             />
+
         <ViewSwitcher
             android:id="@+id/viewSwitcher1"
             android:layout_width="wrap_content"
@@ -120,10 +121,31 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_weight="0"
                 android:layout_margin="5dp"
+                android:layout_weight="0"
                 android:gravity="top"
-                android:text="yo mama\nhi" />
+                android:text="Photo description" />
+
+            <HorizontalScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/actionLinksLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.android.volley.toolbox.NetworkImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Action link" />
+                </LinearLayout>
+            </HorizontalScrollView>
         </LinearLayout>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ public class PXLPhoto {
     public Boolean awaitingPermission;
     public Boolean instUserHasLiked;
     public URL platformLink;
+    public ArrayList<PXLProduct> products;
 
     /***
      * Generates an ArrayList of PXLPhoto from the given JSON array.
@@ -86,23 +88,23 @@ public class PXLPhoto {
             this.email_address = obj.optString("email_address");
             this.instagramFollowers = obj.optInt("instagram_followers");
             this.twitterFollowers = obj.optInt("twitter_followers");
-            this.avatarUrl = this.getURL("avatar_url", obj);
+            this.avatarUrl = JsonUtils.getURL("avatar_url", obj);
             this.userName = obj.getString("user_name");
             this.connectedUserId = obj.optInt("connected_user_id");
             this.source = obj.getString("source");
             this.contentType = obj.optString("contentType");
             this.dataFileName = obj.optString("data_file_name");
-            this.mediumUrl = this.getURL("medium_url", obj);
-            this.bigUrl = this.getURL("big_url", obj);
-            this.thumbnailUrl = this.getURL("thumbnail_url", obj);
-            this.sourceUrl = this.getURL("source_url", obj);
+            this.mediumUrl = JsonUtils.getURL("medium_url", obj);
+            this.bigUrl = JsonUtils.getURL("big_url", obj);
+            this.thumbnailUrl = JsonUtils.getURL("thumbnail_url", obj);
+            this.sourceUrl = JsonUtils.getURL("source_url", obj);
             this.mediaId = obj.optString("media_id");
             this.existIn = obj.optInt("exist_in");
             this.collectTerm = obj.optString("collect_term");
             this.albumPhotoId = obj.optString("album_photo_id");
             this.likeCount = obj.optInt("like_count");
             this.shareCount = obj.optInt("share_count");
-            this.actionLink = this.getURL("action_link", obj);
+            this.actionLink = JsonUtils.getURL("action_link", obj);
             this.actionLinkText = obj.optString("action_link_text");
             this.actionLinkTitle = obj.optString("action_link_title");
             this.actionLinkPhoto = obj.optString("action_link_photo");
@@ -114,16 +116,19 @@ public class PXLPhoto {
             this.isFlagged = obj.optBoolean("is_flagged");
             this.album = album;
             this.unreadCount = obj.optInt("unread_count");
-            this.albumActionLink = this.getURL("album_action_link", obj);
+            this.albumActionLink = JsonUtils.getURL("album_action_link", obj);
             this.title = obj.getString("title");
             this.messaged = obj.optBoolean("messaged");
             this.hasPermission = obj.optBoolean("has_permission");
             this.awaitingPermission = obj.optBoolean("awaiting_permission");
             this.instUserHasLiked = obj.optBoolean("inst_user_has_liked");
-            this.platformLink = this.getURL("platform_link", obj);
+            this.platformLink = JsonUtils.getURL("platform_link", obj);
+            this.products = PXLProduct.fromJsonArray(obj.getJSONArray("products"), this);
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
     }
@@ -172,13 +177,5 @@ public class PXLPhoto {
             default:
                 return null;
         }
-    }
-
-    private URL getURL(String fieldName, JSONObject json) throws MalformedURLException {
-        String url = json.optString(fieldName);
-        if (URLUtil.isValidUrl(url)) {
-            return new URL(url);
-        }
-        return null;
     }
 }
