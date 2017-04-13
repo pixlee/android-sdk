@@ -2,7 +2,6 @@ package com.pixlee.pixleeandroidsdk;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.transition.Visibility;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -246,6 +245,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
 
     private void populateDetailActions(PXLPhoto photo) {
         ImageLoader iloader = PXLClient.getInstance(this).getImageLoader();
+        actionLinksLayout.removeAllViews();
         for (int i = 0; i < photo.products.size(); i++) {
             PXLProductView pxlProductView = new PXLProductView(this, null);
             pxlProductView.populate(photo.products.get(i), iloader);

@@ -43,11 +43,11 @@ public class PXLProduct {
         this.id = obj.optString("id");
         this.photo = photo;
         this.link = JsonUtils.getURL("link", obj);
-        this.linkText = obj.optString("link_text");
+        this.linkText = JsonUtils.optDecodeString("link_text", obj);
         this.image = JsonUtils.getURL("image", obj);
         this.imageThumb = JsonUtils.getURL("image_thumb", obj);
-        this.title = obj.optString("title");
+        this.title = JsonUtils.optDecodeString("title", obj);
         this.sku = obj.optString("sku");
-        this.description = obj.optString("description");
+        this.description = JsonUtils.optDecodeString("link_text", obj);
     }
 }
