@@ -166,11 +166,11 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
      */
     private void createAlbum() {
         Context c = this.getApplicationContext();
-        PXLClient.initialize("zk4wWCOaHAo4Hi8HsE");
-        album = new PXLAlbum("1568132", c);
+        PXLClient.initialize("196i8ZzIAhKU8dO2kDe");
+        album = new PXLAlbum("205365", c);
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
-        fo.minInstagramFollowers = 3147141;
+        fo.minInstagramFollowers = 1;
         PXLAlbumSortOptions so = new PXLAlbumSortOptions();
         so.sortType = PXLAlbumSortType.PHOTORANK;
         so.descending = true;
@@ -218,6 +218,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         } else {
             actionLinksLayout.setVisibility(View.GONE);
         }
+        photo.openedLightbox(getApplicationContext());
         this.populateDetailActions(photo);
     }
 

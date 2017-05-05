@@ -1,5 +1,7 @@
 package com.pixlee.pixleesdk;
 
+import android.content.Context;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,6 +59,7 @@ public class PXLPhoto {
     public Boolean instUserHasLiked;
     public URL platformLink;
     public ArrayList<PXLProduct> products;
+
 
     /***
      * Generates an ArrayList of PXLPhoto from the given JSON array.
@@ -175,5 +178,20 @@ public class PXLPhoto {
             default:
                 return null;
         }
+    }
+
+    public boolean openedLightbox(Context context) {
+        PXLClient pxlClient = PXLClient.getInstance(context);
+        JSONObject body = new JSONObject();
+        try{
+            body.put("album_id", this.album);
+            body.put("album_photo_id", this.albumPhotoId);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        pxlClient.makeAnalyticsCall("events/openedLightbox", body);
+        return true;
     }
 }

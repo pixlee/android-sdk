@@ -30,7 +30,10 @@ public class PXLProductView extends LinearLayout {
     }
 
     public void populate(PXLProduct product, ImageLoader imageLoader) {
-        productImage.setImageUrl(product.imageThumb.toString(), imageLoader);
+        if(product.imageThumb != null){
+            productImage.setImageUrl(product.imageThumb.toString(), imageLoader);
+        }
+
         link = Uri.parse(product.link.toString());
         String linkText = String.format("%s", product.linkText);
         textView.setText(linkText);

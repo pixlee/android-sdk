@@ -22,7 +22,7 @@ public class PXLAlbum implements RequestCallbacks {
     private static final String TAG = "PXLAlbum";
     public static final int DefaultPerPage = 20;
 
-    private String id = null;
+    public String id = null;
     private int page;
     private int perPage;
     private boolean hasMore;
