@@ -58,6 +58,12 @@ public class PXLAlbum implements RequestCallbacks {
             if (handlers != null) {
                 handlers.DataLoadedHandler(this.photos);
             }
+
+            // fire opened widget analytics event
+            if(this.page == 1){
+                openedWidget();
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -174,5 +180,32 @@ public class PXLAlbum implements RequestCallbacks {
         paramMap.put(PXLClient.KeyPerPage, perPage);
         paramMap.put(PXLClient.KeyPage, desiredPage);
         return paramMap;
+    }
+
+    public boolean openedWidget() {
+        PXLClient pxlClient = PXLClient.getInstance(context);
+        JSONObject body = new JSONObject();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < this.photos.size(); i++) {
+            try {
+                stringBuilder.append(this.photos.get(i).id);
+                stringBuilder.append(",");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        try{
+            body.put("album_id", this.id);
+            body.put("per_page", this.perPage);
+            body.put("page", this.page);
+            body.put("photos", stringBuilder.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        pxlClient.makeAnalyticsCall("events/openedWidget", body);
+        return true;
     }
 }

@@ -181,6 +181,7 @@ public class PXLPhoto {
     }
 
     public boolean openedLightbox(Context context) {
+
         PXLClient pxlClient = PXLClient.getInstance(context);
         JSONObject body = new JSONObject();
         try{

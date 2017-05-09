@@ -155,7 +155,13 @@ public class PXLClient {
         return true;
     }
 
-
+    /***
+     * Makes a call to the Pixlee Analytics API (limitless beyond). Appends api key, unique id and platform to the request body.
+     * on success/error.
+     * @param requestPath - path to hit (will be appended to the base Pixlee Analytics api endpoint)
+     * @param body - key/values to be stored in analytics events
+     * @return false if no api key set yet, true otherwise
+     */
     public boolean makeAnalyticsCall(final String requestPath, final JSONObject body) {
         if (PXLClient.apiKey == null) {
             return false;
@@ -166,7 +172,7 @@ public class PXLClient {
         try{
             body.put("API_KEY", PXLClient.apiKey.toString());
             body.put("uid", android_id.toString());
-            body.put("widget", "android");
+            body.put("platform", "android");
 
         } catch (JSONException e) {
             e.printStackTrace();
