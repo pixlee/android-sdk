@@ -8,15 +8,24 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.AuthFailureError;
 import com.android.volley.toolbox.Volley;
+import com.android.volley.toolbox.HttpHeaderParser;
 
 import org.json.JSONObject;
+import org.json.JSONException;
 
 import java.util.HashMap;
 import java.util.Map;
+import 	java.io.UnsupportedEncodingException;
+
+import android.provider.Settings.Secure;
 
 /***
  * Manages the configuration of volley and calls to the api. Intended to be used as a singleton,
@@ -35,11 +44,14 @@ public class PXLClient {
     private ImageLoader mImageLoader;
     private Context mCtx;
     private static final String url = "https://distillery.pixlee.com/api/v2";
+    private static final String analyticsUrl = "http://analytics-inbound-staging.herokuapp.com";
     private static String apiKey = null;
+    private static String android_id = null;
 
     private PXLClient(Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
+        android_id = Secure.getString(mCtx.getContentResolver(), Secure.ANDROID_ID);
         mImageLoader = new ImageLoader(mRequestQueue,
                 new ImageLoader.ImageCache() {
                     private final LruCache<String, Bitmap>
@@ -140,6 +152,76 @@ public class PXLClient {
             }
         });
         this.addToRequestQueue(jor);
+        return true;
+    }
+
+    /***
+     * Makes a call to the Pixlee Analytics API (limitless beyond). Appends api key, unique id and platform to the request body.
+     * on success/error.
+     * @param requestPath - path to hit (will be appended to the base Pixlee Analytics api endpoint)
+     * @param body - key/values to be stored in analytics events
+     * @return false if no api key set yet, true otherwise
+     */
+    public boolean makeAnalyticsCall(final String requestPath, final JSONObject body) {
+        if (PXLClient.apiKey == null) {
+            return false;
+        }
+        String finalUrl = String.format("%s/%s", analyticsUrl, requestPath);
+        Log.d(TAG, finalUrl);
+
+        try{
+            body.put("API_KEY", PXLClient.apiKey.toString());
+            body.put("uid", android_id.toString());
+            body.put("platform", "android");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final String requestBody = body.toString();
+
+        StringRequest sr = new StringRequest(Request.Method.POST, finalUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("ANALYTICS CALL ", response);
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.w(TAG, "got an error response");
+                Log.w(TAG, error.getMessage());
+
+            }
+        }){
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
+                    return null;
+                }
+            }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                String responseString = "";
+                if (response != null) {
+                    responseString = String.valueOf(response.statusCode);
+                    // can get more details such as response.headers
+                }
+                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+            }
+        };
+
+
+        this.addToRequestQueue(sr);
         return true;
     }
 }
