@@ -80,6 +80,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
 
         createAlbum();
         configureViews();
+        samplePhotoLoad();
     }
 
     /***
@@ -230,5 +231,40 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
             pxlProductView.populate(photo.products.get(i), iloader);
             actionLinksLayout.addView(pxlProductView);
         }
+    }
+
+    private void samplePhotoLoad() {
+        String identifier = "enteractualphotoid";
+        PXLPhoto.getPhotoWithId(getApplicationContext(), identifier, new PXLPhoto.PhotoLoadHandlers() {
+            @Override
+            public void photoLoaded(PXLPhoto photo) {
+                Log.d("testphoto", String.format("%s", photo.cdnSmallUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnMediumUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnLargeUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnOriginalUrl));
+            }
+
+            @Override
+            public void photoLoadFailed(String error) {
+                Log.e("sampleactivity", "failed to load photo: " + error);
+            }
+        });
+
+        //load from pxlphoto object
+        PXLPhoto photo = new PXLPhoto(getApplicationContext(), identifier);
+        photo.loadFromId(new PXLPhoto.PhotoLoadHandlers() {
+            @Override
+            public void photoLoaded(PXLPhoto photo) {
+                Log.d("testphoto", String.format("%s", photo.cdnSmallUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnMediumUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnLargeUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnOriginalUrl));
+            }
+
+            @Override
+            public void photoLoadFailed(String error) {
+                Log.e("sampleactivity", "failed to load photo: " + error);
+            }
+        });
     }
 }

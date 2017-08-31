@@ -39,6 +39,8 @@ public class PXLClient {
     public static final String KeyPage = "page";
     public static final String KeyPerPage = "per_page";
 
+    public static final String ACTION_MEDIA = "media";
+
     private static PXLClient mInstance;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
