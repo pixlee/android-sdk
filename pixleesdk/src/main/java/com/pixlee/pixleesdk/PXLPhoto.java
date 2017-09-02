@@ -1,6 +1,10 @@
 package com.pixlee.pixleesdk;
 
 import android.content.Context;
+import android.provider.ContactsContract;
+import android.util.Log;
+
+import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,6 +20,8 @@ import java.util.Date;
  * PXLPhoto represents an individual photo. Exposes all the data retrieved from an API call.
  */
 public class PXLPhoto {
+    public static final String TAG = "PXLPhoto";
+
     public String id;
     public String photoTitle;
     public double latitude;
@@ -59,7 +65,17 @@ public class PXLPhoto {
     public Boolean instUserHasLiked;
     public URL platformLink;
     public ArrayList<PXLProduct> products;
+    public URL cdnSmallUrl;
+    public URL cdnMediumUrl;
+    public URL cdnLargeUrl;
+    public URL cdnOriginalUrl;
 
+    private Context ctx;
+
+    public interface PhotoLoadHandlers {
+        void photoLoaded(PXLPhoto photo);
+        void photoLoadFailed(String error);
+    }
 
     /***
      * Generates an ArrayList of PXLPhoto from the given JSON array.
@@ -77,6 +93,80 @@ public class PXLPhoto {
             }
         }
         return photos;
+    }
+
+    public static PXLPhoto fromJsonObj(JSONObject obj) {
+        return new PXLPhoto(obj, null);
+    }
+
+    public static void getPhotoWithId(Context ctx, String identifier, final PhotoLoadHandlers callback) {
+        if (identifier == null) {
+            Log.e(TAG, "no photo id given");
+            return;
+        }
+
+        if (ctx == null) {
+            Log.e(TAG, "no context given for photo");
+        }
+
+        PXLClient pxlClient = PXLClient.getInstance(ctx);
+        String endpoint = String.format("%s/%s", PXLClient.ACTION_MEDIA, identifier);
+        pxlClient.makeCall(endpoint, null, new RequestCallbacks() {
+            @Override
+            public void JsonReceived(JSONObject response) {
+                JSONObject data = response.optJSONObject("data");
+                if (data == null) {
+                    Log.e(TAG, "no data from successful api call");
+                } else {
+                    if (callback != null) {
+                        callback.photoLoaded(PXLPhoto.fromJsonObj(data));
+                    }
+                }
+            }
+
+            @Override
+            public void ErrorResponse(VolleyError error) {
+                if (callback != null) {
+                    callback.photoLoadFailed(error.toString());
+                }
+            }
+        });
+    }
+
+    public void loadFromId(final PhotoLoadHandlers callback) {
+        if (this.id == null) {
+            Log.e(TAG, "cannot load photo without id");
+        }
+        if (ctx == null) {
+            Log.e(TAG, "need context for pxlclient");
+        }
+        PXLClient pxlClient = PXLClient.getInstance(ctx);
+        String endpoint = String.format("%s/%s", PXLClient.ACTION_MEDIA, this.id);
+        pxlClient.makeCall(endpoint, null, new RequestCallbacks() {
+            @Override
+            public void JsonReceived(JSONObject response) {
+                JSONObject data = response.optJSONObject("data");
+                if (data == null) {
+                    Log.e(TAG, "no data from successful api call");
+                } else {
+                    if (callback != null) {
+                        callback.photoLoaded(PXLPhoto.fromJsonObj(data));
+                    }
+                }
+            }
+
+            @Override
+            public void ErrorResponse(VolleyError error) {
+                if (callback != null) {
+                    callback.photoLoadFailed(error.toString());
+                }
+            }
+        });
+    }
+
+    public PXLPhoto(Context ctx, String identifier) {
+        this.id = identifier;
+        this.ctx = ctx;
     }
 
     public PXLPhoto(JSONObject obj, PXLAlbum album) {
@@ -125,6 +215,13 @@ public class PXLPhoto {
             this.instUserHasLiked = obj.optBoolean("inst_user_has_liked");
             this.platformLink = JsonUtils.getURL("platform_link", obj);
             this.products = PXLProduct.fromJsonArray(obj.getJSONArray("products"), this);
+            JSONObject cdnPhotos = obj.optJSONObject("pixlee_cdn_photos");
+            if (cdnPhotos != null) {
+                this.cdnSmallUrl = JsonUtils.getURL("small_url", cdnPhotos);
+                this.cdnMediumUrl = JsonUtils.getURL("medium_url", cdnPhotos);
+                this.cdnLargeUrl = JsonUtils.getURL("large_url", cdnPhotos);
+                this.cdnOriginalUrl = JsonUtils.getURL("original_url", cdnPhotos);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (MalformedURLException e) {
@@ -195,4 +292,6 @@ public class PXLPhoto {
         pxlClient.makeAnalyticsCall("events/openedLightbox", body);
         return true;
     }
+
+
 }

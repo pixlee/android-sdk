@@ -39,6 +39,8 @@ public class PXLClient {
     public static final String KeyPage = "page";
     public static final String KeyPerPage = "per_page";
 
+    public static final String ACTION_MEDIA = "media";
+
     private static PXLClient mInstance;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
@@ -190,7 +192,7 @@ public class PXLClient {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.w(TAG, "got an error response");
-                Log.w(TAG, error.getMessage());
+                Log.w(TAG, String.format("%d: %s", error.networkResponse.statusCode, error.getMessage()));
 
             }
         }){

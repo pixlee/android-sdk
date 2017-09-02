@@ -7,6 +7,7 @@ import android.util.Log;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -25,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public class AlbumTests {
     private final static String TestAlbumId = "1568132";
-    private final static String TestApiKey = "zk4wWCOaHAo4Hi8HsE";
+    private final static String TestApiKey = "dhXS3FBYcS65ZAVudJy4";// "zk4wWCOaHAo4Hi8HsE";
     private PXLAlbum testAlbum;
     private Random random;
     private int requestCount;
@@ -68,6 +69,49 @@ public class AlbumTests {
                 }
             });
         }
+        while (requestCount >  0) {
+            Thread.sleep(100);
+        }
+    }
+
+    @Test
+    public void testPhotoLoad() throws Exception {
+        requestCount++;
+        //update api key and photo id to match
+        String id = "187177895";
+        PXLPhoto.getPhotoWithId(InstrumentationRegistry.getTargetContext(), id, new PXLPhoto.PhotoLoadHandlers() {
+            @Override
+            public void photoLoaded(PXLPhoto photo) {
+                Log.d("testphoto", String.format("%s", photo.cdnSmallUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnMediumUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnLargeUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnOriginalUrl));
+                requestCount--;
+            }
+
+            @Override
+            public void photoLoadFailed(String error) {
+                requestCount--;
+            }
+        });
+
+        PXLPhoto photo = new PXLPhoto(InstrumentationRegistry.getTargetContext(), id);
+        requestCount++;
+        photo.loadFromId(new PXLPhoto.PhotoLoadHandlers() {
+            @Override
+            public void photoLoaded(PXLPhoto photo) {
+                Log.d("testphoto", String.format("%s", photo.cdnSmallUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnMediumUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnLargeUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnOriginalUrl));
+                requestCount--;
+            }
+
+            @Override
+            public void photoLoadFailed(String error) {
+                requestCount--;
+            }
+        });
         while (requestCount >  0) {
             Thread.sleep(100);
         }
