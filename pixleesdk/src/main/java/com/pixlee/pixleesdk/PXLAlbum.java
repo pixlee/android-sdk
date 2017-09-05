@@ -189,7 +189,9 @@ public class PXLAlbum implements RequestCallbacks {
         for (int i = 0; i < this.photos.size(); i++) {
             try {
                 stringBuilder.append(this.photos.get(i).id);
-                stringBuilder.append(",");
+                if(i != this.photos.size() - 1){
+                    stringBuilder.append(",");
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
