@@ -46,7 +46,7 @@ public class PXLClient {
     private ImageLoader mImageLoader;
     private Context mCtx;
     private static final String url = "https://distillery.pixlee.com/api/v2";
-    private static final String analyticsUrl = "http://analytics-inbound-staging.herokuapp.com";
+    private static final String analyticsUrl = "https://inbound-analytics.pixlee.com";
     private static String apiKey = null;
     private static String android_id = null;
 

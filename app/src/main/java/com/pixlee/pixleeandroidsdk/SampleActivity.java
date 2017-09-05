@@ -234,7 +234,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     }
 
     private void samplePhotoLoad() {
-        String identifier = "enteractualphotoid";
+        String identifier = "170008554";
         PXLPhoto.getPhotoWithId(getApplicationContext(), identifier, new PXLPhoto.PhotoLoadHandlers() {
             @Override
             public void photoLoaded(PXLPhoto photo) {
