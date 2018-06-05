@@ -192,8 +192,7 @@ public class PXLClient {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.w(TAG, "got an error response");
-                Log.w(TAG, String.format("%d: %s", error.networkResponse.statusCode, error.getMessage()));
-
+                Log.w(TAG, error.toString());
             }
         }){
             @Override
