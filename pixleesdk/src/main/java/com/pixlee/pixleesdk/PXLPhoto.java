@@ -183,7 +183,7 @@ public class PXLPhoto {
             this.userName = obj.getString("user_name");
             this.connectedUserId = obj.optInt("connected_user_id");
             this.source = obj.getString("source");
-            this.contentType = obj.optString("contentType");
+            this.contentType = obj.optString("content_type");
             this.dataFileName = obj.optString("data_file_name");
             this.mediumUrl = JsonUtils.getURL("medium_url", obj);
             this.bigUrl = JsonUtils.getURL("big_url", obj);
