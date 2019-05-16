@@ -37,6 +37,15 @@ To load the photos in an album, you'll want to use the `PXLAlbum` class. Instant
 PXLAlbum pxlAlbum = new PXLAlbum(<ALBUM ID>, context);
 ```
 
+To load the photos in an Product album, you'll want to use the `PXLPdpAlbum` class. Instantiate one with your desired sku and context:
+
+
+```
+#!java
+
+PXLPdpAlbum pxlPdpAlbum = new PXLPdpAlbum(<SKU>, context);
+```
+
 
 You can then set sort and filter options if desired and use `loadNextPageOfPhotos` to kick off the async request.
 
@@ -61,11 +70,11 @@ Each successive call of `loadNextPageOfPhotos` will load the next page of photos
 
 Once an album has loaded photos from the server, it will instantiate `PXLPhoto` objects that can be consumed by your UI. `PXLPhoto` exposes all of the data for a photo available through the Pixlee API and offers several image url sizes depending on your needs.
 
-###Analytics
-####Opened Widget
+### Analytics
+#### Opened Widget
 On the first load of an album, an "Opened Widget" analytics event will be fired automatically
 
-####Opened Lightbox
+#### Opened Lightbox
 To fire an opened ligtbox event, simply call the `openedLightbox` method of the PXLPhoto that is being opened, and an "Opened Lightbox" event will be fired containing all of the necessary analytics information.
 
 ```

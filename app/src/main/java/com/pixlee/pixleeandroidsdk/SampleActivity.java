@@ -18,6 +18,7 @@ import android.widget.ViewSwitcher;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.pixlee.pixleesdk.PXLAlbum;
+import com.pixlee.pixleesdk.PXLPdpAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortType;
@@ -168,12 +169,12 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     private void createAlbum() {
         Context c = this.getApplicationContext();
         PXLClient.initialize("196i8ZzIAhKU8dO2kDe");
-        album = new PXLAlbum("2696111", c);
+        album = new PXLPdpAlbum("rr", c);
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
-        fo.minInstagramFollowers = 1;
+        fo.minInstagramFollowers = 0;
         PXLAlbumSortOptions so = new PXLAlbumSortOptions();
-        so.sortType = PXLAlbumSortType.PHOTORANK;
+        so.sortType = PXLAlbumSortType.RECENCY;
         so.descending = true;
         album.setPerPage(20);
         album.setFilterOptions(fo);
@@ -234,7 +235,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     }
 
     private void samplePhotoLoad() {
-        String identifier = "170008554";
+        String identifier = "282742015";
         PXLPhoto.getPhotoWithId(getApplicationContext(), identifier, new PXLPhoto.PhotoLoadHandlers() {
             @Override
             public void photoLoaded(PXLPhoto photo) {

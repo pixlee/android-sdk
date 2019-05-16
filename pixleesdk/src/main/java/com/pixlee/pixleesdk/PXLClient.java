@@ -38,6 +38,7 @@ public class PXLClient {
     public static final String KeyApiKey = "api_key";
     public static final String KeyPage = "page";
     public static final String KeyPerPage = "per_page";
+    public static final String KeySku = "sku";
 
     public static final String ACTION_MEDIA = "media";
 
