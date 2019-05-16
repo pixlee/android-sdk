@@ -23,16 +23,17 @@ public class PXLAlbum implements RequestCallbacks {
     public static final int DefaultPerPage = 20;
 
     public String id = null;
-    private int page;
-    private int perPage;
-    private boolean hasMore;
-    private int lastPageLoaded;
-    private ArrayList<PXLPhoto> photos;
-    private PXLAlbumFilterOptions filterOptions;
-    private PXLAlbumSortOptions sortOptions;
-    private HashMap<Integer, Boolean> pagesLoading;
-    private RequestHandlers handlers;
-    private Context context;
+    protected int page;
+    protected int perPage;
+    protected boolean hasMore;
+    protected int lastPageLoaded;
+    protected ArrayList<PXLPhoto> photos;
+    protected PXLAlbumFilterOptions filterOptions;
+    protected PXLAlbumSortOptions sortOptions;
+    protected HashMap<Integer, Boolean> pagesLoading;
+    protected RequestHandlers handlers;
+    protected Context context;
+
 
     /***
      * Callback for a successful call to the api.  Parses the response and converts the json data
@@ -162,14 +163,14 @@ public class PXLAlbum implements RequestCallbacks {
         this.resetState();
     }
 
-    private void resetState() {
+    protected void resetState() {
         this.photos.clear();
         this.lastPageLoaded = 0;
         this.hasMore = true;
         this.pagesLoading.clear();
     }
 
-    private HashMap<String, Object> getRequestParams(int desiredPage) {
+    protected HashMap<String, Object> getRequestParams(int desiredPage) {
         HashMap<String, Object> paramMap = new HashMap<>();
         if (filterOptions != null) {
             paramMap.put(PXLClient.KeyFilters, filterOptions.toParamString());
