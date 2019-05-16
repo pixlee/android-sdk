@@ -163,7 +163,7 @@ public class PXLAlbum implements RequestCallbacks {
         this.resetState();
     }
 
-    private void resetState() {
+    protected void resetState() {
         this.photos.clear();
         this.lastPageLoaded = 0;
         this.hasMore = true;
