@@ -25,6 +25,9 @@ public class PXLAlbumFilterOptions {
     public Boolean hasActionLink;
     public Date submittedDateStart;
     public Date submittedDateEnd;
+    public Boolean hasPermission;
+    public Boolean hasProduct;
+    public Boolean inStockOnly;
 
     /***
      * Generates the JSON string representing the filter options.
@@ -62,6 +65,9 @@ public class PXLAlbumFilterOptions {
             if (submittedDateEnd != null) {
                 jsonFilters.put("submitted_date_end", Math.round(submittedDateEnd.getTime() / 1000));
             }
+            jsonFilters.putOpt("has_permission", hasPermission);
+            jsonFilters.putOpt("has_product", hasProduct);
+            jsonFilters.putOpt("in_stock_only", inStockOnly);
         } catch (JSONException e) {
             e.printStackTrace();
         }
