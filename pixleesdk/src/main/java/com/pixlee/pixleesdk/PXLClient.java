@@ -101,6 +101,7 @@ public class PXLClient {
             // getApplicationContext() is key, it keeps you from leaking the
             // Activity or BroadcastReceiver if someone passes one in.
             mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
+
         }
         return mRequestQueue;
     }
@@ -154,6 +155,8 @@ public class PXLClient {
                 callbacks.ErrorResponse(error);
             }
         });
+
+        jor.setShouldCache(false);
         this.addToRequestQueue(jor);
         return true;
     }
@@ -222,7 +225,7 @@ public class PXLClient {
             }
         };
 
-
+        sr.setShouldCache(false);
         this.addToRequestQueue(sr);
         return true;
     }
