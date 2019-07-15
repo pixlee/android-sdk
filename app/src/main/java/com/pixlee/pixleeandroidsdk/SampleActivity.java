@@ -26,8 +26,11 @@ import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.PXLPhotoSize;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SampleActivity extends AppCompatActivity implements PXLAlbum.RequestHandlers {
     private ArrayList<PXLPhoto> photoList;
@@ -169,10 +172,19 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     private void createAlbum() {
         Context c = this.getApplicationContext();
         PXLClient.initialize("196i8ZzIAhKU8dO2kDe");
-        album = new PXLPdpAlbum("rr", c);
+        album = new PXLAlbum("204643", c);
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 0;
+//        ArrayList incategories = new ArrayList<Integer>();
+//        incategories.add(1234);
+//        incategories.add(5678);
+//        fo.inCategories = incategories;
+        HashMap userHandleFilter = new HashMap<String, Object> ();
+        userHandleFilter.put("contains", new String[] {"test1", "test2"});
+        fo.filterByUserhandle = userHandleFilter;
+//        fo.hasProduct = false;
+        fo.hasPermission = false;
         PXLAlbumSortOptions so = new PXLAlbumSortOptions();
         so.sortType = PXLAlbumSortType.RECENCY;
         so.descending = true;

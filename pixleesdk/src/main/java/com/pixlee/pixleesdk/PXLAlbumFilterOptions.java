@@ -6,6 +6,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 
 /***
  * Represents the filter options for a PXLAlbum. Initialize an instance then set the desired
@@ -28,6 +31,11 @@ public class PXLAlbumFilterOptions {
     public Boolean hasPermission;
     public Boolean hasProduct;
     public Boolean inStockOnly;
+    public ArrayList<Integer> inCategories;
+    public HashMap<String, Object> filterByUserhandle;
+    public HashMap<String, Object> computerVision;
+    public HashMap<String, Object> filterByLocation;
+    public String filterByRadius;
 
     /***
      * Generates the JSON string representing the filter options.
@@ -42,6 +50,7 @@ public class PXLAlbumFilterOptions {
             jsonFilters.putOpt("starred_photos", starredPhotos);
             jsonFilters.putOpt("deleted_photos", deletedPhotos);
             jsonFilters.putOpt("flagged_photos", flaggedPhotos);
+            jsonFilters.putOpt("filter_by_radius", filterByRadius);
             //TODO: handle the arrays and dates properly
             if (contentSource != null && contentSource.size() > 0) {
                 JSONArray sources = new JSONArray();
@@ -68,6 +77,26 @@ public class PXLAlbumFilterOptions {
             jsonFilters.putOpt("has_permission", hasPermission);
             jsonFilters.putOpt("has_product", hasProduct);
             jsonFilters.putOpt("in_stock_only", inStockOnly);
+
+            if (inCategories != null && inCategories.size() > 0) {
+                JSONArray categoriesJson = new JSONArray(inCategories);
+                jsonFilters.put("in_categories", categoriesJson);
+            }
+
+            if(filterByUserhandle != null && !filterByUserhandle.isEmpty()){
+                JSONObject userhandleJson = new JSONObject(filterByUserhandle);
+                jsonFilters.put("filter_by_userhandle", userhandleJson);
+            }
+
+            if(computerVision != null && !computerVision.isEmpty()){
+                JSONObject computerVisionJson = new JSONObject(computerVision);
+                jsonFilters.put("computer_vision", computerVisionJson);
+            }
+
+            if(filterByLocation != null && !filterByLocation.isEmpty()){
+                JSONObject filterByLocationJson = new JSONObject(filterByLocation);
+                jsonFilters.put("filter_by_location", filterByLocationJson);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
