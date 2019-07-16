@@ -18,6 +18,7 @@ import android.widget.ViewSwitcher;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.pixlee.pixleesdk.PXLAlbum;
+import com.pixlee.pixleesdk.PXLAnalytics;
 import com.pixlee.pixleesdk.PXLPdpAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;
@@ -176,15 +177,25 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 0;
-//        ArrayList incategories = new ArrayList<Integer>();
-//        incategories.add(1234);
-//        incategories.add(5678);
-//        fo.inCategories = incategories;
-        HashMap userHandleFilter = new HashMap<String, Object> ();
-        userHandleFilter.put("contains", new String[] {"test1", "test2"});
-        fo.filterByUserhandle = userHandleFilter;
-//        fo.hasProduct = false;
-        fo.hasPermission = false;
+
+        /* ~~~ in_categories filter example ~~~
+          ArrayList incategories = new ArrayList<Integer>();
+          incategories.add(1234);
+          incategories.add(5678);
+          fo.inCategories = incategories;
+         */
+
+        /* ~~~ filter_by_userhandle filter example ~~~
+
+          HashMap userHandleFilter = new HashMap<String, Object> ();
+          userHandleFilter.put("contains", new String[] {"test1", "test2"});
+          fo.filterByUserhandle = userHandleFilter;
+
+         */
+
+        //fo.hasProduct = false;
+        //fo.hasPermission = false;
+
         PXLAlbumSortOptions so = new PXLAlbumSortOptions();
         so.sortType = PXLAlbumSortType.RECENCY;
         so.descending = true;
@@ -203,6 +214,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     }
 
     private void updateDetailView(PXLPhoto photo) {
+        Context c = this.getApplicationContext();
         this.detailSourceIcon.setImageResource(photo.sourceIconImage());
         this.detailImage.setImageUrl(photo.getUrlForSize(PXLPhotoSize.MEDIUM).toString(), PXLClient.getInstance(this).getImageLoader());
         this.detailText.setText(photo.photoTitle);
@@ -232,7 +244,28 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         } else {
             actionLinksLayout.setVisibility(View.GONE);
         }
-        photo.openedLightbox(getApplicationContext());
+
+        photo.openedLightbox(c);  // Opened Lightbox Analytics Example
+
+        /* ~~~ Add to cart analytics example ~~~
+
+        PXLAnalytics pixleeAnalytics = new PXLAnalytics(c);
+        pixleeAnalytics.addToCart("sku123", "123", 4);
+
+        */
+
+        /* ~~~ Conversion analytics example ~~~
+
+        ArrayList<HashMap<String, Object>> cartContents = new ArrayList();
+        HashMap<String, Object> cart1 = new HashMap();
+        cart1.put("price", "123");
+        cart1.put("product_sku", "test123");
+        cart1.put("quantity", "4");
+
+        cartContents.add(cart1);
+        pixleeAnalytics.conversion(cartContents, "123", 4);
+        */
+
         this.populateDetailActions(photo);
     }
 

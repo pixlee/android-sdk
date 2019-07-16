@@ -83,6 +83,52 @@ To fire an opened ligtbox event, simply call the `openedLightbox` method of the 
 photo.openedLightbox(context);
 ```
 
+### Ecommerce Analytics
+
+For triggering all ecommerce analytics events within your app, you'll want to use the `PXLAnalytics` class. Instantiate one with the application context:
+```
+#!Java
+
+Context c = this.getApplicationContext();
+PXLAnalytics pixleeAnalytics = new PXLAnalytics(c);
+```
+
+#### Add To Cart
+To fire an Add To Cart event, simply call the `addToCart` method of the PXLAnalytics object with the necessary parameters, and an "Add To Cart" event will be fired containing all of the necessary analytics information.
+The parameters for this method are:
+- [Required] sku  (String)
+- [Required] price (String)
+- [Required] quantity (Integer)
+- [Optional] currency (String)
+
+```
+#!java
+
+pixleeAnalytics.addToCart("sku123", "123", 4);
+```
+
+#### Conversion
+To fire a Conversion event, simply call the `conversion` method of the PXLAnalytics object with the necessary parameters, and a "Conversion" event will be fired containing all of the necessary analytics information.
+The parameters for this method are:
+- [Required] cartContents  (ArrayList<HashMap<String, Object>>)
+- [Required] cartTotal (String)
+- [Required] cart_total_quantity (Integer)
+- [Optional] orderId (Integer)
+- [Optional] currency (String)
+
+```
+#!java
+
+ArrayList<HashMap<String, Object>> cartContents = new ArrayList();
+HashMap<String, Object> cart1 = new HashMap();
+cart1.put("price", "123");
+cart1.put("product_sku", "test123");
+cart1.put("quantity", "4");
+
+cartContents.add(cart1);
+pixleeAnalytics.conversion(cartContents, "123", 4);
+```
+
 To help you get up and running quickly, we've also built an sample application featuring a grid view, list view, and detail view.  The adapters simply maintain an ArrayList of PXLPhoto, which is updated via calls to `loadNextPageOfPhotos`.  Since the data source contains the full PXLPhoto object, you can easily customize your own widgets to display the desired images and text.  The sample also implements a scroll listener which times calls to `loadNextPageOfPhotos` to provide the endless scroll effect. 
 An example of the proper usage of an opened lightbox event is also included in the sample app!
 

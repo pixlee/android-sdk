@@ -7,7 +7,9 @@ package com.pixlee.pixleesdk;
 public enum PXLAnalyticsEvents {
 
     OPENED_WIDGET ("opened widget"),
-    OPENED_LIGHTBOX ("opened lightbox");
+    OPENED_LIGHTBOX ("opened lightbox"),
+    ADD_TO_CART ("add to cart"),
+    CONVERSION ("conversion");
 
     public final String value;
 
