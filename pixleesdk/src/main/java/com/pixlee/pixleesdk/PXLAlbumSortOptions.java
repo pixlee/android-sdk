@@ -20,8 +20,10 @@ public class PXLAlbumSortOptions {
     public String toParamString() {
         JSONObject params = new JSONObject();
         try {
-            params.put(sortType.value, true);
-            params.put(KeyDesc, descending);
+            if(sortType != PXLAlbumSortType.NONE) {
+                params.put(sortType.value, true);
+                params.put(KeyDesc, descending);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
