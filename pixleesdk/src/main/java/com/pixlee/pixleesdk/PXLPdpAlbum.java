@@ -22,6 +22,7 @@ public class PXLPdpAlbum extends PXLAlbum {
     public PXLPdpAlbum(String sku, Context context) {
         super(sku, context);
         this.sku = sku;
+        this.id = null;
         this.page = 0;
         this.perPage = DefaultPerPage;
         this.hasMore = true;
@@ -74,34 +75,4 @@ public class PXLPdpAlbum extends PXLAlbum {
          paramMap.put(PXLClient.KeySku, sku);
          return paramMap;
      }
-
-    @Override
-    public boolean openedWidget() {
-        PXLClient pxlClient = PXLClient.getInstance(context);
-        JSONObject body = new JSONObject();
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < this.photos.size(); i++) {
-            try {
-                stringBuilder.append(this.photos.get(i).id);
-                if(i != this.photos.size() - 1){
-                    stringBuilder.append(",");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        try{
-            body.put("sku", this.sku);
-            body.put("per_page", this.perPage);
-            body.put("page", this.page);
-            body.put("photos", stringBuilder.toString());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        pxlClient.makeAnalyticsCall("events/openedWidget", body);
-        return true;
-    }
 }

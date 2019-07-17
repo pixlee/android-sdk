@@ -189,6 +189,7 @@ public class PXLClient {
         StringRequest sr = new StringRequest(Request.Method.POST, finalUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Log.d("ANALYTICS CALL Body", requestBody);
                 Log.d("ANALYTICS CALL ", response);
             }
         }, new Response.ErrorListener() {

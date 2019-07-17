@@ -282,8 +282,8 @@ public class PXLPhoto {
         PXLClient pxlClient = PXLClient.getInstance(context);
         JSONObject body = new JSONObject();
         try{
-            body.put("album_id", this.album.id);
-            body.put("album_photo_id", this.albumPhotoId);
+            body.put("album_id", Integer.parseInt(this.album.id));
+            body.put("album_photo_id", Integer.parseInt(this.albumPhotoId));
 
         } catch (JSONException e) {
             e.printStackTrace();

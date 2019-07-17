@@ -9,7 +9,8 @@ public enum PXLAlbumSortType {
     PIXLEE_SHARES ("pixlee_shares"),
     PIXLEE_LIKES ("pixlee_likes"),
     POPULARITY ("popularity"),
-    PHOTORANK ("photorank");
+    DYNAMIC ("dynamic"),
+    NONE ("none");
 
     public final String value;
 

@@ -46,6 +46,9 @@ public class PXLAlbum implements RequestCallbacks {
             this.page = response.getInt("page");
             this.perPage = response.getInt(("per_page"));
             this.hasMore = response.getBoolean(("next"));
+            if(this.id == null){
+                this.id = String.valueOf(response.getInt("album_id"));
+            }
             //add placeholders for photos if they haven't been loaded yet
             if (this.photos.size() < (this.page - 1) * this.perPage) {
                 for (int i = this.photos.size(); i < (this.page - 1) * this.perPage; i++) {
@@ -199,7 +202,7 @@ public class PXLAlbum implements RequestCallbacks {
         }
 
         try{
-            body.put("album_id", this.id);
+            body.put("album_id",  Integer.parseInt(this.id));
             body.put("per_page", this.perPage);
             body.put("page", this.page);
             body.put("photos", stringBuilder.toString());
