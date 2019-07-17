@@ -26,7 +26,7 @@ public class PXLAnalytics {
     }
 
     public void addToCart(String sku, String price, Integer quantity, String currency) {
-        PXLClient pxlClient = PXLClient.getInstance(context);
+        PXLClient pxlClient = PXLClient.getInstance(this.context);
         JSONObject body = new JSONObject();
 
         try{
@@ -50,8 +50,8 @@ public class PXLAnalytics {
     }
 
 
-    public void conversion(ArrayList<HashMap<String, Object>> cartContents, String cartTotal, Integer cartTotalQuantity, Integer orderId, String currency){
-        PXLClient pxlClient = PXLClient.getInstance(context);
+    public void conversion(ArrayList<HashMap<String, Object>> cartContents, String cartTotal, Integer cartTotalQuantity, String orderId, String currency){
+        PXLClient pxlClient = PXLClient.getInstance(this.context);
         JSONObject body = new JSONObject();
 
         try{
@@ -73,7 +73,7 @@ public class PXLAnalytics {
         pxlClient.makeAnalyticsCall("events/conversion", body);
 
     }
-    public void conversion(ArrayList<HashMap<String, Object>> cartContents, String cartTotal, Integer cartTotalQuantity, Integer orderId){
+    public void conversion(ArrayList<HashMap<String, Object>> cartContents, String cartTotal, Integer cartTotalQuantity, String orderId){
         this.conversion(cartContents, cartTotal, cartTotalQuantity, orderId, null);
     }
     public void conversion(ArrayList<HashMap<String, Object>> cartContents, String cartTotal, Integer cartTotalQuantity) {

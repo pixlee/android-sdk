@@ -57,7 +57,7 @@ PXLAlbumFilterOptions filterOptions = new PXLAlbumFilterOptions();
 filterOptions.minTwitterFollowers = 1000;
 filterOptions.minInstagramFollowers = 2000;
 PXLAlbumSortOptions sortOptions = new PXLAlbumSortOptions();
-sortOptions.sortType = PXLAlbumSortType.PHOTORANK;
+sortOptions.sortType = PXLAlbumSortType.DYNAMIC;
 sortOptions.descending = true;
 album.setPerPage(15);
 album.setFilterOptions(filterOptions);
@@ -112,8 +112,8 @@ To fire a Conversion event, simply call the `conversion` method of the PXLAnalyt
 The parameters for this method are:
 - [Required] cartContents  (ArrayList<HashMap<String, Object>>)
 - [Required] cartTotal (String)
-- [Required] cart_total_quantity (Integer)
-- [Optional] orderId (Integer)
+- [Required] cartTotalQuantity (Integer)
+- [Optional] orderId (String)
 - [Optional] currency (String)
 
 ```

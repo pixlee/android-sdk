@@ -193,6 +193,15 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
 
          */
 
+         /* ~~~ computer_vision filter example ~~~
+
+          HashMap computerVisionFilter = new HashMap<String, Object> ();
+          computerVisionFilter.put("contains", new String[] {"hat"});
+          fo.computerVision = computerVisionFilter;
+
+         */
+
+
         //fo.hasProduct = false;
         //fo.hasPermission = false;
 
@@ -254,6 +263,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
 
         */
 
+
         /* ~~~ Conversion analytics example ~~~
 
         ArrayList<HashMap<String, Object>> cartContents = new ArrayList();
@@ -265,6 +275,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         cartContents.add(cart1);
         pixleeAnalytics.conversion(cartContents, "123", 4);
         */
+
 
         this.populateDetailActions(photo);
     }
