@@ -19,6 +19,8 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAnalytics;
+import com.pixlee.pixleesdk.PXLContentSource;
+import com.pixlee.pixleesdk.PXLContentType;
 import com.pixlee.pixleesdk.PXLPdpAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;
@@ -178,6 +180,26 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 0;
 
+        /* ~~~ content source and content filter examples ~~~
+          ArrayList contentSource = new ArrayList();
+          contentSource.add(PXLContentSource.INSTAGRAM);
+          fo.contentSource = contentSource;
+
+          ArrayList contentType = new ArrayList();
+          contentType.add(PXLContentType.IMAGE);
+          fo.contentType = contentType;
+        */
+
+
+        /* ~~~ date filter examples ~~~
+          fo.submittedDateEnd = new Date(2019, 7, 16);
+          fo.submittedDateStart = new Date(2019, 7, 17);
+        */
+
+
+        // fo.filterByRadius = "21.3069,-157.8583,20";  radius filter example
+
+
         /* ~~~ in_categories filter example ~~~
           ArrayList incategories = new ArrayList<Integer>();
           incategories.add(1234);
@@ -202,8 +224,9 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
          */
 
 
-        //fo.hasProduct = false;
-        //fo.hasPermission = false;
+        // fo.hasProduct = false;
+        // fo.hasPermission = false;
+        // fo.inStockOnly = false;
 
         PXLAlbumSortOptions so = new PXLAlbumSortOptions();
         so.sortType = PXLAlbumSortType.RECENCY;
