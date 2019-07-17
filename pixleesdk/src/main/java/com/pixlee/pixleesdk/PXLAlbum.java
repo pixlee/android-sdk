@@ -199,7 +199,7 @@ public class PXLAlbum implements RequestCallbacks {
         }
 
         try{
-            body.put("album_id", this.id);
+            body.put("album_id",  Integer.parseInt(this.id));
             body.put("per_page", this.perPage);
             body.put("page", this.page);
             body.put("photos", stringBuilder.toString());

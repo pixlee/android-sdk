@@ -276,7 +276,6 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         pixleeAnalytics.conversion(cartContents, "123", 4);
         */
 
-
         this.populateDetailActions(photo);
     }
 
