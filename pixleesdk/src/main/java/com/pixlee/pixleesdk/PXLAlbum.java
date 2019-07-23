@@ -66,6 +66,8 @@ public class PXLAlbum implements RequestCallbacks {
             // fire opened widget analytics event
             if(this.page == 1){
                 openedWidget();
+            } else if(this.page > 1) {
+                loadMore();
             }
 
         } catch (JSONException e) {
@@ -220,6 +222,14 @@ public class PXLAlbum implements RequestCallbacks {
     }
 
     public boolean loadMore() {
+        if (id == null) {
+            Log.w(TAG, "missing album id");
+            return false;
+        }
+        if(this.page < 2){
+            Log.w(TAG, "first load detected");
+            return false;
+        }
         PXLClient pxlClient = PXLClient.getInstance(context);
         JSONObject body = new JSONObject();
         StringBuilder stringBuilder = new StringBuilder();

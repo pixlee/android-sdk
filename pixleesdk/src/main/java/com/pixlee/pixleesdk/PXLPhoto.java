@@ -287,7 +287,7 @@ public class PXLPhoto {
 
         try{
             body.put("album_id",  Integer.parseInt(this.album.id));
-            body.put("alum_photo_id", Integer.parseInt(this.albumPhotoId));
+            body.put("album_photo_id", Integer.parseInt(this.albumPhotoId));
             body.put("action_link_url", actionLink);
 
         } catch (JSONException e) {

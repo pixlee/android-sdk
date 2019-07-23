@@ -175,7 +175,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     private void createAlbum() {
         Context c = this.getApplicationContext();
         PXLClient.initialize("196i8ZzIAhKU8dO2kDe");
-        album = new PXLPdpAlbum("rr", c);
+        album = new PXLAlbum("4503434", c);
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 0;
@@ -278,6 +278,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         }
 
         photo.openedLightbox(c);  // Opened Lightbox Analytics Example
+        photo.actionClicked("https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html", c);
 
         /* ~~~ Add to cart analytics example ~~~
 
