@@ -74,6 +74,9 @@ Once an album has loaded photos from the server, it will instantiate `PXLPhoto` 
 #### Opened Widget
 On the first load of an album, an "Opened Widget" analytics event will be fired automatically
 
+#### Load More
+On calls to loadNextPageOfPhotos (except the first), a "Load More" analytics event will be fired automatically
+
 #### Opened Lightbox
 To fire an opened ligtbox event, simply call the `openedLightbox` method of the PXLPhoto that is being opened, and an "Opened Lightbox" event will be fired containing all of the necessary analytics information.
 
@@ -81,6 +84,15 @@ To fire an opened ligtbox event, simply call the `openedLightbox` method of the 
 #!java
 
 photo.openedLightbox(context);
+```
+
+#### Action Clicked
+To fire an action clicked event, simply call the `actionClicked` method of the PXLPhoto that the action click is being driven from and pass in the URL of the link that the user is being redirected to.  An "Action Clicked" event will be fired containing all of the necessary analytics information.
+
+```
+#!java
+
+photo.actionClicked("https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html", context);
 ```
 
 ### Ecommerce Analytics

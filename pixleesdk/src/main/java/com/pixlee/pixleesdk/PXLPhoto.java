@@ -277,6 +277,26 @@ public class PXLPhoto {
         }
     }
 
+    /***
+     * Analytics methods
+     */
+
+    public void actionClicked(String actionLink, Context context) {
+        PXLClient pxlClient = PXLClient.getInstance(context);
+        JSONObject body = new JSONObject();
+
+        try{
+            body.put("album_id",  Integer.parseInt(this.album.id));
+            body.put("album_photo_id", Integer.parseInt(this.albumPhotoId));
+            body.put("action_link_url", actionLink);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        pxlClient.makeAnalyticsCall("events/actionClicked", body);
+    }
+
     public boolean openedLightbox(Context context) {
 
         PXLClient pxlClient = PXLClient.getInstance(context);
