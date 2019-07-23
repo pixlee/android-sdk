@@ -63,13 +63,6 @@ public class PXLAlbum implements RequestCallbacks {
                 handlers.DataLoadedHandler(this.photos);
             }
 
-            // fire opened widget analytics event
-            if(this.page == 1){
-                openedWidget();
-            } else if(this.page > 1) {
-                loadMore();
-            }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -192,7 +185,7 @@ public class PXLAlbum implements RequestCallbacks {
      * Analytics methods
      */
 
-    private boolean openedWidget() {
+    public boolean openedWidget() {
         PXLClient pxlClient = PXLClient.getInstance(context);
         JSONObject body = new JSONObject();
         StringBuilder stringBuilder = new StringBuilder();
@@ -221,7 +214,7 @@ public class PXLAlbum implements RequestCallbacks {
         return true;
     }
 
-    private boolean loadMore() {
+    public boolean loadMore() {
         if (id == null) {
             Log.w(TAG, "missing album id");
             return false;

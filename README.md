@@ -72,10 +72,24 @@ Once an album has loaded photos from the server, it will instantiate `PXLPhoto` 
 
 ### Analytics
 #### Opened Widget
-On the first load of an album, an "Opened Widget" analytics event will be fired automatically
+To fire an opened widget event, simply call the `openedWidget` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from the first call of the `loadNextPageOfPhotos` method, and an "Opened Widget" event will be fired containing all of the necessary analytics information.
+See the DataLoadedHandler function in SampleActiviy.java for an example.
+
+```
+#!java
+
+album.openedWidget();
+```
 
 #### Load More
-On calls to loadNextPageOfPhotos (except the first), a "Load More" analytics event will be fired automatically
+To fire a load more event, simply call the `loadMore` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from calls via the 'loadNextPageOfPhotos' method, a "Load More" analytics event will be fired containing all of the necessary analytics information.
+See the DataLoadedHandler function in SampleActiviy.java for an example.
+
+```
+#!java
+
+album.loadMore();
+```
 
 #### Opened Lightbox
 To fire an opened ligtbox event, simply call the `openedLightbox` method of the PXLPhoto that is being opened, and an "Opened Lightbox" event will be fired containing all of the necessary analytics information.
