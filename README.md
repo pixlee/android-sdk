@@ -87,7 +87,7 @@ photo.openedLightbox(context);
 ```
 
 #### Action Clicked
-To fire an action clicked event, simply call the `actionClicked` method of the PXLPhoto that the action click is being driven from, and an "Action Clicked" event will be fired containing all of the necessary analytics information.
+To fire an action clicked event, simply call the `actionClicked` method of the PXLPhoto that the action click is being driven from and pass in the URL of the link that the user is being redirected to.  An "Action Clicked" event will be fired containing all of the necessary analytics information.
 
 ```
 #!java
