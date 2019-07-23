@@ -91,6 +91,9 @@ See the DataLoadedHandler function in SampleActiviy.java for an example.
 album.loadMore();
 ```
 
+#### Load More
+On calls to loadNextPageOfPhotos (except the first), a "Load More" analytics event will be fired automatically
+
 #### Opened Lightbox
 To fire an opened ligtbox event, simply call the `openedLightbox` method of the PXLPhoto that is being opened, and an "Opened Lightbox" event will be fired containing all of the necessary analytics information.
 
