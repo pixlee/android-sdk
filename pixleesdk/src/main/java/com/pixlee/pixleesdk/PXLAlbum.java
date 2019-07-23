@@ -192,7 +192,7 @@ public class PXLAlbum implements RequestCallbacks {
      * Analytics methods
      */
 
-    public boolean openedWidget() {
+    private boolean openedWidget() {
         PXLClient pxlClient = PXLClient.getInstance(context);
         JSONObject body = new JSONObject();
         StringBuilder stringBuilder = new StringBuilder();
@@ -221,7 +221,7 @@ public class PXLAlbum implements RequestCallbacks {
         return true;
     }
 
-    public boolean loadMore() {
+    private boolean loadMore() {
         if (id == null) {
             Log.w(TAG, "missing album id");
             return false;
