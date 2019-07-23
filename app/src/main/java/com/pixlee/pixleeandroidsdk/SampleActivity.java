@@ -116,6 +116,8 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         if (photos == null) {
             return;
         }
+        album.openedWidget();
+        album.loadMore();
         this.photoList.clear();
         this.photoList.addAll(photos);
         gridView.getAdapter().notifyDataSetChanged();
@@ -236,6 +238,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         album.setSortOptions(so);
         PXLAlbum.RequestHandlers rh = this;
         album.loadNextPageOfPhotos(rh);
+
     }
 
     /***
