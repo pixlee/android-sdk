@@ -176,7 +176,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
      */
     private void createAlbum() {
         Context c = this.getApplicationContext();
-        PXLClient.initialize("196i8ZzIAhKU8dO2kDe");
+        PXLClient.initialize("196i8ZzIAhKU8dO2kDe", "66f3c350bc162c143eecd41711");
         album = new PXLAlbum("4503434", c);
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
@@ -238,6 +238,9 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         album.setSortOptions(so);
         PXLAlbum.RequestHandlers rh = this;
         album.loadNextPageOfPhotos(rh);
+
+        album.uploadImage("test", "kb@pixleeteam.com", "kb", "https://cdn.pixabay.com/photo/2016/09/01/10/23/image-1635747_1280.jpg", true);
+
 
     }
 
@@ -302,6 +305,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         cartContents.add(cart1);
         pixleeAnalytics.conversion(cartContents, "123", 4);
         */
+
 
         this.populateDetailActions(photo);
     }

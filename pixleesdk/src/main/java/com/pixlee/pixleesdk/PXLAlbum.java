@@ -131,6 +131,34 @@ public class PXLAlbum implements RequestCallbacks {
         return true;
     }
 
+
+    /***
+     * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
+     * sort order, and filter options before calling.
+     * @param handlers - called upon success/failure of the request
+     * @return true if the request was attempted, false if aborted before the attempt was made
+     */
+    public boolean uploadImage(String title, String email, String username, String photoURI, Boolean approved) {
+        PXLClient pxlClient = PXLClient.getInstance(context);
+        JSONObject body = new JSONObject();
+
+
+        try{
+            body.put("album_id",  Integer.parseInt(this.id));
+            body.put("title", title);
+            body.put("email", email);
+            body.put("username", username);
+            body.put("photo_uri", photoURI);
+            body.put("approved", approved);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        pxlClient.makePostCall("media", body);
+        return true;
+    }
+
     /***
      * Sets the amount of photos fetched per call of 'loadNextPageOfPhotos'.  Will purge previously
      * fetched photos. Call 'loadNextPageOfPhotos' after setting.
