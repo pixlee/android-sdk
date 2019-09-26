@@ -70,6 +70,24 @@ Each successive call of `loadNextPageOfPhotos` will load the next page of photos
 
 Once an album has loaded photos from the server, it will instantiate `PXLPhoto` objects that can be consumed by your UI. `PXLPhoto` exposes all of the data for a photo available through the Pixlee API and offers several image url sizes depending on your needs.
 
+#### Uploading Photos
+
+If you wish to build your application with photo uploading capabilities, you must initialize the `PXLClient` with an additional parameter - your Pixlee secret key. You must set the secret key along with the API key when you call the static method initialize:
+
+```
+#!java
+
+PXLClient.initialize(<API KEY>, <SECRET KEY>);
+```
+
+Now wen you want to upload a photo in your application, simply call the `uploadImage` method of the PXLAlbum object you are using.  This woul look something like this:
+
+```
+#!java
+
+album.uploadImage("test", "test@test.com", "testuser", "https://timedotcom.files.wordpress.com/2019/05/drake-nba-finals-warning.jpg", true);
+```
+
 ### Analytics
 #### Opened Widget
 To fire an opened widget event, simply call the `openedWidget` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from the first call of the `loadNextPageOfPhotos` method, and an "Opened Widget" event will be fired containing all of the necessary analytics information.

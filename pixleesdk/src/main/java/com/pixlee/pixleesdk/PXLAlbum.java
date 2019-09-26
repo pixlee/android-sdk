@@ -135,13 +135,16 @@ public class PXLAlbum implements RequestCallbacks {
     /***
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
      * sort order, and filter options before calling.
-     * @param handlers - called upon success/failure of the request
-     * @return true if the request was attempted, false if aborted before the attempt was made
+     * @param title - title or caption of the photo being uploaded
+     * @param email - email address of the submitting user
+     * @param username - username of the submitting user
+     * @param photoURI - the URI of the photo being submitted (must be a public URI)
+     * @param approved - boolean specifying whether the photo should be marked as approved on upload
+     * @return true if the request was made, false if aborted before the attempt was made
      */
     public boolean uploadImage(String title, String email, String username, String photoURI, Boolean approved) {
         PXLClient pxlClient = PXLClient.getInstance(context);
         JSONObject body = new JSONObject();
-
 
         try{
             body.put("album_id",  Integer.parseInt(this.id));
@@ -155,8 +158,7 @@ public class PXLAlbum implements RequestCallbacks {
             e.printStackTrace();
         }
 
-        pxlClient.makePostCall("media", body);
-        return true;
+        return pxlClient.makePostCall("media", body);
     }
 
     /***
