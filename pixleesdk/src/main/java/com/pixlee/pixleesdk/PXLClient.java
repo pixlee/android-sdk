@@ -206,6 +206,7 @@ public class PXLClient {
 
         Log.d(TAG, finalUrl);
 
+
         final String requestBody = body.toString().replace("\\/", "/" );
 
         StringRequest sr = new StringRequest(Request.Method.POST, finalUrl, new Response.Listener<String>() {
@@ -243,6 +244,7 @@ public class PXLClient {
                 String signature = "";
                 try {
                     signature = computeHmac(requestBody, PXLClient.secretKey);
+
                 } catch (Exception e){
                     e.printStackTrace();
                 }
