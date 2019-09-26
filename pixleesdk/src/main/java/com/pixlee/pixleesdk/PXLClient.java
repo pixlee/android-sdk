@@ -190,10 +190,9 @@ public class PXLClient {
 
     /***
      * Makes a POST call to the Pixlee API. Appends api key to the request body and signs the request using the secret key.
-     * on success/error.
-     * @param requestPath - path to hit (will be appended to the base Pixlee Analytics api endpoint)
-     * @param body - key/values to be stored in analytics events
-     * @return false if no api key set yet, true otherwise
+     * @param requestPath - path to hit (will be appended to the base Pixlee api endpoint)
+     * @param body - key/values to be passed in the POST body
+     * @return false if no api key or secret set yet, true otherwise
      */
     public boolean makePostCall(final String requestPath, final JSONObject body) {
         if (PXLClient.apiKey == null || PXLClient.secretKey == null) {
