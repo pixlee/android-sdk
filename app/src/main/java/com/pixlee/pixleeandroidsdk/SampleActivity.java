@@ -176,7 +176,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
      */
     private void createAlbum() {
         Context c = this.getApplicationContext();
-        PXLClient.initialize("196i8ZzIAhKU8dO2kDe");
+        PXLClient.initialize("196i8ZzIAhKU8dO2kDe", "66f3c350bc162c143eecd41711");
         album = new PXLAlbum("4503434", c);
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
@@ -239,7 +239,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         PXLAlbum.RequestHandlers rh = this;
         album.loadNextPageOfPhotos(rh);
 
-        album.uploadImage("testttt", "kb@pixleeteam.com", "kb", "https://timedotcom.files.wordpress.com/2019/05/drake-nba-finals-warning.jpg", true);
+        album.uploadImage("test", "kb@pixleeteam.com", "KB", "https://timedotcom.files.wordpress.com/2019/05/drake-nba-finals-warning.jpg", true);
 
 
     }
