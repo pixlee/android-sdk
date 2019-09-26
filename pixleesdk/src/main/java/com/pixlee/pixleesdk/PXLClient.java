@@ -142,11 +142,10 @@ public class PXLClient {
             throws NoSuchAlgorithmException, InvalidKeyException, IllegalStateException,  UnsupportedEncodingException
     {
 
-        byte[] secret = Base64.decode(secretKey, Base64.DEFAULT);
-        SecretKeySpec key = new SecretKeySpec(secret, "HmacSHA1");
+        SecretKeySpec key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA1");
         Mac mac = Mac.getInstance("HmacSHA1");
         mac.init(key);
-        byte[] bytes = mac.doFinal(baseString.getBytes("UTF-8"));
+        byte[] bytes = mac.doFinal(baseString.getBytes());
         return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
@@ -190,7 +189,7 @@ public class PXLClient {
     }
 
     /***
-     * Makes a POST call to the Pixlee API. Appends api key, secret key, unique id and platform to the request body.
+     * Makes a POST call to the Pixlee API. Appends api key to the request body and signs the request using the secret key.
      * on success/error.
      * @param requestPath - path to hit (will be appended to the base Pixlee Analytics api endpoint)
      * @param body - key/values to be stored in analytics events
@@ -207,7 +206,7 @@ public class PXLClient {
 
         Log.d(TAG, finalUrl);
 
-        final String requestBody = body.toString();//.replace("\\/", "/" );
+        final String requestBody = body.toString().replace("\\/", "/" );
 
         StringRequest sr = new StringRequest(Request.Method.POST, finalUrl, new Response.Listener<String>() {
             @Override
@@ -220,9 +219,7 @@ public class PXLClient {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.w(TAG, "got an error response");
-                Log.w("POST BODY", requestBody);
                 Log.w(TAG, error.toString());
-
             }
         }){
             @Override
@@ -245,10 +242,7 @@ public class PXLClient {
                 HashMap headers = new HashMap();
                 String signature = "";
                 try {
-                    Log.d(TAG, requestBody);
                     signature = computeHmac(requestBody, PXLClient.secretKey);
-                    Log.d(TAG, "signature!!");
-                    Log.d(TAG, signature);
                 } catch (Exception e){
                     e.printStackTrace();
                 }
@@ -270,7 +264,6 @@ public class PXLClient {
             }
         };
 
-        logToCurlRequest(sr);
         sr.setShouldCache(false);
         this.addToRequestQueue(sr);
         return true;
@@ -346,50 +339,4 @@ public class PXLClient {
         return true;
     }
 
-    private void logToCurlRequest(Request<?> request) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("curl request: curl ");
-        builder.append("-X \"");
-        switch (request.getMethod()) {
-            case Request.Method.POST:
-                builder.append("POST");
-                break;
-            case Request.Method.GET:
-                builder.append("GET");
-                break;
-            case Request.Method.PUT:
-                builder.append("PUT");
-                break;
-            case Request.Method.DELETE:
-                builder.append("DELETE");
-                break;
-        }
-        builder.append("\"");
-
-        try {
-            if (request.getBody() != null) {
-                builder.append(" -D ");
-                String data = new String(request.getBody());
-                data = data.replaceAll("\"", "\\\"");
-                builder.append("\"");
-                builder.append(data);
-                builder.append("\"");
-            }
-            for (String key : request.getHeaders().keySet()) {
-                builder.append(" -H '");
-                builder.append(key);
-                builder.append(": ");
-                builder.append(request.getHeaders().get(key));
-                builder.append("'");
-            }
-            builder.append(" \"");
-            builder.append(request.getUrl());
-            builder.append("\"");
-
-            Log.w("HEHEHEHEHE", "heheh");
-            Log.w("HEHEHEHEHE", builder.toString());
-        } catch (AuthFailureError e) {
-            VolleyLog.wtf("Unable to get body of response or headers for curl logging");
-        }
-    }
 }
