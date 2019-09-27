@@ -241,8 +241,11 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         PXLAlbum.RequestHandlers rh = this;
         album.loadNextPageOfPhotos(rh);
 
-        album.uploadImage("test", "kb@pixleeteam.com", "K.B.", "https://timedotcom.files.wordpress.com/2019/05/drake-nba-finals-warning.jpg", true);
+        /* ~~~ content upload example ~~~
 
+          album.uploadImage("test", "kb@pixleeteam.com", "K.B.", "https://timedotcom.files.wordpress.com/2019/05/drake-nba-finals-warning.jpg", true);
+
+        */
     }
 
     /***

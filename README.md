@@ -80,7 +80,7 @@ If you wish to build your application with photo uploading capabilities, you mus
 PXLClient.initialize(<API KEY>, <SECRET KEY>);
 ```
 
-Now wen you want to upload a photo in your application, simply call the `uploadImage` method of the PXLAlbum object you are using.  This woul look something like this:
+Now wen you want to upload a photo in your application, simply call the `uploadImage` method of the PXLAlbum object you are using.  This would look something like this:
 
 ```
 #!java
