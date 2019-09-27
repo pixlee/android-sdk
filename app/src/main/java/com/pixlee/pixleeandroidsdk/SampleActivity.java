@@ -176,7 +176,9 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
      */
     private void createAlbum() {
         Context c = this.getApplicationContext();
+
         PXLClient.initialize("196i8ZzIAhKU8dO2kDe");
+
         album = new PXLAlbum("4503434", c);
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
@@ -239,6 +241,11 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         PXLAlbum.RequestHandlers rh = this;
         album.loadNextPageOfPhotos(rh);
 
+        /* ~~~ content upload example ~~~
+
+          album.uploadImage("test", "kb@pixleeteam.com", "K.B.", "https://timedotcom.files.wordpress.com/2019/05/drake-nba-finals-warning.jpg", true);
+
+        */
     }
 
     /***
@@ -302,6 +309,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         cartContents.add(cart1);
         pixleeAnalytics.conversion(cartContents, "123", 4);
         */
+
 
         this.populateDetailActions(photo);
     }
