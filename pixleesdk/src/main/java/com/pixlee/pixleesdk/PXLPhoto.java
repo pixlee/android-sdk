@@ -1,10 +1,7 @@
 package com.pixlee.pixleesdk;
 
 import android.content.Context;
-import android.provider.ContactsContract;
 import android.util.Log;
-
-import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -125,7 +122,7 @@ public class PXLPhoto {
             }
 
             @Override
-            public void ErrorResponse(VolleyError error) {
+            public void ErrorResponse(Exception error) {
                 if (callback != null) {
                     callback.photoLoadFailed(error.toString());
                 }
@@ -156,7 +153,7 @@ public class PXLPhoto {
             }
 
             @Override
-            public void ErrorResponse(VolleyError error) {
+            public void ErrorResponse(Exception error) {
                 if (callback != null) {
                     callback.photoLoadFailed(error.toString());
                 }

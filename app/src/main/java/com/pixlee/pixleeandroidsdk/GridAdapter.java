@@ -1,13 +1,14 @@
 package com.pixlee.pixleeandroidsdk;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.android.volley.toolbox.ImageLoader;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLPhoto;
 
@@ -16,13 +17,11 @@ import java.util.ArrayList;
 public class GridAdapter extends RecyclerView.Adapter<GridViewHolder> {
     private ArrayList<PXLPhoto> galleryList;
     private Context context;
-    private ImageLoader imageLoader;
     private SampleActivity saref;
 
     public GridAdapter(Context context, ArrayList<PXLPhoto> galleryList, SampleActivity sa) {
         this.galleryList = galleryList;
         this.context = context;
-        this.imageLoader = PXLClient.getInstance(context).getImageLoader();
         this.saref = sa;
     }
 
@@ -38,7 +37,9 @@ public class GridAdapter extends RecyclerView.Adapter<GridViewHolder> {
         viewHolder.title.setText(photo.photoTitle);
 
         if (photo.thumbnailUrl !=  null) {
-            viewHolder.netImg.setImageUrl(photo.thumbnailUrl.toString(), imageLoader);
+            Glide.with(context)
+                    .load(photo.thumbnailUrl.toString())
+                    .into(viewHolder.netImg);
             viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

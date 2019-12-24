@@ -1,13 +1,14 @@
 package com.pixlee.pixleeandroidsdk;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.android.volley.toolbox.ImageLoader;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLPhoto;
 
@@ -16,13 +17,11 @@ import java.util.ArrayList;
 class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
     private ArrayList<PXLPhoto> galleryList;
     private Context context;
-    private ImageLoader imageLoader;
     private SampleActivity saRef;
 
     public ListAdapter(Context context, ArrayList<PXLPhoto> galleryList, SampleActivity sa) {
         this.galleryList = galleryList;
         this.context = context;
-        this.imageLoader = PXLClient.getInstance(context).getImageLoader();
         this.saRef = sa;
     }
 
@@ -37,7 +36,9 @@ class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
         final PXLPhoto photo = galleryList.get(i);
         viewHolder.title.setText(photo.photoTitle);
         viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        viewHolder.netImg.setImageUrl(photo.thumbnailUrl.toString(), imageLoader);
+        Glide.with(context)
+                .load(photo.thumbnailUrl.toString())
+                .into(viewHolder.netImg);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

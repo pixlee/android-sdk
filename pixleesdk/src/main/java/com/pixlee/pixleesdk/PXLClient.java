@@ -1,36 +1,21 @@
 package com.pixlee.pixleesdk;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.v4.util.LruCache;
+import android.provider.Settings.Secure;
 import android.util.Base64;
 import android.util.Log;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.NetworkResponse;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.AuthFailureError;
-import com.android.volley.toolbox.Volley;
-import com.android.volley.toolbox.HttpHeaderParser;
-
-import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
-import 	java.io.UnsupportedEncodingException;
 
-import android.provider.Settings.Secure;
-import javax.crypto.spec.SecretKeySpec;
 import javax.crypto.Mac;
-import java.security.InvalidKeyException;
+import javax.crypto.spec.SecretKeySpec;
 /***
  * Manages the configuration of volley and calls to the api. Intended to be used as a singleton,
  * so access should occur via the getInstance() method.
@@ -47,34 +32,17 @@ public class PXLClient {
     public static final String ACTION_MEDIA = "media";
 
     private static PXLClient mInstance;
-    private RequestQueue mRequestQueue;
-    private ImageLoader mImageLoader;
     private Context mCtx;
-    private static final String url = "https://distillery.pixlee.com/api/v2";
-    private static final String analyticsUrl = "https://inbound-analytics.pixlee.com";
     private static String apiKey = null;
     private static String secretKey = null;
     private static String android_id = null;
 
+
     private PXLClient(Context context) {
         mCtx = context;
-        mRequestQueue = getRequestQueue();
+
         android_id = Secure.getString(mCtx.getContentResolver(), Secure.ANDROID_ID);
-        mImageLoader = new ImageLoader(mRequestQueue,
-                new ImageLoader.ImageCache() {
-                    private final LruCache<String, Bitmap>
-                            cache = new LruCache<String, Bitmap>(20);
 
-                    @Override
-                    public Bitmap getBitmap(String url) {
-                        return cache.get(url);
-                    }
-
-                    @Override
-                    public void putBitmap(String url, Bitmap bitmap) {
-                        cache.put(url, bitmap);
-                    }
-                });
     }
 
     /***
@@ -107,36 +75,6 @@ public class PXLClient {
         return mInstance;
     }
 
-    /***
-     * Returns or generates the volley request queue.
-     * @return
-     */
-    public RequestQueue getRequestQueue() {
-        if (mRequestQueue == null) {
-            // getApplicationContext() is key, it keeps you from leaking the
-            // Activity or BroadcastReceiver if someone passes one in.
-            mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
-
-        }
-        return mRequestQueue;
-    }
-
-    /***
-     * Adds a request to the volley request queue.
-     * @param req
-     * @param <T>
-     */
-    public <T> void addToRequestQueue(Request<T> req) {
-        getRequestQueue().add(req);
-    }
-
-    /***
-     * Returns the volley image loader.
-     * @return
-     */
-    public ImageLoader getImageLoader() {
-        return mImageLoader;
-    }
 
     public String computeHmac(String baseString, String secretKey)
             throws NoSuchAlgorithmException, InvalidKeyException, IllegalStateException,  UnsupportedEncodingException
@@ -161,14 +99,18 @@ public class PXLClient {
         if (PXLClient.apiKey == null) {
             return false;
         }
-        String paramString = String.format("%s=%s", KeyApiKey, apiKey);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%s=%s", KeyApiKey, apiKey));
         if (parameters != null && parameters.size() > 0) {
             for (Map.Entry<String, Object> param : parameters.entrySet()) {
-                paramString += String.format("&%s=%s", param.getKey(), param.getValue().toString());
+                sb.append(String.format("&%s=%s", param.getKey(), param.getValue().toString()));
             }
         }
-        String finalUrl = String.format("%s/%s?%s", url, requestPath, paramString);
+        String finalUrl = String.format("%s/%s?%s", url, requestPath, sb.toString());
         Log.d("pxlclient", finalUrl);
+
+
         JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, finalUrl, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

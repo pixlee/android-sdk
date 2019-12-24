@@ -3,8 +3,6 @@ package com.pixlee.pixleesdk;
 import android.content.Context;
 import android.util.Log;
 
-import com.android.volley.VolleyError;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,7 +71,7 @@ public class PXLAlbum implements RequestCallbacks {
      * @param error - error from volley
      */
     @Override
-    public void ErrorResponse(VolleyError error) {
+    public void ErrorResponse(Exception error) {
         if (handlers != null) {
             handlers.DataLoadFailedHandler(error.toString());
         }
