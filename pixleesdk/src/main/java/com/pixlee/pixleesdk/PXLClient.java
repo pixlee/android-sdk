@@ -5,17 +5,28 @@ import android.provider.Settings.Secure;
 import android.util.Base64;
 import android.util.Log;
 
+import com.pixlee.pixleesdk.data.api.AnalyticsAPI;
+import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
+import com.pixlee.pixleesdk.data.repository.BasicDataSource;
+import com.pixlee.pixleesdk.network.NetworkModule;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /***
  * Manages the configuration of volley and calls to the api. Intended to be used as a singleton,
  * so access should occur via the getInstance() method.
@@ -33,10 +44,35 @@ public class PXLClient {
 
     private static PXLClient mInstance;
     private Context mCtx;
-    private static String apiKey = null;
+
+    static String apiKey = null;
     private static String secretKey = null;
     private static String android_id = null;
 
+    BasicDataSource basicRepo;
+    AnalyticsDataSource analyticsRepo;
+
+    public synchronized BasicDataSource getBasicrepo() throws Exception {
+//        if (PXLClient.apiKey == null || PXLClient.secretKey == null) {
+//            throw new Exception();
+//        }
+        if (basicRepo == null) {
+            basicRepo = NetworkModule.generateBasicRepository();
+        }
+
+        return basicRepo;
+    }
+
+    public AnalyticsDataSource getAnalyticsRepo() throws Exception {
+//        if (PXLClient.apiKey == null || PXLClient.secretKey == null) {
+//            throw new Exception();
+//        }
+
+        if (analyticsRepo == null) {
+            analyticsRepo = NetworkModule.getAnalyticsRepository();
+        }
+        return analyticsRepo;
+    }
 
     private PXLClient(Context context) {
         mCtx = context;
@@ -77,8 +113,7 @@ public class PXLClient {
 
 
     public String computeHmac(String baseString, String secretKey)
-            throws NoSuchAlgorithmException, InvalidKeyException, IllegalStateException,  UnsupportedEncodingException
-    {
+            throws NoSuchAlgorithmException, InvalidKeyException, IllegalStateException, UnsupportedEncodingException {
 
         SecretKeySpec key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA1");
         Mac mac = Mac.getInstance("HmacSHA1");
@@ -95,10 +130,11 @@ public class PXLClient {
      * @param callbacks - called after request succeeds or fails
      * @return false if no api key set yet, true otherwise
      */
-    public boolean makeCall(String requestPath, HashMap<String, Object> parameters, final RequestCallbacks callbacks) {
+    /*public boolean makeCall(String requestPath, HashMap<String, Object> parameters, final RequestCallbacks callbacks) {
         if (PXLClient.apiKey == null) {
             return false;
         }
+
 
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("%s=%s", KeyApiKey, apiKey));
@@ -128,7 +164,7 @@ public class PXLClient {
         jor.setShouldCache(false);
         this.addToRequestQueue(jor);
         return true;
-    }
+    }*/
 
     /***
      * Makes a POST call to the Pixlee API. Appends api key to the request body and signs the request using the secret key.
@@ -136,7 +172,7 @@ public class PXLClient {
      * @param body - key/values to be passed in the POST body
      * @return false if no api key or secret set yet, true otherwise
      */
-    public boolean makePostCall(final String requestPath, final JSONObject body) {
+    /*public boolean makePostCall(final String requestPath, final JSONObject body) {
         if (PXLClient.apiKey == null || PXLClient.secretKey == null) {
             return false;
         }
@@ -147,8 +183,9 @@ public class PXLClient {
 
         Log.d(TAG, finalUrl);
 
-
-        final String requestBody = body.toString().replace("\\/", "/" );
+        getBasicrepo()
+                .postMedia()
+        final String requestBody = body.toString().replace("\\/", "/");
 
         StringRequest sr = new StringRequest(Request.Method.POST, finalUrl, new Response.Listener<String>() {
             @Override
@@ -163,7 +200,7 @@ public class PXLClient {
                 Log.w(TAG, "got an error response");
                 Log.w(TAG, error.toString());
             }
-        }){
+        }) {
             @Override
             public String getBodyContentType() {
                 return "application/json; charset=utf-8";
@@ -186,7 +223,7 @@ public class PXLClient {
                 try {
                     signature = computeHmac(requestBody, PXLClient.secretKey);
 
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 headers.put("Signature", signature);
@@ -210,7 +247,7 @@ public class PXLClient {
         sr.setShouldCache(false);
         this.addToRequestQueue(sr);
         return true;
-    }
+    }*/
 
     /***
      * Makes a call to the Pixlee Analytics API (limitless beyond). Appends api key, unique id and platform to the request body.
@@ -223,62 +260,38 @@ public class PXLClient {
         if (PXLClient.apiKey == null) {
             return false;
         }
-        String finalUrl = String.format("%s/%s", analyticsUrl, requestPath);
-        Log.d(TAG, finalUrl);
 
-        try{
+        try {
             body.put("API_KEY", PXLClient.apiKey.toString());
             body.put("uid", android_id.toString());
             body.put("platform", "android");
 
-        } catch (JSONException e) {
+            getAnalyticsRepo()
+                    .makeAnalyticsCall(requestPath, body)
+                   .enqueue(
+                           new Callback<String>() {
+                               @Override
+                               public void onResponse(Call<String> call, Response<String> response) {
+                                   try {
+                                       JSONObject json = new JSONObject(response.body());
+                                       //JsonReceived(json);
+                                   } catch (JSONException e) {
+                                       e.printStackTrace();
+                                   }
+                               }
+
+                               @Override
+                               public void onFailure(Call<String> call, Throwable t) {
+                                   /*if (handlers != null) {
+                                       handlers.DataLoadFailedHandler(t.toString());
+                                   }*/
+                               }
+                           }
+                   );
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        final String requestBody = body.toString();
-
-        StringRequest sr = new StringRequest(Request.Method.POST, finalUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d("ANALYTICS CALL Body", requestBody);
-                Log.d("ANALYTICS CALL ", response);
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.w(TAG, "got an error response");
-                Log.w(TAG, error.toString());
-            }
-        }){
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
-
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                try {
-                    return requestBody == null ? null : requestBody.getBytes("utf-8");
-                } catch (UnsupportedEncodingException uee) {
-                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
-                    return null;
-                }
-            }
-
-            @Override
-            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                String responseString = "";
-                if (response != null) {
-                    responseString = String.valueOf(response.statusCode);
-                    // can get more details such as response.headers
-                }
-                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-            }
-        };
-
-        sr.setShouldCache(false);
-        this.addToRequestQueue(sr);
         return true;
     }
 

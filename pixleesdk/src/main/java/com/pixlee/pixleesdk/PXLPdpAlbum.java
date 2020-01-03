@@ -6,8 +6,14 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PXLPdpAlbum extends PXLAlbum {
     private static final String TAG = "PXLPdpAlbum";
@@ -32,7 +38,7 @@ public class PXLPdpAlbum extends PXLAlbum {
         this.context = context;
     }
 
-    
+
     /***
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
      * sort order, and filter options before calling.
@@ -52,27 +58,61 @@ public class PXLPdpAlbum extends PXLAlbum {
                 return false;
             }
             PXLClient pxlClient = PXLClient.getInstance(context);
-            String requestPath = "albums/from_sku";
             this.pagesLoading.put(desiredPage, true);
             this.handlers = handlers;
-            pxlClient.makeCall(requestPath, getRequestParams(desiredPage), this);
+
+            try {
+                pxlClient
+                        .getBasicrepo()
+                        .getPhotosWithSKU(
+                                sku,
+                                PXLClient.apiKey,
+                                filterOptions != null ? filterOptions.toParamString() : null,
+                                sortOptions != null ? sortOptions.toParamString() : null,
+                                perPage,
+                                desiredPage
+                        ).enqueue(
+                        new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                try {
+                                    String result = response.body();
+                                    Log.e("retrofit result","retrofit result:" + result);
+                                    JSONObject json = new JSONObject(result);
+                                    JsonReceived(json);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                if (handlers != null) {
+                                    handlers.DataLoadFailedHandler(t.toString());
+                                }
+                            }
+                        }
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return true;
     }
 
-     @Override
-     protected HashMap<String, Object> getRequestParams(int desiredPage) {
-         HashMap<String, Object> paramMap = new HashMap<>();
-         if (filterOptions != null) {
-             paramMap.put(PXLClient.KeyFilters, filterOptions.toParamString());
-         }
-         if (sortOptions != null) {
-             paramMap.put(PXLClient.KeySort, sortOptions.toParamString());
-         }
-         paramMap.put(PXLClient.KeyPerPage, perPage);
-         paramMap.put(PXLClient.KeyPage, desiredPage);
-         paramMap.put(PXLClient.KeySku, sku);
-         return paramMap;
-     }
+    @Override
+    protected HashMap<String, Object> getRequestParams(int desiredPage) {
+        HashMap<String, Object> paramMap = new HashMap<>();
+        if (filterOptions != null) {
+            paramMap.put(PXLClient.KeyFilters, filterOptions.toParamString());
+        }
+        if (sortOptions != null) {
+            paramMap.put(PXLClient.KeySort, sortOptions.toParamString());
+        }
+        paramMap.put(PXLClient.KeyPerPage, perPage);
+        paramMap.put(PXLClient.KeyPage, desiredPage);
+        paramMap.put(PXLClient.KeySku, sku);
+        return paramMap;
+    }
 }
