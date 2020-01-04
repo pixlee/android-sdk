@@ -1,10 +1,10 @@
 package com.pixlee.pixleesdk.data.api;
 
-import okhttp3.ResponseBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -33,15 +33,10 @@ public interface BasicAPI {
     @GET("media/{id}")
     Call<String> getMedia(@Path("id")String id, @Query("api_key")String api_key);
 
-    @FormUrlEncoded
     @POST("media")
     Call<String> postMedia(
-            @Field("api_key")String api_key,
-            @Field("album_id")String album_id,
-            @Field("title")String title,
-            @Field("email")String email,
-            @Field("username")String username,
-            @Field("photo_uri")String photo_uri,
-            @Field("approved")boolean approved
+            @Header("Signature") String Signature,
+            @Query("api_key")String api_key,
+            @Body RequestBody body
     );
 }
