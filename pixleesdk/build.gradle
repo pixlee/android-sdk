@@ -36,7 +36,7 @@ dependencies {
      * Network
      */
     implementation "com.squareup.retrofit2:retrofit:$retrofit2"
-    //implementation "com.squareup.retrofit2:converter-gson:$retrofit2"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit2"
     implementation "com.squareup.retrofit2:converter-scalars:$retrofit2"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit2"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3"

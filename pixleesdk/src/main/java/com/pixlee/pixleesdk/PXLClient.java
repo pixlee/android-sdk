@@ -46,7 +46,7 @@ public class PXLClient {
     private Context mCtx;
 
     static String apiKey = null;
-    private static String secretKey = null;
+    public static String secretKey = null;
     private static String android_id = null;
 
     BasicDataSource basicRepo;

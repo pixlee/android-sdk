@@ -1,12 +1,13 @@
 package com.pixlee.pixleesdk.network;
 
+import android.util.Base64;
 import android.util.Log;
 
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.orhanobut.logger.Logger;
 import com.pixlee.pixleesdk.BuildConfig;
+import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.data.api.AnalyticsAPI;
 import com.pixlee.pixleesdk.data.api.BasicAPI;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
@@ -20,7 +21,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeUnit;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 import kotlin.text.Charsets;
 import okhttp3.Authenticator;
@@ -116,9 +122,7 @@ public class NetworkModule {
 
         }
 
-        /*dispatcher = Dispatcher()
-        httpClientBuilder.dispatcher(dispatcher)*/
-        ok.authenticator(new TokenAuthenticator());
+        //ok.authenticator(new TokenAuthenticator());
 
         ok.addInterceptor(interceptor);
         return ok.build();
@@ -132,16 +136,22 @@ public class NetworkModule {
             public Response intercept(@NotNull Chain chain) throws IOException {
 
                 Request original = chain.request();
-                Log.e("pretty", "Interceptor.url.host: " + original.url().host());
-                Log.e("pretty", "Interceptor.url.path: " + original.url());
+                Log.e("pretty", "Interceptor.url.url: " + original.url());
+                Log.e("pretty", "Interceptor.url.path: " + original.method());
+                String method = original.method();
+                String url = original.url().toString();
 
                 Request.Builder builder = original.newBuilder();
                 builder.header("Accept", "application/json");
-                /*storage.getCookie()?.also { cookie ->
-                    builder.header("Authorization", "Bearer $cookie")
-
+                builder.header("Content-Type", "application/json");
+                builder.header("Accept-Encoding", "utf-8");
+                if("POST".equals(method)){
+                    try {
+                        builder.header("Signature", computeHmac(url, PXLClient.secretKey));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-                */
 
                 Response response = chain.proceed(builder.build());
                 ResponseBody body = response.body();
@@ -149,7 +159,6 @@ public class NetworkModule {
                 String bodyStr = body.string();
                 Log.e("pretty", "**http-num: " + response.code());
                 Log.e("pretty", "**http-body: "+ bodyStr);
-
 
                 Response.Builder builder2 = response.newBuilder();
 
@@ -163,7 +172,18 @@ public class NetworkModule {
         };
     }
 
-    static public class TokenAuthenticator implements Authenticator {
+    private static String computeHmac(String baseString, String secretKey)
+            throws NoSuchAlgorithmException, InvalidKeyException, IllegalStateException {
+
+        SecretKeySpec key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA1");
+        Mac mac = Mac.getInstance("HmacSHA1");
+        mac.init(key);
+        byte[] bytes = mac.doFinal(baseString.getBytes());
+        //return Base64.encodeToString(bytes, Base64.DEFAULT);
+        return Base64.encodeToString(bytes, Base64.NO_WRAP); //Use Base64.NO_WRAP because Base64.DEFAULT put \n at the end of its string
+    }
+
+    /*static public class TokenAuthenticator implements Authenticator {
         @Override
         public Request authenticate(Route route, Response response) {
             Log.e("RequestMaker", "===http.status:" + response.code());
@@ -177,6 +197,6 @@ public class NetworkModule {
 
             return builder.build();
         }
-    }
+    }*/
 
 }
