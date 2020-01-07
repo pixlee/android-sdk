@@ -5,7 +5,6 @@ import android.util.Base64;
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.data.api.BasicAPI;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.InvalidKeyException;
@@ -42,26 +41,16 @@ public class BasicRepository implements BasicDataSource {
     }
 
     @Override
-    public Call<String> postMedia(String api_key, String album_id, String title, String email, String username, String photo_uri, boolean approved) {
+    public Call<String> postMedia(String api_key, JSONObject json) {
         String signiture = null;
-        JSONObject json = new JSONObject();
-        try {
 
-            json.put("album_id", Integer.parseInt(album_id));
-            json.put("title", title);
-            json.put("approved", false);
-            json.put("email", email);
-            json.put("username",username);
-            json.put("photo_uri", photo_uri);
+        try {
             signiture = computeHmac(json.toString().replace("\\/", "/" ), PXLClient.secretKey);
-        } catch (JSONException e) {
-            e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
-
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json.toString());
         return api.postMedia(signiture, api_key, body);
     }
@@ -73,7 +62,6 @@ public class BasicRepository implements BasicDataSource {
         Mac mac = Mac.getInstance("HmacSHA1");
         mac.init(key);
         byte[] bytes = mac.doFinal(baseString.getBytes());
-        //return Base64.encodeToString(bytes, Base64.DEFAULT);
-        return Base64.encodeToString(bytes, Base64.NO_WRAP); //Use Base64.NO_WRAP because Base64.DEFAULT put \n at the end of its string
+        return Base64.encodeToString(bytes, Base64.NO_WRAP);
     }
 }

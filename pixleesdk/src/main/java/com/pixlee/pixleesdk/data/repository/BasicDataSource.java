@@ -1,6 +1,7 @@
 package com.pixlee.pixleesdk.data.repository;
 
-import okhttp3.ResponseBody;
+import org.json.JSONObject;
+
 import retrofit2.Call;
 
 public interface BasicDataSource {
@@ -26,11 +27,6 @@ public interface BasicDataSource {
 
     Call<String> postMedia(
             String api_key,
-            String album_id,
-            String title,
-            String email,
-            String username,
-            String photo_uri,
-            boolean approved
+            JSONObject json
     );
 }

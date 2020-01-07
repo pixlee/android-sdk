@@ -113,30 +113,8 @@ public class PXLPhoto {
             Log.e(TAG, "no context given for photo");
         }
 
-        PXLClient pxlClient = PXLClient.getInstance(ctx);
-        /*String endpoint = String.format("%s/%s", PXLClient.ACTION_MEDIA, identifier);
-        pxlClient.makeCall(endpoint, null, new RequestCallbacks() {
-            @Override
-            public void JsonReceived(JSONObject response) {
-                JSONObject data = response.optJSONObject("data");
-                if (data == null) {
-                    Log.e(TAG, "no data from successful api call");
-                } else {
-                    if (callback != null) {
-                        callback.photoLoaded(PXLPhoto.fromJsonObj(data));
-                    }
-                }
-            }
-
-            @Override
-            public void ErrorResponse(Exception error) {
-                if (callback != null) {
-                    callback.photoLoadFailed(error.toString());
-                }
-            }
-        });*/
-
         try {
+            PXLClient pxlClient = PXLClient.getInstance(ctx);
             pxlClient
                     .getBasicrepo()
                     .getMedia(identifier, pxlClient.apiKey)

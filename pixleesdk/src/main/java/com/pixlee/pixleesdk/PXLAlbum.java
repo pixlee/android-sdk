@@ -3,16 +3,12 @@ package com.pixlee.pixleesdk;
 import android.content.Context;
 import android.util.Log;
 
-import com.pixlee.pixleesdk.network.NetworkModule;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -202,12 +198,7 @@ public class PXLAlbum implements RequestCallbacks {
                     .getBasicrepo()
                     .postMedia(
                             PXLClient.apiKey,
-                            this.id,
-                            title,
-                            email,
-                            username,
-                            photoURI,
-                            approved
+                            body
                             )
                     .enqueue(new Callback<String>() {
                         @Override
@@ -230,7 +221,6 @@ public class PXLAlbum implements RequestCallbacks {
             return false;
         }
         return true;
-        //return pxlClient.makePostCall("media", body);
     }
 
     /***
