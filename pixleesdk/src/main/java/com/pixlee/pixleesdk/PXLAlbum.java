@@ -3,13 +3,15 @@ package com.pixlee.pixleesdk;
 import android.content.Context;
 import android.util.Log;
 
-import com.android.volley.VolleyError;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /***
  * Represents a Pixlee album. Constructs appropriate API calls to fetch the desired set of photos.
@@ -46,7 +48,7 @@ public class PXLAlbum implements RequestCallbacks {
             this.page = response.getInt("page");
             this.perPage = response.getInt(("per_page"));
             this.hasMore = response.getBoolean(("next"));
-            if(this.id == null){
+            if (this.id == null) {
                 this.id = String.valueOf(response.getInt("album_id"));
             }
             //add placeholders for photos if they haven't been loaded yet
@@ -73,7 +75,7 @@ public class PXLAlbum implements RequestCallbacks {
      * @param error - error from volley
      */
     @Override
-    public void ErrorResponse(VolleyError error) {
+    public void ErrorResponse(Exception error) {
         if (handlers != null) {
             handlers.DataLoadFailedHandler(error.toString());
         }
@@ -84,6 +86,7 @@ public class PXLAlbum implements RequestCallbacks {
      */
     public interface RequestHandlers {
         void DataLoadedHandler(ArrayList<PXLPhoto> photos);
+
         void DataLoadFailedHandler(String error);
     }
 
@@ -122,10 +125,42 @@ public class PXLAlbum implements RequestCallbacks {
                 return false;
             }
             PXLClient pxlClient = PXLClient.getInstance(context);
-            String requestPath = String.format("albums/%s/photos", this.id);
             this.pagesLoading.put(desiredPage, true);
             this.handlers = handlers;
-            pxlClient.makeCall(requestPath, getRequestParams(desiredPage), this);
+
+            try {
+                pxlClient
+                        .getBasicrepo()
+                        .getPhotosWithID(
+                                this.id,
+                                PXLClient.apiKey,
+                                filterOptions != null ? filterOptions.toParamString() : null,
+                                sortOptions != null ? sortOptions.toParamString() : null,
+                                perPage,
+                                desiredPage
+                        ).enqueue(
+                        new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                try {
+                                    JSONObject json = new JSONObject(response.body());
+                                    JsonReceived(json);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                if (handlers != null) {
+                                    handlers.DataLoadFailedHandler(t.toString());
+                                }
+                            }
+                        }
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return true;
@@ -146,8 +181,8 @@ public class PXLAlbum implements RequestCallbacks {
         PXLClient pxlClient = PXLClient.getInstance(context);
         JSONObject body = new JSONObject();
 
-        try{
-            body.put("album_id",  Integer.parseInt(this.id));
+        try {
+            body.put("album_id", Integer.parseInt(this.id));
             body.put("title", title);
             body.put("email", email);
             body.put("username", username);
@@ -158,7 +193,34 @@ public class PXLAlbum implements RequestCallbacks {
             e.printStackTrace();
         }
 
-        return pxlClient.makePostCall("media", body);
+        try {
+            pxlClient
+                    .getBasicrepo()
+                    .postMedia(
+                            PXLClient.apiKey,
+                            body
+                            )
+                    .enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            try {
+                                JSONObject json = new JSONObject(response.body());
+                                JsonReceived(json);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     /***
@@ -222,7 +284,7 @@ public class PXLAlbum implements RequestCallbacks {
         for (int i = 0; i < this.photos.size(); i++) {
             try {
                 stringBuilder.append(this.photos.get(i).id);
-                if(i != this.photos.size() - 1){
+                if (i != this.photos.size() - 1) {
                     stringBuilder.append(",");
                 }
             } catch (Exception e) {
@@ -230,8 +292,8 @@ public class PXLAlbum implements RequestCallbacks {
             }
         }
 
-        try{
-            body.put("album_id",  Integer.parseInt(this.id));
+        try {
+            body.put("album_id", Integer.parseInt(this.id));
             body.put("per_page", this.perPage);
             body.put("page", this.page);
             body.put("photos", stringBuilder.toString());
@@ -249,7 +311,7 @@ public class PXLAlbum implements RequestCallbacks {
             Log.w(TAG, "missing album id");
             return false;
         }
-        if(this.page < 2){
+        if (this.page < 2) {
             Log.w(TAG, "first load detected");
             return false;
         }
@@ -260,7 +322,7 @@ public class PXLAlbum implements RequestCallbacks {
         for (int i = lastIdx; i < this.photos.size(); i++) {
             try {
                 stringBuilder.append(this.photos.get(i).id);
-                if(i != this.photos.size() - 1){
+                if (i != this.photos.size() - 1) {
                     stringBuilder.append(",");
                 }
             } catch (Exception e) {
@@ -268,8 +330,8 @@ public class PXLAlbum implements RequestCallbacks {
             }
         }
 
-        try{
-            body.put("album_id",  Integer.parseInt(this.id));
+        try {
+            body.put("album_id", Integer.parseInt(this.id));
             body.put("per_page", this.perPage);
             body.put("page", this.page);
             body.put("photos", stringBuilder.toString());

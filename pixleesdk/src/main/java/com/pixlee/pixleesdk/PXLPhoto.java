@@ -1,20 +1,23 @@
 package com.pixlee.pixleesdk;
 
 import android.content.Context;
-import android.provider.ContactsContract;
 import android.util.Log;
-
-import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /***
  * PXLPhoto represents an individual photo. Exposes all the data retrieved from an API call.
@@ -74,6 +77,7 @@ public class PXLPhoto {
 
     public interface PhotoLoadHandlers {
         void photoLoaded(PXLPhoto photo);
+
         void photoLoadFailed(String error);
     }
 
@@ -109,28 +113,41 @@ public class PXLPhoto {
             Log.e(TAG, "no context given for photo");
         }
 
-        PXLClient pxlClient = PXLClient.getInstance(ctx);
-        String endpoint = String.format("%s/%s", PXLClient.ACTION_MEDIA, identifier);
-        pxlClient.makeCall(endpoint, null, new RequestCallbacks() {
-            @Override
-            public void JsonReceived(JSONObject response) {
-                JSONObject data = response.optJSONObject("data");
-                if (data == null) {
-                    Log.e(TAG, "no data from successful api call");
-                } else {
-                    if (callback != null) {
-                        callback.photoLoaded(PXLPhoto.fromJsonObj(data));
-                    }
-                }
-            }
+        try {
+            PXLClient pxlClient = PXLClient.getInstance(ctx);
+            pxlClient
+                    .getBasicrepo()
+                    .getMedia(identifier, pxlClient.apiKey)
+                    .enqueue(
+                            new Callback<String>() {
+                                @Override
+                                public void onResponse(Call<String> call, Response<String> response) {
+                                    try {
+                                        JSONObject json = new JSONObject(response.body());
+                                        JSONObject data = json.optJSONObject("data");
+                                        if (data == null) {
+                                            Log.e(TAG, "no data from successful api call");
+                                        } else {
+                                            if (callback != null) {
+                                                callback.photoLoaded(PXLPhoto.fromJsonObj(data));
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
 
-            @Override
-            public void ErrorResponse(VolleyError error) {
-                if (callback != null) {
-                    callback.photoLoadFailed(error.toString());
-                }
-            }
-        });
+                                @Override
+                                public void onFailure(Call<String> call, Throwable t) {
+                                    if (callback != null) {
+                                        callback.photoLoadFailed(t.toString());
+                                    }
+                                }
+                            }
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void loadFromId(final PhotoLoadHandlers callback) {
@@ -141,27 +158,40 @@ public class PXLPhoto {
             Log.e(TAG, "need context for pxlclient");
         }
         PXLClient pxlClient = PXLClient.getInstance(ctx);
-        String endpoint = String.format("%s/%s", PXLClient.ACTION_MEDIA, this.id);
-        pxlClient.makeCall(endpoint, null, new RequestCallbacks() {
-            @Override
-            public void JsonReceived(JSONObject response) {
-                JSONObject data = response.optJSONObject("data");
-                if (data == null) {
-                    Log.e(TAG, "no data from successful api call");
-                } else {
-                    if (callback != null) {
-                        callback.photoLoaded(PXLPhoto.fromJsonObj(data));
-                    }
-                }
-            }
+        try {
+            pxlClient
+                    .getBasicrepo()
+                    .getMedia(this.id, PXLClient.apiKey)
+                    .enqueue(
+                            new Callback<String>() {
+                                @Override
+                                public void onResponse(Call<String> call, Response<String> response) {
+                                    try {
+                                        JSONObject json = new JSONObject(response.body());
+                                        JSONObject data = json.optJSONObject("data");
+                                        if (data == null) {
+                                            Log.e(TAG, "no data from successful api call");
+                                        } else {
+                                            if (callback != null) {
+                                                callback.photoLoaded(PXLPhoto.fromJsonObj(data));
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
 
-            @Override
-            public void ErrorResponse(VolleyError error) {
-                if (callback != null) {
-                    callback.photoLoadFailed(error.toString());
-                }
-            }
-        });
+                                @Override
+                                public void onFailure(Call<String> call, Throwable t) {
+                                    if (callback != null) {
+                                        callback.photoLoadFailed(t.toString());
+                                    }
+                                }
+                            }
+                    );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public PXLPhoto(Context ctx, String identifier) {
@@ -285,8 +315,8 @@ public class PXLPhoto {
         PXLClient pxlClient = PXLClient.getInstance(context);
         JSONObject body = new JSONObject();
 
-        try{
-            body.put("album_id",  Integer.parseInt(this.album.id));
+        try {
+            body.put("album_id", Integer.parseInt(this.album.id));
             body.put("album_photo_id", Integer.parseInt(this.albumPhotoId));
             body.put("action_link_url", actionLink);
 
@@ -301,7 +331,7 @@ public class PXLPhoto {
 
         PXLClient pxlClient = PXLClient.getInstance(context);
         JSONObject body = new JSONObject();
-        try{
+        try {
             body.put("album_id", Integer.parseInt(this.album.id));
             body.put("album_photo_id", Integer.parseInt(this.albumPhotoId));
 

@@ -2,26 +2,20 @@ package com.pixlee.pixleeandroidsdk;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.pixlee.pixleesdk.PXLAlbum;
-import com.pixlee.pixleesdk.PXLAnalytics;
-import com.pixlee.pixleesdk.PXLContentSource;
-import com.pixlee.pixleesdk.PXLContentType;
-import com.pixlee.pixleesdk.PXLPdpAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortType;
@@ -29,16 +23,13 @@ import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.PXLPhotoSize;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SampleActivity extends AppCompatActivity implements PXLAlbum.RequestHandlers {
     private ArrayList<PXLPhoto> photoList;
     private PXLAlbum album;
-    private NetworkImageView detailImage;
+    private ImageView detailImage;
     private TextView detailText;
     private ImageView detailSourceIcon;
     private TextView detailUser;
@@ -62,7 +53,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         viewSwitcher = (ViewSwitcher)findViewById(R.id.viewSwitcher1);
         gridToggleButton = (ImageView) findViewById(R.id.gridToggle);
         lastImg = R.drawable.grid_2x;
-        this.detailImage = (NetworkImageView) findViewById(R.id.detailImage);
+        this.detailImage = (ImageView) findViewById(R.id.detailImage);
         this.detailText = (TextView) findViewById(R.id.detailText);
         this.detailSourceIcon = (ImageView) findViewById(R.id.detailSourceIcon);
         this.detailUser = (TextView) findViewById(R.id.userName);
@@ -258,7 +249,9 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     private void updateDetailView(PXLPhoto photo) {
         Context c = this.getApplicationContext();
         this.detailSourceIcon.setImageResource(photo.sourceIconImage());
-        this.detailImage.setImageUrl(photo.getUrlForSize(PXLPhotoSize.MEDIUM).toString(), PXLClient.getInstance(this).getImageLoader());
+        Glide.with(this)
+                .load(photo.getUrlForSize(PXLPhotoSize.MEDIUM).toString())
+                .into(this.detailImage);
         this.detailText.setText(photo.photoTitle);
         this.detailUser.setText(String.format("@%s", photo.userName));
         String unit = "hour";
@@ -315,11 +308,10 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     }
 
     private void populateDetailActions(PXLPhoto photo) {
-        ImageLoader iloader = PXLClient.getInstance(this).getImageLoader();
         actionLinksLayout.removeAllViews();
         for (int i = 0; i < photo.products.size(); i++) {
             PXLProductView pxlProductView = new PXLProductView(this, null);
-            pxlProductView.populate(photo.products.get(i), iloader);
+            pxlProductView.populate(photo.products.get(i));
             actionLinksLayout.addView(pxlProductView);
         }
     }

@@ -6,7 +6,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:3.5.3'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -24,4 +24,13 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+    retrofit2 = "2.6.2"
+    okhttp3 = "4.2.0"
+    rxJava = "2.2.8"
+    rxAndroid = "2.1.1"
+    gson = "2.8.5"
+    glide = "4.9.0"
 }
