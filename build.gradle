@@ -28,6 +28,7 @@ task clean(type: Delete) {
 
 ext {
     retrofit2 = "2.6.2"
+    moshi = "1.9.2"
     okhttp3 = "4.2.0"
     rxJava = "2.2.8"
     rxAndroid = "2.1.1"

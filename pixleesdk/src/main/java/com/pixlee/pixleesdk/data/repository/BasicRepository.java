@@ -3,6 +3,7 @@ package com.pixlee.pixleesdk.data.repository;
 import android.util.Base64;
 
 import com.pixlee.pixleesdk.PXLClient;
+import com.pixlee.pixleesdk.data.AlbumResult;
 import com.pixlee.pixleesdk.data.api.BasicAPI;
 
 import org.json.JSONObject;
@@ -17,6 +18,9 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 
+/**
+ * This object loads data from and uploads data to the server using BasicAPI.java, a Retrofit HTTP API class.
+ */
 public class BasicRepository implements BasicDataSource {
     BasicAPI api;
 
@@ -26,7 +30,7 @@ public class BasicRepository implements BasicDataSource {
 
 
     @Override
-    public Call<String> getPhotosWithSKU(String sku, String api_key, String filters, String sort, int per_page, int page) {
+    public Call<AlbumResult> getPhotosWithSKU(String sku, String api_key, String filters, String sort, int per_page, int page) {
         return api.getPhotosWithSKU(sku, api_key, filters, sort, per_page, page);
     }
 

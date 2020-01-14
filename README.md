@@ -1,10 +1,13 @@
+[![](https://jitpack.io/v/pixlee/android-sdk.svg)](https://jitpack.io/#pixlee/android-sdk)
+
+
 # pixlee-android-sdk
 
 This SDK makes it easy for Pixlee customers to find and download Pixlee images and albums.  There's a native wrapper to the Pixlee album API for Android, and there's also a demo app showing how easy it is to drop in and customize a UI.
 
 ## Getting Started
 
-This repo includes both the Pixlee Android SDK and an example project to show you how it's used.  The examples included with this SDK are meant to be used in Android Studio to create a typical Android app.  These examples were created and tested in Android Studio 2.3 and can be included by following the directions below under "Including the Pixlee SDK."
+This repo includes both the Pixlee Android SDK and an example project to show you how it's used.  The examples included with this SDK are meant to be used in Android Studio to create a typical Android app.  These examples were created and tested in Android Studio 3.5.3 and can be included by following the directions below under "Including the Pixlee SDK."
 
 ### SDK
 

@@ -3,6 +3,8 @@ package com.pixlee.pixleesdk;
 import android.content.Context;
 import android.util.Log;
 
+import com.pixlee.pixleesdk.annotation.FieldURL;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,15 +35,20 @@ public class PXLPhoto {
     public String email_address;
     public int instagramFollowers;
     public int twitterFollowers;
+    @FieldURL
     public URL avatarUrl;
     public String userName;
     public int connectedUserId;
     public String source;
     public String contentType;
     public String dataFileName;
+    @FieldURL
     public URL mediumUrl;
+    @FieldURL
     public URL bigUrl;
+    @FieldURL
     public URL thumbnailUrl;
+    @FieldURL
     public URL sourceUrl;
     public String mediaId;
     public int existIn;
@@ -49,6 +56,8 @@ public class PXLPhoto {
     public String albumPhotoId;
     public int likeCount;
     public int shareCount;
+
+    @FieldURL
     public URL actionLink;
     public String actionLinkText;
     public String actionLinkTitle;
@@ -60,17 +69,29 @@ public class PXLPhoto {
     public boolean isFlagged;
     public PXLAlbum album;
     public int unreadCount;
+
+    @FieldURL
     public URL albumActionLink;
     public String title;
     public Boolean messaged;
     public Boolean hasPermission;
     public Boolean awaitingPermission;
     public Boolean instUserHasLiked;
+
+    @FieldURL
     public URL platformLink;
     public ArrayList<PXLProduct> products;
+
+    @FieldURL
     public URL cdnSmallUrl;
+
+    @FieldURL
     public URL cdnMediumUrl;
+
+    @FieldURL
     public URL cdnLargeUrl;
+
+    @FieldURL
     public URL cdnOriginalUrl;
 
     private Context ctx;
@@ -144,7 +165,7 @@ public class PXLPhoto {
                                     }
                                 }
                             }
-            );
+                    );
         } catch (Exception e) {
             e.printStackTrace();
         }

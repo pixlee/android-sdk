@@ -3,6 +3,8 @@ package com.pixlee.pixleesdk;
 import android.content.Context;
 import android.util.Log;
 
+import com.pixlee.pixleesdk.data.AlbumResult;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -72,21 +74,17 @@ public class PXLPdpAlbum extends PXLAlbum {
                                 perPage,
                                 desiredPage
                         ).enqueue(
-                        new Callback<String>() {
+                        new Callback<AlbumResult>() {
                             @Override
-                            public void onResponse(Call<String> call, Response<String> response) {
-                                try {
-                                    String result = response.body();
-                                    Log.e("retrofit result","retrofit result:" + result);
-                                    JSONObject json = new JSONObject(result);
-                                    JsonReceived(json);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                            public void onResponse(Call<AlbumResult> call, Response<AlbumResult> response) {
+                                AlbumResult result = response.body();
+                                Log.e("retrofit result","retrofit result:" + result.photos.size());
+                                //JSONObject json = new JSONObject(result);
+                                //JsonReceived(json);
                             }
 
                             @Override
-                            public void onFailure(Call<String> call, Throwable t) {
+                            public void onFailure(Call<AlbumResult> call, Throwable t) {
                                 if (handlers != null) {
                                     handlers.DataLoadFailedHandler(t.toString());
                                 }

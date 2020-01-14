@@ -1,5 +1,7 @@
 package com.pixlee.pixleesdk;
 
+import com.pixlee.pixleesdk.annotation.FieldURL;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,9 +14,12 @@ import java.util.ArrayList;
 public class PXLProduct {
     public String id;
     public PXLPhoto photo;
+    @FieldURL
     public URL link;
     public String linkText;
+    @FieldURL
     public URL image;
+    @FieldURL
     public URL imageThumb;
     public String title;
     public String sku;

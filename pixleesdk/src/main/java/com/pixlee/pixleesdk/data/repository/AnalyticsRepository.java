@@ -13,6 +13,9 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
+/**
+ * This object transfers analytics data to the server using AnalyticsAPI.java, a Retrofit HTTP API class.
+ */
 public class AnalyticsRepository implements AnalyticsDataSource {
     AnalyticsAPI api;
 
