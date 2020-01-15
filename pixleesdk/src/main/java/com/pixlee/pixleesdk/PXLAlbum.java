@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -85,7 +86,7 @@ public class PXLAlbum implements RequestCallbacks {
      * Interface for callbacks for loadNextPageOfPhotos
      */
     public interface RequestHandlers {
-        void DataLoadedHandler(ArrayList<PXLPhoto> photos);
+        void DataLoadedHandler(List<PXLPhoto> photos);
 
         void DataLoadFailedHandler(String error);
     }

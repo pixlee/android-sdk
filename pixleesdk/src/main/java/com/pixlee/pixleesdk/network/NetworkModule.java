@@ -7,18 +7,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.orhanobut.logger.Logger;
 import com.pixlee.pixleesdk.BuildConfig;
-import com.pixlee.pixleesdk.annotation.FieldURL;
 import com.pixlee.pixleesdk.data.api.AnalyticsAPI;
 import com.pixlee.pixleesdk.data.api.BasicAPI;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.AnalyticsRepository;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicRepository;
-import com.squareup.moshi.FromJson;
-import com.squareup.moshi.JsonDataException;
+import com.pixlee.pixleesdk.network.adaptor.DateAdapter;
+import com.pixlee.pixleesdk.network.adaptor.PrimitiveAdapter;
+import com.pixlee.pixleesdk.network.adaptor.URLAdapter;
+import com.serjltt.moshi.adapters.Wrapped;
 import com.squareup.moshi.Moshi;
-import com.squareup.moshi.ToJson;
-import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -26,7 +25,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import kotlin.text.Charsets;
@@ -37,9 +35,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.moshi.MoshiConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * This class generates Data Source classes that include Retrofit HTTP API interfaces.
@@ -80,40 +76,18 @@ public class NetworkModule {
     }
 
     private static Moshi provideMoshi(){
-        Moshi moshi = new Moshi.Builder()
+        return new Moshi.Builder()
+                .add(Wrapped.ADAPTER_FACTORY)
+                .add(new PrimitiveAdapter()) //null -> a specified default value, same as the return value of JSONObject.opt{PrimitiveType}(...)
                 .add(new URLAdapter())  //String -> URL
-                .add(new Rfc3339DateJsonAdapter()) //string -> Date
+                .add(new DateAdapter()) //string -> Date
                 .build();
-        return moshi;
     }
-
-    static class URLAdapter {
-        @ToJson
-        String toJson(URL card) {
-            return card.toString();
-        }
-
-        @FromJson
-        URL fromJson(@FieldURL String url) {
-            /*if (card.length() != 2) throw new JsonDataException("Unknown card: " + card);
-
-            char rank = card.charAt(0);
-            switch (card.charAt(1)) {
-                case 'C': return new Card(rank, Suit.CLUBS);
-                case 'D': return new Card(rank, Suit.DIAMONDS);
-                case 'H': return new Card(rank, Suit.HEARTS);
-                case 'S': return new Card(rank, Suit.SPADES);
-                default: throw new JsonDataException("unknown suit: " + card);
-            }*/
-            return null;
-        }
-    }
-
 
     private static Retrofit provideRetrofit(String url, Gson gson, OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(url)
-                .addConverterFactory(MoshiConverterFactory.create())
+                .addConverterFactory(MoshiConverterFactory.create(provideMoshi()))
                 //.addConverterFactory(ScalarsConverterFactory.create())
                 //.addConverterFactory(GsonConverterFactory.create(gson))
                 .client(okHttpClient)
@@ -158,7 +132,7 @@ public class NetworkModule {
 
         }
 
-        ok.addInterceptor(interceptor);
+        //ok.addInterceptor(interceptor);
         return ok.build();
     }
 

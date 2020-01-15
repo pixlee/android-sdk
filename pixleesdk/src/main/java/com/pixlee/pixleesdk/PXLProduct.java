@@ -1,6 +1,7 @@
 package com.pixlee.pixleesdk;
 
-import com.pixlee.pixleesdk.annotation.FieldURL;
+import com.pixlee.pixleesdk.network.annotation.FieldURL;
+import com.squareup.moshi.Json;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,17 +13,32 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class PXLProduct {
+    @Json(name = "id")
     public String id;
-    public PXLPhoto photo;
+
+    //public PXLPhoto photo;
     @FieldURL
+    @Json(name = "link")
     public URL link;
+
+    @Json(name = "link_text")
     public String linkText;
+
     @FieldURL
+    @Json(name = "image")
     public URL image;
+
     @FieldURL
+    @Json(name = "image_thumb")
     public URL imageThumb;
+
+    @Json(name = "title")
     public String title;
+
+    @Json(name = "sku")
     public String sku;
+
+    @Json(name = "description")
     public String description;
 
     /***
@@ -46,7 +62,7 @@ public class PXLProduct {
 
     public PXLProduct(JSONObject obj, PXLPhoto photo) throws MalformedURLException, UnsupportedEncodingException {
         this.id = obj.optString("id");
-        this.photo = photo;
+        //this.photo = photo;
         this.link = JsonUtils.getURL("link", obj);
         this.linkText = obj.optString("link_text");
         this.image = JsonUtils.getURL("image", obj);
