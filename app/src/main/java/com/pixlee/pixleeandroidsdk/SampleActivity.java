@@ -25,6 +25,7 @@ import com.pixlee.pixleesdk.PXLPhotoSize;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class SampleActivity extends AppCompatActivity implements PXLAlbum.RequestHandlers {
     private ArrayList<PXLPhoto> photoList;
@@ -103,7 +104,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
      * @param photos - the complete list of photos (both the latest page and all previous)
      */
     @Override
-    public void DataLoadedHandler(ArrayList<PXLPhoto> photos) {
+    public void DataLoadedHandler(List<PXLPhoto> photos) {
         if (photos == null) {
             return;
         }
@@ -166,14 +167,18 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
      * Initializes the PXLClient and creates the PXLAlbum
      */
     private void createAlbum() {
-        Context c = this.getApplicationContext();
-
         PXLClient.initialize("196i8ZzIAhKU8dO2kDe");
 
-        album = new PXLAlbum("4503434", c);
-        PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
-        fo.minTwitterFollowers = 0;
-        fo.minInstagramFollowers = 0;
+        try {
+            PXLClient client = PXLClient.getInstance(this);
+            album = new PXLAlbum("4503434", client.getBasicrepo(), client.getAnalyticsRepo());
+            PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
+            fo.minTwitterFollowers = 0;
+            fo.minInstagramFollowers = 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         /* ~~~ content source and content filter examples ~~~
           ArrayList contentSource = new ArrayList();
