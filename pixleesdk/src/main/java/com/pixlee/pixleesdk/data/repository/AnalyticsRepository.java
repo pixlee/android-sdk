@@ -1,9 +1,11 @@
 package com.pixlee.pixleesdk.data.repository;
 
+import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.data.api.AnalyticsAPI;
 import com.pixlee.pixleesdk.data.api.BasicAPI;
 import com.pixlee.pixleesdk.network.NetworkModule;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -26,6 +28,13 @@ public class AnalyticsRepository implements AnalyticsDataSource {
 
     @Override
     public Call<String> makeAnalyticsCall(String requestPath, JSONObject json) {
+        try {
+            json.put("API_KEY", PXLClient.apiKey);
+            json.put("uid", PXLClient.android_id);
+            json.put("platform", "android");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json.toString());
 
         return api.makeAnalyticsCall(NetworkModule.analyticsUrl + requestPath, body);

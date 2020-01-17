@@ -3,7 +3,6 @@ package com.pixlee.pixleesdk.network.adaptor;
 import com.pixlee.pixleesdk.JsonUtils;
 import com.pixlee.pixleesdk.network.annotation.FieldURL;
 import com.squareup.moshi.FromJson;
-import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.ToJson;
 
 import java.net.URL;

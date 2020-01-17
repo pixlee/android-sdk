@@ -31,17 +31,14 @@ public class PXLClient {
     private static PXLClient mInstance;
     private Context mCtx;
 
-    static String apiKey = null;
+    public static String apiKey = null;
     public static String secretKey = null;
-    private static String android_id = null;
+    public static String android_id = null;
 
-    BasicDataSource basicRepo;
-    AnalyticsDataSource analyticsRepo;
+    private BasicDataSource basicRepo;
+    private AnalyticsDataSource analyticsRepo;
 
-    public synchronized BasicDataSource getBasicrepo() throws Exception {
-        if (PXLClient.apiKey == null || PXLClient.secretKey == null) {
-            throw new Exception();
-        }
+    public BasicDataSource getBasicrepo() {
         if (basicRepo == null) {
             basicRepo = NetworkModule.generateBasicRepository();
         }
@@ -49,22 +46,20 @@ public class PXLClient {
         return basicRepo;
     }
 
-    public AnalyticsDataSource getAnalyticsRepo() throws Exception {
-        if (PXLClient.apiKey == null || PXLClient.secretKey == null) {
-            throw new Exception();
-        }
-
+    public AnalyticsDataSource getAnalyticsRepo() {
         if (analyticsRepo == null) {
             analyticsRepo = NetworkModule.getAnalyticsRepository();
         }
         return analyticsRepo;
     }
 
-    private PXLClient(Context context) {
+    private PXLClient(Context context) throws Exception {
+        if (PXLClient.apiKey == null || PXLClient.secretKey == null) {
+            throw new Exception();
+        }
+
         mCtx = context;
-
         android_id = Secure.getString(mCtx.getContentResolver(), Secure.ANDROID_ID);
-
     }
 
     /***
@@ -90,50 +85,10 @@ public class PXLClient {
      * @param context - used for generating the volley request queue.
      * @return
      */
-    public static synchronized PXLClient getInstance(Context context) {
+    public static synchronized PXLClient getInstance(Context context) throws Exception {
         if (mInstance == null) {
             mInstance = new PXLClient(context);
         }
         return mInstance;
     }
-
-    /***
-     * Makes a call to the Pixlee Analytics API (limitless beyond). Appends api key, unique id and platform to the request body.
-     * on success/error.
-     * @param requestPath - path to hit (will be appended to the base Pixlee Analytics api endpoint)
-     * @param body - key/values to be stored in analytics events
-     * @return false if no api key set yet, true otherwise
-     */
-    public boolean makeAnalyticsCall(final String requestPath, final JSONObject body) {
-        if (PXLClient.apiKey == null) {
-            return false;
-        }
-
-        try {
-            body.put("API_KEY", PXLClient.apiKey.toString());
-            body.put("uid", android_id.toString());
-            body.put("platform", "android");
-
-            getAnalyticsRepo()
-                    .makeAnalyticsCall(requestPath, body)
-                   .enqueue(
-                           new Callback<String>() {
-                               @Override
-                               public void onResponse(Call<String> call, Response<String> response) {
-
-                               }
-
-                               @Override
-                               public void onFailure(Call<String> call, Throwable t) {
-
-                               }
-                           }
-                   );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return true;
-    }
-
 }

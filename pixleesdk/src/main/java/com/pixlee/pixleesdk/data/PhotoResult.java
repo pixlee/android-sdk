@@ -3,10 +3,9 @@ package com.pixlee.pixleesdk.data;
 import com.pixlee.pixleesdk.PXLPhoto;
 import com.squareup.moshi.Json;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class AlbumResult {
+public class PhotoResult {
     @Json(name = "account_id")
     public int accountId;
 

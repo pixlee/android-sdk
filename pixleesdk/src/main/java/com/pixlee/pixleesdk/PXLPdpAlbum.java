@@ -3,21 +3,21 @@ package com.pixlee.pixleesdk;
 import android.content.Context;
 import android.util.Log;
 
-import com.pixlee.pixleesdk.data.AlbumResult;
+import com.pixlee.pixleesdk.data.PhotoResult;
+import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
+import com.pixlee.pixleesdk.data.repository.BasicDataSource;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PXLPdpAlbum extends PXLAlbum {
+/**
+ * ProductAlbum ViewModel of MVVM architecture
+ */
+public class PXLPdpAlbum extends PXLBaseAlbum {
     private static final String TAG = "PXLPdpAlbum";
     private final String sku;
 
@@ -25,21 +25,13 @@ public class PXLPdpAlbum extends PXLAlbum {
      * Constructor requires the product sku and context, which will be passed along to the PXLClient
      * for volley configuration.
      * @param sku - product sku
-     * @param context - context which will be used for volley configuration
+     * @param basicRepo     Restful API for photos
+     * @param analyticsRepo Restful API for analytics
      */
-    public PXLPdpAlbum(String sku, Context context) {
-        super(sku, context);
+    public PXLPdpAlbum(String sku, BasicDataSource basicRepo, AnalyticsDataSource analyticsRepo) {
+        super(basicRepo, analyticsRepo);
         this.sku = sku;
-        this.id = null;
-        this.page = 0;
-        this.perPage = DefaultPerPage;
-        this.hasMore = true;
-        this.lastPageLoaded = 0;
-        this.photos = new ArrayList<>();
-        this.pagesLoading = new HashMap<>();
-        this.context = context;
     }
-
 
     /***
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
@@ -59,65 +51,44 @@ public class PXLPdpAlbum extends PXLAlbum {
                 Log.d(TAG, String.format("page %s already loading", desiredPage));
                 return false;
             }
-            PXLClient pxlClient = PXLClient.getInstance(context);
             this.pagesLoading.put(desiredPage, true);
-            this.handlers = handlers;
 
             try {
-                pxlClient
-                        .getBasicrepo()
-                        .getPhotosWithSKU(
-                                sku,
-                                PXLClient.apiKey,
-                                filterOptions != null ? filterOptions.toParamString() : null,
-                                sortOptions != null ? sortOptions.toParamString() : null,
-                                perPage,
-                                desiredPage
-                        ).enqueue(
-                        new Callback<AlbumResult>() {
-                            @Override
-                            public void onResponse(Call<AlbumResult> call, Response<AlbumResult> response) {
-                                AlbumResult result = response.body();
-                                Log.e("retrofit result","retrofit result:" + result.total);
-                                Log.e("retrofit result","retrofit result:" + result.photos.size());
-                                for(PXLPhoto photo: result.photos){
-                                    Log.e("retrofit result","retrofit cdnSmallUrl:" + photo.cdnMediumUrl);
+                basicRepo.getPhotosWithSKU(
+                        sku,
+                        PXLClient.apiKey,
+                        filterOptions != null ? filterOptions.toParamString() : null,
+                        sortOptions != null ? sortOptions.toParamString() : null,
+                        perPage,
+                        desiredPage
+                ).enqueue(new Callback<PhotoResult>() {
+                    @Override
+                    public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
+                        PhotoResult result = response.body();
+                        Log.e("retrofit result", "retrofit result:" + result.total);
+                        Log.e("retrofit result", "retrofit result:" + result.photos.size());
+                        for (PXLPhoto photo : result.photos) {
+                            Log.e("retrofit result", "retrofit cdnSmallUrl:" + photo.cdnMediumUrl);
 
-                                }
-                                //JSONObject json = new JSONObject(result);
-                                if (handlers != null) {
-                                    handlers.DataLoadedHandler(result.photos);
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<AlbumResult> call, Throwable t) {
-                                if (handlers != null) {
-                                    handlers.DataLoadFailedHandler(t.toString());
-                                }
-                            }
                         }
-                );
+                        //JSONObject json = new JSONObject(result);
+                        if (handlers != null) {
+                            handlers.DataLoadedHandler(result.photos);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<PhotoResult> call, Throwable t) {
+                        if (handlers != null) {
+                            handlers.DataLoadFailedHandler(t.toString());
+                        }
+                    }
+                });
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
         return true;
-    }
-
-    @Override
-    protected HashMap<String, Object> getRequestParams(int desiredPage) {
-        HashMap<String, Object> paramMap = new HashMap<>();
-        if (filterOptions != null) {
-            paramMap.put(PXLClient.KeyFilters, filterOptions.toParamString());
-        }
-        if (sortOptions != null) {
-            paramMap.put(PXLClient.KeySort, sortOptions.toParamString());
-        }
-        paramMap.put(PXLClient.KeyPerPage, perPage);
-        paramMap.put(PXLClient.KeyPage, desiredPage);
-        paramMap.put(PXLClient.KeySku, sku);
-        return paramMap;
     }
 }

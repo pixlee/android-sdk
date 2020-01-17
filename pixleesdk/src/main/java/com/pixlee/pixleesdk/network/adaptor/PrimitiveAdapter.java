@@ -12,30 +12,26 @@ import java.io.IOException;
 
 public class PrimitiveAdapter {
     @FromJson
-    //@NullableDouble
     public int intFromJson(@Nullable Integer value) {
         if (value == null) {
             return 0;
         }
+
         return value;
     }
 
     @FromJson
-    //@NullableDouble
     public boolean booleanFromJson(@Nullable Boolean value) {
         if (value == null) {
             return false;
         }
+
         return value;
     }
 
     @FromJson
     @NullableDouble
     public double doubleFromJson(@NonNull final JsonReader reader) throws IOException {
-        /*if (value == null) {
-            return NullableDouble.NONE;
-        }
-        return Double.valueOf(value);*/
         if (reader.peek() == JsonReader.Token.NUMBER) {
             return reader.nextDouble();
         } else if (reader.peek() == JsonReader.Token.NULL) {

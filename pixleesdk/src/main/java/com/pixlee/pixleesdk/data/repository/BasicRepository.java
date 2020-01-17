@@ -3,7 +3,8 @@ package com.pixlee.pixleesdk.data.repository;
 import android.util.Base64;
 
 import com.pixlee.pixleesdk.PXLClient;
-import com.pixlee.pixleesdk.data.AlbumResult;
+import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.data.PhotoResult;
 import com.pixlee.pixleesdk.data.api.BasicAPI;
 
 import org.json.JSONObject;
@@ -30,22 +31,22 @@ public class BasicRepository implements BasicDataSource {
 
 
     @Override
-    public Call<AlbumResult> getPhotosWithSKU(String sku, String api_key, String filters, String sort, int per_page, int page) {
+    public Call<PhotoResult> getPhotosWithSKU(String sku, String api_key, String filters, String sort, int per_page, int page) {
         return api.getPhotosWithSKU(sku, api_key, filters, sort, per_page, page);
     }
 
     @Override
-    public Call<String> getPhotosWithID(String id, String api_key, String filters, String sort, int per_page, int page) {
-        return api.getPhotosWithID(id, api_key, filters, sort, per_page, page);
+    public Call<PhotoResult> getPhotosWithID(String album_id, String api_key, String filters, String sort, int per_page, int page) {
+        return api.getPhotosWithID(album_id, api_key, filters, sort, per_page, page);
     }
 
     @Override
-    public Call<String> getMedia(String id, String api_key) {
-        return api.getMedia(id, api_key);
+    public Call<PXLPhoto> getMedia(String album_photo_id, String api_key) {
+        return api.getMedia(album_photo_id, api_key);
     }
 
     @Override
-    public Call<String> postMedia(String api_key, JSONObject json) {
+    public Call<PhotoResult> postMedia(String api_key, JSONObject json) {
         String signiture = null;
 
         try {

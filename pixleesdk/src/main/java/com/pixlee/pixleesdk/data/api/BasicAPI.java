@@ -1,6 +1,8 @@
 package com.pixlee.pixleesdk.data.api;
 
-import com.pixlee.pixleesdk.data.AlbumResult;
+import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.data.PhotoResult;
+import com.serjltt.moshi.adapters.Wrapped;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -17,7 +19,7 @@ import retrofit2.http.Query;
  */
 public interface BasicAPI {
     @GET("albums/from_sku")
-    Call<AlbumResult> getPhotosWithSKU(
+    Call<PhotoResult> getPhotosWithSKU(
             @Query("sku")String sku,
             @Query("api_key")String api_key,
             @Query("filters")String filters,
@@ -26,9 +28,9 @@ public interface BasicAPI {
             @Query("page")int page
     );
 
-    @GET("albums/{id}/photos")
-    Call<String> getPhotosWithID(
-            @Path("id")String id,
+    @GET("albums/{album_id}/photos")
+    Call<PhotoResult> getPhotosWithID(
+            @Path("album_id")String album_id,
             @Query("api_key")String api_key,
             @Query("filters")String filters,
             @Query("sort")String sort,
@@ -36,11 +38,12 @@ public interface BasicAPI {
             @Query("page")int page
     );
 
-    @GET("media/{id}")
-    Call<String> getMedia(@Path("id")String id, @Query("api_key")String api_key);
+    @GET("media/{album_photo_id}")
+    @Wrapped(path = {"data"})
+    Call<PXLPhoto> getMedia(@Path("album_photo_id")String album_photo_id, @Query("api_key")String api_key);
 
     @POST("media")
-    Call<String> postMedia(
+    Call<PhotoResult> postMedia(
             @Header("Signature") String Signature,
             @Query("api_key")String api_key,
             @Body RequestBody body

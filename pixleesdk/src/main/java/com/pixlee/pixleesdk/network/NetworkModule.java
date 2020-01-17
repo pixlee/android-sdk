@@ -77,6 +77,7 @@ public class NetworkModule {
 
     private static Moshi provideMoshi(){
         return new Moshi.Builder()
+//                .add(NestingJsonAdapter.FACTORY)
                 .add(Wrapped.ADAPTER_FACTORY)
                 .add(new PrimitiveAdapter()) //null -> a specified default value, same as the return value of JSONObject.opt{PrimitiveType}(...)
                 .add(new URLAdapter())  //String -> URL
@@ -144,9 +145,9 @@ public class NetworkModule {
             public Response intercept(@NotNull Chain chain) throws IOException {
 
                 Request original = chain.request();
-                Log.e("pretty", "Interceptor.url.host: " + original.url().host());
-                Log.e("pretty", "Interceptor.url.url: " + original.url());
-                Log.e("pretty", "Interceptor.url.method: " + original.method());
+                Log.d("pretty", "Interceptor.url.host: " + original.url().host());
+                Log.d("pretty", "Interceptor.url.url: " + original.url());
+                Log.d("pretty", "Interceptor.url.method: " + original.method());
 
                 Request.Builder builder = original.newBuilder();
 
@@ -158,8 +159,8 @@ public class NetworkModule {
                 ResponseBody body = response.body();
 
                 String bodyStr = body.string();
-                Log.e("pretty", "**http-num: " + response.code());
-                Log.e("pretty", "**http-body: "+ body.string());
+                Log.d("pretty", "**http-num: " + response.code());
+                Log.d("pretty", "**http-body: "+ body.string());
 
                 Response.Builder builder2 = response.newBuilder();
 

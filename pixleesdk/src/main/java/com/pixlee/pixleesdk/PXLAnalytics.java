@@ -2,6 +2,8 @@ package com.pixlee.pixleesdk;
 
 import android.content.Context;
 
+import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,20 +15,18 @@ import java.util.HashMap;
 public class PXLAnalytics {
     private static final String TAG = "PXLAnalytics";
 
-    protected Context context;
-
+    private AnalyticsDataSource analyticsRepo;
 
     /***
      * Constructor requires the context, which will be passed along to the PXLClient
      * for volley configuration.
-     * @param context - context which will be used for volley configuration
+     * @param analyticsRepo - context which will be used for volley configuration
      */
-    public PXLAnalytics(Context context) {
-        this.context = context;
+    public PXLAnalytics(AnalyticsDataSource analyticsRepo) {
+        this.analyticsRepo = analyticsRepo;
     }
 
     public void addToCart(String sku, String price, Integer quantity, String currency) {
-        PXLClient pxlClient = PXLClient.getInstance(this.context);
         JSONObject body = new JSONObject();
 
         try{
@@ -42,7 +42,7 @@ public class PXLAnalytics {
             e.printStackTrace();
         }
 
-        pxlClient.makeAnalyticsCall("events/addToCart", body);
+        analyticsRepo.makeAnalyticsCall("events/addToCart", body);
     }
 
     public void addToCart(String sku, String price, Integer quantity) {
@@ -51,7 +51,6 @@ public class PXLAnalytics {
 
 
     public void conversion(ArrayList<HashMap<String, Object>> cartContents, String cartTotal, Integer cartTotalQuantity, String orderId, String currency){
-        PXLClient pxlClient = PXLClient.getInstance(this.context);
         JSONObject body = new JSONObject();
 
         try{
@@ -70,7 +69,7 @@ public class PXLAnalytics {
             e.printStackTrace();
         }
 
-        pxlClient.makeAnalyticsCall("events/conversion", body);
+        analyticsRepo.makeAnalyticsCall("events/conversion", body);
 
     }
     public void conversion(ArrayList<HashMap<String, Object>> cartContents, String cartTotal, Integer cartTotalQuantity, String orderId){
