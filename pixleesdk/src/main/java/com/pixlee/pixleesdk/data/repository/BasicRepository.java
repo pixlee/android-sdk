@@ -47,8 +47,10 @@ public class BasicRepository implements BasicDataSource {
 
     @Override
     public Call<PhotoResult> postMedia(String api_key, JSONObject json) {
+        if (PXLClient.secretKey == null ) {
+            throw new IllegalArgumentException("no apiKey, please set apiKey before start");
+        }
         String signiture = null;
-
         try {
             signiture = computeHmac(json.toString().replace("\\/", "/" ), PXLClient.secretKey);
         } catch (NoSuchAlgorithmException e) {
@@ -62,7 +64,6 @@ public class BasicRepository implements BasicDataSource {
 
     private String computeHmac(String baseString, String secretKey)
             throws NoSuchAlgorithmException, InvalidKeyException, IllegalStateException {
-
         SecretKeySpec key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA1");
         Mac mac = Mac.getInstance("HmacSHA1");
         mac.init(key);

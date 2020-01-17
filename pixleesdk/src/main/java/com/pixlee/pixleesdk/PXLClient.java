@@ -53,9 +53,9 @@ public class PXLClient {
         return analyticsRepo;
     }
 
-    private PXLClient(Context context) throws Exception {
-        if (PXLClient.apiKey == null || PXLClient.secretKey == null) {
-            throw new Exception();
+    private PXLClient(Context context) {
+        if (PXLClient.apiKey == null ) {
+            throw new IllegalArgumentException("no apiKey, please set apiKey before start");
         }
 
         mCtx = context;
@@ -85,7 +85,7 @@ public class PXLClient {
      * @param context - used for generating the volley request queue.
      * @return
      */
-    public static synchronized PXLClient getInstance(Context context) throws Exception {
+    public static synchronized PXLClient getInstance(Context context) {
         if (mInstance == null) {
             mInstance = new PXLClient(context);
         }

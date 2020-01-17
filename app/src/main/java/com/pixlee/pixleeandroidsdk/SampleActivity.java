@@ -19,6 +19,7 @@ import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortType;
+import com.pixlee.pixleesdk.PXLBaseAlbum;
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.PXLPhotoSize;
@@ -169,15 +170,11 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
     private void createAlbum() {
         PXLClient.initialize("196i8ZzIAhKU8dO2kDe");
 
-        try {
-            PXLClient client = PXLClient.getInstance(this);
-            album = new PXLAlbum("4503434", client.getBasicrepo(), client.getAnalyticsRepo());
-            PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
-            fo.minTwitterFollowers = 0;
-            fo.minInstagramFollowers = 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        PXLClient client = PXLClient.getInstance(this);
+        album = new PXLAlbum("4503434", client.getBasicrepo(), client.getAnalyticsRepo());
+        PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
+        fo.minTwitterFollowers = 0;
+        fo.minInstagramFollowers = 0;
 
 
         /* ~~~ content source and content filter examples ~~~
@@ -285,6 +282,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
             actionLinksLayout.setVisibility(View.GONE);
         }
 
+
         photo.openedLightbox(c);  // Opened Lightbox Analytics Example
         photo.actionClicked("https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html", c);
 
@@ -323,7 +321,7 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
 
     private void samplePhotoLoad() {
         String identifier = "282742015";
-        PXLPhoto.getPhotoWithId(getApplicationContext(), identifier, new PXLPhoto.PhotoLoadHandlers() {
+        album.getPhotoWithId(identifier, new PXLBaseAlbum.PhotoLoadHandlers() {
             @Override
             public void photoLoaded(PXLPhoto photo) {
                 Log.d("testphoto", String.format("%s", photo.cdnSmallUrl));
@@ -339,8 +337,10 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         });
 
         //load from pxlphoto object
-        PXLPhoto photo = new PXLPhoto(getApplicationContext(), identifier);
-        photo.loadFromId(new PXLPhoto.PhotoLoadHandlers() {
+        PXLPhoto photo = new PXLPhoto();
+        photo.albumPhotoId = identifier;
+
+        album.getPhotoWithId(photo, new PXLBaseAlbum.PhotoLoadHandlers() {
             @Override
             public void photoLoaded(PXLPhoto photo) {
                 Log.d("testphoto", String.format("%s", photo.cdnSmallUrl));
