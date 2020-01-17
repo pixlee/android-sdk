@@ -169,8 +169,8 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
      */
     private void createAlbum() {
         PXLClient.initialize("196i8ZzIAhKU8dO2kDe");
-
         PXLClient client = PXLClient.getInstance(this);
+
         album = new PXLAlbum("4503434", client.getBasicrepo(), client.getAnalyticsRepo());
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
