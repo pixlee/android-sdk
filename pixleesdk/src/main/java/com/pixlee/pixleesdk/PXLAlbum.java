@@ -74,13 +74,7 @@ public class PXLAlbum extends PXLBaseAlbum{
                 ).enqueue(new Callback<PhotoResult>() {
                     @Override
                     public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
-                        PhotoResult result = response.body();
-                        Log.e("retrofit result", "retrofit result:" + result.total);
-                        Log.e("retrofit result", "retrofit result:" + result.photos.size());
-                        for (PXLPhoto photo : result.photos) {
-                            Log.e("retrofit result", "retrofit cdnSmallUrl:" + photo.cdnMediumUrl);
-                        }
-                        setData(result, handlers);
+                        setData(response.body(), handlers);
                     }
 
                     @Override
@@ -96,34 +90,6 @@ public class PXLAlbum extends PXLBaseAlbum{
         }
 
         return true;
-    }
-
-    /**
-     * save API response data and fire RequestHandlers.DataLoadedHandler(PXLPhoto) as a callback
-     * @param result API response data
-     * @param handlers A callback
-     */
-    private void setData(PhotoResult result, RequestHandlers handlers) {
-        page = result.page;
-        perPage = result.perPage;
-        hasMore = result.next;
-        if (album_id == null) {
-            album_id = String.valueOf(result.albumId);
-        }
-        //add placeholders for photos if they haven't been loaded yet
-        if (photos.size() < (page - 1) * perPage) {
-            for (int i = photos.size(); i < (page - 1) * perPage; i++) {
-                photos.add(null);
-            }
-        }
-
-        photos.addAll(result.photos);
-        lastPageLoaded = Math.max(page, lastPageLoaded);
-
-        //handlers set when making the original 'loadNextPageOfPhotos' call
-        if (handlers != null) {
-            handlers.DataLoadedHandler(photos);
-        }
     }
 
     /***
@@ -170,8 +136,7 @@ public class PXLAlbum extends PXLBaseAlbum{
             ).enqueue(new Callback<PhotoResult>() {
                 @Override
                 public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
-                    PhotoResult result = response.body();
-                    setData(result, handlers);
+                    setData(response.body(), handlers);
                 }
 
                 @Override

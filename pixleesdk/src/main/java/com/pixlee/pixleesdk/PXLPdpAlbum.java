@@ -64,17 +64,7 @@ public class PXLPdpAlbum extends PXLBaseAlbum {
                 ).enqueue(new Callback<PhotoResult>() {
                     @Override
                     public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
-                        PhotoResult result = response.body();
-                        Log.e("retrofit result", "retrofit result:" + result.total);
-                        Log.e("retrofit result", "retrofit result:" + result.photos.size());
-                        for (PXLPhoto photo : result.photos) {
-                            Log.e("retrofit result", "retrofit cdnSmallUrl:" + photo.cdnMediumUrl);
-
-                        }
-                        //JSONObject json = new JSONObject(result);
-                        if (handlers != null) {
-                            handlers.DataLoadedHandler(result.photos);
-                        }
+                        setData(response.body(), handlers);
                     }
 
                     @Override
