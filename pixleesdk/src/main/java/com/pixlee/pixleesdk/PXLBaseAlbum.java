@@ -27,6 +27,11 @@ public abstract class PXLBaseAlbum {
     protected BasicDataSource basicRepo;
     protected AnalyticsDataSource analyticsRepo;
 
+    /**
+     * This is 'album_id' in API response data
+     */
+    public String album_id;
+
     //For searching
     protected int page;
     protected int perPage;
@@ -39,6 +44,7 @@ public abstract class PXLBaseAlbum {
 
     /**
      * Constructor requires two Network classes
+     *
      * @param basicRepo     Restful API for photos
      * @param analyticsRepo Restful API for analytics
      */
@@ -96,6 +102,7 @@ public abstract class PXLBaseAlbum {
      */
     public interface RequestHandlers {
         void DataLoadedHandler(List<PXLPhoto> photos);
+
         void DataLoadFailedHandler(String error);
     }
 
@@ -104,15 +111,18 @@ public abstract class PXLBaseAlbum {
 
     public interface PhotoLoadHandlers {
         void photoLoaded(PXLPhoto photo);
+
         void photoLoadFailed(String error);
     }
+
     /**
      * Retrieve a PXLPhoto with album_photo_id
-     * @param photo this is to get PXLPhoto.albumPhotoId
+     *
+     * @param photo    this is to get PXLPhoto.albumPhotoId
      * @param callback
      */
     public void getPhotoWithId(PXLPhoto photo, final PhotoLoadHandlers callback) {
-        if (photo==null || photo.albumPhotoId == null) {
+        if (photo == null || photo.albumPhotoId == null) {
             Log.e(TAG, "no album_photo_id given");
             return;
         }
@@ -122,6 +132,7 @@ public abstract class PXLBaseAlbum {
 
     /**
      * Retrieve a PXLPhoto with album_photo_id
+     *
      * @param album_photo_id PXLPhoto.albumPhotoId
      * @param callback
      */
@@ -156,16 +167,30 @@ public abstract class PXLBaseAlbum {
     }
 
     /**
-     * Analytics methods
-     * @param albumId PXLPhoto.albumid
+     * actionClicked Analytics
+     *
+     * @param photo This is to get PXLPhoto.albumPhotoId
+     * @param actionLink
+     */
+    public void actionClicked(PXLPhoto photo, String actionLink){
+        actionClicked(photo.albumPhotoId, actionLink);
+    }
+
+    /**
+     * actionClicked Analytics
+     *
      * @param albumPhotoId PXLPhoto.albumPhotoId
      * @param actionLink
      */
-    public void actionClicked(String albumId, String albumPhotoId, String actionLink) {
+    public void actionClicked(String albumPhotoId, String actionLink) {
+        if (album_id == null) {
+            throw new IllegalArgumentException("no album_id");
+        }
+
         JSONObject body = new JSONObject();
 
         try {
-            body.put("album_id", Integer.parseInt(albumId));
+            body.put("album_id", Integer.parseInt(album_id));
             body.put("album_photo_id", Integer.parseInt(albumPhotoId));
             body.put("action_link_url", actionLink);
 
@@ -176,16 +201,29 @@ public abstract class PXLBaseAlbum {
         analyticsRepo.makeAnalyticsCall("events/actionClicked", body);
     }
 
+
     /**
-     * Analytics openedLightbox
-     * @param albumId PXLPhoto.albumid
-     * @param albumPhotoId PXLPhoto.albumPhotoId
-     * @return
+     * openedLightbox Analytics
+     *
+     * @param photo This is to get PXLPhoto.albumPhotoId
      */
-    public boolean openedLightbox(String albumId, String albumPhotoId) {
+    public void openedLightbox(PXLPhoto photo) {
+        openedLightbox(photo.albumPhotoId);
+    }
+
+    /**
+     * openedLightbox Analytics
+     *
+     * @param albumPhotoId PXLPhoto.albumPhotoId
+     */
+    public void openedLightbox(String albumPhotoId) {
+        if (album_id == null) {
+            throw new IllegalArgumentException("no album_id");
+        }
+
         JSONObject body = new JSONObject();
         try {
-            body.put("album_id", Integer.parseInt(albumId));
+            body.put("album_id", Integer.parseInt(album_id));
             body.put("album_photo_id", Integer.parseInt(albumPhotoId));
 
         } catch (JSONException e) {
@@ -193,6 +231,5 @@ public abstract class PXLBaseAlbum {
         }
 
         analyticsRepo.makeAnalyticsCall("events/openedLightbox", body);
-        return true;
     }
 }

@@ -283,8 +283,8 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         }
 
 
-        photo.openedLightbox(c);  // Opened Lightbox Analytics Example
-        photo.actionClicked("https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html", c);
+        album.openedLightbox(photo); // Opened Lightbox Analytics Example
+        album.actionClicked(photo, "https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html");
 
         /* ~~~ Add to cart analytics example ~~~
 
