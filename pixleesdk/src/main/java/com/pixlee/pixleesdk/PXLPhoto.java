@@ -170,11 +170,16 @@ public class PXLPhoto {
      *
      * Documentation for ContentType: https://developers.pixlee.com/reference#get-information-about-an-album
      * @param size
-     * @return a image url:    Note!! this url, especially not approved PXLPhoto that has 'source' of'api', 'desktop' or 'email' returns null-URL.
+     * @return a image url:    Note!! Under these conditions,
+     *                          - PXLPhoto.contentType is "photo"
+     *                          - and its PXLPhoto.approved is false
+     *                         PXLPhoto.source as "instagram", "twitter" or "facebook" returns URLs.
+     *                         However, PXLPhoto.sourdce as "api", "desktop" or "email" will return null.
+     *
      *                         Therefore, please have a null-check before use it
      */
     public URL getUrlForSize(PXLPhotoSize size) {
-        if ("video".equals(source)) {
+        if ("video".equals(contentType)) {
             //video
             return getFromResized(size);
         } else {
