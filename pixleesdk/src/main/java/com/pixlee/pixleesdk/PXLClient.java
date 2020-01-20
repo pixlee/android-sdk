@@ -78,6 +78,7 @@ public class PXLClient {
      */
     public static void initialize(String apiKey) {
         PXLClient.apiKey = apiKey;
+        PXLClient.secretKey = null;
     }
 
     /***

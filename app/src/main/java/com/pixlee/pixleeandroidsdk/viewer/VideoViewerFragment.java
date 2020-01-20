@@ -1,35 +1,27 @@
 package com.pixlee.pixleeandroidsdk.viewer;
 
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
-import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.pixlee.pixleeandroidsdk.BaseFragment;
 import com.pixlee.pixleeandroidsdk.R;
-import com.pixlee.pixleeandroidsdk.config.GlideApp;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class VideoViewerFragment extends Fragment {
+public class VideoViewerFragment extends BaseFragment {
     @BindView(R.id.videoView)
     VideoView videoView;
 

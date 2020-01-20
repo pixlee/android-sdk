@@ -1,13 +1,11 @@
 package com.pixlee.pixleeandroidsdk.gallery;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ViewSwitcher;
 
 import androidx.annotation.Nullable;
@@ -15,13 +13,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.pixlee.pixleeandroidsdk.BaseActivity;
+import com.pixlee.pixleeandroidsdk.BaseFragment;
 import com.pixlee.pixleeandroidsdk.GalleryClickListener;
 import com.pixlee.pixleeandroidsdk.R;
-import com.pixlee.pixleeandroidsdk.config.GlideApp;
+import com.pixlee.pixleeandroidsdk.viewer.ImageViewerFragment;
+import com.pixlee.pixleeandroidsdk.viewer.VideoViewerFragment;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;
@@ -29,6 +26,7 @@ import com.pixlee.pixleesdk.PXLAlbumSortType;
 import com.pixlee.pixleesdk.PXLBaseAlbum;
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.PXLPhotoSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,23 +34,23 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class GalleryFragment extends Fragment implements PXLAlbum.RequestHandlers{
+public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHandlers{
     private PXLAlbum album;
     private ArrayList<PXLPhoto> photoList;
 
     private int lastImg = R.drawable.grid_2x;
 
     @BindView(R.id.viewSwitcher1)
-    private ViewSwitcher viewSwitcher;
+    ViewSwitcher viewSwitcher;
 
     @BindView(R.id.gridToggle)
-    public ImageView gridToggleButton;
+    ImageView gridToggleButton;
 
     @BindView(R.id.imagegallery)
-    private RecyclerView gridView;
+    RecyclerView gridView;
 
     @BindView(R.id.imagelist)
-    private RecyclerView listView;
+    RecyclerView listView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,10 +92,10 @@ public class GalleryFragment extends Fragment implements PXLAlbum.RequestHandler
      * Initializes the PXLClient and creates the PXLAlbum
      */
     private void createAlbum() {
-        PXLClient.initialize("196i8ZzIAhKU8dO2kDe");
+        PXLClient.initialize("CgLNEXLCR4PJHNwNLc2d");
         PXLClient client = PXLClient.getInstance(getContext().getApplicationContext());
 
-        album = new PXLAlbum("4503434", client.getBasicrepo(), client.getAnalyticsRepo());
+        album = new PXLAlbum("12608528", client.getBasicrepo(), client.getAnalyticsRepo());
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 0;
@@ -179,7 +177,7 @@ public class GalleryFragment extends Fragment implements PXLAlbum.RequestHandler
         GalleryClickListener li = new GalleryClickListener() {
             @Override
             public void onItemClicked(PXLPhoto photo) {
-
+                moveToViewer(photo);
             }
         };
 
@@ -211,6 +209,16 @@ public class GalleryFragment extends Fragment implements PXLAlbum.RequestHandler
 
         gridView.addOnScrollListener(gridScrollListener);
         listView.addOnScrollListener(listScrollListener);
+    }
+
+    void moveToViewer(PXLPhoto photo) {
+        //String url = photo.getUrlForSize(PXLPhotoSize.MEDIUM).toString();
+        String url = photo.sourceUrl.toString();
+        if(photo.isVideo()){
+            addFragmentToActivity(VideoViewerFragment.getInstance(url));
+        }else{
+            addFragmentToActivity(ImageViewerFragment.getInstance(url));
+        }
     }
 
     /***

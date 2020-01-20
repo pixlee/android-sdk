@@ -12,6 +12,7 @@ import com.pixlee.pixleeandroidsdk.GalleryClickListener;
 import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleeandroidsdk.SampleActivity;
 import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.PXLPhotoSize;
 
 import java.util.ArrayList;
 
@@ -38,7 +39,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridViewHolder> {
         viewHolder.title.setText(photo.photoTitle);
 
         Glide.with(context)
-                .load(photo.cdnPhotos.mediumUrl)
+                .load(photo.getUrlForSize(PXLPhotoSize.MEDIUM))
                 .centerCrop()
                 .into(viewHolder.netImg);
 
