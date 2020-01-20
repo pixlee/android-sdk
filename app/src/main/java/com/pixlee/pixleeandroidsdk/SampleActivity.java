@@ -250,7 +250,10 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
 
     private void updateDetailView(PXLPhoto photo) {
         Context c = this.getApplicationContext();
-        this.detailSourceIcon.setImageResource(photo.sourceIconImage());
+        if(photo.sourceIconImage()!=null){
+            this.detailSourceIcon.setImageResource(photo.sourceIconImage());
+        }
+
         Glide.with(this)
                 .load(photo.getUrlForSize(PXLPhotoSize.MEDIUM).toString())
                 .into(this.detailImage);
@@ -324,10 +327,10 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         album.getPhotoWithId(identifier, new PXLBaseAlbum.PhotoLoadHandlers() {
             @Override
             public void photoLoaded(PXLPhoto photo) {
-                Log.d("testphoto", String.format("%s", photo.cdnSmallUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnMediumUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnLargeUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnOriginalUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnPhotos.smallUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnPhotos.mediumUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnPhotos.largeUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnPhotos.originalUrl));
             }
 
             @Override
@@ -343,10 +346,10 @@ public class SampleActivity extends AppCompatActivity implements PXLAlbum.Reques
         album.getPhotoWithId(photo, new PXLBaseAlbum.PhotoLoadHandlers() {
             @Override
             public void photoLoaded(PXLPhoto photo) {
-                Log.d("testphoto", String.format("%s", photo.cdnSmallUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnMediumUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnLargeUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnOriginalUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnPhotos.smallUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnPhotos.mediumUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnPhotos.largeUrl));
+                Log.d("testphoto", String.format("%s", photo.cdnPhotos.originalUrl));
             }
 
             @Override

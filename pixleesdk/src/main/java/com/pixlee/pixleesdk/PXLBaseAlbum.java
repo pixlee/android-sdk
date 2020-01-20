@@ -119,7 +119,7 @@ public abstract class PXLBaseAlbum {
         Log.e("retrofit result", "retrofit result:" + result.total);
         Log.e("retrofit result", "retrofit result:" + result.photos.size());
         for (PXLPhoto photo : result.photos) {
-            Log.e("retrofit result", "retrofit cdnSmallUrl:" + photo.cdnMediumUrl);
+            Log.e("retrofit result", "retrofit smallUrl:" + photo.cdnPhotos.mediumUrl);
 
         }
         page = result.page;

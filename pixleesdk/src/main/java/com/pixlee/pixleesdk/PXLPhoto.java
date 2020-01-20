@@ -1,5 +1,6 @@
 package com.pixlee.pixleesdk;
 
+import com.pixlee.pixleesdk.data.CDNPhotos;
 import com.pixlee.pixleesdk.network.annotation.FieldDate;
 import com.pixlee.pixleesdk.network.annotation.FieldURL;
 import com.pixlee.pixleesdk.network.annotation.NullableDouble;
@@ -156,26 +157,8 @@ public class PXLPhoto {
     @Json(name = "products")
     public List<PXLProduct> products;
 
-    //@FieldURL
-    @Json(name = "small_url")
-    //@Nested(keys = {"pixlee_cdn_photos", "small_url"})
-    public String cdnSmallUrl;
-
-    //@FieldURL
     @Json(name = "pixlee_cdn_photos")
-    @Wrapped(path = {"medium_url"})
-    public String cdnMediumUrl;
-
-    //@FieldURL
-    @Json(name = "large_url")
-//    @Nested(keys = {"pixlee_cdn_photos","large_url"})
-    public String cdnLargeUrl;
-
-    //@FieldURL
-    @Json(name = "original_url")
-//    @Nested(keys = {"pixlee_cdn_photos","original_url"})
-    public String cdnOriginalUrl;
-
+    public CDNPhotos cdnPhotos;
 
     @Override
     public String toString() {

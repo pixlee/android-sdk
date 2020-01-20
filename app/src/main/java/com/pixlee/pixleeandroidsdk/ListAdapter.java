@@ -35,9 +35,9 @@ class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
     public void onBindViewHolder(ListViewHolder viewHolder, int i) {
         final PXLPhoto photo = galleryList.get(i);
         viewHolder.title.setText(photo.photoTitle);
-        viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
         Glide.with(context)
-                .load(photo.thumbnailUrl.toString())
+                .load(photo.cdnPhotos.mediumUrl)
+                .centerCrop()
                 .into(viewHolder.netImg);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

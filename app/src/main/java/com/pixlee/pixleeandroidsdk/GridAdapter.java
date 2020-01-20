@@ -36,18 +36,17 @@ public class GridAdapter extends RecyclerView.Adapter<GridViewHolder> {
         final PXLPhoto photo = galleryList.get(i);
         viewHolder.title.setText(photo.photoTitle);
 
-        if (photo.thumbnailUrl !=  null) {
-            Glide.with(context)
-                    .load(photo.thumbnailUrl.toString())
-                    .into(viewHolder.netImg);
-            viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    saref.switchVisibilities(photo);
-                }
-            });
-        }
+        Glide.with(context)
+                .load(photo.cdnPhotos.mediumUrl)
+                .centerCrop()
+                .into(viewHolder.netImg);
+
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saref.switchVisibilities(photo);
+            }
+        });
     }
 
     @Override
