@@ -207,6 +207,9 @@ public class PXLPhoto {
     }
 
     private URL getFromCDN(PXLPhotoSize size) {
+        if(cdnPhotos==null)
+            return null;
+
         switch (size) {
             case THUMBNAIL:
                 return cdnPhotos.smallUrl;
