@@ -1,15 +1,16 @@
-package com.pixlee.pixleeandroidsdk;
+package com.pixlee.pixleeandroidsdk.gallery;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.pixlee.pixleesdk.PXLClient;
+import com.pixlee.pixleeandroidsdk.GalleryClickListener;
+import com.pixlee.pixleeandroidsdk.R;
+import com.pixlee.pixleeandroidsdk.SampleActivity;
 import com.pixlee.pixleesdk.PXLPhoto;
 
 import java.util.ArrayList;
@@ -17,12 +18,12 @@ import java.util.ArrayList;
 public class GridAdapter extends RecyclerView.Adapter<GridViewHolder> {
     private ArrayList<PXLPhoto> galleryList;
     private Context context;
-    private SampleActivity saref;
+    private GalleryClickListener listener;
 
-    public GridAdapter(Context context, ArrayList<PXLPhoto> galleryList, SampleActivity sa) {
+    public GridAdapter(Context context, ArrayList<PXLPhoto> galleryList, GalleryClickListener listener) {
         this.galleryList = galleryList;
         this.context = context;
-        this.saref = sa;
+        this.listener = listener;
     }
 
     @Override
@@ -44,7 +45,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridViewHolder> {
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saref.switchVisibilities(photo);
+                listener.onItemClicked(photo);
             }
         });
     }

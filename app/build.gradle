@@ -16,6 +16,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -28,9 +33,22 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 
     /**
+     * Architecture Component
+     */
+    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.1.0"
+
+    /**
      * Glide(Image library)
      */
     implementation "com.github.bumptech.glide:glide:$glide"
     implementation "com.github.bumptech.glide:annotations:$glide"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide"
+
+    /**
+     * Butter Knife
+     * This is not to use View.findViewById() every time
+     */
+    implementation 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 }

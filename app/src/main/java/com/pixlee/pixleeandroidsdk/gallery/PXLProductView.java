@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk;
+package com.pixlee.pixleeandroidsdk.gallery;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleesdk.PXLProduct;
 
 public class PXLProductView extends LinearLayout {

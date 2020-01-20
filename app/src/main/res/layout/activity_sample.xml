@@ -27,50 +27,6 @@
         android:orientation="vertical">
         <!-- navigation -->
 
-        <ImageView
-            android:id="@+id/gridToggle"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_gravity="right"
-            />
-
-        <ViewSwitcher
-            android:id="@+id/viewSwitcher1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:inAnimation="@android:anim/slide_in_left"
-            android:visibility="visible">
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/imagegallery"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#cc0100cc"
-                    android:choiceMode="singleChoice"
-                    android:divider="@android:color/transparent"
-                    android:dividerHeight="0dp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/imagelist"
-                    android:layout_width="fill_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="7dp"
-                    tools:layout_editor_absoluteX="8dp"
-                    tools:layout_editor_absoluteY="8dp" />
-            </RelativeLayout>
-        </ViewSwitcher>
-
         <LinearLayout
             android:id="@+id/detailview"
             android:layout_width="fill_parent"
@@ -145,7 +101,7 @@
                         android:layout_height="wrap_content"
                         android:text="Action link" />
                     -->
-                    <com.pixlee.pixleeandroidsdk.PXLProductView
+                    <com.pixlee.pixleeandroidsdk.gallery.PXLProductView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </LinearLayout>

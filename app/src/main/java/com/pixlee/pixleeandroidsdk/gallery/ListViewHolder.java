@@ -1,10 +1,12 @@
-package com.pixlee.pixleeandroidsdk;
+package com.pixlee.pixleeandroidsdk.gallery;
 
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.pixlee.pixleeandroidsdk.R;
 
 
 public class ListViewHolder extends RecyclerView.ViewHolder {
