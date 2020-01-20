@@ -170,11 +170,11 @@ public class PXLPhoto {
      *
      * Documentation for ContentType: https://developers.pixlee.com/reference#get-information-about-an-album
      * @param size
-     * @return a image url:    Note!! Under these conditions,
+     * @return a image url:    Note!! Under these conditions, this method will return
      *                          - PXLPhoto.contentType is "photo"
      *                          - and its PXLPhoto.approved is false
-     *                         PXLPhoto.source as "instagram", "twitter" or "facebook" returns URLs.
-     *                         However, PXLPhoto.sourdce as "api", "desktop" or "email" will return null.
+     *                         URLs with PXLPhoto.source as "instagram", "twitter" or "facebook".
+     *                         However, NULL with PXLPhoto.source as "api", "desktop" or "email".
      *
      *                         Therefore, please have a null-check before use it
      */
