@@ -42,6 +42,10 @@ public class BasicRepository implements BasicDataSource {
 
     @Override
     public Call<String> postMedia(String api_key, JSONObject json) {
+        if (PXLClient.secretKey == null ) {
+            throw new IllegalArgumentException("no secretKey, please set secretKey before start");
+        }
+
         String signiture = null;
 
         try {

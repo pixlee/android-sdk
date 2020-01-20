@@ -38,10 +38,7 @@ public class PXLClient {
     BasicDataSource basicRepo;
     AnalyticsDataSource analyticsRepo;
 
-    public synchronized BasicDataSource getBasicrepo() throws Exception {
-        if (PXLClient.apiKey == null || PXLClient.secretKey == null) {
-            throw new Exception();
-        }
+    public synchronized BasicDataSource getBasicrepo() {
         if (basicRepo == null) {
             basicRepo = NetworkModule.generateBasicRepository();
         }
@@ -49,11 +46,7 @@ public class PXLClient {
         return basicRepo;
     }
 
-    public AnalyticsDataSource getAnalyticsRepo() throws Exception {
-        if (PXLClient.apiKey == null || PXLClient.secretKey == null) {
-            throw new Exception();
-        }
-
+    public AnalyticsDataSource getAnalyticsRepo() {
         if (analyticsRepo == null) {
             analyticsRepo = NetworkModule.getAnalyticsRepository();
         }
@@ -61,8 +54,11 @@ public class PXLClient {
     }
 
     private PXLClient(Context context) {
-        mCtx = context;
+        if (PXLClient.apiKey == null ) {
+            throw new IllegalArgumentException("no apiKey, please set apiKey before start");
+        }
 
+        mCtx = context;
         android_id = Secure.getString(mCtx.getContentResolver(), Secure.ANDROID_ID);
 
     }
