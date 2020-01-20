@@ -54,9 +54,15 @@ public class PXLPhoto {
     @Json(name = "connected_user_id")
     public int connectedUserId;
 
+    /**
+     * Media from a list of sources: ["instagram", "twitter", "facebook", "api", "desktop", "email"]
+     */
     @Json(name = "source")
     public String source;
 
+    /**
+     * Select from ["video", "image"]
+     */
     @Json(name = "content_type")
     public String contentType;
 
@@ -180,7 +186,7 @@ public class PXLPhoto {
      *                         Therefore, please have a null-check before use it
      */
     public URL getUrlForSize(PXLPhotoSize size) {
-        if ("video".equals(contentType)) {
+        if (isVideo()) {
             //video
             return getFromResized(size);
         } else {
@@ -207,7 +213,7 @@ public class PXLPhoto {
     }
 
     private URL getFromCDN(PXLPhotoSize size) {
-        if(cdnPhotos==null)
+        if (cdnPhotos == null)
             return null;
 
         switch (size) {
@@ -221,6 +227,11 @@ public class PXLPhoto {
                 return null;
         }
     }
+
+    public boolean isVideo() {
+        return "video".equals(contentType);
+    }
+
 
     /***
      * Returns a resource ID to an image representing the current photo's source
