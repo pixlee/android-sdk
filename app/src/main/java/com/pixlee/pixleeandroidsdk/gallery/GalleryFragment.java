@@ -92,10 +92,10 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
      * Initializes the PXLClient and creates the PXLAlbum
      */
     private void createAlbum() {
-        PXLClient.initialize("CgLNEXLCR4PJHNwNLc2d");
+        PXLClient.initialize("196i8ZzIAhKU8dO2kDe");
         PXLClient client = PXLClient.getInstance(getContext().getApplicationContext());
 
-        album = new PXLAlbum("12608528", client.getBasicrepo(), client.getAnalyticsRepo());
+        album = new PXLAlbum("4503434", client.getBasicrepo(), client.getAnalyticsRepo());
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 0;

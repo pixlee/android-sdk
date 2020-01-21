@@ -181,7 +181,7 @@ public class PXLAlbum extends PXLBaseAlbum{
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/loadMore", body);
+        analyticsRepo.makeAnalyticsCall("events/openedWidget", body);
         return true;
     }
 
