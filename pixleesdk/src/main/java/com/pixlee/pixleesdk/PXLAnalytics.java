@@ -11,6 +11,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class PXLAnalytics {
     private static final String TAG = "PXLAnalytics";
@@ -42,7 +46,18 @@ public class PXLAnalytics {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/addToCart", body);
+        analyticsRepo.makeAnalyticsCall("events/addToCart", body)
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
     }
 
     public void addToCart(String sku, String price, Integer quantity) {
@@ -69,7 +84,18 @@ public class PXLAnalytics {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/conversion", body);
+        analyticsRepo.makeAnalyticsCall("events/conversion", body)
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
 
     }
     public void conversion(ArrayList<HashMap<String, Object>> cartContents, String cartTotal, Integer cartTotalQuantity, String orderId){

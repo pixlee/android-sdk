@@ -136,7 +136,7 @@ public class PXLAlbum extends PXLBaseAlbum{
             ).enqueue(new Callback<PhotoResult>() {
                 @Override
                 public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
-                    setData(response.body(), handlers);
+                    //setData(response.body(), handlers);
                 }
 
                 @Override
@@ -150,75 +150,6 @@ public class PXLAlbum extends PXLBaseAlbum{
             e.printStackTrace();
             return false;
         }
-        return true;
-    }
-
-    /***
-     * Analytics methods
-     */
-
-    public boolean openedWidget() {
-        JSONObject body = new JSONObject();
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < this.photos.size(); i++) {
-            try {
-                stringBuilder.append(this.photos.get(i).id);
-                if (i != this.photos.size() - 1) {
-                    stringBuilder.append(",");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            body.put("album_id", Integer.parseInt(this.album_id));
-            body.put("per_page", this.perPage);
-            body.put("page", this.page);
-            body.put("photos", stringBuilder.toString());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        analyticsRepo.makeAnalyticsCall("events/openedWidget", body);
-        return true;
-    }
-
-    public boolean loadMore() {
-        if (album_id == null) {
-            Log.w(TAG, "missing album id");
-            return false;
-        }
-        if (this.page < 2) {
-            Log.w(TAG, "first load detected");
-            return false;
-        }
-        JSONObject body = new JSONObject();
-        StringBuilder stringBuilder = new StringBuilder();
-        int lastIdx = ((this.page - 1) * this.perPage);
-        for (int i = lastIdx; i < this.photos.size(); i++) {
-            try {
-                stringBuilder.append(this.photos.get(i).id);
-                if (i != this.photos.size() - 1) {
-                    stringBuilder.append(",");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            body.put("album_id", Integer.parseInt(this.album_id));
-            body.put("per_page", this.perPage);
-            body.put("page", this.page);
-            body.put("photos", stringBuilder.toString());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        analyticsRepo.makeAnalyticsCall("events/loadMore", body);
         return true;
     }
 }

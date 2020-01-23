@@ -33,6 +33,7 @@ public abstract class PXLBaseAlbum {
      */
     public String album_id;
 
+    protected int accountId;
     //For searching
     protected int page;
     protected int perPage;
@@ -122,6 +123,8 @@ public abstract class PXLBaseAlbum {
             Log.e("retrofit result", "retrofit smallUrl:" + photo.cdnPhotos.mediumUrl);
 
         }
+
+        accountId = result.accountId;
         page = result.page;
         perPage = result.perPage;
         hasMore = result.next;
@@ -225,6 +228,9 @@ public abstract class PXLBaseAlbum {
         JSONObject body = new JSONObject();
 
         try {
+            //todo: add below commend
+            //account_id
+            //widget (string) (i.e. “photowall”, “horizontal”)
             body.put("album_id", Integer.parseInt(album_id));
             body.put("album_photo_id", Integer.parseInt(albumPhotoId));
             body.put("action_link_url", actionLink);
@@ -233,7 +239,19 @@ public abstract class PXLBaseAlbum {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/actionClicked", body);
+        analyticsRepo.makeAnalyticsCall("events/actionClicked", body)
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
+
     }
 
 
@@ -258,6 +276,9 @@ public abstract class PXLBaseAlbum {
 
         JSONObject body = new JSONObject();
         try {
+            //todo: add below commend
+            //account_id
+            //widget (string) (i.e. “photowall”, “horizontal”)
             body.put("album_id", Integer.parseInt(album_id));
             body.put("album_photo_id", Integer.parseInt(albumPhotoId));
 
@@ -265,6 +286,115 @@ public abstract class PXLBaseAlbum {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/openedLightbox", body);
+        analyticsRepo.makeAnalyticsCall("events/openedLightbox", body)
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
+    }
+
+    /***
+     * Analytics methods
+     */
+
+    public boolean openedWidget() {
+        JSONObject body = new JSONObject();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < this.photos.size(); i++) {
+            try {
+                stringBuilder.append(this.photos.get(i).id);
+                if (i != this.photos.size() - 1) {
+                    stringBuilder.append(",");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+
+            //todo: add below commend
+            //account_id
+            //widget (string) (i.e. “photowall”, “horizontal”)
+            body.put("album_id", Integer.parseInt(this.album_id));
+            body.put("per_page", this.perPage);
+            body.put("page", this.page);
+            body.put("photos", stringBuilder.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        analyticsRepo.makeAnalyticsCall("events/openedWidget", body)
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
+        return true;
+    }
+
+    public boolean loadMore() {
+        if (album_id == null) {
+            Log.w(TAG, "missing album id");
+            return false;
+        }
+        if (this.page < 2) {
+            Log.w(TAG, "first load detected");
+            return false;
+        }
+        JSONObject body = new JSONObject();
+        StringBuilder stringBuilder = new StringBuilder();
+        int lastIdx = ((this.page - 1) * this.perPage);
+        for (int i = lastIdx; i < this.photos.size(); i++) {
+            try {
+                stringBuilder.append(this.photos.get(i).id);
+                if (i != this.photos.size() - 1) {
+                    stringBuilder.append(",");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            //todo: add below commend
+            //account_id
+            //widget (string) (i.e. “photowall”, “horizontal”)
+            body.put("album_id", Integer.parseInt(this.album_id));
+            body.put("per_page", this.perPage);
+            body.put("page", this.page);
+            body.put("photos", stringBuilder.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        analyticsRepo.makeAnalyticsCall("events/loadMore", body)
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
+        return true;
     }
 }

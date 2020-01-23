@@ -42,6 +42,11 @@ public interface BasicAPI {
     @Wrapped(path = {"data"})
     Call<PXLPhoto> getMedia(@Path("album_photo_id")String album_photo_id, @Query("api_key")String api_key);
 
+    /**
+     * todo: change return data
+     * {"album_photo_id": "...", "connected_user_id": "..."}
+     */
+    //todo:
     @POST("media")
     Call<PhotoResult> postMedia(
             @Header("Signature") String Signature,
