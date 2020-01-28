@@ -3,14 +3,9 @@ package com.pixlee.pixleesdk;
 import android.content.Context;
 import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -76,11 +71,8 @@ public class PXLPdpAlbum extends PXLAlbum {
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
                                 try {
-                                    String result = response.body();
-                                    Log.e("retrofit result","retrofit result:" + result);
-                                    JSONObject json = new JSONObject(result);
-                                    JsonReceived(json);
-                                } catch (JSONException e) {
+                                    processResponse(response);
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }

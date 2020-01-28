@@ -81,6 +81,42 @@ public class PXLPhoto {
         void photoLoadFailed(String error);
     }
 
+    /**
+     * This deals with network responses
+     * when HTTP-code is in between 200 and 299, this method returns the body
+     * when HTTP-code is not in between 200 and 299, this method returns the error body
+     *
+     * @param response Retrofit's string body
+     */
+    protected static void processResponse(Response<String> response, PhotoLoadHandlers callback) {
+        try {
+            String result = response.body();
+            if (response.isSuccessful()) {
+                JSONObject json = new JSONObject(result);
+                JSONObject data = json.optJSONObject("data");
+                if(data!=null) {
+                    if (callback != null) {
+                        callback.photoLoaded(PXLPhoto.fromJsonObj(data));
+                    }
+                }else{
+                    Log.e(TAG, "no data from successful api call");
+                }
+            } else {
+                ResponseBody errorBody = response.errorBody();
+                if (errorBody != null) {
+                    if (callback != null) {
+                        callback.photoLoadFailed(errorBody.toString());
+                    }
+                } else {
+                    Log.e(TAG, "no data from failed api call");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /***
      * Generates an ArrayList of PXLPhoto from the given JSON array.
      * @param data - JSONArray of Pixlee photos
@@ -122,19 +158,7 @@ public class PXLPhoto {
                             new Callback<String>() {
                                 @Override
                                 public void onResponse(Call<String> call, Response<String> response) {
-                                    try {
-                                        JSONObject json = new JSONObject(response.body());
-                                        JSONObject data = json.optJSONObject("data");
-                                        if (data == null) {
-                                            Log.e(TAG, "no data from successful api call");
-                                        } else {
-                                            if (callback != null) {
-                                                callback.photoLoaded(PXLPhoto.fromJsonObj(data));
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
+                                    processResponse(response, callback);
                                 }
 
                                 @Override
@@ -166,19 +190,7 @@ public class PXLPhoto {
                             new Callback<String>() {
                                 @Override
                                 public void onResponse(Call<String> call, Response<String> response) {
-                                    try {
-                                        JSONObject json = new JSONObject(response.body());
-                                        JSONObject data = json.optJSONObject("data");
-                                        if (data == null) {
-                                            Log.e(TAG, "no data from successful api call");
-                                        } else {
-                                            if (callback != null) {
-                                                callback.photoLoaded(PXLPhoto.fromJsonObj(data));
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
+                                    processResponse(response, callback);
                                 }
 
                                 @Override
