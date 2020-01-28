@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,6 +37,34 @@ public class PXLAlbum implements RequestCallbacks {
     protected RequestHandlers handlers;
     protected Context context;
 
+    /**
+     * This deals with network responses
+     * when HTTP-code is in between 200 and 299, this method returns the body
+     * when HTTP-code is not in between 200 and 299, this method returns the error body
+     *
+     * @param response Retrofit's string body
+     */
+    protected void processResponse(Response<String> response) {
+        try {
+            String result = response.body();
+            if (response.isSuccessful()) {
+                JSONObject json = new JSONObject(result);
+                JsonReceived(json);
+            } else {
+                ResponseBody errorBody = response.errorBody();
+                if (errorBody != null) {
+                    if (handlers != null) {
+                        handlers.DataLoadFailedHandler(errorBody.string());
+                    }
+                } else {
+                    Log.e(TAG, "no response data");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /***
      * Callback for a successful call to the api.  Parses the response and converts the json data
@@ -142,12 +171,7 @@ public class PXLAlbum implements RequestCallbacks {
                         new Callback<String>() {
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
-                                try {
-                                    JSONObject json = new JSONObject(response.body());
-                                    JsonReceived(json);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                processResponse(response);
                             }
 
                             @Override
@@ -199,21 +223,18 @@ public class PXLAlbum implements RequestCallbacks {
                     .postMedia(
                             PXLClient.apiKey,
                             body
-                            )
+                    )
                     .enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
-                            try {
-                                JSONObject json = new JSONObject(response.body());
-                                JsonReceived(json);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                            processResponse(response);
                         }
 
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {
-
+                            if (handlers != null) {
+                                handlers.DataLoadFailedHandler(t.toString());
+                            }
                         }
                     });
         } catch (Exception e) {
