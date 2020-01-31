@@ -43,7 +43,7 @@ public class NetworkModule {
         return new BasicRepository(
                 provideRetrofit(
                         NetworkModule.url,
-                        provideOkHttpClient(getRequestInterceptor())
+                        provideOkHttpClient()
                 ).create(BasicAPI.class)
         );
     }
@@ -52,7 +52,7 @@ public class NetworkModule {
         return new AnalyticsRepository(
                 provideRetrofit(
                         NetworkModule.analyticsUrl,
-                        provideOkHttpClient(getRequestInterceptor())
+                        provideOkHttpClient()
                 ).create(AnalyticsAPI.class)
         );
     }
@@ -74,15 +74,15 @@ public class NetworkModule {
                 .build();
     }
 
-    private static Retrofit provideRetrofit(String url, OkHttpClient okHttpClient) {
+    public static Retrofit provideRetrofit(String url, OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(url)
-                .addConverterFactory(MoshiConverterFactory.create(provideMoshi()))
+                .addConverterFactory(MoshiConverterFactory.create(provideMoshi()).asLenient())
                 .client(okHttpClient)
                 .build();
     }
 
-    private static OkHttpClient provideOkHttpClient(Interceptor interceptor) {
+    public static OkHttpClient provideOkHttpClient() {
         OkHttpClient.Builder ok = new OkHttpClient.Builder()
                 .connectTimeout(timeout_connect, TimeUnit.SECONDS)
                 .readTimeout(timeout_read, TimeUnit.SECONDS)
@@ -120,44 +120,6 @@ public class NetworkModule {
 
         }
 
-        //ok.addInterceptor(interceptor);
         return ok.build();
-    }
-
-
-    private static Interceptor getRequestInterceptor() {
-        return new Interceptor() {
-            @NotNull
-            @Override
-            public Response intercept(@NotNull Chain chain) throws IOException {
-
-                Request original = chain.request();
-                Log.d("pretty", "Interceptor.url.host: " + original.url().host());
-                Log.d("pretty", "Interceptor.url.url: " + original.url());
-                Log.d("pretty", "Interceptor.url.method: " + original.method());
-
-                Request.Builder builder = original.newBuilder();
-
-                builder.header("Accept", "application/json");
-                builder.header("Content-Type", "application/json");
-                builder.header("Accept-Encoding", "utf-8");
-
-                Response response = chain.proceed(builder.build());
-                ResponseBody body = response.body();
-
-                String bodyStr = body.string();
-                Log.d("pretty", "**http-num: " + response.code());
-                Log.d("pretty", "**http-body: "+ body.string());
-
-                Response.Builder builder2 = response.newBuilder();
-
-                return builder2.body(
-                        ResponseBody.create(
-                                body.contentType()
-                                , bodyStr.getBytes(Charsets.UTF_8)
-                        )
-                ).build();
-            }
-        };
     }
 }

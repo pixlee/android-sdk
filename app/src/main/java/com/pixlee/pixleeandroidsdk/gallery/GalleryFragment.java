@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pixlee.pixleeandroidsdk.BaseFragment;
+import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.GalleryClickListener;
 import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleeandroidsdk.viewer.ImageViewerFragment;
@@ -21,6 +22,7 @@ import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortType;
+import com.pixlee.pixleesdk.PXLAnalytics;
 import com.pixlee.pixleesdk.PXLBaseAlbum;
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLPhoto;
@@ -84,9 +86,8 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
             }
         });
 
-        createAlbum();
+        loadList();
         configureViews();
-        samplePhotoLoad();
     }
 
 
@@ -94,11 +95,11 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
     /***
      * Initializes the PXLClient and creates the PXLAlbum
      */
-    private void createAlbum() {
-        PXLClient.initialize("196i8ZzIAhKU8dO2kDe");
+    private void loadList() {
+        PXLClient.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY);
         PXLClient client = PXLClient.getInstance(getContext().getApplicationContext());
 
-        album = new PXLAlbum("4503434", client.getBasicrepo(), client.getAnalyticsRepo());
+        album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client.getBasicrepo(), client.getAnalyticsRepo());
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 0;
@@ -161,6 +162,9 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         PXLAlbum.RequestHandlers rh = this;
         album.loadNextPageOfPhotos(rh);
 
+
+        PXLAnalytics analytics = new PXLAnalytics(client.getAnalyticsRepo());
+        analytics.addToCart(BuildConfig.PIXLEE_SKU, "13000",2, "AUD", null);
         /* ~~~ content upload example ~~~
 
           album.uploadImage("test", "kb@pixleeteam.com", "K.B.", "https://timedotcom.files.wordpress.com/2019/05/drake-nba-finals-warning.jpg", true);
@@ -226,9 +230,8 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         this.album.loadNextPageOfPhotos(this);
     }
 
-    private void samplePhotoLoad() {
-        String identifier = "282742015";
-        album.getPhotoWithId(identifier, new PXLBaseAlbum.PhotoLoadHandlers() {
+    private void samplePhotoLoad(PXLPhoto photo) {
+        album.getPhotoWithId(photo.albumPhotoId, new PXLBaseAlbum.PhotoLoadHandlers() {
             @Override
             public void photoLoaded(PXLPhoto photo) {
                 Log.d("testphoto", String.format("%s", photo.cdnPhotos.smallUrl));
@@ -244,8 +247,6 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         });
 
         //load from pxlphoto object
-        PXLPhoto photo = new PXLPhoto();
-        photo.albumPhotoId = identifier;
 
         album.getPhotoWithId(photo, new PXLBaseAlbum.PhotoLoadHandlers() {
             @Override
@@ -278,6 +279,10 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         this.photoList.addAll(photos);
         gridView.getAdapter().notifyDataSetChanged();
         listView.getAdapter().notifyDataSetChanged();
+
+        if(photos.size()>0){
+            samplePhotoLoad(photos.get(0));
+        }
     }
 
     /***

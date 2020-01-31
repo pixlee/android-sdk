@@ -41,7 +41,7 @@ public class PXLAnalytics {
      * @param currency
      * @param fingerprint
      */
-    public void addToCart(@NonNull String sku, @NonNull String price, @NonNull Integer quantity, @Nullable String currency, @Nullable String fingerprint) {
+    public void addToCart(String sku, String price, Integer quantity, String currency, String fingerprint) {
         JSONObject body = new JSONObject();
 
         try{

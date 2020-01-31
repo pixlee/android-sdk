@@ -53,30 +53,26 @@ public class PXLPdpAlbum extends PXLBaseAlbum {
             }
             this.pagesLoading.put(desiredPage, true);
 
-            try {
-                basicRepo.getPhotosWithSKU(
-                        sku,
-                        PXLClient.apiKey,
-                        filterOptions != null ? filterOptions.toParamString() : null,
-                        sortOptions != null ? sortOptions.toParamString() : null,
-                        perPage,
-                        desiredPage
-                ).enqueue(new Callback<PhotoResult>() {
-                    @Override
-                    public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
-                        setData(response.body(), handlers);
-                    }
+            basicRepo.getPhotosWithSKU(
+                    sku,
+                    PXLClient.apiKey,
+                    filterOptions != null ? filterOptions.toParamString() : null,
+                    sortOptions != null ? sortOptions.toParamString() : null,
+                    perPage,
+                    desiredPage
+            ).enqueue(new Callback<PhotoResult>() {
+                @Override
+                public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
+                    setData(response.body(), handlers);
+                }
 
-                    @Override
-                    public void onFailure(Call<PhotoResult> call, Throwable t) {
-                        if (handlers != null) {
-                            handlers.DataLoadFailedHandler(t.toString());
-                        }
+                @Override
+                public void onFailure(Call<PhotoResult> call, Throwable t) {
+                    if (handlers != null) {
+                        handlers.DataLoadFailedHandler(t.toString());
                     }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                }
+            });
         }
 
         return true;
