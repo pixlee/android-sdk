@@ -1,43 +1,17 @@
 package com.pixlee.pixleeandroidsdk;
 
-import android.content.Context;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.pixlee.pixleeandroidsdk.gallery.GalleryFragment;
-import com.pixlee.pixleeandroidsdk.gallery.GridAdapter;
-import com.pixlee.pixleeandroidsdk.gallery.ListAdapter;
-import com.pixlee.pixleeandroidsdk.gallery.PXLProductView;
-import com.pixlee.pixleeandroidsdk.gallery.RecyclerViewEndlessScrollListener;
-import com.pixlee.pixleesdk.PXLAlbum;
-import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
-import com.pixlee.pixleesdk.PXLAlbumSortOptions;
-import com.pixlee.pixleesdk.PXLAlbumSortType;
-import com.pixlee.pixleesdk.PXLBaseAlbum;
-import com.pixlee.pixleesdk.PXLClient;
-import com.pixlee.pixleesdk.PXLPhoto;
-import com.pixlee.pixleesdk.PXLPhotoSize;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SampleActivity extends BaseActivity {
+public class MainActivity extends BaseActivity {
     int frameLayoutId = R.id.contentFrame;
     /*private ImageView detailImage;
     private TextView detailText;
@@ -52,7 +26,7 @@ public class SampleActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sample);
+        setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);

@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.pixlee.pixleeandroidsdk.GalleryClickListener;
 import com.pixlee.pixleeandroidsdk.R;
-import com.pixlee.pixleeandroidsdk.SampleActivity;
 import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.PXLPhotoSize;
 
