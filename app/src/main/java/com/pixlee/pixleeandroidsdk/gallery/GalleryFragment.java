@@ -9,11 +9,9 @@ import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.pixlee.pixleeandroidsdk.BaseActivity;
 import com.pixlee.pixleeandroidsdk.BaseFragment;
 import com.pixlee.pixleeandroidsdk.GalleryClickListener;
 import com.pixlee.pixleeandroidsdk.R;
@@ -186,14 +184,6 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         gridView.setAdapter(gridAdapter);
         listView.setAdapter(listAdapter);
 
-        /*LinearLayout detailLayout = (LinearLayout) findViewById(R.id.detailview);
-        detailLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switchVisibilities(null);
-            }
-        });*/
-
         RecyclerViewEndlessScrollListener gridScrollListener = new RecyclerViewEndlessScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -211,9 +201,12 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         listView.addOnScrollListener(listScrollListener);
     }
 
+    /**
+     * When an item in the list is clicked, this method call Video player or Image viewer using PXLPhoto.isVideo()
+     * @param photo
+     */
     void moveToViewer(PXLPhoto photo) {
-        //String url = photo.getUrlForSize(PXLPhotoSize.MEDIUM).toString();
-        String url = photo.sourceUrl.toString();
+        String url = photo.getUrlForSize(PXLPhotoSize.BIG).toString();
         if(photo.isVideo()){
             addFragmentToActivity(VideoViewerFragment.getInstance(url));
         }else{
