@@ -2,6 +2,9 @@ package com.pixlee.pixleesdk;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 
 import org.json.JSONArray;
@@ -30,7 +33,17 @@ public class PXLAnalytics {
         this.analyticsRepo = analyticsRepo;
     }
 
-    public void addToCart(String sku, String price, Integer quantity, String currency) {
+    /**
+     * Analytics Name: Add To Cart
+     * Document: https://developers.pixlee.com/reference#add-to-cart
+     *
+     * @param sku
+     * @param price
+     * @param quantity
+     * @param currency
+     * @param fingerprint
+     */
+    public void addToCart(@NonNull String sku, @NonNull String price, @NonNull Integer quantity, @Nullable String currency, @Nullable String fingerprint) {
         JSONObject body = new JSONObject();
 
         try{
@@ -39,6 +52,9 @@ public class PXLAnalytics {
             body.put("quantity", quantity);
             if(currency != null){
                 body.put("currency", currency);
+            }
+            if (fingerprint != null) {
+                body.put("fingerprint", fingerprint);
             }
 
 
@@ -61,10 +77,20 @@ public class PXLAnalytics {
     }
 
     public void addToCart(String sku, String price, Integer quantity) {
-        this.addToCart(sku, price, quantity, null);
+        this.addToCart(sku, price, quantity, null, null);
     }
 
 
+    /**
+     * Analytics Name: Conversion
+     * Document: https://developers.pixlee.com/reference#conversion
+     *
+     * @param cartContents
+     * @param cartTotal
+     * @param cartTotalQuantity
+     * @param orderId
+     * @param currency
+     */
     public void conversion(ArrayList<HashMap<String, Object>> cartContents, String cartTotal, Integer cartTotalQuantity, String orderId, String currency){
         JSONObject body = new JSONObject();
 
