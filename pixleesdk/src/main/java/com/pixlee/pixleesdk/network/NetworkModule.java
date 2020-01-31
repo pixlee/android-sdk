@@ -2,9 +2,6 @@ package com.pixlee.pixleesdk.network;
 
 import android.util.Log;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.orhanobut.logger.Logger;
 import com.pixlee.pixleesdk.BuildConfig;
 import com.pixlee.pixleesdk.data.api.AnalyticsAPI;
