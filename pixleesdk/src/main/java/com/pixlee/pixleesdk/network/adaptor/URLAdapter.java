@@ -9,13 +9,13 @@ import java.net.URL;
 
 public class URLAdapter {
     @ToJson
-    String toJson(@FieldURL URL card) {
-        return card.toString();
+    String toJson(@FieldURL URL value) {
+        return value.toString();
     }
 
     @FromJson
     @FieldURL
-    URL fromJson(String url) {
-        return JsonUtils.getURL(url);
+    URL fromJson(String value) {
+        return JsonUtils.getURL(value);
     }
 }

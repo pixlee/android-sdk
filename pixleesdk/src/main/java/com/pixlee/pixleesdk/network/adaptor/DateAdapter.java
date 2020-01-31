@@ -8,13 +8,13 @@ import java.util.Date;
 
 public class DateAdapter {
     @ToJson
-    Long toJson(@FieldDate Date obj) {
-        return obj.getTime();
+    Long toJson(@FieldDate Date value) {
+        return value.getTime();
     }
 
     @FromJson
     @FieldDate
-    Date fromJson(Long url) {
-        return new Date(url);
+    Date fromJson(Long value) {
+        return new Date(value);
     }
 }
