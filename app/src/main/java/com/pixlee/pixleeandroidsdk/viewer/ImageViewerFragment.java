@@ -41,7 +41,6 @@ public class ImageViewerFragment extends BaseFragment {
                 .load(getImageUrl())
                 .thumbnail(0.2f)
                 .fitCenter()
-                .dontAnimate()
                 .error(R.drawable.baseline_cloud_off_black_48)
                 .listener(new RequestListener<Drawable>() {
                     @Override
