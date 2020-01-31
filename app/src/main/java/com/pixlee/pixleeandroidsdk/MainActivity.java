@@ -2,9 +2,12 @@ package com.pixlee.pixleeandroidsdk;
 
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 
 import com.pixlee.pixleeandroidsdk.gallery.GalleryFragment;
 
@@ -12,14 +15,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity {
+    final String TAG = "MainActivity";
     int frameLayoutId = R.id.contentFrame;
-    /*private ImageView detailImage;
-    private TextView detailText;
-    private ImageView detailSourceIcon;
-    private TextView detailUser;
-    private TextView detailLastMod;
 
-    private LinearLayout actionLinksLayout;*/
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -41,15 +39,62 @@ public class MainActivity extends BaseActivity {
         setSystemBarColor(R.color.grey_5);
         setSystemBarLight();
 
+        FragmentManager fm = getSupportFragmentManager();
+        fm.addOnBackStackChangedListener(onBackStackChangedListener);
+
         replaceFragmentInActivity(frameLayoutId, new GalleryFragment(), null);
 
-        /*this.detailImage = (ImageView) findViewById(R.id.detailImage);
-        this.detailText = (TextView) findViewById(R.id.detailText);
-        this.detailSourceIcon = (ImageView) findViewById(R.id.detailSourceIcon);
-        this.detailUser = (TextView) findViewById(R.id.userName);
-        this.detailLastMod = (TextView) findViewById(R.id.lastModified);
-        actionLinksLayout = (LinearLayout) findViewById(R.id.actionLinksLayout);*/
+    }
 
+    FragmentManager.OnBackStackChangedListener onBackStackChangedListener = new FragmentManager.OnBackStackChangedListener() {
+
+        @Override
+        public void onBackStackChanged() {
+            FragmentManager fm = getSupportFragmentManager();
+            int fragmentCount = fm.getBackStackEntryCount();
+            String title;
+            if (fragmentCount > 0) {
+                BaseFragment fragment = (BaseFragment) fm.getFragments().get(fm.getFragments().size() - 1);
+                if (fragment.getCustomTitle() != null) {
+                    title = fragment.getCustomTitle();
+                } else {
+                    title = getString(fragment.getTitleResource());
+                }
+            } else {
+                title = getString(R.string.app_name);
+            }
+
+            Log.d(TAG, "fragmentCount: " + fragmentCount);
+
+            setSupportActionBar(toolbar);
+            ActionBar bar = getSupportActionBar();
+            bar.setTitle(title);
+            bar.setDisplayHomeAsUpEnabled(fragmentCount > 1);
+            bar.setDisplayShowHomeEnabled(fragmentCount > 1);
+
+            invalidateOptionsMenu();
+        }
+    };
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        try {
+            int fragmentStackSize = getSupportFragmentManager().getBackStackEntryCount();
+            if (fragmentStackSize <= 1) {
+                finish();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        super.onBackPressed();
     }
 
     /***

@@ -22,6 +22,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ImageViewerFragment extends BaseFragment {
+    @Override
+    public int getTitleResource() {
+        return R.string.title_image_viewer;
+    }
+
     @BindView(R.id.iv)
     ImageView iv;
 

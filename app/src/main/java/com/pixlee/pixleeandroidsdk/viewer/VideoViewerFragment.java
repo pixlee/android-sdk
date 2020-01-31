@@ -22,6 +22,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class VideoViewerFragment extends BaseFragment {
+    @Override
+    public int getTitleResource() {
+        return R.string.title_video_viewer;
+    }
+
     @BindView(R.id.videoView)
     VideoView videoView;
 

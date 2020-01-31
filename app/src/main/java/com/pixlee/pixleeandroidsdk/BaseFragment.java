@@ -4,7 +4,15 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-public class BaseFragment extends Fragment {
+abstract public class BaseFragment extends Fragment {
+    //this is to display a title in Toolbar
+    public abstract int getTitleResource();
+
+    //this is to display a a custom title in Toolbar. This has a higher priority over getTitleResource()
+    String getCustomTitle(){
+        return null;
+    }
+
     public void replaceFragmentInActivity(Fragment fragment) {
         if (getActivity() instanceof MainActivity) {
             MainActivity mainActivity = (MainActivity) getActivity();
