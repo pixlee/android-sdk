@@ -46,7 +46,6 @@ public class NetworkModule {
         return new BasicRepository(
                 provideRetrofit(
                         NetworkModule.url,
-                        provideGSon(),
                         provideOkHttpClient(getRequestInterceptor())
                 ).create(BasicAPI.class)
         );
@@ -56,7 +55,6 @@ public class NetworkModule {
         return new AnalyticsRepository(
                 provideRetrofit(
                         NetworkModule.analyticsUrl,
-                        provideGSon(),
                         provideOkHttpClient(getRequestInterceptor())
                 ).create(AnalyticsAPI.class)
         );
@@ -69,12 +67,6 @@ public class NetworkModule {
     private static final Long timeout_connect = 20L;
     private static final Long timeout_write = 30L;
 
-    private static Gson provideGSon() {
-        return new GsonBuilder()
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DOTS)
-                .create();
-    }
-
     private static Moshi provideMoshi(){
         return new Moshi.Builder()
 //                .add(NestingJsonAdapter.FACTORY)
@@ -85,12 +77,10 @@ public class NetworkModule {
                 .build();
     }
 
-    private static Retrofit provideRetrofit(String url, Gson gson, OkHttpClient okHttpClient) {
+    private static Retrofit provideRetrofit(String url, OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(url)
                 .addConverterFactory(MoshiConverterFactory.create(provideMoshi()))
-                //.addConverterFactory(ScalarsConverterFactory.create())
-                //.addConverterFactory(GsonConverterFactory.create(gson))
                 .client(okHttpClient)
                 .build();
     }
