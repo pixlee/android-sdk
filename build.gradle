@@ -26,7 +26,17 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+def keystorePropertiesFile = rootProject.file("pixleekey.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 ext {
+    PIXLEE_API_KEY = keystoreProperties['pixleeAPIKey']
+    PIXLEE_SECRET_KEY = keystoreProperties['pixleeSecretKey']
+    PIXLEE_ALBUM_ID = keystoreProperties['pixleeAlbumId']
+    PIXLEE_SKU = keystoreProperties['pixleeSKU']
+
+    lifecycle = "2.2.0"
     retrofit2 = "2.6.2"
     moshi = "1.9.2"
     okhttp3 = "4.2.0"
