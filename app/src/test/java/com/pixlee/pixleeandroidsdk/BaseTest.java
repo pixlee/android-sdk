@@ -74,8 +74,9 @@ public class BaseTest {
      */
     void intMockServer(String apiKey, String secretKey, int httpCode, String bodyResponse) {
         MockResponse mock = new MockResponse()
-                .setResponseCode(httpCode)
-                .setBody(bodyResponse);
+                .setResponseCode(httpCode);
+        if (bodyResponse != null)
+            mock.setBody(bodyResponse);
         mockWebServer.enqueue(mock);
 
         PXLClient.initialize(apiKey, secretKey);

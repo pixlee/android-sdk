@@ -77,7 +77,7 @@ public class PXLAlbum extends PXLBaseAlbum{
             ).enqueue(new Callback<PhotoResult>() {
                 @Override
                 public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
-                    setData(response.body(), handlers);
+                    setData(response, handlers);
                 }
 
                 @Override

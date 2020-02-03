@@ -234,10 +234,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         album.getPhotoWithId(photo.albumPhotoId, new PXLBaseAlbum.PhotoLoadHandlers() {
             @Override
             public void photoLoaded(PXLPhoto photo) {
-                Log.d("testphoto", String.format("%s", photo.cdnPhotos.smallUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnPhotos.mediumUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnPhotos.largeUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnPhotos.originalUrl));
+
             }
 
             @Override
@@ -251,10 +248,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         album.getPhotoWithId(photo, new PXLBaseAlbum.PhotoLoadHandlers() {
             @Override
             public void photoLoaded(PXLPhoto photo) {
-                Log.d("testphoto", String.format("%s", photo.cdnPhotos.smallUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnPhotos.mediumUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnPhotos.largeUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnPhotos.originalUrl));
+
             }
 
             @Override

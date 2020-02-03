@@ -64,7 +64,7 @@ public class NetworkModule {
     private static final Long timeout_connect = 20L;
     private static final Long timeout_write = 30L;
 
-    private static Moshi provideMoshi(){
+    public static Moshi provideMoshi(){
         return new Moshi.Builder()
 //                .add(NestingJsonAdapter.FACTORY)
                 .add(Wrapped.ADAPTER_FACTORY)

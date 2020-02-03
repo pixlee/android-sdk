@@ -5,6 +5,7 @@ import android.util.Log;
 import com.pixlee.pixleesdk.data.PhotoResult;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;
+import com.pixlee.pixleesdk.network.NetworkModule;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -113,37 +115,56 @@ public abstract class PXLBaseAlbum {
     /**
      * This is for loadNextPageOfPhotos(RequestHandlers handlers)
      * save API response data and fire RequestHandlers.DataLoadedHandler(PXLPhoto) as a callback
-     * @param result API response data
+     *
+     * @param response API response data
      * @param handlers A callback
      */
-    public void setData(PhotoResult result, RequestHandlers handlers) {
-        Log.e("retrofit result", "retrofit result:" + result.total);
-        Log.e("retrofit result", "retrofit result:" + result.photos.size());
-        for (PXLPhoto photo : result.photos) {
-            Log.e("retrofit result", "retrofit smallUrl:" + photo.cdnPhotos.mediumUrl);
+    public void setData(Response<PhotoResult> response, RequestHandlers handlers) {
+        if (response.isSuccessful()) {
+            PhotoResult result = response.body();
+            //Log.e("retrofit result", "retrofit result:" + result.total);
+            //Log.e("retrofit result", "retrofit result:" + result.photos.size());
 
-        }
-
-        accountId = result.accountId;
-        page = result.page;
-        perPage = result.perPage;
-        hasMore = result.next;
-        if (album_id == null) {
-            album_id = String.valueOf(result.albumId);
-        }
-        //add placeholders for photos if they haven't been loaded yet
-        if (photos.size() < (page - 1) * perPage) {
-            for (int i = photos.size(); i < (page - 1) * perPage; i++) {
-                photos.add(null);
+            accountId = result.accountId;
+            page = result.page;
+            perPage = result.perPage;
+            hasMore = result.next;
+            if (album_id == null) {
+                album_id = String.valueOf(result.albumId);
             }
-        }
+            //add placeholders for photos if they haven't been loaded yet
+            if (photos.size() < (page - 1) * perPage) {
+                for (int i = photos.size(); i < (page - 1) * perPage; i++) {
+                    photos.add(null);
+                }
+            }
 
-        photos.addAll(result.photos);
-        lastPageLoaded = Math.max(page, lastPageLoaded);
+            photos.addAll(result.photos);
+            lastPageLoaded = Math.max(page, lastPageLoaded);
 
-        //handlers set when making the original 'loadNextPageOfPhotos' call
-        if (handlers != null) {
-            handlers.DataLoadedHandler(photos);
+            //handlers set when making the original 'loadNextPageOfPhotos' call
+            if (handlers != null) {
+                handlers.DataLoadedHandler(photos);
+            }
+        } else {
+            ResponseBody errorBody = response.errorBody();
+
+            String message = "status: " + response.code();
+            try {
+                if (errorBody != null && handlers != null) {
+                    String errorString = errorBody.string();
+                    if (errorString != null && errorString.length() > 0) {
+                        PXLHttpError error = NetworkModule.provideMoshi().adapter(PXLHttpError.class).lenient().fromJson(errorString);
+                        message = error.toString();
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                handlers.DataLoadFailedHandler(message);
+            }
+
         }
     }
 
@@ -207,10 +228,10 @@ public abstract class PXLBaseAlbum {
     /**
      * actionClicked Analytics
      *
-     * @param photo This is to get PXLPhoto.albumPhotoId
+     * @param photo      This is to get PXLPhoto.albumPhotoId
      * @param actionLink
      */
-    public void actionClicked(PXLPhoto photo, String actionLink){
+    public void actionClicked(PXLPhoto photo, String actionLink) {
         actionClicked(photo.albumPhotoId, actionLink);
     }
 

@@ -32,7 +32,7 @@ public class PrimitiveAdapter {
     @FromJson
     @NullableDouble
     public double doubleFromJson(@NonNull final JsonReader reader) throws IOException {
-        if (reader.peek() == JsonReader.Token.NUMBER) {
+        if (reader.peek() == JsonReader.Token.NUMBER || reader.peek() == JsonReader.Token.STRING) {
             return reader.nextDouble();
         } else if (reader.peek() == JsonReader.Token.NULL) {
             reader.nextNull();
@@ -44,7 +44,7 @@ public class PrimitiveAdapter {
     @FromJson
     @NullableLong
     public long longFromJson(@NonNull final JsonReader reader) throws IOException {
-        if (reader.peek() == JsonReader.Token.NUMBER) {
+        if (reader.peek() == JsonReader.Token.NUMBER || reader.peek() == JsonReader.Token.STRING) {
             return reader.nextLong();
         } else if (reader.peek() == JsonReader.Token.NULL) {
             reader.nextNull();

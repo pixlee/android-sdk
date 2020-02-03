@@ -37,7 +37,7 @@ public class PXLPdpAlbum extends PXLBaseAlbum {
      * This is for unit test. Not for the use
      * @return
      */
-    public Call<PhotoResult> makeCall() {
+    Call<PhotoResult> makeCall() {
         if (sku == null) {
             Log.w(TAG, "No sku specified");
             return null;
@@ -82,7 +82,7 @@ public class PXLPdpAlbum extends PXLBaseAlbum {
         call.enqueue(new Callback<PhotoResult>() {
             @Override
             public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
-                setData(response.body(), handlers);
+                setData(response, handlers);
             }
 
             @Override
