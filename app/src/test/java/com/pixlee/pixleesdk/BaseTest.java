@@ -1,5 +1,6 @@
-package com.pixlee.pixleeandroidsdk;
+package com.pixlee.pixleesdk;
 
+import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.util.FileUtils;
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.data.api.AnalyticsAPI;
@@ -61,7 +62,7 @@ public class BaseTest {
      * @param bodyResponse
      */
     void intMockServer(int httpCode, String bodyResponse) {
-        intMockServer(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY, httpCode, bodyResponse);
+        intMockServer(com.pixlee.pixleeandroidsdk.BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY, httpCode, bodyResponse);
     }
 
     /**

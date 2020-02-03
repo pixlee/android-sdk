@@ -1,12 +1,6 @@
-package com.pixlee.pixleeandroidsdk;
+package com.pixlee.pixleesdk;
 
-import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
-import com.pixlee.pixleesdk.PXLAlbumSortOptions;
-import com.pixlee.pixleesdk.PXLAlbumSortType;
-import com.pixlee.pixleesdk.PXLBaseAlbum;
-import com.pixlee.pixleesdk.PXLPdpAlbum;
-import com.pixlee.pixleesdk.PXLPhoto;
-import com.pixlee.pixleesdk.PXLProduct;
+import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleesdk.data.PhotoResult;
 
 import org.junit.Assert;
