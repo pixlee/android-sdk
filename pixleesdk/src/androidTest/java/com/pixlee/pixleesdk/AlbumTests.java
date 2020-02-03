@@ -17,6 +17,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
@@ -57,7 +58,7 @@ public class AlbumTests {
             requestCount++;
             testAlbum.loadNextPageOfPhotos(new PXLAlbum.RequestHandlers() {
                 @Override
-                public void DataLoadedHandler(ArrayList<PXLPhoto> photos) {
+                public void DataLoadedHandler(List<PXLPhoto> photos) {
                     Log.d("testFilters", String.format("Fetched %s photos", photos.size()));
                     requestCount--;
                 }

@@ -45,4 +45,15 @@ dependencies {
      * Json Logging
      */
     implementation 'com.orhanobut:logger:2.2.0'
+
+    /**
+     * RxJava, RxAndroid
+     *
+     */
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroid"
+// Because RxAndroid releases are few and far between, it is recommended you also
+// explicitly depend on RxJava's latest version for bug fixes and new features.
+// (see https://github.com/ReactiveX/RxJava/releases for latest 2.x.x version)
+    implementation "io.reactivex.rxjava2:rxjava:$rxJava"
+
 }

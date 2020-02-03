@@ -51,45 +51,45 @@ public class PXLAlbum extends PXLBaseAlbum{
      * @return true if the request was attempted, false if aborted before the attempt was made
      */
     @Override
-    public boolean loadNextPageOfPhotos(final RequestHandlers handlers) {
+    public void loadNextPageOfPhotos(final RequestHandlers handlers) {
         if (album_id == null) {
             Log.w(TAG, "No album id specified");
-            return false;
+            return;
         }
-        if (this.hasMore) {
-            int desiredPage = this.lastPageLoaded + 1;
-            if (pagesLoading.get(desiredPage) != null && pagesLoading.get(desiredPage)) {
-                Log.d(TAG, String.format("page %s already loading", desiredPage));
-                return false;
-            }
-            this.pagesLoading.put(desiredPage, true);
-            try {
-                basicRepo.getPhotosWithID(
-                        this.album_id,
-                        PXLClient.apiKey,
-                        filterOptions != null ? filterOptions.toParamString() : null,
-                        sortOptions != null ? sortOptions.toParamString() : null,
-                        perPage,
-                        desiredPage
-                ).enqueue(new Callback<PhotoResult>() {
-                    @Override
-                    public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
-                        setData(response.body(), handlers);
-                    }
-
-                    @Override
-                    public void onFailure(Call<PhotoResult> call, Throwable t) {
-                        if (handlers != null) {
-                            handlers.DataLoadFailedHandler(t.toString());
-                        }
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (!this.hasMore) {
+            return;
         }
 
-        return true;
+        int desiredPage = this.lastPageLoaded + 1;
+        if (pagesLoading.get(desiredPage) != null && pagesLoading.get(desiredPage)) {
+            Log.d(TAG, String.format("page %s already loading", desiredPage));
+            return;
+        }
+        this.pagesLoading.put(desiredPage, true);
+        try {
+            basicRepo.getPhotosWithID(
+                    this.album_id,
+                    PXLClient.apiKey,
+                    filterOptions != null ? filterOptions.toParamString() : null,
+                    sortOptions != null ? sortOptions.toParamString() : null,
+                    perPage,
+                    desiredPage
+            ).enqueue(new Callback<PhotoResult>() {
+                @Override
+                public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
+                    setData(response.body(), handlers);
+                }
+
+                @Override
+                public void onFailure(Call<PhotoResult> call, Throwable t) {
+                    if (handlers != null) {
+                        handlers.DataLoadFailedHandler(t.toString());
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /***

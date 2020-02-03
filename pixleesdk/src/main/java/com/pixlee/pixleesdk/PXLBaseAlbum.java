@@ -108,7 +108,7 @@ public abstract class PXLBaseAlbum {
         void DataLoadFailedHandler(String error);
     }
 
-    public abstract boolean loadNextPageOfPhotos(RequestHandlers handlers);
+    public abstract void loadNextPageOfPhotos(RequestHandlers handlers);
 
     /**
      * This is for loadNextPageOfPhotos(RequestHandlers handlers)
@@ -116,7 +116,7 @@ public abstract class PXLBaseAlbum {
      * @param result API response data
      * @param handlers A callback
      */
-    protected void setData(PhotoResult result, RequestHandlers handlers) {
+    public void setData(PhotoResult result, RequestHandlers handlers) {
         Log.e("retrofit result", "retrofit result:" + result.total);
         Log.e("retrofit result", "retrofit result:" + result.photos.size());
         for (PXLPhoto photo : result.photos) {

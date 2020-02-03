@@ -33,6 +33,39 @@ public class PXLPdpAlbum extends PXLBaseAlbum {
         this.sku = sku;
     }
 
+    /**
+     * This is for unit test. Not for the use
+     * @return
+     */
+    public Call<PhotoResult> makeCall() {
+        if (sku == null) {
+            Log.w(TAG, "No sku specified");
+            return null;
+        }
+        if (!this.hasMore) {
+            Log.w(TAG, "no need to load more");
+            return null;
+        }
+
+        int desiredPage = this.lastPageLoaded + 1;
+        Boolean isPageLoading = pagesLoading.get(desiredPage);
+        if (isPageLoading != null && isPageLoading) {
+            Log.d(TAG, String.format("page %s already loading", desiredPage));
+            return null;
+        }
+
+        this.pagesLoading.put(desiredPage, true);
+
+        return basicRepo.getPhotosWithSKU(
+                sku,
+                PXLClient.apiKey,
+                filterOptions != null ? filterOptions.toParamString() : null,
+                sortOptions != null ? sortOptions.toParamString() : null,
+                perPage,
+                desiredPage
+        );
+    }
+
     /***
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
      * sort order, and filter options before calling.
@@ -40,41 +73,24 @@ public class PXLPdpAlbum extends PXLBaseAlbum {
      * @return true if the request was attempted, false if aborted before the attempt was made
      */
     @Override
-    public boolean loadNextPageOfPhotos(final RequestHandlers handlers) {
-        if (sku == null) {
-            Log.w(TAG, "No sku specified");
-            return false;
-        }
-        if (this.hasMore) {
-            int desiredPage = this.lastPageLoaded + 1;
-            if (pagesLoading.get(desiredPage) != null && pagesLoading.get(desiredPage)) {
-                Log.d(TAG, String.format("page %s already loading", desiredPage));
-                return false;
+    public void loadNextPageOfPhotos(final RequestHandlers handlers) {
+        Call<PhotoResult> call = makeCall();
+
+        if(call==null)
+            return;
+
+        call.enqueue(new Callback<PhotoResult>() {
+            @Override
+            public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
+                setData(response.body(), handlers);
             }
-            this.pagesLoading.put(desiredPage, true);
 
-            basicRepo.getPhotosWithSKU(
-                    sku,
-                    PXLClient.apiKey,
-                    filterOptions != null ? filterOptions.toParamString() : null,
-                    sortOptions != null ? sortOptions.toParamString() : null,
-                    perPage,
-                    desiredPage
-            ).enqueue(new Callback<PhotoResult>() {
-                @Override
-                public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
-                    setData(response.body(), handlers);
+            @Override
+            public void onFailure(Call<PhotoResult> call, Throwable t) {
+                if (handlers != null) {
+                    handlers.DataLoadFailedHandler(t.toString());
                 }
-
-                @Override
-                public void onFailure(Call<PhotoResult> call, Throwable t) {
-                    if (handlers != null) {
-                        handlers.DataLoadFailedHandler(t.toString());
-                    }
-                }
-            });
-        }
-
-        return true;
+            }
+        });
     }
 }
