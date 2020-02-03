@@ -44,52 +44,34 @@ public class PXLAlbum extends PXLBaseAlbum{
         this.album_id = id;
     }
 
-    /***
-     * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
-     * sort order, and filter options before calling.
-     * @param handlers - called upon success/failure of the request
-     * @return true if the request was attempted, false if aborted before the attempt was made
+    /**
+     * This is for unit test. Not for the use
+     * @return
      */
-    @Override
-    public void loadNextPageOfPhotos(final RequestHandlers handlers) {
+    Call<PhotoResult> makeCall() {
         if (album_id == null) {
             Log.w(TAG, "No album id specified");
-            return;
+            return null;
         }
         if (!this.hasMore) {
-            return;
+            return null;
         }
 
         int desiredPage = this.lastPageLoaded + 1;
         if (pagesLoading.get(desiredPage) != null && pagesLoading.get(desiredPage)) {
             Log.d(TAG, String.format("page %s already loading", desiredPage));
-            return;
+            return null;
         }
         this.pagesLoading.put(desiredPage, true);
-        try {
-            basicRepo.getPhotosWithID(
-                    this.album_id,
-                    PXLClient.apiKey,
-                    filterOptions != null ? filterOptions.toParamString() : null,
-                    sortOptions != null ? sortOptions.toParamString() : null,
-                    perPage,
-                    desiredPage
-            ).enqueue(new Callback<PhotoResult>() {
-                @Override
-                public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
-                    setData(response, handlers);
-                }
 
-                @Override
-                public void onFailure(Call<PhotoResult> call, Throwable t) {
-                    if (handlers != null) {
-                        handlers.DataLoadFailedHandler(t.toString());
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        return basicRepo.getPhotosWithID(
+                this.album_id,
+                PXLClient.apiKey,
+                filterOptions != null ? filterOptions.toParamString() : null,
+                sortOptions != null ? sortOptions.toParamString() : null,
+                perPage,
+                desiredPage
+        );
     }
 
     /***

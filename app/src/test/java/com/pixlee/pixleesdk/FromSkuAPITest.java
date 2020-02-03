@@ -14,7 +14,7 @@ import retrofit2.Response;
 /**
  * Created by sungjun on 2020-02-03.
  */
-public class AlbumAPITest extends BaseTest {
+public class FromSkuAPITest extends BaseTest {
     String SKU = BuildConfig.PIXLEE_SKU;
 
     void ready(int httpCode, String body, PXLBaseAlbum.RequestHandlers handlers) throws Exception{
@@ -35,7 +35,7 @@ public class AlbumAPITest extends BaseTest {
         so.descending = true;
 
         //init album
-        PXLAlbum album = new PXLAlbum(SKU, basicDS, analyticsDS);
+        PXLPdpAlbum album = new PXLPdpAlbum(SKU, basicDS, analyticsDS);
         album.setPerPage(40);
         album.setFilterOptions(fo);
         album.setSortOptions(so);

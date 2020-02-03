@@ -110,7 +110,34 @@ public abstract class PXLBaseAlbum {
         void DataLoadFailedHandler(String error);
     }
 
-    public abstract void loadNextPageOfPhotos(RequestHandlers handlers);
+    abstract Call<PhotoResult> makeCall();
+
+    /***
+     * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
+     * sort order, and filter options before calling.
+     * @param handlers - called upon success/failure of the request
+     * @return true if the request was attempted, false if aborted before the attempt was made
+     */
+    public void loadNextPageOfPhotos(final RequestHandlers handlers) {
+        Call<PhotoResult> call = makeCall();
+
+        if(call==null)
+            return;
+
+        call.enqueue(new Callback<PhotoResult>() {
+            @Override
+            public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
+                setData(response, handlers);
+            }
+
+            @Override
+            public void onFailure(Call<PhotoResult> call, Throwable t) {
+                if (handlers != null) {
+                    handlers.DataLoadFailedHandler(t.toString());
+                }
+            }
+        });
+    }
 
     /**
      * This is for loadNextPageOfPhotos(RequestHandlers handlers)

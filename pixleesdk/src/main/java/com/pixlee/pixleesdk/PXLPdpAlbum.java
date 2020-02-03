@@ -37,6 +37,7 @@ public class PXLPdpAlbum extends PXLBaseAlbum {
      * This is for unit test. Not for the use
      * @return
      */
+    @Override
     Call<PhotoResult> makeCall() {
         if (sku == null) {
             Log.w(TAG, "No sku specified");
@@ -64,33 +65,5 @@ public class PXLPdpAlbum extends PXLBaseAlbum {
                 perPage,
                 desiredPage
         );
-    }
-
-    /***
-     * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
-     * sort order, and filter options before calling.
-     * @param handlers - called upon success/failure of the request
-     * @return true if the request was attempted, false if aborted before the attempt was made
-     */
-    @Override
-    public void loadNextPageOfPhotos(final RequestHandlers handlers) {
-        Call<PhotoResult> call = makeCall();
-
-        if(call==null)
-            return;
-
-        call.enqueue(new Callback<PhotoResult>() {
-            @Override
-            public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
-                setData(response, handlers);
-            }
-
-            @Override
-            public void onFailure(Call<PhotoResult> call, Throwable t) {
-                if (handlers != null) {
-                    handlers.DataLoadFailedHandler(t.toString());
-                }
-            }
-        });
     }
 }
