@@ -11,7 +11,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
     - [Add the SDK to your App](#Add-the-SDK-to-your-App)
 - [How to use the SDK](#How-to-use-the-SDK)
     - [Initialize SDK](#Initialize-SDK)
-    - [Album Features](#Album-Features)
+- [Album Features](#Album-Features)
     - [Get Photos of an Album](#Get-Photos-of-an-Album)
     - [Get Photos of a Product](#Get-Photos-of-a-Product)
     - [Get more Photos](#Get-more-Photos)
