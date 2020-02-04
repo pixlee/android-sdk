@@ -1,19 +1,13 @@
 package com.pixlee.pixleesdk;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.pixlee.pixleesdk.data.PhotoResult;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;
-import com.squareup.moshi.Json;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,16 +68,6 @@ public class PXLAlbum extends PXLBaseAlbum{
         );
     }
 
-    /***
-     * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
-     * sort order, and filter options before calling.
-     * @param title - title or caption of the photo being uploaded
-     * @param email - email address of the submitting user
-     * @param username - username of the submitting user
-     * @param photoURI - the URI of the photo being submitted (must be a public URI)
-     * @param approved - boolean specifying whether the photo should be marked as approved on upload
-     * @return true if the request was made, false if aborted before the attempt was made
-     */
     /**
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
      * sort order, and filter options before calling.
