@@ -7,12 +7,10 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
 # Table of Content
 - [Get Started with Demo App](#Get-Started-with-Demo-App)
     - [Add the SDK to your App](#Add-the-SDK-to-your-App)
-- [Get started with SDK](#Get-started-with-SDK)
-    - [Add the SDK to your App](#Add-the-SDK-to-your-App)
-- [How to use the SDK](#How-to-use-the-SDK)
-    - [Initialize SDK](#Initialize-SDK)
-        - [Register Pixlee credentials](#Register-Pixlee-credentials)
-        - [Get PXLClient](#Get-PXLClient)
+- [Add the SDK to your App](#Add-the-SDK-to-your-App)
+- [Initialize SDK](#Initialize-SDK)
+    - [Register Pixlee credentials](#Register-Pixlee-credentials)
+    - [Get PXLClient](#Get-PXLClient)
 - [Album Features](#Album-Features)
     - [Get Photos of an Album](#Get-Photos-of-an-Album)
     - [Get Photos of a Product](#Get-Photos-of-a-Product)
@@ -56,8 +54,7 @@ pixleeSKU=35123
 
 4. Run the project on an Android device
 
-# Get started with SDK
-#### Add the SDK to your App
+# Add the SDK to your App
 - Option 1: (recommended) adding Gradle dependencies
     - Add it in your root build.gradle at the end of repositories:
         ```
@@ -82,8 +79,7 @@ pixleeSKU=35123
         4. Select the modules you would like to import and click Finish.
     - [Goole official doc: How to import a module](https://developer.android.com/studio/projects/add-app-module#ImportAModule)
    
-# How to use the SDK
-## Initialize SDK
+# Initialize SDK
 ### You must do this before using this SDK!!
 #### Register Pixlee credentials
 - Before accessing any Pixlee API, you must initialize the `PXLClient`. To set the API key, call the static method initialize:
