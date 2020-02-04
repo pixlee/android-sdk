@@ -5,11 +5,24 @@
 This SDK makes it easy for Pixlee customers to find and download Pixlee images and albums.  There's a native wrapper to the Pixlee album API for Android, and there's also a demo app showing how easy it is to drop in and customize a UI. This repo includes both the Pixlee Android SDK and an example project to show you how it's used.  
 
 # Table of Content
-- [Getting Started with Demo App](#Getting-Started-with-Demo-App)
+- [Get Started with Demo App](#Get-Started-with-Demo-App)
+    - [Add the SDK to your App](#Add-the-SDK-to-your-App)
+- [Get started with SDK](#Get-started-with-SDK)
+    - [Add the SDK to your App](#Add-the-SDK-to-your-App)
+- [How to use the SDK](#How-to-use-the-SDK)
+    - [Initialize SDK](#Initialize-SDK)
+    - [Album Features](#Album-Features)
+    - [Get Photos of an Album](#Get-Photos-of-an-Album)
+    - [Get Photos of a Product](#Get-Photos-of-a-Product)
+    - [Get more Photos](#Get-more-Photos)
+    - [Uploading Photos](#Uploading-Photos)
+- [Album Analytics](#Album-Analytics)
+    - [Opened Widget](#Opened-Widget)
+- [Ecommerce Analytics](#Ecommerce-Analytics)
+    - [Add To Cart](#Add-To-Cart)
+    - [Conversion](#Conversion)
 
-- [Getting started with SDK](#Getting-started-with-SDK)
-
-## Get Started with Demo App
+# Get Started with Demo App
 - The demo app included with this SDK are meant to be used in Android Studio to create a typical Android app.
 
 - To help you get up and running quickly, we've also built an sample application featuring a grid view, list view, and detail view.  The adapters simply maintain an ArrayList of PXLBaseAlbum, which is updated via calls to `loadNextPageOfPhotos`.  Since the data source contains the full PXLPhoto object, you can easily customize your own widgets to display the desired images and text.  The sample also implements a scroll listener which times calls to `loadNextPageOfPhotos` to provide the endless scroll effect. 
@@ -38,8 +51,8 @@ pixleeSKU=35123
 
 4. Run the project on an Android device
 
-## Get started with SDK
-### Add the SDK to your App
+# Get started with SDK
+#### Add the SDK to your App
 - Option 1: (recommended) adding Gradle dependencies
     - Add it in your root build.gradle at the end of repositories:
         ```
@@ -64,22 +77,25 @@ pixleeSKU=35123
         4. Select the modules you would like to import and click Finish.
     - [Goole official doc: How to import a module](https://developer.android.com/studio/projects/add-app-module#ImportAModule)
    
-### How to use the SDK
-- Before accessing the Pixlee API, you must initialize the `PXLClient`. To set the API key, call the static method initialize:
+# How to use the SDK
+## Initialize SDK
+- You must do this to use this SDK
+- Before accessing any Pixlee API, you must initialize the `PXLClient`. To set the API key, call the static method initialize:
     ```
     // If you need only to use @Get APIs
     #!java
     
     PXLClient.initialize(<PIXLEE API KEY>);
     ```
-    or
+    Or:
     ```
     // If you need to use both @Get and @Post APIs
     #!java
     
     PXLClient.initialize(<PIXLEE API KEY>, <PIXLEE SECRET KEY>);
     ```
-
+## Album Features
+#### Get Photos of an Album
 - You can then use the singleton instance to make calls against the Pixlee API:
     ```
     #!java
@@ -94,13 +110,13 @@ pixleeSKU=35123
     
     PXLBaseAlbum album = new PXLAlbum(<ALBUM ID>, client);
     ```
-    or
+    Or:
     ```
     #!java
     
     PXLBaseAlbum album = new PXLAlbum(<ALBUM ID>, client.getBasicRepo(), client.getAnalyticsRepo());
     ```
-    
+#### Get Photos of a Product    
 - To load the photos in an Product album, you'll want to use the `PXLPdpAlbum` class. Instantiate one with your desired sku and client:
     
     ```
@@ -108,13 +124,13 @@ pixleeSKU=35123
     
     PXLBaseAlbum album = new PXLPdpAlbum(<SKU>, client);
     ```
-    or
+    Or:
     ```
     #!java
     
     PXLBaseAlbum album = new PXLAlbum(<SKU>, client.getBasicRepo(), client.getAnalyticsRepo());
     ```
-    
+#### Get more Photos
 - You can then set sort and filter options if desired and use `loadNextPageOfPhotos` to kick off the async request.   
     ```
     #!java
@@ -137,24 +153,17 @@ pixleeSKU=35123
   Once an album has loaded photos from the server, it will instantiate `PXLBaseAlbum` objects that can be consumed by your UI. `PXLBaseAlbum` exposes all of the data for a photo available through the Pixlee API and offers several image url sizes depending on your needs.
     
 #### Uploading Photos
-    
-- If you wish to build your application with photo uploading capabilities, you must initialize the `PXLClient` with an additional parameter - your Pixlee secret key. You must set the secret key along with the API key when you call the static method initialize:
-    
-    ```
-    #!java
-    
-    PXLClient.initialize(<API KEY>, <SECRET KEY>);
-    ```
-    
-- Now wen you want to upload a photo in your application, simply call the `uploadImage` method of the PXLAlbum object you are using.  This would look something like this:
-    
+- Prerequisite:
+    - option 1: [Get Photos of an Album](#Get-Photos-of-an-Album)
+    - option 2: [Get Photos of a Product](#Get-Photos-of-a-Product)
+- Call the `uploadImage` method of the PXLBaseAlbum object you are using.
     ```
     #!java
     
     album.uploadImage("test", "test@test.com", "testuser", "https://timedotcom.files.wordpress.com/2019/05/drake-nba-finals-warning.jpg", true);
     ```
 
-### Analytics
+## Album Analytics
 #### Opened Widget
 - To fire an opened widget event, simply call the `openedWidget` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from the first call of the `loadNextPageOfPhotos` method, and an "Opened Widget" event will be fired containing all of the necessary analytics information.
 See the DataLoadedHandler function in SampleActiviy.java for an example.
@@ -195,22 +204,7 @@ See the DataLoadedHandler function in SampleActiviy.java for an example.
     
     photo.actionClicked("https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html", context);
     ```
-
-### Ecommerce Analytics
-
-- For triggering all ecommerce analytics events within your app, you'll want to use the `PXLAnalytics` class. Instantiate one with the application context:
-    ```
-    #!Java
-    
-    PXLAnalytics analytics = new PXLAnalytics(client);
-    ```
-    or
-    ```
-    #!Java
-    
-    PXLAnalytics analytics = new PXLAnalytics(client.getAnalyticsRepo());
-    ```
-
+## Ecommerce Analytics
 #### Add To Cart
 - To fire an Add To Cart event, simply call the `addToCart` method of the PXLAnalytics object with the necessary parameters, and an "Add To Cart" event will be fired containing all of the necessary analytics information.
 The parameters for this method are:
