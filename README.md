@@ -18,7 +18,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
     - [Uploading Photos](#Uploading-Photos)
 - [Album Analytics](#Album-Analytics)
     - [Opened Widget](#Opened-Widget)
-    - [Load More](#OpLoad-More)
+    - [Load More](#Load-More)
     - [Opened Lightbox](#Opened-Lightbox)
     - [Action Clicked](#Action-Clicked)
 - [Ecommerce Analytics](#Ecommerce-Analytics)
