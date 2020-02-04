@@ -15,9 +15,7 @@ import retrofit2.Response;
  * Created by sungjun on 2020-02-03.
  */
 public class FromSkuAPITest extends BaseTest {
-    String SKU = BuildConfig.PIXLEE_SKU;
-
-    void ready(int httpCode, String body, PXLBaseAlbum.RequestHandlers handlers) throws Exception{
+    void ready(int httpCode, String body, PXLBaseAlbum.RequestHandlers handlers) throws Exception {
         // mock the response
         intMockServer(
                 httpCode,
@@ -35,7 +33,7 @@ public class FromSkuAPITest extends BaseTest {
         so.descending = true;
 
         //init album
-        PXLPdpAlbum album = new PXLPdpAlbum(SKU, basicDS, analyticsDS);
+        PXLPdpAlbum album = new PXLPdpAlbum(BuildConfig.PIXLEE_SKU, basicDS, analyticsDS);
         album.setPerPage(40);
         album.setFilterOptions(fo);
         album.setSortOptions(so);
@@ -55,18 +53,7 @@ public class FromSkuAPITest extends BaseTest {
                     @Override
                     public void DataLoadedHandler(List<PXLPhoto> photos) {
                         //success
-                        String skuInResponse = null;
-                        for (PXLPhoto photo : photos) {
-                            if (photo.products != null) {
-                                for (PXLProduct product : photo.products) {
-                                    if (product.sku != null) {
-                                        skuInResponse = product.sku;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        Assert.assertEquals(SKU, skuInResponse);
+                        Assert.assertTrue(photos.size() > 0);
                     }
 
                     @Override
@@ -88,19 +75,7 @@ public class FromSkuAPITest extends BaseTest {
                     @Override
                     public void DataLoadedHandler(List<PXLPhoto> photos) {
                         //success
-                        String skuInResponse = null;
-                        for (PXLPhoto photo : photos) {
-                            System.out.println("photo.latitude:" + photo.latitude);
-                            if (photo.products != null) {
-                                for (PXLProduct product : photo.products) {
-                                    if (product.sku != null) {
-                                        skuInResponse = product.sku;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        Assert.assertEquals(SKU, skuInResponse);
+                        Assert.assertTrue(photos.size() > 0);
                     }
 
                     @Override

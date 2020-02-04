@@ -6,6 +6,7 @@ import com.pixlee.pixleesdk.data.PhotoResult;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
 
@@ -15,9 +16,9 @@ import retrofit2.Response;
  * Created by sungjun on 2020-02-03.
  */
 public class AlbumAPITest extends BaseTest {
-    String SKU = BuildConfig.PIXLEE_SKU;
+    String ALBUM_ID = BuildConfig.PIXLEE_ALBUM_ID;
 
-    void ready(int httpCode, String body, PXLBaseAlbum.RequestHandlers handlers) throws Exception{
+    PXLAlbum ready(int httpCode, String body, PXLBaseAlbum.RequestHandlers handlers) throws IOException {
         // mock the response
         intMockServer(
                 httpCode,
@@ -35,7 +36,7 @@ public class AlbumAPITest extends BaseTest {
         so.descending = true;
 
         //init album
-        PXLAlbum album = new PXLAlbum(SKU, basicDS, analyticsDS);
+        PXLAlbum album = new PXLAlbum(ALBUM_ID, basicDS, analyticsDS);
         album.setPerPage(40);
         album.setFilterOptions(fo);
         album.setSortOptions(so);
@@ -43,39 +44,48 @@ public class AlbumAPITest extends BaseTest {
         //fire an API
         Response<PhotoResult> response = album.makeCall().execute();
         album.setData(response, handlers);
+        return album;
     }
 
     @Test
     public void success() throws Exception {
         // mock the response
-        ready(
+        intMockServer(
                 HttpURLConnection.HTTP_OK,
-                getAPIJson("albums.from_sku.json"),
-                new PXLBaseAlbum.RequestHandlers() {
-                    @Override
-                    public void DataLoadedHandler(List<PXLPhoto> photos) {
-                        //success
-                        String skuInResponse = null;
-                        for (PXLPhoto photo : photos) {
-                            if (photo.products != null) {
-                                for (PXLProduct product : photo.products) {
-                                    if (product.sku != null) {
-                                        skuInResponse = product.sku;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        Assert.assertEquals(SKU, skuInResponse);
-                    }
-
-                    @Override
-                    public void DataLoadFailedHandler(String error) {
-                        //failure
-                        Assert.fail(error);
-                    }
-                }
+                getAPIJson("albums.from_sku.json")
         );
+
+        //fileter
+        PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
+        fo.minTwitterFollowers = 0;
+        fo.minInstagramFollowers = 0;
+
+        //sort
+        PXLAlbumSortOptions so = new PXLAlbumSortOptions();
+        so.sortType = PXLAlbumSortType.RECENCY;
+        so.descending = true;
+
+        //init album
+        PXLAlbum album = new PXLAlbum(ALBUM_ID, basicDS, analyticsDS);
+        album.setPerPage(40);
+        album.setFilterOptions(fo);
+        album.setSortOptions(so);
+
+        //fire an API
+        Response<PhotoResult> response = album.makeCall().execute();
+        album.setData(response, new PXLBaseAlbum.RequestHandlers() {
+            @Override
+            public void DataLoadedHandler(List<PXLPhoto> photos) {
+                //success
+                Assert.assertEquals(ALBUM_ID, album.album_id);
+            }
+
+            @Override
+            public void DataLoadFailedHandler(String error) {
+                //failure
+                Assert.fail(error);
+            }
+        });
     }
 
     @Test
@@ -88,19 +98,7 @@ public class AlbumAPITest extends BaseTest {
                     @Override
                     public void DataLoadedHandler(List<PXLPhoto> photos) {
                         //success
-                        String skuInResponse = null;
-                        for (PXLPhoto photo : photos) {
-                            System.out.println("photo.latitude:" + photo.latitude);
-                            if (photo.products != null) {
-                                for (PXLProduct product : photo.products) {
-                                    if (product.sku != null) {
-                                        skuInResponse = product.sku;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        Assert.assertEquals(SKU, skuInResponse);
+                        Assert.assertTrue(photos.size() > 0);
                     }
 
                     @Override
