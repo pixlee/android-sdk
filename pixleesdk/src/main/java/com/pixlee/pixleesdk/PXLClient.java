@@ -38,7 +38,7 @@ public class PXLClient {
     private BasicDataSource basicRepo;
     private AnalyticsDataSource analyticsRepo;
 
-    public BasicDataSource getBasicrepo() {
+    public BasicDataSource getBasicRepo() {
         if (basicRepo == null) {
             basicRepo = NetworkModule.generateBasicRepository();
         }

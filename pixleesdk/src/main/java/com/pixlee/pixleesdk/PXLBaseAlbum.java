@@ -252,6 +252,58 @@ public abstract class PXLBaseAlbum {
                 );
     }
 
+
+    /**
+     * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
+     * sort order, and filter options before calling.
+     *
+     * @param title    - title or caption of the photo being uploaded
+     * @param email    - email address of the submitting user
+     * @param username - username of the submitting user
+     * @param photoURI - the URI of the photo being submitted (must be a public URI)
+     * @param approved - boolean specifying whether the photo should be marked as approved on upload
+     * @param handlers - a callback fired after this api call is finished
+     * @return true if the request was made, false if aborted before the attempt was made
+     */
+    public boolean uploadImage(String title, String email, String username, String photoURI, Boolean approved, final RequestHandlers handlers) {
+        JSONObject body = new JSONObject();
+
+        try {
+            body.put("album_id", Integer.parseInt(this.album_id));
+            body.put("title", title);
+            body.put("email", email);
+            body.put("username", username);
+            body.put("photo_uri", photoURI);
+            body.put("approved", approved);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            basicRepo.postMedia(
+                    PXLClient.apiKey,
+                    body
+            ).enqueue(new Callback<PhotoResult>() {
+                @Override
+                public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
+                    //setData(response.body(), handlers);
+                }
+
+                @Override
+                public void onFailure(Call<PhotoResult> call, Throwable t) {
+                    if (handlers != null) {
+                        handlers.DataLoadFailedHandler(t.toString());
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     /**
      * actionClicked Analytics
      *

@@ -32,6 +32,15 @@ public class PXLAnalytics {
     }
 
     /**
+     * Constructor requires the context, which will be passed along to the PXLClient
+     * for volley configuration.
+     * @param client PXLClient
+     */
+    public PXLAnalytics(PXLClient client) {
+        this(client.getAnalyticsRepo());
+    }
+
+    /**
      * Analytics Name: Add To Cart
      * Document: https://developers.pixlee.com/reference#add-to-cart
      *
@@ -39,9 +48,8 @@ public class PXLAnalytics {
      * @param price
      * @param quantity
      * @param currency
-     * @param fingerprint
      */
-    public void addToCart(String sku, String price, Integer quantity, String currency, String fingerprint) {
+    public void addToCart(String sku, String price, Integer quantity, String currency) {
         JSONObject body = new JSONObject();
 
         try{
@@ -51,8 +59,8 @@ public class PXLAnalytics {
             if(currency != null){
                 body.put("currency", currency);
             }
-            if (fingerprint != null) {
-                body.put("fingerprint", fingerprint);
+            if (PXLClient.android_id != null) {
+                body.put("fingerprint", PXLClient.android_id);
             }
 
 
@@ -75,7 +83,7 @@ public class PXLAnalytics {
     }
 
     public void addToCart(String sku, String price, Integer quantity) {
-        this.addToCart(sku, price, quantity, null, null);
+        this.addToCart(sku, price, quantity, null);
     }
 
 

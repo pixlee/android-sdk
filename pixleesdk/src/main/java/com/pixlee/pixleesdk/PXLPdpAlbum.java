@@ -1,18 +1,12 @@
 package com.pixlee.pixleesdk;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.pixlee.pixleesdk.data.PhotoResult;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * ProductAlbum ViewModel of MVVM architecture
@@ -31,6 +25,16 @@ public class PXLPdpAlbum extends PXLBaseAlbum {
     public PXLPdpAlbum(String sku, BasicDataSource basicRepo, AnalyticsDataSource analyticsRepo) {
         super(basicRepo, analyticsRepo);
         this.sku = sku;
+    }
+
+    /**
+     * Constructor requires the album id and context, which will be passed along to the PXLClient
+     * for volley configuration.
+     * @param sku - product sku
+     * @param client PXLClient
+     */
+    public PXLPdpAlbum(String sku, PXLClient client) {
+        this(sku, client.getBasicRepo(), client.getAnalyticsRepo());
     }
 
     /**

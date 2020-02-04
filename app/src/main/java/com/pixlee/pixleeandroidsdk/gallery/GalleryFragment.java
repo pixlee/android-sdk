@@ -86,7 +86,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
             }
         });
 
-        loadList();
+        loadAlbum();
         configureViews();
     }
 
@@ -95,11 +95,11 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
     /***
      * Initializes the PXLClient and creates the PXLAlbum
      */
-    private void loadList() {
+    private void loadAlbum() {
         PXLClient.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY);
         PXLClient client = PXLClient.getInstance(getContext().getApplicationContext());
 
-        album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client.getBasicrepo(), client.getAnalyticsRepo());
+        album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client.getBasicRepo(), client.getAnalyticsRepo());
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 0;
@@ -164,7 +164,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
 
 
         PXLAnalytics analytics = new PXLAnalytics(client.getAnalyticsRepo());
-        analytics.addToCart(BuildConfig.PIXLEE_SKU, "13000",2, "AUD", null);
+        analytics.addToCart(BuildConfig.PIXLEE_SKU, "13000",2, "AUD");
         /* ~~~ content upload example ~~~
 
           album.uploadImage("test", "kb@pixleeteam.com", "K.B.", "https://timedotcom.files.wordpress.com/2019/05/drake-nba-finals-warning.jpg", true);
