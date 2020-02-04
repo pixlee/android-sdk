@@ -18,6 +18,9 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
     - [Uploading Photos](#Uploading-Photos)
 - [Album Analytics](#Album-Analytics)
     - [Opened Widget](#Opened-Widget)
+    - [Load More](#OpLoad-More)
+    - [Opened Lightbox](#Opened-Lightbox)
+    - [Action Clicked](#Action-Clicked)
 - [Ecommerce Analytics](#Ecommerce-Analytics)
     - [Add To Cart](#Add-To-Cart)
     - [Conversion](#Conversion)
@@ -166,7 +169,7 @@ pixleeSKU=35123
 ## Album Analytics
 #### Opened Widget
 - To fire an opened widget event, simply call the `openedWidget` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from the first call of the `loadNextPageOfPhotos` method, and an "Opened Widget" event will be fired containing all of the necessary analytics information.
-See the DataLoadedHandler function in SampleActiviy.java for an example.
+See the DataLoadedHandler function in GalleryFragment.java for an example.
 
     ```
     #!java
@@ -176,16 +179,13 @@ See the DataLoadedHandler function in SampleActiviy.java for an example.
 
 #### Load More
 - To fire a load more event, simply call the `loadMore` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from calls via the 'loadNextPageOfPhotos' method, a "Load More" analytics event will be fired containing all of the necessary analytics information.
-See the DataLoadedHandler function in SampleActiviy.java for an example.
-
+See the DataLoadedHandler function in GalleryFragment.java for an example.
+- On calls to loadNextPageOfPhotos (except the first), a "Load More" analytics event will be fired automatically
     ```
     #!java
     
     album.loadMore();
     ```
-
-#### Load More
-- On calls to loadNextPageOfPhotos (except the first), a "Load More" analytics event will be fired automatically
 
 #### Opened Lightbox
 - To fire an opened ligtbox event, simply call the `openedLightbox` method of the PXLBaseAlbum that is being opened, and an "Opened Lightbox" event will be fired containing all of the necessary analytics information.
