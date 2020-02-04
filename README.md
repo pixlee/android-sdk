@@ -11,6 +11,8 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
     - [Add the SDK to your App](#Add-the-SDK-to-your-App)
 - [How to use the SDK](#How-to-use-the-SDK)
     - [Initialize SDK](#Initialize-SDK)
+        - [Register Pixlee credentials](#Register-Pixlee-credentials)
+        - [Get PXLClient](#Get-PXLClient)
 - [Album Features](#Album-Features)
     - [Get Photos of an Album](#Get-Photos-of-an-Album)
     - [Get Photos of a Product](#Get-Photos-of-a-Product)
@@ -82,7 +84,8 @@ pixleeSKU=35123
    
 # How to use the SDK
 ## Initialize SDK
-- You must do this to use this SDK
+### You must do this before using this SDK!!
+#### Register Pixlee credentials
 - Before accessing any Pixlee API, you must initialize the `PXLClient`. To set the API key, call the static method initialize:
     ```
     // If you need only to use @Get APIs
@@ -97,15 +100,15 @@ pixleeSKU=35123
     
     PXLClient.initialize(<PIXLEE API KEY>, <PIXLEE SECRET KEY>);
     ```
-## Album Features
-#### Get Photos of an Album
+#### Get PXLClient
 - You can then use the singleton instance to make calls against the Pixlee API:
     ```
     #!java
     
     PXLClient client = PXLClient.getInstance(context);
     ```
-    
+## Album Features
+#### Get Photos of an Album    
 - To load the photos in an album, you'll want to use the `PXLAlbum` class. Instantiate one with your album ID and client:
     
     ```
