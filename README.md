@@ -16,6 +16,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
     - [Get Photos of a Product](#Get-Photos-of-a-Product)
     - [Get more Photos](#Get-more-Photos)
     - [Uploading Photos](#Uploading-Photos)
+- [How to get image urls](#How-to-get-image-urls)
 - [Album Analytics](#Album-Analytics)
     - [Opened Widget](#Opened-Widget)
     - [Load More](#Load-More)
@@ -24,6 +25,8 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
 - [Ecommerce Analytics](#Ecommerce-Analytics)
     - [Add To Cart](#Add-To-Cart)
     - [Conversion](#Conversion)
+
+    
 
 # Get Started with Demo App
 - The demo app included with this SDK are meant to be used in Android Studio to create a typical Android app.
@@ -150,10 +153,7 @@ AlbumId and SKU available from the Pixlee dashboard).
     album.setSortOptions(sortOptions);
     album.loadNextPageOfPhotos(this);
     ```
-    
-    
 - Each successive call of `loadNextPageOfPhotos` will load the next page of photos. Be sure to set all of your request options (filters, sort, etc) before calling `loadNextPageOfPhotos`.  See the source for more implementation details.
-    
   Once an album has loaded photos from the server, it will instantiate `PXLBaseAlbum` objects that can be consumed by your UI. `PXLBaseAlbum` exposes all of the data for a photo available through the Pixlee API and offers several image url sizes depending on your needs.
     
 #### Uploading Photos
@@ -166,7 +166,15 @@ AlbumId and SKU available from the Pixlee dashboard).
     
     album.uploadImage("test", "test@test.com", "testuser", "https://timedotcom.files.wordpress.com/2019/05/drake-nba-finals-warning.jpg", true);
     ```
-
+## How to get image urls
+Some imageURL fields can be empty or null depending on its data's status. In order to get appropriate images, you can use this method.
+```
+#!java
+photo.getUrlForSize(PXLPhotoSize.BIG)
+photo.getUrlForSize(PXLPhotoSize.MEDIUM)
+photo.getUrlForSize(PXLPhotoSize.THUMBNAIL)
+```
+    
 ## Album Analytics
 #### Opened Widget
 - To fire an opened widget event, simply call the `openedWidget` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from the first call of the `loadNextPageOfPhotos` method, and an "Opened Widget" event will be fired containing all of the necessary analytics information.
