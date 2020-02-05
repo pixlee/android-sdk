@@ -47,7 +47,7 @@ public class PXLAlbum extends PXLBaseAlbum{
      * This is for unit test. Not for the use
      * @return
      */
-    Call<PhotoResult> makeCall() {
+    Call<PhotoResult> makeGetAlbumCall() {
         if (album_id == null) {
             Log.w(TAG, "No album id specified");
             return null;

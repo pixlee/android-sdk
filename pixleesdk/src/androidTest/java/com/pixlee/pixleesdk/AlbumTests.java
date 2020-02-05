@@ -27,8 +27,8 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(AndroidJUnit4.class)
 public class AlbumTests {
-    private final static String TestAlbumId = "1568132";
-    private final static String TestApiKey = "dhXS3FBYcS65ZAVudJy4";// "zk4wWCOaHAo4Hi8HsE";
+    private final static String TestAlbumId = "5984962";
+    private final static String TestApiKey = "ccWQFNExi4gQjyNYpOEf";// "zk4wWCOaHAo4Hi8HsE";
     private PXLAlbum testAlbum;
     private Random random;
     private int requestCount;
@@ -37,7 +37,8 @@ public class AlbumTests {
     public void setup() {
         Context c = InstrumentationRegistry.getTargetContext();
         PXLClient.initialize(TestApiKey);
-        testAlbum = new PXLAlbum(TestAlbumId, c);
+
+        testAlbum = new PXLAlbum(TestAlbumId, PXLClient.getInstance(c));
         this.random = new Random();
         requestCount = 0;
     }
@@ -56,16 +57,16 @@ public class AlbumTests {
             testAlbum.setFilterOptions(fo);
             Log.d("AlbumTests", "making call");
             requestCount++;
-            testAlbum.loadNextPageOfPhotos(new PXLAlbum.RequestHandlers() {
+            testAlbum.loadNextPageOfPhotos(new PXLAlbum.RequestHandlers<List<PXLPhoto>>() {
                 @Override
-                public void DataLoadedHandler(List<PXLPhoto> photos) {
+                public void onComplete(List<PXLPhoto> photos) {
                     Log.d("testFilters", String.format("Fetched %s photos", photos.size()));
                     requestCount--;
                 }
 
                 @Override
-                public void DataLoadFailedHandler(String error) {
-                    Log.d("testFilters", "test failure");
+                public void onError(String error) {
+                    Log.d("testFilters", "test failure, error: " + error);
                     Assert.fail("unable to load photos");
                     requestCount--;
                 }
@@ -80,37 +81,38 @@ public class AlbumTests {
     public void testPhotoLoad() throws Exception {
         requestCount++;
         //update api key and photo id to match
-        String id = "187177895";
-        PXLPhoto.getPhotoWithId(InstrumentationRegistry.getTargetContext(), id, new PXLPhoto.PhotoLoadHandlers() {
+        String album_photo_id = "187177895";
+        testAlbum.getPhotoWithId(album_photo_id, new PXLBaseAlbum.RequestHandlers<PXLPhoto>() {
             @Override
-            public void photoLoaded(PXLPhoto photo) {
-                Log.d("testphoto", String.format("%s", photo.cdnSmallUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnMediumUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnLargeUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnOriginalUrl));
+            public void onComplete(PXLPhoto photo) {
+//                Log.d("testphoto", String.format("%s", photo.cdnSmallUrl));
+//                Log.d("testphoto", String.format("%s", photo.cdnMediumUrl));
+//                Log.d("testphoto", String.format("%s", photo.cdnLargeUrl));
+//                Log.d("testphoto", String.format("%s", photo.cdnOriginalUrl));
                 requestCount--;
             }
 
             @Override
-            public void photoLoadFailed(String error) {
+            public void onError(String error) {
                 requestCount--;
             }
         });
 
-        PXLPhoto photo = new PXLPhoto(InstrumentationRegistry.getTargetContext(), id);
+        PXLPhoto photo = new PXLPhoto();
+        photo.albumPhotoId = album_photo_id;
         requestCount++;
-        photo.loadFromId(new PXLPhoto.PhotoLoadHandlers() {
+        testAlbum.getPhotoWithId(photo, new PXLBaseAlbum.RequestHandlers<PXLPhoto>() {
             @Override
-            public void photoLoaded(PXLPhoto photo) {
-                Log.d("testphoto", String.format("%s", photo.cdnSmallUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnMediumUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnLargeUrl));
-                Log.d("testphoto", String.format("%s", photo.cdnOriginalUrl));
+            public void onComplete(PXLPhoto photo) {
+//                Log.d("testphoto", String.format("%s", photo.cdnSmallUrl));
+//                Log.d("testphoto", String.format("%s", photo.cdnMediumUrl));
+//                Log.d("testphoto", String.format("%s", photo.cdnLargeUrl));
+//                Log.d("testphoto", String.format("%s", photo.cdnOriginalUrl));
                 requestCount--;
             }
 
             @Override
-            public void photoLoadFailed(String error) {
+            public void onError(String error) {
                 requestCount--;
             }
         });

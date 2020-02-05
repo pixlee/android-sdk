@@ -16,9 +16,8 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        maven {
-            url "https://maven.google.com"
-        }
+        maven { url "https://maven.google.com" }
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -44,4 +43,5 @@ ext {
     rxAndroid = "2.1.1"
     gson = "2.8.5"
     glide = "4.9.0"
+    orhanobutLogger = "2.2.0"
 }

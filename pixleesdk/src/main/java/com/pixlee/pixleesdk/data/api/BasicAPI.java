@@ -1,6 +1,7 @@
 package com.pixlee.pixleesdk.data.api;
 
 import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.data.MediaResult;
 import com.pixlee.pixleesdk.data.PhotoResult;
 import com.serjltt.moshi.adapters.Wrapped;
 
@@ -48,7 +49,7 @@ public interface BasicAPI {
      */
     //todo:
     @POST("media")
-    Call<PhotoResult> postMedia(
+    Call<MediaResult> postMedia(
             @Header("Signature") String Signature,
             @Query("api_key")String api_key,
             @Body RequestBody body

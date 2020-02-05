@@ -42,7 +42,7 @@ public class PXLPdpAlbum extends PXLBaseAlbum {
      * @return
      */
     @Override
-    Call<PhotoResult> makeCall() {
+    Call<PhotoResult> makeGetAlbumCall() {
         if (sku == null) {
             Log.w(TAG, "No sku specified");
             return null;

@@ -33,24 +33,25 @@ An example of the proper usage of an opened lightbox event is also included in t
 
 
 1. Import this project into Android Studio
-2. Generate **pixleekey.properties** at the root of the project folder
-- <img src="doc/img/pixleekey.png" width="200"> 
-3. Fill the file with the example below and edit it with your own credentials, albumId and SKU.  
+2. Open .gitignore at the root of the project folder and Add 'pixleekey.properties' to the file 
+3. Generate **pixleekey.properties** at the root of the project folder
+    - <img src="doc/img/pixleekey.png" width="200"> 
+4. Fill the file with the example below and edit it with your own credentials, albumId and SKU.  
 pixleeAPIKey and pixleeSecretKey are in here (https://app.pixlee.com/app#settings/pixlee_api)
-AlbumId and SKU available from the Pixlee dashboard).:
-```
-pixleeAPIKey=yours
-pixleeSecretKey=yours
-pixleeAlbumId=yours
-pixleeSKU=yours
-```
-Example
-```
-pixleeAPIKey=ccWQFNExi4gQjyNYpOEf
-pixleeSecretKey=b3b38f4322877060b2e4f390fd
-pixleeAlbumId=5984962
-pixleeSKU=35123
-```
+AlbumId and SKU available from the Pixlee dashboard).
+    ```
+    pixleeAPIKey=yours
+    pixleeSecretKey=yours
+    pixleeAlbumId=yours
+    pixleeSKU=yours
+    ```
+    Example
+    ```
+    pixleeAPIKey=ccWQFNExi4gQjyNYpOEf
+    pixleeSecretKey=b3b38f4322877060b2e4f390fd
+    pixleeAlbumId=5984962
+    pixleeSKU=35123
+    ```
 
 4. Run the project on an Android device
 
@@ -77,7 +78,7 @@ pixleeSKU=35123
         2. Go to Import Module (File -> New -> Import Module)
         3. Enter the path of the pixlee-android-sdk directory
         4. Select the modules you would like to import and click Finish.
-    - [Goole official doc: How to import a module](https://developer.android.com/studio/projects/add-app-module#ImportAModule)
+    - [Google official doc: How to import a module](https://developer.android.com/studio/projects/add-app-module#ImportAModule)
    
 # Initialize SDK
 ### You must do this before using this SDK!!
@@ -104,9 +105,10 @@ pixleeSKU=35123
     PXLClient client = PXLClient.getInstance(context);
     ```
 ## Album Features
-#### Get Photos of an Album    
-- To load the photos in an album, you'll want to use the `PXLAlbum` class. Instantiate one with your album ID and client:
-    
+### Initiation
+- #### Option 1: Album    
+    To load the photos in an album, you'll want to use the `PXLAlbum` class. Instantiate one with your album ID and client:
+        
     ```
     #!java
     
@@ -118,9 +120,9 @@ pixleeSKU=35123
     
     PXLBaseAlbum album = new PXLAlbum(<ALBUM ID>, client.getBasicRepo(), client.getAnalyticsRepo());
     ```
-#### Get Photos of a Product    
-- To load the photos in an Product album, you'll want to use the `PXLPdpAlbum` class. Instantiate one with your desired sku and client:
-    
+- #### Option 2: Product    
+    To load the photos in an Product album, you'll want to use the `PXLPdpAlbum` class. Instantiate one with your desired sku and client:
+        
     ```
     #!java
     
@@ -130,7 +132,7 @@ pixleeSKU=35123
     ```
     #!java
     
-    PXLBaseAlbum album = new PXLAlbum(<SKU>, client.getBasicRepo(), client.getAnalyticsRepo());
+    PXLBaseAlbum album = new PXLPdpAlbum(<SKU>, client.getBasicRepo(), client.getAnalyticsRepo());
     ```
 #### Get more Photos
 - You can then set sort and filter options if desired and use `loadNextPageOfPhotos` to kick off the async request.   
@@ -168,7 +170,7 @@ pixleeSKU=35123
 ## Album Analytics
 #### Opened Widget
 - To fire an opened widget event, simply call the `openedWidget` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from the first call of the `loadNextPageOfPhotos` method, and an "Opened Widget" event will be fired containing all of the necessary analytics information.
-See the DataLoadedHandler function in GalleryFragment.java for an example.
+See the onComplete function in GalleryFragment.java for an example.
 
     ```
     #!java
@@ -178,7 +180,7 @@ See the DataLoadedHandler function in GalleryFragment.java for an example.
 
 #### Load More
 - To fire a load more event, simply call the `loadMore` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from calls via the 'loadNextPageOfPhotos' method, a "Load More" analytics event will be fired containing all of the necessary analytics information.
-See the DataLoadedHandler function in GalleryFragment.java for an example.
+See the onComplete function in GalleryFragment.java for an example.
 - On calls to loadNextPageOfPhotos (except the first), a "Load More" analytics event will be fired automatically
     ```
     #!java

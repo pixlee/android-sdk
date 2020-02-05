@@ -27,6 +27,7 @@ import com.pixlee.pixleesdk.PXLBaseAlbum;
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.PXLPhotoSize;
+import com.pixlee.pixleesdk.PXLWidgetType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHandlers{
+public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHandlers<List<PXLPhoto>>{
     @Override
     public int getTitleResource() {
         return R.string.title_gallery;
@@ -231,28 +232,29 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
     }
 
     private void samplePhotoLoad(PXLPhoto photo) {
-        album.getPhotoWithId(photo.albumPhotoId, new PXLBaseAlbum.PhotoLoadHandlers() {
+        //load PXLPhoto with album_photo_id
+        album.getPhotoWithId(photo.albumPhotoId,new PXLBaseAlbum.RequestHandlers<PXLPhoto>(){
+
             @Override
-            public void photoLoaded(PXLPhoto photo) {
+            public void onComplete(PXLPhoto result) {
 
             }
 
             @Override
-            public void photoLoadFailed(String error) {
+            public void onError(String error) {
                 Log.e("sampleactivity", "failed to load photo: " + error);
             }
         });
 
-        //load from pxlphoto object
-
-        album.getPhotoWithId(photo, new PXLBaseAlbum.PhotoLoadHandlers() {
+        //load PXLPhoto with pxlphoto object
+        album.getPhotoWithId(photo, new PXLBaseAlbum.RequestHandlers<PXLPhoto>() {
             @Override
-            public void photoLoaded(PXLPhoto photo) {
+            public void onComplete(PXLPhoto photo) {
 
             }
 
             @Override
-            public void photoLoadFailed(String error) {
+            public void onError(String error) {
                 Log.e("sampleactivity", "failed to load photo: " + error);
             }
         });
@@ -263,12 +265,14 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
      * @param photos - the complete list of photos (both the latest page and all previous)
      */
     @Override
-    public void DataLoadedHandler(List<PXLPhoto> photos) {
+    public void onComplete(List<PXLPhoto> photos) {
         if (photos == null) {
             return;
         }
-        album.openedWidget();
+        album.openedWidget(PXLWidgetType.horizontal);
+        album.openedWidget("gallery");
         album.loadMore();
+
         this.photoList.clear();
         this.photoList.addAll(photos);
         gridView.getAdapter().notifyDataSetChanged();
@@ -284,7 +288,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
      * @param error
      */
     @Override
-    public void DataLoadFailedHandler(String error) {
+    public void onError(String error) {
         Log.e("pixlee", String.format("Failed to fetch next page of photos: %s", error));
     }
 }

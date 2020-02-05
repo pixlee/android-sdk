@@ -102,7 +102,7 @@ public class MainActivity extends BaseActivity {
      * @param photos - the complete list of photos (both the latest page and all previous)
      */
 //    @Override
-//    public void DataLoadedHandler(List<PXLPhoto> photos) {
+//    public void onComplete(List<PXLPhoto> photos) {
 //        if (photos == null) {
 //            return;
 //        }
@@ -119,7 +119,7 @@ public class MainActivity extends BaseActivity {
      * @param error
      */
 //    @Override
-//    public void DataLoadFailedHandler(String error) {
+//    public void onError(String error) {
 //        Log.e("pixlee", String.format("Failed to fetch next page of photos: %s", error));
 //    }
 

@@ -15,10 +15,10 @@ import retrofit2.Response;
 /**
  * Created by sungjun on 2020-02-03.
  */
-public class AlbumAPITest extends BaseTest {
+public class QueryAlbumAPITest extends BaseTest {
     String ALBUM_ID = BuildConfig.PIXLEE_ALBUM_ID;
 
-    PXLAlbum ready(int httpCode, String body, PXLBaseAlbum.RequestHandlers handlers) throws IOException {
+    void ready(int httpCode, String body, PXLBaseAlbum.RequestHandlers handlers) throws IOException {
         // mock the response
         intMockServer(
                 httpCode,
@@ -42,9 +42,8 @@ public class AlbumAPITest extends BaseTest {
         album.setSortOptions(so);
 
         //fire an API
-        Response<PhotoResult> response = album.makeCall().execute();
+        Response<PhotoResult> response = album.makeGetAlbumCall().execute();
         album.setData(response, handlers);
-        return album;
     }
 
     @Test
@@ -72,16 +71,16 @@ public class AlbumAPITest extends BaseTest {
         album.setSortOptions(so);
 
         //fire an API
-        Response<PhotoResult> response = album.makeCall().execute();
-        album.setData(response, new PXLBaseAlbum.RequestHandlers() {
+        Response<PhotoResult> response = album.makeGetAlbumCall().execute();
+        album.setData(response, new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
             @Override
-            public void DataLoadedHandler(List<PXLPhoto> photos) {
+            public void onComplete(List<PXLPhoto> photos) {
                 //success
                 Assert.assertEquals(ALBUM_ID, album.album_id);
             }
 
             @Override
-            public void DataLoadFailedHandler(String error) {
+            public void onError(String error) {
                 //failure
                 Assert.fail(error);
             }
@@ -94,15 +93,15 @@ public class AlbumAPITest extends BaseTest {
         ready(
                 HttpURLConnection.HTTP_OK,
                 getAPIJson("albums.from_sku.many_formats.json"),
-                new PXLBaseAlbum.RequestHandlers() {
+                new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
-                    public void DataLoadedHandler(List<PXLPhoto> photos) {
+                    public void onComplete(List<PXLPhoto> photos) {
                         //success
                         Assert.assertTrue(photos.size() > 0);
                     }
 
                     @Override
-                    public void DataLoadFailedHandler(String error) {
+                    public void onError(String error) {
                         //failure
                         Assert.fail(error);
                     }
@@ -116,15 +115,15 @@ public class AlbumAPITest extends BaseTest {
         ready(
                 HttpURLConnection.HTTP_UNAUTHORIZED,
                 getAPIJson("error.401.json"),
-                new PXLBaseAlbum.RequestHandlers() {
+                new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
-                    public void DataLoadedHandler(List<PXLPhoto> photos) {
+                    public void onComplete(List<PXLPhoto> photos) {
                         //fail
                         Assert.fail();
                     }
 
                     @Override
-                    public void DataLoadFailedHandler(String error) {
+                    public void onError(String error) {
                         //an expected case
                         Assert.assertEquals("status: 401, error: Auth failed.", error);
                     }
@@ -138,15 +137,15 @@ public class AlbumAPITest extends BaseTest {
         ready(
                 HttpURLConnection.HTTP_NOT_FOUND,
                 getAPIJson("error.404.json"),
-                new PXLBaseAlbum.RequestHandlers() {
+                new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
-                    public void DataLoadedHandler(List<PXLPhoto> photos) {
+                    public void onComplete(List<PXLPhoto> photos) {
                         //fail
                         Assert.fail();
                     }
 
                     @Override
-                    public void DataLoadFailedHandler(String error) {
+                    public void onError(String error) {
                         //an expected case
                         Assert.assertEquals("status: 404, error: Product does not exist.", error);
                     }
@@ -160,15 +159,15 @@ public class AlbumAPITest extends BaseTest {
         ready(
                 HttpURLConnection.HTTP_NOT_FOUND,
                 null,
-                new PXLBaseAlbum.RequestHandlers() {
+                new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
-                    public void DataLoadedHandler(List<PXLPhoto> photos) {
+                    public void onComplete(List<PXLPhoto> photos) {
                         //fail if
                         Assert.fail();
                     }
 
                     @Override
-                    public void DataLoadFailedHandler(String error) {
+                    public void onError(String error) {
                         //failure
                         Assert.assertEquals("status: 404", error);
                     }
@@ -182,15 +181,15 @@ public class AlbumAPITest extends BaseTest {
         ready(
                 HttpURLConnection.HTTP_INTERNAL_ERROR,
                 getAPIJson("error.500.json"),
-                new PXLBaseAlbum.RequestHandlers() {
+                new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
-                    public void DataLoadedHandler(List<PXLPhoto> photos) {
+                    public void onComplete(List<PXLPhoto> photos) {
                         //fail if
                         Assert.fail();
                     }
 
                     @Override
-                    public void DataLoadFailedHandler(String error) {
+                    public void onError(String error) {
                         //failure
                         Assert.assertEquals("status: 500, error: Internal error.", error);
                     }

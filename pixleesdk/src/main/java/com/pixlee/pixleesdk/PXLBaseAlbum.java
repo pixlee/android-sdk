@@ -2,6 +2,7 @@ package com.pixlee.pixleesdk;
 
 import android.util.Log;
 
+import com.pixlee.pixleesdk.data.MediaResult;
 import com.pixlee.pixleesdk.data.PhotoResult;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;
@@ -101,16 +102,41 @@ public abstract class PXLBaseAlbum {
         this.pagesLoading.clear();
     }
 
-    /***
-     * Interface for callbacks for loadNextPageOfPhotos
+    /**
+     * Interface for network callbacks such as loadNextPageOfPhotos(...), getPhotoWithId(...) and uploadImage(...)
      */
-    public interface RequestHandlers {
-        void DataLoadedHandler(List<PXLPhoto> photos);
+    public interface RequestHandlers<T>{
+        //http -> 200
+        void onComplete(T result);
 
-        void DataLoadFailedHandler(String error);
+        //error cases
+        void onError(String error);
     }
 
-    abstract Call<PhotoResult> makeCall();
+    /**
+     * return success response body to where the requesting api was made
+     * @param response
+     * @param handlers
+     * @param <T> return data type
+     */
+    public <T> void processReponse(Response response, RequestHandlers handlers){
+        if (response.isSuccessful()) {
+            if (handlers != null) {
+                handlers.onComplete(response.body());
+            }
+        } else {
+            if (handlers != null) {
+                handlers.onError(extractErrorText(response));
+            }
+        }
+    }
+
+    /**
+     * This is for unit test
+     *
+     * @return retrofit2.Call
+     */
+    abstract Call<PhotoResult> makeGetAlbumCall();
 
     /***
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
@@ -119,9 +145,9 @@ public abstract class PXLBaseAlbum {
      * @return true if the request was attempted, false if aborted before the attempt was made
      */
     public void loadNextPageOfPhotos(final RequestHandlers handlers) {
-        Call<PhotoResult> call = makeCall();
+        Call<PhotoResult> call = makeGetAlbumCall();
 
-        if(call==null)
+        if (call == null)
             return;
 
         call.enqueue(new Callback<PhotoResult>() {
@@ -133,7 +159,7 @@ public abstract class PXLBaseAlbum {
             @Override
             public void onFailure(Call<PhotoResult> call, Throwable t) {
                 if (handlers != null) {
-                    handlers.DataLoadFailedHandler(t.toString());
+                    handlers.onError(t.toString());
                 }
             }
         });
@@ -141,7 +167,7 @@ public abstract class PXLBaseAlbum {
 
     /**
      * This is for loadNextPageOfPhotos(RequestHandlers handlers)
-     * save API response data and fire RequestHandlers.DataLoadedHandler(PXLPhoto) as a callback
+     * save API response data and fire RequestHandlers.onComplete(PXLPhoto) as a callback
      *
      * @param response API response data
      * @param handlers A callback
@@ -171,14 +197,14 @@ public abstract class PXLBaseAlbum {
 
             //handlers set when making the original 'loadNextPageOfPhotos' call
             if (handlers != null) {
-                handlers.DataLoadedHandler(photos);
+                handlers.onComplete(photos);
             }
         } else {
             ResponseBody errorBody = response.errorBody();
 
             String message = "status: " + response.code();
             try {
-                if (errorBody != null && handlers != null) {
+                if (errorBody != null) {
                     String errorString = errorBody.string();
                     if (errorString != null && errorString.length() > 0) {
                         PXLHttpError error = NetworkModule.provideMoshi().adapter(PXLHttpError.class).lenient().fromJson(errorString);
@@ -189,16 +215,11 @@ public abstract class PXLBaseAlbum {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                handlers.DataLoadFailedHandler(message);
+                if (handlers != null)
+                    handlers.onError(message);
             }
 
         }
-    }
-
-    public interface PhotoLoadHandlers {
-        void photoLoaded(PXLPhoto photo);
-
-        void photoLoadFailed(String error);
     }
 
     /**
@@ -207,7 +228,7 @@ public abstract class PXLBaseAlbum {
      * @param photo    this is to get PXLPhoto.albumPhotoId
      * @param callback
      */
-    public void getPhotoWithId(PXLPhoto photo, final PhotoLoadHandlers callback) {
+    public void getPhotoWithId(PXLPhoto photo, final RequestHandlers callback) {
         if (photo == null || photo.albumPhotoId == null) {
             Log.e(TAG, "no album_photo_id given");
             return;
@@ -220,9 +241,9 @@ public abstract class PXLBaseAlbum {
      * Retrieve a PXLPhoto with album_photo_id
      *
      * @param album_photo_id PXLPhoto.albumPhotoId
-     * @param callback
+     * @param handlers
      */
-    public void getPhotoWithId(String album_photo_id, final PhotoLoadHandlers callback) {
+    public void getPhotoWithId(String album_photo_id, final RequestHandlers<PXLPhoto> handlers) {
         if (album_photo_id == null) {
             Log.e(TAG, "no album_photo_id given");
             return;
@@ -232,42 +253,21 @@ public abstract class PXLBaseAlbum {
                 .enqueue(new Callback<PXLPhoto>() {
                              @Override
                              public void onResponse(Call<PXLPhoto> call, Response<PXLPhoto> response) {
-                                 PXLPhoto photo = response.body();
-                                 if (photo == null) {
-                                     Log.e(TAG, "no data from successful api call");
-                                 } else {
-                                     if (callback != null) {
-                                         callback.photoLoaded(photo);
-                                     }
-                                 }
+                                 processReponse(response, handlers);
                              }
 
                              @Override
                              public void onFailure(Call<PXLPhoto> call, Throwable t) {
-                                 if (callback != null) {
-                                     callback.photoLoadFailed(t.toString());
+                                 if (handlers != null) {
+                                     handlers.onError(t.toString());
                                  }
                              }
                          }
                 );
     }
 
-
-    /**
-     * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
-     * sort order, and filter options before calling.
-     *
-     * @param title    - title or caption of the photo being uploaded
-     * @param email    - email address of the submitting user
-     * @param username - username of the submitting user
-     * @param photoURI - the URI of the photo being submitted (must be a public URI)
-     * @param approved - boolean specifying whether the photo should be marked as approved on upload
-     * @param handlers - a callback fired after this api call is finished
-     * @return true if the request was made, false if aborted before the attempt was made
-     */
-    public boolean uploadImage(String title, String email, String username, String photoURI, Boolean approved, final RequestHandlers handlers) {
+    Call<MediaResult> makePostUploadImage(String title, String email, String username, String photoURI, Boolean approved) {
         JSONObject body = new JSONObject();
-
         try {
             body.put("album_id", Integer.parseInt(this.album_id));
             body.put("title", title);
@@ -280,28 +280,42 @@ public abstract class PXLBaseAlbum {
             e.printStackTrace();
         }
 
-        try {
-            basicRepo.postMedia(
-                    PXLClient.apiKey,
-                    body
-            ).enqueue(new Callback<PhotoResult>() {
-                @Override
-                public void onResponse(Call<PhotoResult> call, Response<PhotoResult> response) {
-                    //setData(response.body(), handlers);
-                }
+        return basicRepo.postMedia(
+                PXLClient.apiKey,
+                body
+        );
+    }
 
-                @Override
-                public void onFailure(Call<PhotoResult> call, Throwable t) {
-                    if (handlers != null) {
-                        handlers.DataLoadFailedHandler(t.toString());
-                    }
-                }
-            });
+    /**
+     * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
+     * sort order, and filter options before calling.
+     *
+     * @param title    - title or caption of the photo being uploaded
+     * @param email    - email address of the submitting user
+     * @param username - username of the submitting user
+     * @param photoURI - the URI of the photo being submitted (must be a public URI)
+     * @param approved - boolean specifying whether the photo should be marked as approved on upload
+     * @param handlers - a callback fired after this api call is finished
+     */
+    public void uploadImage(String title, String email, String username, String photoURI, Boolean approved, final RequestHandlers<MediaResult> handlers) {
+        try {
+            makePostUploadImage(title, email, username, photoURI, approved)
+                    .enqueue(new Callback<MediaResult>() {
+                        @Override
+                        public void onResponse(Call<MediaResult> call, Response<MediaResult> response) {
+                            processReponse(response, handlers);
+                        }
+
+                        @Override
+                        public void onFailure(Call<MediaResult> call, Throwable t) {
+                            if (handlers != null) {
+                                handlers.onError(t.toString());
+                            }
+                        }
+                    });
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
-        return true;
     }
 
     /**
@@ -328,9 +342,6 @@ public abstract class PXLBaseAlbum {
         JSONObject body = new JSONObject();
 
         try {
-            //todo: add below commend
-            //account_id
-            //widget (string) (i.e. “photowall”, “horizontal”)
             body.put("album_id", Integer.parseInt(album_id));
             body.put("album_photo_id", Integer.parseInt(albumPhotoId));
             body.put("action_link_url", actionLink);
@@ -376,9 +387,6 @@ public abstract class PXLBaseAlbum {
 
         JSONObject body = new JSONObject();
         try {
-            //todo: add below commend
-            //account_id
-            //widget (string) (i.e. “photowall”, “horizontal”)
             body.put("album_id", Integer.parseInt(album_id));
             body.put("album_photo_id", Integer.parseInt(albumPhotoId));
 
@@ -404,7 +412,11 @@ public abstract class PXLBaseAlbum {
      * Analytics methods
      */
 
-    public boolean openedWidget() {
+    public boolean openedWidget(PXLWidgetType widgetType) {
+        return openedWidget(widgetType.getType());
+    }
+
+    public boolean openedWidget(String widgetType) {
         JSONObject body = new JSONObject();
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < this.photos.size(); i++) {
@@ -420,9 +432,7 @@ public abstract class PXLBaseAlbum {
 
         try {
 
-            //todo: add below commend
-            //account_id
-            //widget (string) (i.e. “photowall”, “horizontal”)
+            body.put("widget", widgetType);
             body.put("album_id", Integer.parseInt(this.album_id));
             body.put("per_page", this.perPage);
             body.put("page", this.page);
@@ -471,9 +481,6 @@ public abstract class PXLBaseAlbum {
         }
 
         try {
-            //todo: add below commend
-            //account_id
-            //widget (string) (i.e. “photowall”, “horizontal”)
             body.put("album_id", Integer.parseInt(this.album_id));
             body.put("per_page", this.perPage);
             body.put("page", this.page);
@@ -497,4 +504,29 @@ public abstract class PXLBaseAlbum {
                 });
         return true;
     }
+
+    /**
+     * This extracts an error message
+     *
+     * @param response Any types of retrofit2.Response
+     * @return error message,   ex)   status: 404, error: Product does not exist.
+     */
+    private <T> String extractErrorText(Response<T> response) {
+        ResponseBody errorBody = response.errorBody();
+        String message = "status: " + response.code();
+        try {
+            if (errorBody != null) {
+                String errorString = errorBody.string();
+                if (errorString != null && errorString.length() > 0) {
+                    PXLHttpError error = NetworkModule.provideMoshi().adapter(PXLHttpError.class).lenient().fromJson(errorString);
+                    message = error.toString();
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return message;
+    }
+
 }

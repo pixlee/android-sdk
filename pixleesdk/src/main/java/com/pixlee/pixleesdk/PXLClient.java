@@ -3,6 +3,8 @@ package com.pixlee.pixleesdk;
 import android.content.Context;
 import android.provider.Settings.Secure;
 
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.Logger;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;
 import com.pixlee.pixleesdk.network.NetworkModule;
@@ -38,6 +40,16 @@ public class PXLClient {
     private BasicDataSource basicRepo;
     private AnalyticsDataSource analyticsRepo;
 
+    private PXLClient(Context context) {
+        if (PXLClient.apiKey == null ) {
+            throw new IllegalArgumentException("no apiKey, please set apiKey before start");
+        }
+
+        Logger.addLogAdapter(new AndroidLogAdapter());
+        mCtx = context;
+        android_id = Secure.getString(mCtx.getContentResolver(), Secure.ANDROID_ID);
+    }
+
     public BasicDataSource getBasicRepo() {
         if (basicRepo == null) {
             basicRepo = NetworkModule.generateBasicRepository();
@@ -51,15 +63,6 @@ public class PXLClient {
             analyticsRepo = NetworkModule.getAnalyticsRepository();
         }
         return analyticsRepo;
-    }
-
-    private PXLClient(Context context) {
-        if (PXLClient.apiKey == null ) {
-            throw new IllegalArgumentException("no apiKey, please set apiKey before start");
-        }
-
-        mCtx = context;
-        android_id = Secure.getString(mCtx.getContentResolver(), Secure.ANDROID_ID);
     }
 
     /***

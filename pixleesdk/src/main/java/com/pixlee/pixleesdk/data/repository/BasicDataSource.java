@@ -1,6 +1,7 @@
 package com.pixlee.pixleesdk.data.repository;
 
 import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.data.MediaResult;
 import com.pixlee.pixleesdk.data.PhotoResult;
 
 import org.json.JSONObject;
@@ -31,7 +32,7 @@ public interface BasicDataSource {
 
     Call<PXLPhoto> getMedia(String album_photo_id, String api_key);
 
-    Call<PhotoResult> postMedia(
+    Call<MediaResult> postMedia(
             String api_key,
             JSONObject json
     );

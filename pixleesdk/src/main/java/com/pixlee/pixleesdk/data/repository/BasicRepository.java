@@ -4,6 +4,7 @@ import android.util.Base64;
 
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.data.MediaResult;
 import com.pixlee.pixleesdk.data.PhotoResult;
 import com.pixlee.pixleesdk.data.api.BasicAPI;
 
@@ -46,20 +47,20 @@ public class BasicRepository implements BasicDataSource {
     }
 
     @Override
-    public Call<PhotoResult> postMedia(String api_key, JSONObject json) {
+    public Call<MediaResult> postMedia(String api_key, JSONObject json) {
         if (PXLClient.secretKey == null ) {
             throw new IllegalArgumentException("no secretKey, please set secretKey before start");
         }
-        String signiture = null;
+        String signature = null;
         try {
-            signiture = computeHmac(json.toString().replace("\\/", "/" ), PXLClient.secretKey);
+            signature = computeHmac(json.toString().replace("\\/", "/" ), PXLClient.secretKey);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json.toString());
-        return api.postMedia(signiture, api_key, body);
+        return api.postMedia(signature, api_key, body);
     }
 
     private String computeHmac(String baseString, String secretKey)
