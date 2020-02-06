@@ -3,6 +3,8 @@ package com.pixlee.pixleesdk;
 import android.content.Context;
 import android.provider.Settings.Secure;
 
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.Logger;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;
 import com.pixlee.pixleesdk.network.NetworkModule;
@@ -31,14 +33,24 @@ public class PXLClient {
     private static PXLClient mInstance;
     private Context mCtx;
 
-    static String apiKey = null;
+    public static String apiKey = null;
     public static String secretKey = null;
-    private static String android_id = null;
+    public static String android_id = null;
 
-    BasicDataSource basicRepo;
-    AnalyticsDataSource analyticsRepo;
+    private BasicDataSource basicRepo;
+    private AnalyticsDataSource analyticsRepo;
 
-    public synchronized BasicDataSource getBasicrepo() {
+    private PXLClient(Context context) {
+        if (PXLClient.apiKey == null ) {
+            throw new IllegalArgumentException("no apiKey, please set apiKey before start");
+        }
+
+        Logger.addLogAdapter(new AndroidLogAdapter());
+        mCtx = context;
+        android_id = Secure.getString(mCtx.getContentResolver(), Secure.ANDROID_ID);
+    }
+
+    public BasicDataSource getBasicRepo() {
         if (basicRepo == null) {
             basicRepo = NetworkModule.generateBasicRepository();
         }
@@ -51,16 +63,6 @@ public class PXLClient {
             analyticsRepo = NetworkModule.getAnalyticsRepository();
         }
         return analyticsRepo;
-    }
-
-    private PXLClient(Context context) {
-        if (PXLClient.apiKey == null ) {
-            throw new IllegalArgumentException("no apiKey, please set apiKey before start");
-        }
-
-        mCtx = context;
-        android_id = Secure.getString(mCtx.getContentResolver(), Secure.ANDROID_ID);
-
     }
 
     /***
@@ -79,6 +81,7 @@ public class PXLClient {
      */
     public static void initialize(String apiKey) {
         PXLClient.apiKey = apiKey;
+        PXLClient.secretKey = null;
     }
 
     /***
@@ -92,44 +95,4 @@ public class PXLClient {
         }
         return mInstance;
     }
-
-    /***
-     * Makes a call to the Pixlee Analytics API (limitless beyond). Appends api key, unique id and platform to the request body.
-     * on success/error.
-     * @param requestPath - path to hit (will be appended to the base Pixlee Analytics api endpoint)
-     * @param body - key/values to be stored in analytics events
-     * @return false if no api key set yet, true otherwise
-     */
-    public boolean makeAnalyticsCall(final String requestPath, final JSONObject body) {
-        if (PXLClient.apiKey == null) {
-            return false;
-        }
-
-        try {
-            body.put("API_KEY", PXLClient.apiKey.toString());
-            body.put("uid", android_id.toString());
-            body.put("platform", "android");
-
-            getAnalyticsRepo()
-                    .makeAnalyticsCall(requestPath, body)
-                   .enqueue(
-                           new Callback<String>() {
-                               @Override
-                               public void onResponse(Call<String> call, Response<String> response) {
-
-                               }
-
-                               @Override
-                               public void onFailure(Call<String> call, Throwable t) {
-
-                               }
-                           }
-                   );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return true;
-    }
-
 }

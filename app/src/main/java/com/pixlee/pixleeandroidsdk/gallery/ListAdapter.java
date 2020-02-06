@@ -1,28 +1,29 @@
-package com.pixlee.pixleeandroidsdk;
+package com.pixlee.pixleeandroidsdk.gallery;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.pixlee.pixleesdk.PXLClient;
+import com.pixlee.pixleeandroidsdk.GalleryClickListener;
+import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.PXLPhotoSize;
 
 import java.util.ArrayList;
 
-class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
+public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
     private ArrayList<PXLPhoto> galleryList;
     private Context context;
-    private SampleActivity saRef;
+    private GalleryClickListener listener;
 
-    public ListAdapter(Context context, ArrayList<PXLPhoto> galleryList, SampleActivity sa) {
+    public ListAdapter(Context context, ArrayList<PXLPhoto> galleryList, GalleryClickListener listener) {
         this.galleryList = galleryList;
         this.context = context;
-        this.saRef = sa;
+        this.listener = listener;
     }
 
     @Override
@@ -35,14 +36,14 @@ class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
     public void onBindViewHolder(ListViewHolder viewHolder, int i) {
         final PXLPhoto photo = galleryList.get(i);
         viewHolder.title.setText(photo.photoTitle);
-        viewHolder.netImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
         Glide.with(context)
-                .load(photo.thumbnailUrl.toString())
+                .load(photo.getUrlForSize(PXLPhotoSize.MEDIUM))
+                .centerCrop()
                 .into(viewHolder.netImg);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saRef.switchVisibilities(photo);
+                listener.onItemClicked(photo);
             }
         });
     }

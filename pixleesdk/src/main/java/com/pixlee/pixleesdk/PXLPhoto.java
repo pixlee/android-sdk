@@ -1,23 +1,15 @@
 package com.pixlee.pixleesdk;
 
-import android.content.Context;
-import android.util.Log;
+import com.pixlee.pixleesdk.data.CDNPhotos;
+import com.pixlee.pixleesdk.network.annotation.FieldDate;
+import com.pixlee.pixleesdk.network.annotation.FieldURL;
+import com.pixlee.pixleesdk.network.annotation.NullableDouble;
+import com.serjltt.moshi.adapters.Wrapped;
+import com.squareup.moshi.Json;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.List;
 
 /***
  * PXLPhoto represents an individual photo. Exposes all the data retrieved from an API call.
@@ -25,253 +17,154 @@ import retrofit2.Response;
 public class PXLPhoto {
     public static final String TAG = "PXLPhoto";
 
+    @Json(name = "id")
     public String id;
+
+    @Json(name = "photo_title")
     public String photoTitle;
+
+    @NullableDouble
+    @Json(name = "latitude")
     public double latitude;
+
+    @NullableDouble
+    @Json(name = "longitude")
     public double longitude;
+
+    @FieldDate
+    @Json(name = "tagged_at")
     public Date taggedAt;
+
+    @Json(name = "email_address")
     public String email_address;
+
+    @Json(name = "instagram_followers")
     public int instagramFollowers;
+
+    @Json(name = "twitter_followers")
     public int twitterFollowers;
+
+    @FieldURL
+    @Json(name = "avatar_url")
     public URL avatarUrl;
+
+    @Json(name = "user_name")
     public String userName;
+
+    @Json(name = "connected_user_id")
     public int connectedUserId;
-    public String source;
-    public String contentType;
-    public String dataFileName;
-    public URL mediumUrl;
-    public URL bigUrl;
-    public URL thumbnailUrl;
-    public URL sourceUrl;
-    public String mediaId;
-    public int existIn;
-    public String collectTerm;
-    public String albumPhotoId;
-    public int likeCount;
-    public int shareCount;
-    public URL actionLink;
-    public String actionLinkText;
-    public String actionLinkTitle;
-    public String actionLinkPhoto;
-    public Date updatedAt;
-    public boolean isStarred;
-    public boolean approved;
-    public boolean archived;
-    public boolean isFlagged;
-    public PXLAlbum album;
-    public int unreadCount;
-    public URL albumActionLink;
-    public String title;
-    public Boolean messaged;
-    public Boolean hasPermission;
-    public Boolean awaitingPermission;
-    public Boolean instUserHasLiked;
-    public URL platformLink;
-    public ArrayList<PXLProduct> products;
-    public URL cdnSmallUrl;
-    public URL cdnMediumUrl;
-    public URL cdnLargeUrl;
-    public URL cdnOriginalUrl;
-
-    private Context ctx;
-
-    public interface PhotoLoadHandlers {
-        void photoLoaded(PXLPhoto photo);
-
-        void photoLoadFailed(String error);
-    }
 
     /**
-     * This deals with network responses
-     * when HTTP-code is in between 200 and 299, this method returns the body
-     * when HTTP-code is not in between 200 and 299, this method returns the error body
-     *
-     * @param response Retrofit's string body
+     * Media from a list of sources: ["instagram", "twitter", "facebook", "api", "desktop", "email"]
      */
-    protected static void processResponse(Response<String> response, PhotoLoadHandlers callback) {
-        try {
-            String result = response.body();
-            if (response.isSuccessful()) {
-                JSONObject json = new JSONObject(result);
-                JSONObject data = json.optJSONObject("data");
-                if(data!=null) {
-                    if (callback != null) {
-                        callback.photoLoaded(PXLPhoto.fromJsonObj(data));
-                    }
-                }else{
-                    Log.e(TAG, "no data from successful api call");
-                }
-            } else {
-                ResponseBody errorBody = response.errorBody();
-                if (errorBody != null) {
-                    if (callback != null) {
-                        callback.photoLoadFailed(errorBody.toString());
-                    }
-                } else {
-                    Log.e(TAG, "no data from failed api call");
-                }
-            }
+    @Json(name = "source")
+    public String source;
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /***
-     * Generates an ArrayList of PXLPhoto from the given JSON array.
-     * @param data - JSONArray of Pixlee photos
-     * @param album - the PXLAlbum the photos belong to
-     * @return
+    /**
+     * Select from ["video", "image"]
      */
-    public static ArrayList<PXLPhoto> fromJsonArray(JSONArray data, PXLAlbum album) {
-        ArrayList<PXLPhoto> photos = new ArrayList<PXLPhoto>();
-        for (int i = 0; i < data.length(); i++) {
-            try {
-                photos.add(new PXLPhoto(data.getJSONObject(i), album));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return photos;
-    }
+    @Json(name = "content_type")
+    public String contentType;
 
-    public static PXLPhoto fromJsonObj(JSONObject obj) {
-        return new PXLPhoto(obj, null);
-    }
+    @Json(name = "data_file_name")
+    public String dataFileName;
 
-    public static void getPhotoWithId(Context ctx, String identifier, final PhotoLoadHandlers callback) {
-        if (identifier == null) {
-            Log.e(TAG, "no photo id given");
-            return;
-        }
+    @FieldURL
+    @Json(name = "medium_url")
+    public URL mediumUrl;
 
-        if (ctx == null) {
-            Log.e(TAG, "no context given for photo");
-        }
+    @FieldURL
+    @Json(name = "big_url")
+    public URL bigUrl;
 
-        try {
-            PXLClient pxlClient = PXLClient.getInstance(ctx);
-            pxlClient
-                    .getBasicrepo()
-                    .getMedia(identifier, pxlClient.apiKey)
-                    .enqueue(
-                            new Callback<String>() {
-                                @Override
-                                public void onResponse(Call<String> call, Response<String> response) {
-                                    processResponse(response, callback);
-                                }
+    @FieldURL
+    @Json(name = "thumbnail_url")
+    public URL thumbnailUrl;
 
-                                @Override
-                                public void onFailure(Call<String> call, Throwable t) {
-                                    if (callback != null) {
-                                        callback.photoLoadFailed(t.toString());
-                                    }
-                                }
-                            }
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    @FieldURL
+    @Json(name = "source_url")
+    public URL sourceUrl;
 
-    public void loadFromId(final PhotoLoadHandlers callback) {
-        if (this.id == null) {
-            Log.e(TAG, "cannot load photo without id");
-        }
-        if (ctx == null) {
-            Log.e(TAG, "need context for pxlclient");
-        }
-        PXLClient pxlClient = PXLClient.getInstance(ctx);
-        try {
-            pxlClient
-                    .getBasicrepo()
-                    .getMedia(this.id, PXLClient.apiKey)
-                    .enqueue(
-                            new Callback<String>() {
-                                @Override
-                                public void onResponse(Call<String> call, Response<String> response) {
-                                    processResponse(response, callback);
-                                }
+    @Json(name = "media_id")
+    public String mediaId;
 
-                                @Override
-                                public void onFailure(Call<String> call, Throwable t) {
-                                    if (callback != null) {
-                                        callback.photoLoadFailed(t.toString());
-                                    }
-                                }
-                            }
-                    );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    @Json(name = "exist_in")
+    public int existIn;
 
-    public PXLPhoto(Context ctx, String identifier) {
-        this.id = identifier;
-        this.ctx = ctx;
-    }
+    @Json(name = "collect_term")
+    public String collectTerm;
 
-    public PXLPhoto(JSONObject obj, PXLAlbum album) {
-        try {
-            this.id = obj.getString("id");
-            this.photoTitle = obj.optString("photo_title");
-            this.latitude = obj.optDouble("latitude");
-            this.longitude = obj.optDouble("longitude");
-            this.taggedAt = new Date(obj.optLong("tagged_at"));
-            this.email_address = obj.optString("email_address");
-            this.instagramFollowers = obj.optInt("instagram_followers");
-            this.twitterFollowers = obj.optInt("twitter_followers");
-            this.avatarUrl = JsonUtils.getURL("avatar_url", obj);
-            this.userName = obj.getString("user_name");
-            this.connectedUserId = obj.optInt("connected_user_id");
-            this.source = obj.getString("source");
-            this.contentType = obj.optString("content_type");
-            this.dataFileName = obj.optString("data_file_name");
-            this.mediumUrl = JsonUtils.getURL("medium_url", obj);
-            this.bigUrl = JsonUtils.getURL("big_url", obj);
-            this.thumbnailUrl = JsonUtils.getURL("thumbnail_url", obj);
-            this.sourceUrl = JsonUtils.getURL("source_url", obj);
-            this.mediaId = obj.optString("media_id");
-            this.existIn = obj.optInt("exist_in");
-            this.collectTerm = obj.optString("collect_term");
-            this.albumPhotoId = obj.optString("album_photo_id");
-            this.likeCount = obj.optInt("like_count");
-            this.shareCount = obj.optInt("share_count");
-            this.actionLink = JsonUtils.getURL("action_link", obj);
-            this.actionLinkText = obj.optString("action_link_text");
-            this.actionLinkTitle = obj.optString("action_link_title");
-            this.actionLinkPhoto = obj.optString("action_link_photo");
-            Long date = obj.optLong("updated_at");
-            this.updatedAt = new Date(date);
-            this.isStarred = obj.optBoolean("is_starred");
-            this.approved = obj.optBoolean("approved");
-            this.archived = obj.optBoolean("archived");
-            this.isFlagged = obj.optBoolean("is_flagged");
-            this.album = album;
-            this.unreadCount = obj.optInt("unread_count");
-            this.albumActionLink = JsonUtils.getURL("album_action_link", obj);
-            this.title = obj.getString("title");
-            this.messaged = obj.optBoolean("messaged");
-            this.hasPermission = obj.optBoolean("has_permission");
-            this.awaitingPermission = obj.optBoolean("awaiting_permission");
-            this.instUserHasLiked = obj.optBoolean("inst_user_has_liked");
-            this.platformLink = JsonUtils.getURL("platform_link", obj);
-            this.products = PXLProduct.fromJsonArray(obj.getJSONArray("products"), this);
-            JSONObject cdnPhotos = obj.optJSONObject("pixlee_cdn_photos");
-            if (cdnPhotos != null) {
-                this.cdnSmallUrl = JsonUtils.getURL("small_url", cdnPhotos);
-                this.cdnMediumUrl = JsonUtils.getURL("medium_url", cdnPhotos);
-                this.cdnLargeUrl = JsonUtils.getURL("large_url", cdnPhotos);
-                this.cdnOriginalUrl = JsonUtils.getURL("original_url", cdnPhotos);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-    }
+    @Json(name = "album_photo_id")
+    public String albumPhotoId;
+
+    @Json(name = "like_count")
+    public int likeCount;
+
+    @Json(name = "share_count")
+    public int shareCount;
+
+    @FieldURL
+    @Json(name = "action_link")
+    public URL actionLink;
+
+    @Json(name = "action_link_text")
+    public String actionLinkText;
+
+    @Json(name = "action_link_title")
+    public String actionLinkTitle;
+
+    @Json(name = "action_link_photo")
+    public String actionLinkPhoto;
+
+    @FieldDate
+    @Json(name = "updated_at")
+    public Date updatedAt;
+
+    @Json(name = "is_starred")
+    public boolean isStarred;
+
+    @Json(name = "approved")
+    public boolean approved;
+
+    @Json(name = "archived")
+    public boolean archived;
+
+    @Json(name = "is_flagged")
+    public boolean isFlagged;
+
+
+    //public PXLAlbum album;
+    @Json(name = "unread_count")
+    public int unreadCount;
+
+    @FieldURL
+    @Json(name = "album_action_link")
+    public URL albumActionLink;
+
+    @Json(name = "title")
+    public String title;
+
+    @Json(name = "messaged")
+    public Boolean messaged;
+
+    @Json(name = "has_permission")
+    public Boolean hasPermission;
+
+    @Json(name = "awaiting_permission")
+    public Boolean awaitingPermission;
+
+    @Json(name = "inst_user_has_liked")
+    public Boolean instUserHasLiked;
+
+    @FieldURL
+    @Json(name = "platform_link")
+    public URL platformLink;
+
+    @Json(name = "products")
+    public List<PXLProduct> products;
+
+    @Json(name = "pixlee_cdn_photos")
+    public CDNPhotos cdnPhotos;
 
     @Override
     public String toString() {
@@ -280,10 +173,33 @@ public class PXLPhoto {
 
     /***
      * Returns the appropriate url for the desired photo size
+     *
+     * Documentation for ContentType: https://developers.pixlee.com/reference#get-information-about-an-album
      * @param size
-     * @return
+     * @return a image url:    Note!! Under these conditions,
+     *                          - PXLPhoto.contentType is "photo"
+     *                          - and its PXLPhoto.approved is false
+     *                         this method will return
+     *                           - URLs with PXLPhoto.source as "instagram", "twitter" or "facebook".
+     *                           - or NULL with PXLPhoto.source as "api", "desktop" or "email".
+     *
+     *                         Therefore, please have a null-check before use it
      */
     public URL getUrlForSize(PXLPhotoSize size) {
+        if (isVideo()) {
+            //video
+            return getFromResized(size);
+        } else {
+            //image
+            if (approved) {
+                return getFromCDN(size);
+            } else {
+                return getFromResized(size);
+            }
+        }
+    }
+
+    private URL getFromResized(PXLPhotoSize size) {
         switch (size) {
             case THUMBNAIL:
                 return this.thumbnailUrl;
@@ -291,10 +207,35 @@ public class PXLPhoto {
                 return this.mediumUrl;
             case BIG:
                 return this.bigUrl;
+            case ORIGINAL:
+                return this.sourceUrl;
             default:
                 return null;
         }
     }
+
+    private URL getFromCDN(PXLPhotoSize size) {
+        if (cdnPhotos == null)
+            return null;
+
+        switch (size) {
+            case THUMBNAIL:
+                return cdnPhotos.smallUrl;
+            case MEDIUM:
+                return cdnPhotos.mediumUrl;
+            case BIG:
+                return cdnPhotos.largeUrl;
+            case ORIGINAL:
+                return cdnPhotos.originalUrl;
+            default:
+                return null;
+        }
+    }
+
+    public boolean isVideo() {
+        return "video".equals(contentType);
+    }
+
 
     /***
      * Returns a resource ID to an image representing the current photo's source
@@ -318,42 +259,4 @@ public class PXLPhoto {
                 return null;
         }
     }
-
-    /***
-     * Analytics methods
-     */
-
-    public void actionClicked(String actionLink, Context context) {
-        PXLClient pxlClient = PXLClient.getInstance(context);
-        JSONObject body = new JSONObject();
-
-        try {
-            body.put("album_id", Integer.parseInt(this.album.id));
-            body.put("album_photo_id", Integer.parseInt(this.albumPhotoId));
-            body.put("action_link_url", actionLink);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        pxlClient.makeAnalyticsCall("events/actionClicked", body);
-    }
-
-    public boolean openedLightbox(Context context) {
-
-        PXLClient pxlClient = PXLClient.getInstance(context);
-        JSONObject body = new JSONObject();
-        try {
-            body.put("album_id", Integer.parseInt(this.album.id));
-            body.put("album_photo_id", Integer.parseInt(this.albumPhotoId));
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        pxlClient.makeAnalyticsCall("events/openedLightbox", body);
-        return true;
-    }
-
-
 }

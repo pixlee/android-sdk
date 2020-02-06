@@ -7,7 +7,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0"
+        versionName "1.2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -35,14 +35,14 @@ dependencies {
      * Network
      */
     implementation "com.squareup.retrofit2:retrofit:$retrofit2"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit2"
-    implementation "com.squareup.retrofit2:converter-scalars:$retrofit2"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit2"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit2"
+    implementation 'com.serjltt.moshi:moshi-lazy-adapters:2.2'
+
     implementation "com.squareup.okhttp3:okhttp:$okhttp3"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3"
 
     /**
      * Json Logging
      */
-    implementation 'com.orhanobut:logger:2.2.0'
+    implementation "com.orhanobut:logger:$orhanobutLogger"
 }

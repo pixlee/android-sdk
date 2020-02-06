@@ -1,11 +1,18 @@
 package com.pixlee.pixleesdk.data.repository;
 
+import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.data.MediaResult;
+import com.pixlee.pixleesdk.data.PhotoResult;
+
 import org.json.JSONObject;
 
 import retrofit2.Call;
 
+/**
+ * The entry point for accessing basic data.
+ */
 public interface BasicDataSource {
-    Call<String> getPhotosWithSKU(
+    Call<PhotoResult> getPhotosWithSKU(
             String sku,
             String api_key,
             String filters,
@@ -14,8 +21,8 @@ public interface BasicDataSource {
             int page
     );
 
-    Call<String> getPhotosWithID(
-            String id,
+    Call<PhotoResult> getPhotosWithID(
+            String album_id,
             String api_key,
             String filters,
             String sort,
@@ -23,9 +30,9 @@ public interface BasicDataSource {
             int page
     );
 
-    Call<String> getMedia(String id, String api_key);
+    Call<PXLPhoto> getMedia(String album_photo_id, String api_key);
 
-    Call<String> postMedia(
+    Call<MediaResult> postMedia(
             String api_key,
             JSONObject json
     );

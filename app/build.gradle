@@ -9,6 +9,10 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "PIXLEE_API_KEY", "\"" + PIXLEE_API_KEY + "\""
+        buildConfigField "String", "PIXLEE_SECRET_KEY", "\"" + PIXLEE_SECRET_KEY + "\""
+        buildConfigField "String", "PIXLEE_ALBUM_ID", "\"" + PIXLEE_ALBUM_ID + "\""
+        buildConfigField "String", "PIXLEE_SKU", "\"" + PIXLEE_SKU + "\""
     }
     buildTypes {
         release {
@@ -16,6 +20,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
 }
 
 dependencies {
@@ -28,9 +42,31 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 
     /**
+     * Testing: Network
+     */
+    testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp3"
+    testImplementation "com.squareup.retrofit2:retrofit:$retrofit2"
+    testImplementation "com.squareup.retrofit2:converter-moshi:$retrofit2"
+    testImplementation 'com.serjltt.moshi:moshi-lazy-adapters:2.2'
+    testImplementation "com.squareup.okhttp3:okhttp:$okhttp3"
+
+    /**
+     * Architecture Component
+     */
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
+
+    /**
      * Glide(Image library)
      */
     implementation "com.github.bumptech.glide:glide:$glide"
     implementation "com.github.bumptech.glide:annotations:$glide"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide"
+
+    /**
+     * Butter Knife
+     * This is not to use View.findViewById() every time
+     */
+    implementation 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 }

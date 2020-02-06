@@ -24,6 +24,22 @@ public class JsonUtils {
         return null;
     }
 
+    public static URL getURL(String url) {
+        try {
+            if (URLUtil.isValidUrl(url)) {
+                return new URL(url);
+            } else if (url != null && url.length() > 0) {
+                url = URLDecoder.decode(url, Charset.defaultCharset().name());
+                if (URLUtil.isValidUrl(url)) {
+                    return new URL(url);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static String optDecodeString(String fieldName, JSONObject json) throws UnsupportedEncodingException {
         if (json == null) {
             return null;

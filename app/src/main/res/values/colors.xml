@@ -3,4 +3,23 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="active">#38a89d</color>
+    <color name="inactive">#ababab</color>
+
+    <color name="buttonShadowLight">#80c5c5c5</color>
+    <color name="buttonShadowMid">#1d575757</color>
+    <color name="buttonShadowDark">#29000000</color>
+
+    <color name="colorText">#3a3a3a</color>
+
+    <color name="line_title">#f3f3f3</color>
+    <color name="toolbar_title">#000000</color>
+
+    <color name="grey_5">#f2f2f2</color>
+    <color name="grey_60">#666666</color>
+
+    <color name="blue_grey_600">#546E7A</color>
+    <color name="blue_400">#42A5F5</color>
+    <color name="light_green_500">#8BC34A</color>
 </resources>

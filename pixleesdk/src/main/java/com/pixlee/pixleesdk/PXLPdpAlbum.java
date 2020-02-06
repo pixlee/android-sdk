@@ -1,16 +1,17 @@
 package com.pixlee.pixleesdk;
 
-import android.content.Context;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.pixlee.pixleesdk.data.PhotoResult;
+import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
+import com.pixlee.pixleesdk.data.repository.BasicDataSource;
 
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class PXLPdpAlbum extends PXLAlbum {
+/**
+ * ProductAlbum ViewModel of MVVM architecture
+ */
+public class PXLPdpAlbum extends PXLBaseAlbum {
     private static final String TAG = "PXLPdpAlbum";
     private final String sku;
 
@@ -18,93 +19,55 @@ public class PXLPdpAlbum extends PXLAlbum {
      * Constructor requires the product sku and context, which will be passed along to the PXLClient
      * for volley configuration.
      * @param sku - product sku
-     * @param context - context which will be used for volley configuration
+     * @param basicRepo     Restful API for photos
+     * @param analyticsRepo Restful API for analytics
      */
-    public PXLPdpAlbum(String sku, Context context) {
-        super(sku, context);
+    public PXLPdpAlbum(String sku, BasicDataSource basicRepo, AnalyticsDataSource analyticsRepo) {
+        super(basicRepo, analyticsRepo);
         this.sku = sku;
-        this.id = null;
-        this.page = 0;
-        this.perPage = DefaultPerPage;
-        this.hasMore = true;
-        this.lastPageLoaded = 0;
-        this.photos = new ArrayList<>();
-        this.pagesLoading = new HashMap<>();
-        this.context = context;
     }
 
+    /**
+     * Constructor requires the album id and context, which will be passed along to the PXLClient
+     * for volley configuration.
+     * @param sku - product sku
+     * @param client PXLClient
+     */
+    public PXLPdpAlbum(String sku, PXLClient client) {
+        this(sku, client.getBasicRepo(), client.getAnalyticsRepo());
+    }
 
-    /***
-     * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
-     * sort order, and filter options before calling.
-     * @param handlers - called upon success/failure of the request
-     * @return true if the request was attempted, false if aborted before the attempt was made
+    /**
+     * This is for unit test. Not for the use
+     * @return
      */
     @Override
-    public boolean loadNextPageOfPhotos(final RequestHandlers handlers) {
+    Call<PhotoResult> makeGetAlbumCall() {
         if (sku == null) {
             Log.w(TAG, "No sku specified");
-            return false;
+            return null;
         }
-        if (this.hasMore) {
-            int desiredPage = this.lastPageLoaded + 1;
-            if (pagesLoading.get(desiredPage) != null && pagesLoading.get(desiredPage)) {
-                Log.d(TAG, String.format("page %s already loading", desiredPage));
-                return false;
-            }
-            PXLClient pxlClient = PXLClient.getInstance(context);
-            this.pagesLoading.put(desiredPage, true);
-            this.handlers = handlers;
-
-            try {
-                pxlClient
-                        .getBasicrepo()
-                        .getPhotosWithSKU(
-                                sku,
-                                PXLClient.apiKey,
-                                filterOptions != null ? filterOptions.toParamString() : null,
-                                sortOptions != null ? sortOptions.toParamString() : null,
-                                perPage,
-                                desiredPage
-                        ).enqueue(
-                        new Callback<String>() {
-                            @Override
-                            public void onResponse(Call<String> call, Response<String> response) {
-                                try {
-                                    processResponse(response);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<String> call, Throwable t) {
-                                if (handlers != null) {
-                                    handlers.DataLoadFailedHandler(t.toString());
-                                }
-                            }
-                        }
-                );
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (!this.hasMore) {
+            Log.w(TAG, "no need to load more");
+            return null;
         }
 
-        return true;
-    }
+        int desiredPage = this.lastPageLoaded + 1;
+        Boolean isPageLoading = pagesLoading.get(desiredPage);
+        if (isPageLoading != null && isPageLoading) {
+            Log.d(TAG, String.format("page %s already loading", desiredPage));
+            return null;
+        }
 
-    @Override
-    protected HashMap<String, Object> getRequestParams(int desiredPage) {
-        HashMap<String, Object> paramMap = new HashMap<>();
-        if (filterOptions != null) {
-            paramMap.put(PXLClient.KeyFilters, filterOptions.toParamString());
-        }
-        if (sortOptions != null) {
-            paramMap.put(PXLClient.KeySort, sortOptions.toParamString());
-        }
-        paramMap.put(PXLClient.KeyPerPage, perPage);
-        paramMap.put(PXLClient.KeyPage, desiredPage);
-        paramMap.put(PXLClient.KeySku, sku);
-        return paramMap;
+        this.pagesLoading.put(desiredPage, true);
+
+        return basicRepo.getPhotosWithSKU(
+                sku,
+                PXLClient.apiKey,
+                filterOptions != null ? filterOptions.toParamString() : null,
+                sortOptions != null ? sortOptions.toParamString() : null,
+                perPage,
+                desiredPage
+        );
     }
 }

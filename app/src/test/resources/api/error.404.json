@@ -1,0 +1,4 @@
+{
+  error: "Product does not exist.",
+  status: "404"
+}

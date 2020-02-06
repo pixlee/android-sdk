@@ -2,8 +2,6 @@ package com.pixlee.pixleesdk.network;
 
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.orhanobut.logger.Logger;
 import com.pixlee.pixleesdk.BuildConfig;
 import com.pixlee.pixleesdk.data.api.AnalyticsAPI;
@@ -12,6 +10,11 @@ import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.AnalyticsRepository;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicRepository;
+import com.pixlee.pixleesdk.network.adaptor.DateAdapter;
+import com.pixlee.pixleesdk.network.adaptor.PrimitiveAdapter;
+import com.pixlee.pixleesdk.network.adaptor.URLAdapter;
+import com.serjltt.moshi.adapters.Wrapped;
+import com.squareup.moshi.Moshi;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -29,16 +32,18 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
+import retrofit2.converter.moshi.MoshiConverterFactory;
 
+/**
+ * This class generates Data Source classes that include Retrofit HTTP API interfaces.
+ * Retrofit Document: https://square.github.io/retrofit/
+ */
 public class NetworkModule {
     public static BasicDataSource generateBasicRepository() {
         return new BasicRepository(
                 provideRetrofit(
                         NetworkModule.url,
-                        provideGSon(),
-                        provideOkHttpClient(getRequestInterceptor())
+                        provideOkHttpClient()
                 ).create(BasicAPI.class)
         );
     }
@@ -47,8 +52,7 @@ public class NetworkModule {
         return new AnalyticsRepository(
                 provideRetrofit(
                         NetworkModule.analyticsUrl,
-                        provideGSon(),
-                        provideOkHttpClient(getRequestInterceptor())
+                        provideOkHttpClient()
                 ).create(AnalyticsAPI.class)
         );
     }
@@ -60,22 +64,24 @@ public class NetworkModule {
     private static final Long timeout_connect = 20L;
     private static final Long timeout_write = 30L;
 
-    private static Gson provideGSon() {
-        return new GsonBuilder()
-                //.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .create();
+    public static Moshi provideMoshi(){
+        return new Moshi.Builder()
+                .add(Wrapped.ADAPTER_FACTORY)
+                .add(new PrimitiveAdapter()) // null -> a specified default value, same as the return value of JSONObject.opt{PrimitiveType}(...)
+                .add(new URLAdapter())  // String -> URL
+                .add(new DateAdapter()) // String -> Date
+                .build();
     }
 
-    private static Retrofit provideRetrofit(String url, Gson gson, OkHttpClient okHttpClient) {
+    public static Retrofit provideRetrofit(String url, OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(url)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(MoshiConverterFactory.create(provideMoshi()).asLenient())
                 .client(okHttpClient)
                 .build();
     }
 
-    private static OkHttpClient provideOkHttpClient(Interceptor interceptor) {
+    public static OkHttpClient provideOkHttpClient() {
         OkHttpClient.Builder ok = new OkHttpClient.Builder()
                 .connectTimeout(timeout_connect, TimeUnit.SECONDS)
                 .readTimeout(timeout_read, TimeUnit.SECONDS)
@@ -113,86 +119,6 @@ public class NetworkModule {
 
         }
 
-        /*dispatcher = Dispatcher()
-        httpClientBuilder.dispatcher(dispatcher)*/
-        //ok.authenticator(new TokenAuthenticator());
-
-        ok.addInterceptor(interceptor);
         return ok.build();
     }
-
-
-    private static Interceptor getRequestInterceptor() {
-        return new Interceptor() {
-            @NotNull
-            @Override
-            public Response intercept(@NotNull Chain chain) throws IOException {
-
-                Request original = chain.request();
-                Log.e("pretty", "Interceptor.url.host: " + original.url().host());
-                Log.e("pretty", "Interceptor.url.url: " + original.url());
-                Log.e("pretty", "Interceptor.url.method: " + original.method());
-
-                Request.Builder builder = original.newBuilder();
-
-                builder.header("Accept", "application/json");
-                builder.header("Content-Type", "application/json");
-                builder.header("Accept-Encoding", "utf-8");
-                /*if("POST".equals(method)){
-                    try {
-                        String hmac = computeHmac(reqBody.replace("\\/", "/" ), PXLClient.secretKey);
-                        Log.e("pretty", "hmac: |" + hmac + "|");
-                        builder.header("Signature", hmac);
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    } catch (InvalidKeyException e) {
-                        e.printStackTrace();
-                    }
-                }*/
-
-                /*storage.getCookie()?.also { cookie ->
-                    builder.header("Authorization", "Bearer $cookie")
-
-                }
-                */
-
-                Response response = chain.proceed(builder.build());
-                ResponseBody body = response.body();
-
-                String bodyStr = body.string();
-                Log.e("pretty", "**http-num: " + response.code());
-                Log.e("pretty", "**http-body: "+ bodyStr);
-
-
-                Response.Builder builder2 = response.newBuilder();
-
-                return builder2.body(
-                        ResponseBody.create(
-                                body.contentType()
-                                , bodyStr.getBytes(Charsets.UTF_8)
-                        )
-                ).build();
-            }
-        };
-    }
-
-//    static public class TokenAuthenticator implements Authenticator {
-//        @Override
-//        public Request authenticate(Route route, Response response) {
-//            //HttpURLConnection.HTTP_UNAUTHORIZED
-//            Log.e("RequestMaker", "===http.status:" + response.code());
-//            Log.e("RequestMaker", "===http.url:" + response.request().url().toString());
-//
-//            Request request = response.request();
-//            Request.Builder builder = request.newBuilder();
-//            builder.header("Content-Type", "application/json")
-//                    .header("Accept", "application/json")
-//                    .header("Accept-Encoding", "utf-8")
-//                    .header("Signature", hmac)
-//                    .method(request.method(), request.body());
-//
-//            return builder.build();
-//        }
-//    }
-
 }
