@@ -59,29 +59,12 @@ AlbumId and SKU available from the Pixlee dashboard).
 4. Run the project on an Android device
 
 # Add the SDK to your App
-- Option 1: (recommended) adding Gradle dependencies
-    - Add it in your root build.gradle at the end of repositories:
-        ```
-        allprojects {
-            repositories {
-                ...
-                maven { url 'https://jitpack.io' }
-            }
-        }
-        ``` 
-    - Add the dependency for Pixlee SDK library to your module (app-level) Gradle file(usually app/build.gradle)
-    
-        Version: [![](https://jitpack.io/v/pixlee/android-sdk.svg)](https://jitpack.io/#pixlee/android-sdk)
-        ```
-        implementation 'com.github.pixlee:android-sdk:{Version}'
-        ```
-- Option 2: importing SDK codes
-    - import pixleesdk as a library project into your project
-        1. Open your existing project in Android Studio
-        2. Go to Import Module (File -> New -> Import Module)
-        3. Enter the path of the pixlee-android-sdk directory
-        4. Select the modules you would like to import and click Finish.
-    - [Google official doc: How to import a module](https://developer.android.com/studio/projects/add-app-module#ImportAModule)
+- import pixleesdk as a library project into your project
+    1. Open your existing project in Android Studio
+    2. Go to Import Module (File -> New -> Import Module)
+    3. Enter the path of the pixlee-android-sdk directory
+    4. Select the modules you would like to import and click Finish.
+- [Google official doc: How to import a module](https://developer.android.com/studio/projects/add-app-module#ImportAModule)
    
 # Initialize SDK
 ### You must do this before using this SDK!!
