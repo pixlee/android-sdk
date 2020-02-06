@@ -3,7 +3,6 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
 
 # Table of Content
 - [Get Started with Demo App](#Get-Started-with-Demo-App)
-    - [Add the SDK to your App](#Add-the-SDK-to-your-App)
 - [Add the SDK to your App](#Add-the-SDK-to-your-App)
 - [Initialize SDK](#Initialize-SDK)
     - [Register Pixlee credentials](#Register-Pixlee-credentials)
