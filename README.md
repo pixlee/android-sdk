@@ -170,6 +170,7 @@ AlbumId and SKU available from the Pixlee dashboard).
 Some imageURL fields can be empty or null depending on its data's status. In order to get appropriate images, you can use this method.
 ```
 #!java
+photo.getUrlForSize(PXLPhotoSize.ORIGINAL)
 photo.getUrlForSize(PXLPhotoSize.BIG)
 photo.getUrlForSize(PXLPhotoSize.MEDIUM)
 photo.getUrlForSize(PXLPhotoSize.THUMBNAIL)

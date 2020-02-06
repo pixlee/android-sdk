@@ -6,5 +6,6 @@ package com.pixlee.pixleesdk;
 public enum PXLPhotoSize {
     THUMBNAIL,
     MEDIUM,
-    BIG
+    BIG,
+    ORIGINAL
 }

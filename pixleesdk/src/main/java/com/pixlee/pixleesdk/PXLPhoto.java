@@ -207,6 +207,8 @@ public class PXLPhoto {
                 return this.mediumUrl;
             case BIG:
                 return this.bigUrl;
+            case ORIGINAL:
+                return this.sourceUrl;
             default:
                 return null;
         }
@@ -223,6 +225,8 @@ public class PXLPhoto {
                 return cdnPhotos.mediumUrl;
             case BIG:
                 return cdnPhotos.largeUrl;
+            case ORIGINAL:
+                return cdnPhotos.originalUrl;
             default:
                 return null;
         }

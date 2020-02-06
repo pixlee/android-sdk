@@ -25,23 +25,23 @@ public class QueryAlbumAPITest extends BaseTest {
                 body
         );
 
-        //fileter
+        // filter
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 0;
 
-        //sort
+        // sort
         PXLAlbumSortOptions so = new PXLAlbumSortOptions();
         so.sortType = PXLAlbumSortType.RECENCY;
         so.descending = true;
 
-        //init album
+        // init album
         PXLAlbum album = new PXLAlbum(ALBUM_ID, basicDS, analyticsDS);
         album.setPerPage(40);
         album.setFilterOptions(fo);
         album.setSortOptions(so);
 
-        //fire an API
+        // fire an API
         Response<PhotoResult> response = album.makeGetAlbumCall().execute();
         album.setData(response, handlers);
     }
@@ -54,34 +54,34 @@ public class QueryAlbumAPITest extends BaseTest {
                 getAPIJson("albums.from_sku.json")
         );
 
-        //fileter
+        // filter
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 0;
 
-        //sort
+        // sort
         PXLAlbumSortOptions so = new PXLAlbumSortOptions();
         so.sortType = PXLAlbumSortType.RECENCY;
         so.descending = true;
 
-        //init album
+        // init album
         PXLAlbum album = new PXLAlbum(ALBUM_ID, basicDS, analyticsDS);
         album.setPerPage(40);
         album.setFilterOptions(fo);
         album.setSortOptions(so);
 
-        //fire an API
+        // fire an API
         Response<PhotoResult> response = album.makeGetAlbumCall().execute();
         album.setData(response, new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
             @Override
             public void onComplete(List<PXLPhoto> photos) {
-                //success
+                // success
                 Assert.assertEquals(ALBUM_ID, album.album_id);
             }
 
             @Override
             public void onError(String error) {
-                //failure
+                // failure
                 Assert.fail(error);
             }
         });
@@ -96,13 +96,13 @@ public class QueryAlbumAPITest extends BaseTest {
                 new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
                     public void onComplete(List<PXLPhoto> photos) {
-                        //success
+                        // success
                         Assert.assertTrue(photos.size() > 0);
                     }
 
                     @Override
                     public void onError(String error) {
-                        //failure
+                        // failure
                         Assert.fail(error);
                     }
                 }
@@ -118,13 +118,13 @@ public class QueryAlbumAPITest extends BaseTest {
                 new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
                     public void onComplete(List<PXLPhoto> photos) {
-                        //fail
+                        // fail
                         Assert.fail();
                     }
 
                     @Override
                     public void onError(String error) {
-                        //an expected case
+                        // an expected case
                         Assert.assertEquals("status: 401, error: Auth failed.", error);
                     }
                 }
@@ -140,13 +140,13 @@ public class QueryAlbumAPITest extends BaseTest {
                 new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
                     public void onComplete(List<PXLPhoto> photos) {
-                        //fail
+                        // fail
                         Assert.fail();
                     }
 
                     @Override
                     public void onError(String error) {
-                        //an expected case
+                        // an expected case
                         Assert.assertEquals("status: 404, error: Product does not exist.", error);
                     }
                 }
@@ -162,13 +162,13 @@ public class QueryAlbumAPITest extends BaseTest {
                 new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
                     public void onComplete(List<PXLPhoto> photos) {
-                        //fail if
+                        // fail if
                         Assert.fail();
                     }
 
                     @Override
                     public void onError(String error) {
-                        //failure
+                        // failure
                         Assert.assertEquals("status: 404", error);
                     }
                 }
@@ -184,13 +184,13 @@ public class QueryAlbumAPITest extends BaseTest {
                 new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
                     public void onComplete(List<PXLPhoto> photos) {
-                        //fail if
+                        //this cannot be succeeded
                         Assert.fail();
                     }
 
                     @Override
                     public void onError(String error) {
-                        //failure
+                        // failure
                         Assert.assertEquals("status: 500, error: Internal error.", error);
                     }
                 }

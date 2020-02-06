@@ -1,5 +1,7 @@
 package com.pixlee.pixleesdk;
 
+import android.util.Log;
+
 import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleesdk.data.PhotoResult;
 
@@ -22,23 +24,23 @@ public class QueryFromSkuAPITest extends BaseTest {
                 body
         );
 
-        //fileter
+        // fileter
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 0;
 
-        //sort
+        // sort
         PXLAlbumSortOptions so = new PXLAlbumSortOptions();
         so.sortType = PXLAlbumSortType.RECENCY;
         so.descending = true;
 
-        //init album
+        // init album
         PXLPdpAlbum album = new PXLPdpAlbum(BuildConfig.PIXLEE_SKU, basicDS, analyticsDS);
         album.setPerPage(40);
         album.setFilterOptions(fo);
         album.setSortOptions(so);
 
-        //fire an API
+        // fire an API
         Response<PhotoResult> response = album.makeGetAlbumCall().execute();
         album.setData(response, handlers);
     }
@@ -52,13 +54,13 @@ public class QueryFromSkuAPITest extends BaseTest {
                 new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
                     public void onComplete(List<PXLPhoto> photos) {
-                        //success
+                        // success
                         Assert.assertTrue(photos.size() > 0);
                     }
 
                     @Override
                     public void onError(String error) {
-                        //failure
+                        // failure
                         Assert.fail(error);
                     }
                 }
@@ -74,13 +76,13 @@ public class QueryFromSkuAPITest extends BaseTest {
                 new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
                     public void onComplete(List<PXLPhoto> photos) {
-                        //success
+                        // success
                         Assert.assertTrue(photos.size() > 0);
                     }
 
                     @Override
                     public void onError(String error) {
-                        //failure
+                        // failure
                         Assert.fail(error);
                     }
                 }
@@ -96,13 +98,13 @@ public class QueryFromSkuAPITest extends BaseTest {
                 new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
                     public void onComplete(List<PXLPhoto> photos) {
-                        //fail
+                        // if this is called, there is a problem
                         Assert.fail();
                     }
 
                     @Override
                     public void onError(String error) {
-                        //an expected case
+                        // this test has to get an 401 error
                         Assert.assertEquals("status: 401, error: Auth failed.", error);
                     }
                 }
@@ -118,13 +120,13 @@ public class QueryFromSkuAPITest extends BaseTest {
                 new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
                     public void onComplete(List<PXLPhoto> photos) {
-                        //fail
+                        // if this is called, there is a problem
                         Assert.fail();
                     }
 
                     @Override
                     public void onError(String error) {
-                        //an expected case
+                        // this test has to get an 404 error
                         Assert.assertEquals("status: 404, error: Product does not exist.", error);
                     }
                 }
@@ -140,13 +142,13 @@ public class QueryFromSkuAPITest extends BaseTest {
                 new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
                     public void onComplete(List<PXLPhoto> photos) {
-                        //fail if
+                        // if this is called, there is a problem
                         Assert.fail();
                     }
 
                     @Override
                     public void onError(String error) {
-                        //failure
+                        // this test has to get an 404 error
                         Assert.assertEquals("status: 404", error);
                     }
                 }
@@ -162,13 +164,13 @@ public class QueryFromSkuAPITest extends BaseTest {
                 new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
                     @Override
                     public void onComplete(List<PXLPhoto> photos) {
-                        //fail if
+                        // if this is called, there is a problem
                         Assert.fail();
                     }
 
                     @Override
                     public void onError(String error) {
-                        //failure
+                        // this test has to get an 500 error
                         Assert.assertEquals("status: 500, error: Internal error.", error);
                     }
                 }

@@ -80,15 +80,15 @@ public class AlbumTests {
     @Test
     public void testPhotoLoad() throws Exception {
         requestCount++;
-        //update api key and photo id to match
+        // update api key and photo id to match
         String album_photo_id = "187177895";
         testAlbum.getPhotoWithId(album_photo_id, new PXLBaseAlbum.RequestHandlers<PXLPhoto>() {
             @Override
             public void onComplete(PXLPhoto photo) {
-//                Log.d("testphoto", String.format("%s", photo.cdnSmallUrl));
-//                Log.d("testphoto", String.format("%s", photo.cdnMediumUrl));
-//                Log.d("testphoto", String.format("%s", photo.cdnLargeUrl));
-//                Log.d("testphoto", String.format("%s", photo.cdnOriginalUrl));
+                Log.d("testphoto", "testFilters: " + String.format("%s", photo.getUrlForSize(PXLPhotoSize.THUMBNAIL)));
+                Log.d("testphoto", "testFilters: " + String.format("%s", photo.getUrlForSize(PXLPhotoSize.MEDIUM)));
+                Log.d("testphoto", "testFilters: " + String.format("%s", photo.getUrlForSize(PXLPhotoSize.BIG)));
+                Log.d("testphoto", "testFilters: " + String.format("%s", photo.getUrlForSize(PXLPhotoSize.ORIGINAL)));
                 requestCount--;
             }
 
@@ -104,10 +104,10 @@ public class AlbumTests {
         testAlbum.getPhotoWithId(photo, new PXLBaseAlbum.RequestHandlers<PXLPhoto>() {
             @Override
             public void onComplete(PXLPhoto photo) {
-//                Log.d("testphoto", String.format("%s", photo.cdnSmallUrl));
-//                Log.d("testphoto", String.format("%s", photo.cdnMediumUrl));
-//                Log.d("testphoto", String.format("%s", photo.cdnLargeUrl));
-//                Log.d("testphoto", String.format("%s", photo.cdnOriginalUrl));
+                Log.d("testphoto", "testFilters: " + String.format("%s", photo.getUrlForSize(PXLPhotoSize.THUMBNAIL)));
+                Log.d("testphoto", "testFilters: " + String.format("%s", photo.getUrlForSize(PXLPhotoSize.MEDIUM)));
+                Log.d("testphoto", "testFilters: " + String.format("%s", photo.getUrlForSize(PXLPhotoSize.BIG)));
+                Log.d("testphoto", "testFilters: " + String.format("%s", photo.getUrlForSize(PXLPhotoSize.ORIGINAL)));
                 requestCount--;
             }
 

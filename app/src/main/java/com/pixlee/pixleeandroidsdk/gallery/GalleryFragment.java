@@ -216,7 +216,9 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
      * @param photo
      */
     void moveToViewer(PXLPhoto photo) {
-        String url = photo.getUrlForSize(PXLPhotoSize.BIG).toString();
+        // You can choose images by using this example below.
+        // PXLPhotoSize Options: [ORIGINAL, BIG, MEDIUM, THUMBNAIL]
+        String url = photo.getUrlForSize(PXLPhotoSize.ORIGINAL).toString();
         if(photo.isVideo()){
             addFragmentToActivity(VideoViewerFragment.getInstance(url));
         }else{
@@ -232,7 +234,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
     }
 
     private void samplePhotoLoad(PXLPhoto photo) {
-        //load PXLPhoto with album_photo_id
+        // load PXLPhoto with album_photo_id
         album.getPhotoWithId(photo.albumPhotoId,new PXLBaseAlbum.RequestHandlers<PXLPhoto>(){
 
             @Override
@@ -246,7 +248,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
             }
         });
 
-        //load PXLPhoto with pxlphoto object
+        // load PXLPhoto with pxlphoto object
         album.getPhotoWithId(photo, new PXLBaseAlbum.RequestHandlers<PXLPhoto>() {
             @Override
             public void onComplete(PXLPhoto photo) {

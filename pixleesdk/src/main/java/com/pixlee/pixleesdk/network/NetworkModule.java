@@ -66,11 +66,10 @@ public class NetworkModule {
 
     public static Moshi provideMoshi(){
         return new Moshi.Builder()
-//                .add(NestingJsonAdapter.FACTORY)
                 .add(Wrapped.ADAPTER_FACTORY)
-                .add(new PrimitiveAdapter()) //null -> a specified default value, same as the return value of JSONObject.opt{PrimitiveType}(...)
-                .add(new URLAdapter())  //String -> URL
-                .add(new DateAdapter()) //string -> Date
+                .add(new PrimitiveAdapter()) // null -> a specified default value, same as the return value of JSONObject.opt{PrimitiveType}(...)
+                .add(new URLAdapter())  // String -> URL
+                .add(new DateAdapter()) // String -> Date
                 .build();
     }
 
