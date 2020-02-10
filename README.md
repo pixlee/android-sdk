@@ -194,6 +194,19 @@ See the onComplete function in GalleryFragment.java for an example.
     photo.actionClicked("https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html", context);
     ```
 ## Ecommerce Analytics
+initialize:
+    ```
+    #!java
+    
+    PXLAnalytics analytics = new PXLAnalytics(client);
+    ```
+    Or:
+    ```
+    #!java
+    
+    PXLAnalytics analytics = new PXLAnalytics(client.getAnalyticsRepo());
+    ```
+    
 #### Add To Cart
 - To fire an Add To Cart event, simply call the `addToCart` method of the PXLAnalytics object with the necessary parameters, and an "Add To Cart" event will be fired containing all of the necessary analytics information.
 The parameters for this method are:
@@ -204,7 +217,7 @@ The parameters for this method are:
 
     ```
     #!java
-    
+    client.getAnalyticsRepo()
     analytics.addToCart("sku123", "123", 4);
     ```
 
