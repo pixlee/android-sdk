@@ -194,7 +194,7 @@ See the onComplete function in GalleryFragment.java for an example.
     photo.actionClicked("https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html", context);
     ```
 ## Ecommerce Analytics
-initialize:
+- initialize:
     ```
     #!java
     
@@ -217,7 +217,6 @@ The parameters for this method are:
 
     ```
     #!java
-    client.getAnalyticsRepo()
     analytics.addToCart("sku123", "123", 4);
     ```
 
