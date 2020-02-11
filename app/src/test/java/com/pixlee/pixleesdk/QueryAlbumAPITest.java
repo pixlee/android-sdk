@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Response;
@@ -72,9 +73,9 @@ public class QueryAlbumAPITest extends BaseTest {
 
         // fire an API
         Response<PhotoResult> response = album.makeGetAlbumCall().execute();
-        album.setData(response, new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
+        album.setData(response, new PXLBaseAlbum.RequestHandlers<ArrayList<PXLPhoto>>() {
             @Override
-            public void onComplete(List<PXLPhoto> photos) {
+            public void onComplete(ArrayList<PXLPhoto> photos) {
                 // success
                 Assert.assertEquals(ALBUM_ID, album.album_id);
             }
@@ -93,9 +94,9 @@ public class QueryAlbumAPITest extends BaseTest {
         ready(
                 HttpURLConnection.HTTP_OK,
                 getAPIJson("albums.from_sku.many_formats.json"),
-                new PXLBaseAlbum.RequestHandlers<List<PXLPhoto>>() {
+                new PXLBaseAlbum.RequestHandlers<ArrayList<PXLPhoto>>() {
                     @Override
-                    public void onComplete(List<PXLPhoto> photos) {
+                    public void onComplete(ArrayList<PXLPhoto> photos) {
                         // success
                         Assert.assertTrue(photos.size() > 0);
                     }

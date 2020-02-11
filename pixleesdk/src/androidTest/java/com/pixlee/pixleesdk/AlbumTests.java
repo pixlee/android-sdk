@@ -57,9 +57,9 @@ public class AlbumTests {
             testAlbum.setFilterOptions(fo);
             Log.d("AlbumTests", "making call");
             requestCount++;
-            testAlbum.loadNextPageOfPhotos(new PXLAlbum.RequestHandlers<List<PXLPhoto>>() {
+            testAlbum.loadNextPageOfPhotos(new PXLAlbum.RequestHandlers<ArrayList<PXLPhoto>>() {
                 @Override
-                public void onComplete(List<PXLPhoto> photos) {
+                public void onComplete(ArrayList<PXLPhoto> photos) {
                     Log.d("testFilters", String.format("Fetched %s photos", photos.size()));
                     requestCount--;
                 }
