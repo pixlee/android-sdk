@@ -22,7 +22,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
     - [Add To Cart](#Add-To-Cart)
     - [Conversion](#Conversion)
 - Migration
-    - [from 1.0.6 or older](doc/migration_1.0.6.md)
+    - [from 1.0.6 or older](doc/migration/1.0.6.md)
 
     
 
