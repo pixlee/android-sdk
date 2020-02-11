@@ -21,7 +21,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
 - [Ecommerce Analytics](#Ecommerce-Analytics)
     - [Add To Cart](#Add-To-Cart)
     - [Conversion](#Conversion)
-- [Migration]
+- Migration
     - [from 1.0.6 or older](doc/migration_1.0.6.md)
 
     
