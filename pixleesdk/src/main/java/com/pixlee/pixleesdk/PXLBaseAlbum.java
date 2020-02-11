@@ -144,7 +144,7 @@ public abstract class PXLBaseAlbum {
      * @param handlers - called upon success/failure of the request
      * @return true if the request was attempted, false if aborted before the attempt was made
      */
-    public void loadNextPageOfPhotos(final RequestHandlers handlers) {
+    public void loadNextPageOfPhotos(final RequestHandlers<ArrayList<PXLPhoto>> handlers) {
         Call<PhotoResult> call = makeGetAlbumCall();
 
         if (call == null)
@@ -172,7 +172,7 @@ public abstract class PXLBaseAlbum {
      * @param response API response data
      * @param handlers A callback
      */
-    public void setData(Response<PhotoResult> response, RequestHandlers handlers) {
+    public void setData(Response<PhotoResult> response, RequestHandlers<ArrayList<PXLPhoto>> handlers) {
         if (response.isSuccessful()) {
             PhotoResult result = response.body();
             //Log.e("retrofit result", "retrofit result:" + result.total);
