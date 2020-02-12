@@ -32,4 +32,10 @@ abstract public class BaseFragment extends Fragment {
             Toast.makeText(getContext(), "need to add addFragmentToActivity() to your activity", Toast.LENGTH_SHORT).show();;
         }
     }
+
+    Toast toast;
+    public void showToast(String message){
+        toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
+    }
 }
