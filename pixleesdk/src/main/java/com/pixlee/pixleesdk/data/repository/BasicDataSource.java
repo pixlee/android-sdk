@@ -36,4 +36,6 @@ public interface BasicDataSource {
             String api_key,
             JSONObject json
     );
+
+    Call<Void> uploadImage(String filePath, String contentType);
 }

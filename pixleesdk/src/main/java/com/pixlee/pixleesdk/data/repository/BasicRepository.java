@@ -8,16 +8,21 @@ import com.pixlee.pixleesdk.data.MediaResult;
 import com.pixlee.pixleesdk.data.PhotoResult;
 import com.pixlee.pixleesdk.data.api.BasicAPI;
 import com.pixlee.pixleesdk.network.HMAC;
+import com.pixlee.pixleesdk.network.multiparts.MultipartUtil;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 
@@ -62,5 +67,13 @@ public class BasicRepository implements BasicDataSource {
         }
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json.toString());
         return api.postMedia(signature, api_key, body);
+    }
+
+    @Override
+    public Call<Void> uploadImage(String filePath, String contentType) {
+        List<MultipartBody.Part> bodyList = new ArrayList<>();
+        File photo = new File(filePath);
+        bodyList.add(new MultipartUtil().getMultipartBody("image", photo));
+        return null;
     }
 }
