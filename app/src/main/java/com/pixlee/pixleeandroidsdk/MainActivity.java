@@ -9,8 +9,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
-import com.pixlee.pixleeandroidsdk.gallery.GalleryFragment;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -42,7 +40,7 @@ public class MainActivity extends BaseActivity {
         FragmentManager fm = getSupportFragmentManager();
         fm.addOnBackStackChangedListener(onBackStackChangedListener);
 
-        replaceFragmentInActivity(frameLayoutId, new GalleryFragment(), null);
+        replaceFragmentInActivity(frameLayoutId, new IndexFragment(), null);
 
     }
 
