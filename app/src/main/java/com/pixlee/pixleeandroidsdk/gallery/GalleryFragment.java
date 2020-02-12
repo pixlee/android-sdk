@@ -30,12 +30,11 @@ import com.pixlee.pixleesdk.PXLPhotoSize;
 import com.pixlee.pixleesdk.PXLWidgetType;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHandlers<List<PXLPhoto>>{
+public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHandlers<ArrayList<PXLPhoto>>{
     @Override
     public int getTitleResource() {
         return R.string.title_gallery;
@@ -100,7 +99,10 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         PXLClient.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY);
         PXLClient client = PXLClient.getInstance(getContext().getApplicationContext());
 
-        album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client.getBasicRepo(), client.getAnalyticsRepo());
+        album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
+        //Alternative
+        //album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client.getBasicRepo(), client.getAnalyticsRepo());
+
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 0;
@@ -164,13 +166,32 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         album.loadNextPageOfPhotos(rh);
 
 
-        PXLAnalytics analytics = new PXLAnalytics(client.getAnalyticsRepo());
+        PXLAnalytics analytics = new PXLAnalytics(client);
+        //Alternative
+        //PXLAnalytics analytics = new PXLAnalytics(client.getAnalyticsRepo());
+
         analytics.addToCart(BuildConfig.PIXLEE_SKU, "13000",2, "AUD");
         /* ~~~ content upload example ~~~
 
-          album.uploadImage("test", "kb@pixleeteam.com", "K.B.", "https://timedotcom.files.wordpress.com/2019/05/drake-nba-finals-warning.jpg", true);
+          album.uploadImage("test",
+                "kb@pixleeteam.com",
+                "K.B.",
+                "https://timedotcom.files.wordpress.com/2019/05/drake-nba-finals-warning.jpg",
+                true,
+                new PXLBaseAlbum.RequestHandlers<MediaResult>() {
+            @Override
+            public void onComplete(MediaResult result) {
+
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        });
 
         */
+
     }
 
     private void configureViews() {
@@ -267,7 +288,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
      * @param photos - the complete list of photos (both the latest page and all previous)
      */
     @Override
-    public void onComplete(List<PXLPhoto> photos) {
+    public void onComplete(ArrayList<PXLPhoto> photos) {
         if (photos == null) {
             return;
         }
