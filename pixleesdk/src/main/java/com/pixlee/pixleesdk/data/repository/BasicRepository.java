@@ -7,6 +7,7 @@ import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.data.MediaResult;
 import com.pixlee.pixleesdk.data.PhotoResult;
 import com.pixlee.pixleesdk.data.api.BasicAPI;
+import com.pixlee.pixleesdk.network.HMAC;
 
 import org.json.JSONObject;
 
@@ -53,7 +54,7 @@ public class BasicRepository implements BasicDataSource {
         }
         String signature = null;
         try {
-            signature = computeHmac(json.toString().replace("\\/", "/" ), PXLClient.secretKey);
+            signature = HMAC.computeHmac(json.toString().replace("\\/", "/" ), PXLClient.secretKey);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
@@ -61,14 +62,5 @@ public class BasicRepository implements BasicDataSource {
         }
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json.toString());
         return api.postMedia(signature, api_key, body);
-    }
-
-    private String computeHmac(String baseString, String secretKey)
-            throws NoSuchAlgorithmException, InvalidKeyException, IllegalStateException {
-        SecretKeySpec key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA1");
-        Mac mac = Mac.getInstance("HmacSHA1");
-        mac.init(key);
-        byte[] bytes = mac.doFinal(baseString.getBytes());
-        return Base64.encodeToString(bytes, Base64.NO_WRAP);
     }
 }
