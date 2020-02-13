@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleeandroidsdk.ui.gallery.GalleryFragment;
+import com.pixlee.pixleeandroidsdk.ui.uploader.ImageUploaderFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,7 +60,7 @@ public class IndexFragment extends BaseFragment {
         bt_image_uploader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                addFragmentToActivity(new ImageUploaderFragment());
             }
         });
 
