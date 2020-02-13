@@ -35,6 +35,7 @@
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonOutLined"
                 android:id="@+id/bt_open_widget"
+                android:layout_marginTop="10dp"
                 android:text="Opened Widget"
                 android:textSize="14sp"
                 app:cornerRadius="10dp"
