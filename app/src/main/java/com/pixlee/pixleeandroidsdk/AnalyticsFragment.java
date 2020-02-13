@@ -132,7 +132,7 @@ public class AnalyticsFragment extends BaseFragment {
                     @Override
                     public void onComplete(ArrayList<PXLPhoto> result) {
                         showAnalytics("loadMore()");
-                        // todo: uncommeent this showDialog("Load More", getString(R.string.guide_load_more));
+                        // todo: uncomment this showDialog("Load More", getString(R.string.guide_load_more));
                         // todo: implement load more accordingly
 
                         album.loadMore();
