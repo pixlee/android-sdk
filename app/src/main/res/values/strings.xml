@@ -7,4 +7,17 @@
     <string name="title_analytics">Analytics</string>
     <string name="title_image_viewer">Image Viewer</string>
     <string name="title_video_viewer">Video Viewer</string>
+
+    <string name="album_loading_ing">Album loading..</string>
+    <string name="album_loading_complete">Album loading complete</string>
+    <string name="album_loading_failed">Album loading failed, reason: %s</string>
+
+    <string name="xxx_is_called">%s is Called.</string>
+    <string name="guide_load_more">
+        You want more practical examples?\n
+        1. Go back Home in this app\n
+        2. To to any image list\n
+        3. Scroll down to the bottom\n
+        4. Load More will be fired. Check LogCat
+    </string>
 </resources>
