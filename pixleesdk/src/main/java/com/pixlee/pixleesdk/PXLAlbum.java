@@ -1,10 +1,10 @@
 package com.pixlee.pixleesdk;
 
-import android.util.Log;
-
 import com.pixlee.pixleesdk.data.PhotoResult;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 
@@ -47,18 +47,20 @@ public class PXLAlbum extends PXLBaseAlbum{
      * This is for unit test. Not for the use
      * @return
      */
-    Call<PhotoResult> makeGetAlbumCall() {
+    @Override
+    Call<PhotoResult> makeGetAlbumCall(RequestHandlers<ArrayList<PXLPhoto>> handlers) {
         if (album_id == null) {
-            Log.w(TAG, "No album id specified");
+            handlers.onError("No album id specified");
             return null;
         }
         if (!this.hasMore) {
+            handlers.onError("No album id specified");
             return null;
         }
 
         int desiredPage = this.lastPageLoaded + 1;
         if (pagesLoading.get(desiredPage) != null && pagesLoading.get(desiredPage)) {
-            Log.d(TAG, String.format("page %s already loading", desiredPage));
+            handlers.onError(String.format("page %s already loading", desiredPage));
             return null;
         }
         this.pagesLoading.put(desiredPage, true);

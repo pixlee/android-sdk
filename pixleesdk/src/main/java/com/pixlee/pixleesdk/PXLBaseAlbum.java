@@ -13,7 +13,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -136,16 +135,15 @@ public abstract class PXLBaseAlbum {
      *
      * @return retrofit2.Call
      */
-    abstract Call<PhotoResult> makeGetAlbumCall();
+    abstract Call<PhotoResult> makeGetAlbumCall(RequestHandlers<ArrayList<PXLPhoto>> handlers);
 
     /***
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
      * sort order, and filter options before calling.
      * @param handlers - called upon success/failure of the request
-     * @return true if the request was attempted, false if aborted before the attempt was made
      */
     public void loadNextPageOfPhotos(final RequestHandlers<ArrayList<PXLPhoto>> handlers) {
-        Call<PhotoResult> call = makeGetAlbumCall();
+        Call<PhotoResult> call = makeGetAlbumCall(handlers);
 
         if (call == null)
             return;
