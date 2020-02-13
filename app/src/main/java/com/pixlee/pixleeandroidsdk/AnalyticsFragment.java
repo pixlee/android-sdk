@@ -132,7 +132,8 @@ public class AnalyticsFragment extends BaseFragment {
                     @Override
                     public void onComplete(ArrayList<PXLPhoto> result) {
                         showAnalytics("loadMore()");
-                        showDialog("Load More", getString(R.string.guide_load_more));
+                        // todo: uncommeent this showDialog("Load More", getString(R.string.guide_load_more));
+                        // todo: implement load more accordingly
 
                         album.loadMore();
 
@@ -142,7 +143,9 @@ public class AnalyticsFragment extends BaseFragment {
 
                     @Override
                     public void onError(String error) {
-                        tv_status.setText(getString(R.string.album_loading_failed, error));
+                        String msg = getString(R.string.album_loading_failed, error);
+                        showToast(msg);
+                        tv_status.setText(msg);
                     }
                 });
             }
