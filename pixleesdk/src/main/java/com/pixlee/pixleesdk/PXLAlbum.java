@@ -54,7 +54,7 @@ public class PXLAlbum extends PXLBaseAlbum{
             return null;
         }
         if (!this.hasMore) {
-            handlers.onError("No album id specified");
+            handlers.onError("No need to load more");
             return null;
         }
 
