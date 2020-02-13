@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk;
+package com.pixlee.pixleeandroidsdk.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -6,12 +6,14 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.pixlee.pixleeandroidsdk.MainActivity;
+
 abstract public class BaseFragment extends Fragment {
     //this is to display a title in Toolbar
     public abstract int getTitleResource();
 
     //this is to display a a custom title in Toolbar. This has a higher priority over getTitleResource()
-    String getCustomTitle() {
+    public String getCustomTitle() {
         return null;
     }
 

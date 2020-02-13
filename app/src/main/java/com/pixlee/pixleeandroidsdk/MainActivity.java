@@ -9,12 +9,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
+import com.pixlee.pixleeandroidsdk.ui.IndexFragment;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity {
     final String TAG = "MainActivity";
-    int frameLayoutId = R.id.contentFrame;
+    public int frameLayoutId = R.id.contentFrame;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;

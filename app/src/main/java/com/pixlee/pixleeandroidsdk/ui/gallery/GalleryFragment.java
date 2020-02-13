@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk.gallery;
+package com.pixlee.pixleeandroidsdk.ui.gallery;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -12,12 +12,11 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.pixlee.pixleeandroidsdk.BaseFragment;
+import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleeandroidsdk.BuildConfig;
-import com.pixlee.pixleeandroidsdk.GalleryClickListener;
 import com.pixlee.pixleeandroidsdk.R;
-import com.pixlee.pixleeandroidsdk.viewer.ImageViewerFragment;
-import com.pixlee.pixleeandroidsdk.viewer.VideoViewerFragment;
+import com.pixlee.pixleeandroidsdk.ui.viewer.ImageViewerFragment;
+import com.pixlee.pixleeandroidsdk.ui.viewer.VideoViewerFragment;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;

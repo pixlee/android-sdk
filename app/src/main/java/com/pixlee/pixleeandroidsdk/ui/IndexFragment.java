@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk;
+package com.pixlee.pixleeandroidsdk.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,11 +7,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
-import com.pixlee.pixleeandroidsdk.BaseFragment;
 import com.pixlee.pixleeandroidsdk.R;
-import com.pixlee.pixleeandroidsdk.gallery.GalleryFragment;
-import com.pixlee.pixleesdk.PXLAlbum;
-import com.pixlee.pixleesdk.PXLClient;
+import com.pixlee.pixleeandroidsdk.ui.gallery.GalleryFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

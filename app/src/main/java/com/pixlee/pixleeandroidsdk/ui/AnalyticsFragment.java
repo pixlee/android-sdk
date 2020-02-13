@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk;
+package com.pixlee.pixleeandroidsdk.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.pixlee.pixleeandroidsdk.BuildConfig;
+import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAnalytics;
 import com.pixlee.pixleesdk.PXLBaseAlbum;

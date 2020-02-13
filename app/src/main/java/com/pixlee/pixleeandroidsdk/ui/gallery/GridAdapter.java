@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk.gallery;
+package com.pixlee.pixleeandroidsdk.ui.gallery;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.pixlee.pixleeandroidsdk.GalleryClickListener;
 import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.PXLPhotoSize;
