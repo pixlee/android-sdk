@@ -179,20 +179,16 @@ public class ImageUploaderFragment extends BaseFragment {
     }
 
     private void setupExternalStoragePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(
+        if (ContextCompat.checkSelfPermission(
+                getActivity(),
+                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            callMediaPicker();
+        } else {
+            ActivityCompat.requestPermissions(
                     getActivity(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                callMediaPicker();
-            } else {
-                ActivityCompat.requestPermissions(
-                        getActivity(),
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        reqStorage
-                );
-            }
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    reqStorage
+            );
         }
 
     }
