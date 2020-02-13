@@ -64,6 +64,14 @@ public abstract class PXLBaseAlbum {
         this.pagesLoading = new HashMap<>();
     }
 
+    /**
+     * Gives hint for you whether to use loadNextPageOfPhotos()
+     * @return hasMore  true: you can fire loadNextPageOfPhotos() to get more data,    false: you cannot load more data
+     */
+    public boolean isHasMore() {
+        return hasMore;
+    }
+
     /***
      * Sets the amount of photos fetched per call of 'loadNextPageOfPhotos'.  Will purge previously
      * fetched photos. Call 'loadNextPageOfPhotos' after setting.
