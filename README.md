@@ -165,7 +165,9 @@ See the onComplete function in GalleryFragment.java for an example.
     ```
     #!java
     
-    album.openedWidget();
+    album.openedWidget(PXLWidgetType.photowall);
+    album.openedWidget(PXLWidgetType.horizontal);
+    album.openedWidget("<Customized name>"); 
     ```
 
 #### Load More
@@ -184,7 +186,8 @@ See the onComplete function in GalleryFragment.java for an example.
     ```
     #!java
     
-    photo.openedLightbox(context);
+    album.openedLightbox(photo.albumPhotoId)
+    album.openedLightbox(photo)
     ```
 
 #### Action Clicked
