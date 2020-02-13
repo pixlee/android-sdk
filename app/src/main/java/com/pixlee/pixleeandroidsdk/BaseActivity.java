@@ -1,21 +1,59 @@
 package com.pixlee.pixleeandroidsdk;
 
+import android.content.Intent;
 import android.os.Build;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
+
 /**
  * This helps Fragments to be added with proper animation and change colors in the app.
  */
 public class BaseActivity extends AppCompatActivity {
+
+    BaseFragment getCurrentFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        int fragmentCount = fm.getBackStackEntryCount();
+        if (fragmentCount > 0) {
+            FragmentManager.BackStackEntry backEntry = fm.getBackStackEntryAt(fragmentCount - 1);
+            Fragment f = fm.findFragmentByTag(backEntry.getName());
+            if (f != null)
+                return (BaseFragment) f;
+            else
+                return null;
+        }
+
+        return null;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        BaseFragment f = getCurrentFragment();
+        if (f != null) {
+            f.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        BaseFragment f = getCurrentFragment();
+        if (f != null) {
+            f.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
     private void changeFragmentInActivity(
             int frameId,
             Fragment fragment,
@@ -42,7 +80,7 @@ public class BaseActivity extends AppCompatActivity {
             View sharedView) {
         FragmentManager fm = getSupportFragmentManager();
         fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        changeFragmentInActivity(frameId, fragment, sharedView, 0,0,0,0);
+        changeFragmentInActivity(frameId, fragment, sharedView, 0, 0, 0, 0);
     }
 
     /**

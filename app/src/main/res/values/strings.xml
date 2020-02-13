@@ -2,6 +2,7 @@
     <string name="app_name">Pixlee Android SDK Demo</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Title -->
     <string name="title_index">Index</string>
     <string name="title_album">Album List</string>
     <string name="title_upload_image">Upload Image</string>
@@ -9,10 +10,12 @@
     <string name="title_image_viewer">Image Viewer</string>
     <string name="title_video_viewer">Video Viewer</string>
 
+    <!-- Album -->
     <string name="album_loading_ing">Album loading..</string>
     <string name="album_loading_complete">Album loaded!</string>
     <string name="album_loading_failed">Album loading failed, reason: %s</string>
 
+    <!-- Analytics -->
     <string name="xxx_is_called">%s is Called.</string>
     <string name="guide_load_more">
         You want more practical examples?\n
@@ -21,4 +24,11 @@
         3. Scroll down to the bottom\n
         4. Load More will be fired. Check LogCat
     </string>
+
+    <!-- Upload -->
+    <string name="uploading">Uploading..</string>
+    <string name="upload_success_message">Complete</string>
+    <string name="upload_failure_message">Failed</string>
+    <string name="storage_permission_for_uploading">\'Storage\' permission is needed to upload a photo in the app setting</string>
+    <string name="button_setting">Setting</string>
 </resources>
