@@ -72,6 +72,7 @@ public class AnalyticsFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
 
         // UI Settings
+        v_progress.setVisibility(View.VISIBLE);
         enableAlbumButtons(false);
         setClickListeners();
 
@@ -94,11 +95,13 @@ public class AnalyticsFragment extends BaseFragment {
                 photos.addAll(result);
                 tv_status.setText(R.string.album_loading_complete);
                 enableAlbumButtons(true);
+                v_progress.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onError(String error) {
                 tv_status.setText(getString(R.string.album_loading_failed, error));
+                v_progress.setVisibility(View.INVISIBLE);
             }
         });
         tv_status.setText(R.string.album_loading_ing);
@@ -124,13 +127,15 @@ public class AnalyticsFragment extends BaseFragment {
         bt_load_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAnalytics("loadMore()");
-                showDialog("Load More", getString(R.string.guide_load_more));
-
-                album.loadMore();
+                tv_status.setText("Load More...");
                 album.loadNextPageOfPhotos(new PXLBaseAlbum.RequestHandlers<ArrayList<PXLPhoto>>() {
                     @Override
                     public void onComplete(ArrayList<PXLPhoto> result) {
+                        showAnalytics("loadMore()");
+                        showDialog("Load More", getString(R.string.guide_load_more));
+
+                        album.loadMore();
+
                         photos.addAll(result);
                         tv_status.setText(R.string.album_loading_complete);
                     }
@@ -178,7 +183,7 @@ public class AnalyticsFragment extends BaseFragment {
                 ArrayList<HashMap<String, Object>> cartContents = new ArrayList();
                 HashMap<String, Object> cart1 = new HashMap();
                 cart1.put("price", "123");
-                cart1.put("product_sku", "test123");
+                cart1.put("product_sku", BuildConfig.PIXLEE_SKU);
                 cart1.put("quantity", "4");
                 cartContents.add(cart1);
                 analytics.conversion(cartContents, "123", 4);
@@ -187,9 +192,9 @@ public class AnalyticsFragment extends BaseFragment {
     }
 
     private void enableAlbumButtons(boolean enabled) {
-        v_progress.setVisibility(enabled ? View.INVISIBLE : View.VISIBLE);
         bt_load_more.setEnabled(enabled);
         bt_opened_lightbox.setEnabled(enabled);
+        bt_action_clicked.setEnabled(enabled);
     }
 
     private void showAnalytics(String methodName) {

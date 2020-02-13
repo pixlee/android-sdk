@@ -9,7 +9,7 @@
     <string name="title_video_viewer">Video Viewer</string>
 
     <string name="album_loading_ing">Album loading..</string>
-    <string name="album_loading_complete">Album loading complete</string>
+    <string name="album_loading_complete">Album loaded!</string>
     <string name="album_loading_failed">Album loading failed, reason: %s</string>
 
     <string name="xxx_is_called">%s is Called.</string>
