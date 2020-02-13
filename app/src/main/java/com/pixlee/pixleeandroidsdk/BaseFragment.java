@@ -1,5 +1,7 @@
 package com.pixlee.pixleeandroidsdk;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -9,7 +11,7 @@ abstract public class BaseFragment extends Fragment {
     public abstract int getTitleResource();
 
     //this is to display a a custom title in Toolbar. This has a higher priority over getTitleResource()
-    String getCustomTitle(){
+    String getCustomTitle() {
         return null;
     }
 
@@ -29,13 +31,27 @@ abstract public class BaseFragment extends Fragment {
 
             mainActivity.addFragmentToActivity(mainActivity.frameLayoutId, fragment, null);
         } else {
-            Toast.makeText(getContext(), "need to add addFragmentToActivity() to your activity", Toast.LENGTH_SHORT).show();;
+            Toast.makeText(getContext(), "need to add addFragmentToActivity() to your activity", Toast.LENGTH_SHORT).show();
         }
     }
 
     Toast toast;
-    public void showToast(String message){
+    public void showToast(String message) {
         toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    public void showDialog(String title, String message) {
+        AlertDialog.Builder b = new AlertDialog.Builder(getContext());
+        if (title != null) b.setTitle(title);
+        if (message != null) b.setMessage(message);
+
+        b.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        b.show();
+
     }
 }
