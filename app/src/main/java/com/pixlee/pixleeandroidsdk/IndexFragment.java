@@ -25,6 +25,8 @@ public class IndexFragment extends BaseFragment {
     @BindView(R.id.bt_album)
     View bt_album;
 
+    @BindView(R.id.bt_upload_image)
+    View bt_upload_image;
 
     @BindView(R.id.bt_analytics)
     View bt_analytics;
@@ -52,7 +54,12 @@ public class IndexFragment extends BaseFragment {
             }
         });
 
+        bt_upload_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+            }
+        });
 
         bt_analytics.setOnClickListener(new View.OnClickListener() {
             @Override
