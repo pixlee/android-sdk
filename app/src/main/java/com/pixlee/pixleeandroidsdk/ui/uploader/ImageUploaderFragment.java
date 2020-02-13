@@ -218,24 +218,22 @@ public class ImageUploaderFragment extends BaseFragment {
 
     private void createDialogForStoragePermission() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        if (builder != null) {
-            builder.setMessage(R.string.storage_permission_for_uploading);
-            builder.setPositiveButton(R.string.button_setting, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    startActivity(
-                            new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:${activity?.packageName}"))
-                    );
-                }
-            });
-            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+        builder.setMessage(R.string.storage_permission_for_uploading);
+        builder.setPositiveButton(R.string.button_setting, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startActivity(
+                        new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + getActivity().getPackageName()))
+                );
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
 
-                }
-            });
-            builder.show();
-        }
+            }
+        });
+        builder.show();
     }
 
 
