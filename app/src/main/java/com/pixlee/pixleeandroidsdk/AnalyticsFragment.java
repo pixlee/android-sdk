@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
 public class AnalyticsFragment extends BaseFragment {
     @Override
     public int getTitleResource() {
-        return R.string.app_name;
+        return R.string.title_analytics;
     }
 
     @BindView(R.id.v_progress)
@@ -201,6 +201,8 @@ public class AnalyticsFragment extends BaseFragment {
     }
 
     private void showAnalytics(String methodName) {
-        showToast(getString(R.string.xxx_is_called, methodName));
+        String message = getString(R.string.xxx_is_called, methodName);
+        tv_status.setText(message);
+        showToast(message);
     }
 }

@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
 public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHandlers<ArrayList<PXLPhoto>>{
     @Override
     public int getTitleResource() {
-        return R.string.title_gallery;
+        return R.string.title_album;
     }
 
     private PXLAlbum album;
