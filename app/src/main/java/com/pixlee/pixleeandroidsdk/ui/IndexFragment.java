@@ -13,6 +13,11 @@ import com.pixlee.pixleeandroidsdk.ui.gallery.GalleryFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * This is an index page of the app.
+ *
+ * Created by sungjun on 2020-02-13.
+ */
 public class IndexFragment extends BaseFragment {
     @Override
     public int getTitleResource() {
@@ -22,8 +27,8 @@ public class IndexFragment extends BaseFragment {
     @BindView(R.id.bt_album)
     View bt_album;
 
-    @BindView(R.id.bt_upload_image)
-    View bt_upload_image;
+    @BindView(R.id.bt_image_uploader)
+    View bt_image_uploader;
 
     @BindView(R.id.bt_analytics)
     View bt_analytics;
@@ -51,7 +56,7 @@ public class IndexFragment extends BaseFragment {
             }
         });
 
-        bt_upload_image.setOnClickListener(new View.OnClickListener() {
+        bt_image_uploader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 

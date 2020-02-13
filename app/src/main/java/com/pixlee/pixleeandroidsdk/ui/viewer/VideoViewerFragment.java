@@ -21,6 +21,10 @@ import com.pixlee.pixleeandroidsdk.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * This is a video player
+ * Created by sungjun.
+ */
 public class VideoViewerFragment extends BaseFragment {
     @Override
     public int getTitleResource() {

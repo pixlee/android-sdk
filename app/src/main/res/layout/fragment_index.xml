@@ -23,7 +23,7 @@
 
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonDefault"
-                android:id="@+id/bt_upload_image"
+                android:id="@+id/bt_image_uploader"
                 android:text="@string/title_analytics"
                 android:textSize="14sp"
                 app:cornerRadius="10dp"

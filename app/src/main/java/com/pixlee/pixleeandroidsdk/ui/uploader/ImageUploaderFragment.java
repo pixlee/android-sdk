@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk.ui;
+package com.pixlee.pixleeandroidsdk.ui.uploader;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.R;
+import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAnalytics;
 import com.pixlee.pixleesdk.PXLBaseAlbum;
@@ -24,13 +25,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * This shows how you can fire all analytics of Pixlee.
+ * Image Upload example
  * Created by sungjun on 2020-02-13.
  */
-public class AnalyticsFragment extends BaseFragment {
+public class ImageUploaderFragment extends BaseFragment {
     @Override
     public int getTitleResource() {
-        return R.string.title_analytics;
+        return R.string.title_upload_image;
     }
 
     @BindView(R.id.v_progress)
@@ -68,7 +69,7 @@ public class AnalyticsFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_analytics, container, false);
+        View view = inflater.inflate(R.layout.fragment_image_uploader, container, false);
         ButterKnife.bind(this, view);
         return view;
     }

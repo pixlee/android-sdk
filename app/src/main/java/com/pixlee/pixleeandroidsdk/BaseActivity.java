@@ -12,6 +12,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+/**
+ * This helps Fragments to be added with proper animation and change colors in the app.
+ */
 public class BaseActivity extends AppCompatActivity {
     private void changeFragmentInActivity(
             int frameId,

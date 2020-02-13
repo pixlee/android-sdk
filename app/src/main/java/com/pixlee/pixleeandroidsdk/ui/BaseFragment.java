@@ -8,6 +8,9 @@ import androidx.fragment.app.Fragment;
 
 import com.pixlee.pixleeandroidsdk.MainActivity;
 
+/**
+ * This helps Fragments and Dialogs to be loaded
+ */
 abstract public class BaseFragment extends Fragment {
     //this is to display a title in Toolbar
     public abstract int getTitleResource();

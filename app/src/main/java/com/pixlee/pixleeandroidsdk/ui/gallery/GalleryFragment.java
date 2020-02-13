@@ -33,6 +33,9 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * This shows how you can load photos of Pixlee using PXLAlbum.java
+ */
 public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHandlers<ArrayList<PXLPhoto>>{
     @Override
     public int getTitleResource() {

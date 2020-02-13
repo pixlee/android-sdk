@@ -15,6 +15,9 @@ import com.pixlee.pixleeandroidsdk.ui.IndexFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * This activity only manage Fragments and a Toolbar.
+ */
 public class MainActivity extends BaseActivity {
     final String TAG = "MainActivity";
     public int frameLayoutId = R.id.contentFrame;

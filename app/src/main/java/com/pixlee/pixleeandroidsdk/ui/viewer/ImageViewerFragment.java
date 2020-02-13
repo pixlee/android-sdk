@@ -21,6 +21,10 @@ import com.pixlee.pixleeandroidsdk.config.GlideApp;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * This is an image viewer
+ * Created by sungjun.
+ */
 public class ImageViewerFragment extends BaseFragment {
     @Override
     public int getTitleResource() {
