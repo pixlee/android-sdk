@@ -4,13 +4,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.pixlee.pixleeandroidsdk.gallery.GalleryFragment;
 import com.pixlee.pixleesdk.PXLAlbum;
+import com.pixlee.pixleesdk.PXLAnalytics;
+import com.pixlee.pixleesdk.PXLBaseAlbum;
 import com.pixlee.pixleesdk.PXLClient;
+import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.PXLWidgetType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,6 +26,12 @@ public class AnalyticsFragment extends BaseFragment {
     public int getTitleResource() {
         return R.string.app_name;
     }
+
+    @BindView(R.id.v_progress)
+    View v_progress;
+
+    @BindView(R.id.tv_status)
+    TextView tv_status;
 
     @BindView(R.id.bt_open_widget)
     View bt_open_widget;
@@ -40,6 +52,8 @@ public class AnalyticsFragment extends BaseFragment {
     View bt_conversion;
 
     PXLAlbum album;
+    PXLAnalytics analytics;
+    ArrayList<PXLPhoto> photos = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,21 +70,50 @@ public class AnalyticsFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initPixlee();
+
+        // UI Settings
+        enableAlbumButtons(false);
         setClickListeners();
+
+        // Pixlee Settings
+        setPixleeCredentials();
+        initPixleeAlbum();
+        initPixleeAnalytics();
     }
 
-    void initPixlee(){
+    private void setPixleeCredentials() {
         PXLClient.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY);
+    }
+
+    private void initPixleeAlbum() {
         PXLClient client = PXLClient.getInstance(getContext());
         album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
+        album.loadNextPageOfPhotos(new PXLBaseAlbum.RequestHandlers<ArrayList<PXLPhoto>>() {
+            @Override
+            public void onComplete(ArrayList<PXLPhoto> result) {
+                photos.addAll(result);
+                tv_status.setText(R.string.album_loading_complete);
+                enableAlbumButtons(true);
+            }
+
+            @Override
+            public void onError(String error) {
+                tv_status.setText(getString(R.string.album_loading_failed, error));
+            }
+        });
+        tv_status.setText(R.string.album_loading_ing);
     }
 
-    void setClickListeners(){
+    private void initPixleeAnalytics() {
+        PXLClient client = PXLClient.getInstance(getContext());
+        analytics = new PXLAnalytics(client);
+    }
 
+    private void setClickListeners() {
         bt_open_widget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showAnalytics("openWidget(..)");
                 album.openedWidget(PXLWidgetType.photowall);
                 // Alternatives
                 // album.openedWidget(PXLWidgetType.photowall);
@@ -81,36 +124,75 @@ public class AnalyticsFragment extends BaseFragment {
         bt_load_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showAnalytics("loadMore()");
+                showDialog("Load More", getString(R.string.guide_load_more));
 
+                album.loadMore();
+                album.loadNextPageOfPhotos(new PXLBaseAlbum.RequestHandlers<ArrayList<PXLPhoto>>() {
+                    @Override
+                    public void onComplete(ArrayList<PXLPhoto> result) {
+                        photos.addAll(result);
+                        tv_status.setText(R.string.album_loading_complete);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        tv_status.setText(getString(R.string.album_loading_failed, error));
+                    }
+                });
             }
         });
 
         bt_opened_lightbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                showAnalytics("openedLightbox()");
+                if (!photos.isEmpty()) {
+                    album.openedLightbox(photos.get(0));
+                }
             }
         });
 
         bt_action_clicked.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                showAnalytics("actionClicked()");
+                if (!photos.isEmpty()) {
+                    album.actionClicked(photos.get(0), "<link you want>");
+                }
             }
         });
 
         bt_add_to_cart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                showAnalytics("addToCart()");
+                analytics.addToCart(BuildConfig.PIXLEE_SKU, "12000", 3);
             }
         });
 
         bt_conversion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                showAnalytics("conversion()");
+                ArrayList<HashMap<String, Object>> cartContents = new ArrayList();
+                HashMap<String, Object> cart1 = new HashMap();
+                cart1.put("price", "123");
+                cart1.put("product_sku", "test123");
+                cart1.put("quantity", "4");
+                cartContents.add(cart1);
+                analytics.conversion(cartContents, "123", 4);
             }
         });
+    }
+
+    private void enableAlbumButtons(boolean enabled) {
+        v_progress.setVisibility(enabled ? View.INVISIBLE : View.VISIBLE);
+        bt_load_more.setEnabled(enabled);
+        bt_opened_lightbox.setEnabled(enabled);
+    }
+
+    private void showAnalytics(String methodName) {
+        showToast(getString(R.string.xxx_is_called, methodName));
     }
 }
