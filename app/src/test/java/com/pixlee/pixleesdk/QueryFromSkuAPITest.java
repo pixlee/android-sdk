@@ -41,7 +41,7 @@ public class QueryFromSkuAPITest extends BaseTest {
         album.setSortOptions(so);
 
         // fire an API
-        Response<PhotoResult> response = album.makeGetAlbumCall().execute();
+        Response<PhotoResult> response = album.makeGetAlbumCall(handlers).execute();
         album.setData(response, handlers);
     }
 

@@ -36,6 +36,17 @@ public class BasicRepository implements BasicDataSource {
         this.api = api;
     }
 
+    private String getSignature(JSONObject json) {
+        String signature = null;
+        try {
+            signature = HMAC.computeHmac(json.toString().replace("\\/", "/"), PXLClient.secretKey);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+        return signature;
+    }
 
     @Override
     public Call<PhotoResult> getPhotosWithSKU(String sku, String api_key, String filters, String sort, int per_page, int page) {
@@ -53,27 +64,21 @@ public class BasicRepository implements BasicDataSource {
     }
 
     @Override
-    public Call<MediaResult> postMedia(String api_key, JSONObject json) {
-        if (PXLClient.secretKey == null ) {
+    public Call<MediaResult> postMedia(JSONObject json) {
+        if (PXLClient.secretKey == null) {
             throw new IllegalArgumentException("no secretKey, please set secretKey before start");
         }
-        String signature = null;
-        try {
-            signature = HMAC.computeHmac(json.toString().replace("\\/", "/" ), PXLClient.secretKey);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        }
+
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json.toString());
-        return api.postMedia(signature, api_key, body);
+        return api.postMedia(getSignature(json), PXLClient.apiKey, body);
     }
 
     @Override
-    public Call<Void> uploadImage(String filePath, String contentType) {
+    public Call<MediaResult> uploadImage(JSONObject json, String filePath, String contentType) {
         List<MultipartBody.Part> bodyList = new ArrayList<>();
         File photo = new File(filePath);
         bodyList.add(new MultipartUtil().getMultipartBody("image", photo));
-        return null;
+        bodyList.add(MultipartBody.Part.createFormData("json", json.toString()));
+        return api.uploadImage(getSignature(json), PXLClient.apiKey, bodyList);
     }
 }

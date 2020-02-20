@@ -286,10 +286,7 @@ public abstract class PXLBaseAlbum {
             e.printStackTrace();
         }
 
-        return basicRepo.postMedia(
-                PXLClient.apiKey,
-                body
-        );
+        return basicRepo.postMedia(body);
     }
 
     /**
@@ -324,7 +321,7 @@ public abstract class PXLBaseAlbum {
         }
     }
 
-    Call<MediaResult> makePostUploadLocalImage(String title, String email, String username, String localPhotoPath, Boolean approved) {
+    Call<MediaResult> makePostUploadLocalImage(String title, String email, String username, Boolean approved, String localPhotoPath, String contentType) {
         JSONObject body = new JSONObject();
         try {
             body.put("album_id", Integer.parseInt(this.album_id));
@@ -338,10 +335,7 @@ public abstract class PXLBaseAlbum {
             e.printStackTrace();
         }
 
-        return basicRepo.postMedia(
-                PXLClient.apiKey,
-                body
-        );
+        return basicRepo.uploadImage(body, localPhotoPath, contentType);
     }
 
     /**
@@ -355,9 +349,9 @@ public abstract class PXLBaseAlbum {
      * @param approved - boolean specifying whether the photo should be marked as approved on upload
      * @param handlers - a callback fired after this api call is finished
      */
-    public void uploadLocalImage(String title, String email, String username, String localPhotoPath, Boolean approved, final RequestHandlers<MediaResult> handlers) {
+    public void uploadLocalImage(String title, String email, String username, Boolean approved, String localPhotoPath, String contentType, final RequestHandlers<MediaResult> handlers) {
         try {
-            makePostUploadLocalImage(title, email, username, localPhotoPath, approved)
+            makePostUploadLocalImage(title, email, username, approved, localPhotoPath, contentType)
                     .enqueue(new Callback<MediaResult>() {
                         @Override
                         public void onResponse(Call<MediaResult> call, Response<MediaResult> response) {

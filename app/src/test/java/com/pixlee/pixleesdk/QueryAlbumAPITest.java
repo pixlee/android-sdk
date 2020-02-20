@@ -43,7 +43,7 @@ public class QueryAlbumAPITest extends BaseTest {
         album.setSortOptions(so);
 
         // fire an API
-        Response<PhotoResult> response = album.makeGetAlbumCall().execute();
+        Response<PhotoResult> response = album.makeGetAlbumCall(handlers).execute();
         album.setData(response, handlers);
     }
 
@@ -71,9 +71,7 @@ public class QueryAlbumAPITest extends BaseTest {
         album.setFilterOptions(fo);
         album.setSortOptions(so);
 
-        // fire an API
-        Response<PhotoResult> response = album.makeGetAlbumCall().execute();
-        album.setData(response, new PXLBaseAlbum.RequestHandlers<ArrayList<PXLPhoto>>() {
+        PXLBaseAlbum.RequestHandlers handlers = new PXLBaseAlbum.RequestHandlers<ArrayList<PXLPhoto>>() {
             @Override
             public void onComplete(ArrayList<PXLPhoto> photos) {
                 // success
@@ -85,7 +83,10 @@ public class QueryAlbumAPITest extends BaseTest {
                 // failure
                 Assert.fail(error);
             }
-        });
+        };
+        // fire an API
+        Response<PhotoResult> response = album.makeGetAlbumCall(handlers).execute();
+        album.setData(response, handlers);
     }
 
     @Test

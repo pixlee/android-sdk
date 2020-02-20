@@ -84,7 +84,24 @@ public class ImageUploaderFragment extends BaseFragment {
         setPixleeCredentials();
         initPixleeAlbum();
 
+        /*album.uploadImage(
+                "White Beach",
+                "sungjun.app@gmail.com",
+                "jun",
+                "http://whitebeachconsulting.com/wp-content/uploads/2016/11/white-beach-waves.jpg",
+                true,
+                new PXLBaseAlbum.RequestHandlers<MediaResult>() {
+                    @Override
+                    public void onComplete(MediaResult result) {
+                        showAnalytics("Upload Success: " + result);
 
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        tv_status.setText(error);
+                    }
+                });*/
     }
 
     public void setPixleeCredentials() {
@@ -107,12 +124,14 @@ public class ImageUploaderFragment extends BaseFragment {
 
     void uploadImage(String filePath, String contentType) {
         showAnalytics("uploadLocalImage(filePath: " + filePath + ", contentType: " + contentType + ")");
-        /*album.uploadLocalImage(
+
+        album.uploadLocalImage(
                 "yosemite",
                 "sungjun.app@gmail.com",
                 "jun",
-                filePath,
                 true,
+                filePath,
+                contentType,
                 new PXLBaseAlbum.RequestHandlers<MediaResult>() {
                     @Override
                     public void onComplete(MediaResult result) {
@@ -124,7 +143,7 @@ public class ImageUploaderFragment extends BaseFragment {
                     public void onError(String error) {
                         tv_status.setText(error);
                     }
-                });*/
+                });
     }
 
     private void showAnalytics(String methodName) {
