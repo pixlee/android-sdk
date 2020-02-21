@@ -122,8 +122,8 @@ public class ImageUploaderFragment extends BaseFragment {
         });
     }
 
-    void uploadImage(String filePath, String contentType) {
-        showAnalytics("uploadLocalImage(filePath: " + filePath + ", contentType: " + contentType + ")");
+    void uploadImage(String filePath) {
+        showAnalytics("uploadLocalImage(filePath: " + filePath +  ")");
 
         album.uploadLocalImage(
                 "yosemite",
@@ -131,7 +131,6 @@ public class ImageUploaderFragment extends BaseFragment {
                 "jun",
                 true,
                 filePath,
-                contentType,
                 new PXLBaseAlbum.RequestHandlers<MediaResult>() {
                     @Override
                     public void onComplete(MediaResult result) {
@@ -185,8 +184,7 @@ public class ImageUploaderFragment extends BaseFragment {
                     cursor.moveToFirst();
 
                     String filePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
-                    String mimeType = cursor.getString(cursor.getColumnIndex(filePathColumn[1]));
-                    uploadImage(filePath, mimeType);
+                    uploadImage(filePath);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

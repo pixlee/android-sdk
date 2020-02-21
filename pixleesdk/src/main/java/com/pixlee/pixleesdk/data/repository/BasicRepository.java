@@ -13,6 +13,8 @@ import com.pixlee.pixleesdk.network.multiparts.MultipartUtil;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -74,7 +76,7 @@ public class BasicRepository implements BasicDataSource {
     }
 
     @Override
-    public Call<MediaResult> uploadImage(JSONObject json, String filePath, String contentType) {
+    public Call<MediaResult> uploadImage(JSONObject json, String filePath) {
         List<MultipartBody.Part> bodyList = new ArrayList<>();
         File photo = new File(filePath);
         bodyList.add(new MultipartUtil().getMultipartBody("image", photo));

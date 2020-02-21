@@ -34,5 +34,5 @@ public interface BasicDataSource {
 
     Call<MediaResult> postMedia(JSONObject json);
 
-    Call<MediaResult> uploadImage(JSONObject json, String filePath, String contentType);
+    Call<MediaResult> uploadImage(JSONObject json, String filePath);
 }
