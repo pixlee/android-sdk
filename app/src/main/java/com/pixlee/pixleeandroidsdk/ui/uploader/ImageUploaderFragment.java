@@ -85,10 +85,10 @@ public class ImageUploaderFragment extends BaseFragment {
         initPixleeAlbum();
 
         /*album.uploadImage(
-                "Yosemite Fall",
+                "Waikiki",
                 "sungjun.app@gmail.com",
                 "jun",
-                "https://cdn.tourcms.com/a/5984/144/1/large.jpg",
+                "https://radiokorea.com/images/news/2019/06/10/316856/1.jpg",
                 true,
                 new PXLBaseAlbum.RequestHandlers<MediaResult>() {
                     @Override
@@ -126,7 +126,7 @@ public class ImageUploaderFragment extends BaseFragment {
         showAnalytics("uploadLocalImage(filePath: " + filePath +  ")");
 
         album.uploadLocalImage(
-                "hong photo",
+                "hong photo2",
                 "sungjun@pixleeteam.com",
                 "jun",
                 true,

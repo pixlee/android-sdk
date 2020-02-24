@@ -79,7 +79,7 @@ public class BasicRepository implements BasicDataSource {
     public Call<MediaResult> uploadImage(JSONObject json, String filePath) {
         List<MultipartBody.Part> bodyList = new ArrayList<>();
         File photo = new File(filePath);
-        bodyList.add(new MultipartUtil().getMultipartBody("image", photo));
+        bodyList.add(new MultipartUtil().getMultipartBody("file", photo));
         bodyList.add(MultipartBody.Part.createFormData("json", json.toString()));
         return api.uploadImage(getSignature(json), PXLClient.apiKey, bodyList);
     }
