@@ -20,7 +20,7 @@ public class MultipartUtil {
         return new CountingFileRequestBody.ProgressListener() {
             @Override
             public void transferred(long num) {
-                Log.d("", "fileSize:" + FileFormat.convert(fileSize) + ", num:" + FileFormat.convert(num) + ", progress:" + ((float) num / (float) fileSize * 100f));
+                Log.d("PRETTY", "fileSize:" + FileFormat.convert(fileSize) + ", num:" + FileFormat.convert(num) + ", progress:" + ((float) num / (float) fileSize * 100f));
             }
         };
     }

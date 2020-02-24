@@ -12,4 +12,9 @@ public class MediaResult {
 
     @Json(name = "connected_user_id")
     public String connectedUserId;
+
+    @Override
+    public String toString(){
+        return "albumPhotoId: " + albumPhotoId + ", connectedUserId: " + connectedUserId;
+    }
 }

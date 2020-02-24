@@ -328,7 +328,6 @@ public abstract class PXLBaseAlbum {
             body.put("title", title);
             body.put("email", email);
             body.put("username", username);
-            body.put("photo_path", localPhotoPath);
             body.put("approved", approved);
 
         } catch (JSONException e) {

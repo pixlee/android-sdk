@@ -48,7 +48,7 @@ public interface BasicAPI {
     @Wrapped(path = {"data"})
     Call<PXLPhoto> getMedia(@Path("album_photo_id")String album_photo_id, @Query("api_key")String api_key);
 
-    @POST("mobile")
+    @POST("media")
     Call<MediaResult> postMedia(
             @Header("Signature") String Signature,
             @Query("api_key")String api_key,
@@ -56,7 +56,7 @@ public interface BasicAPI {
     );
 
     @Multipart
-    @POST("mobile")
+    @POST("media/file")
     Call<MediaResult> uploadImage(
             @Header("Signature") String Signature,
             @Query("api_key")String api_key,
