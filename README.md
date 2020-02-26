@@ -8,7 +8,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
     - [Register Pixlee credentials](#Register-Pixlee-credentials)
     - [Get PXLClient](#Get-PXLClient)
 - [Album Features](#Album-Features)
-    - [Get Photos of an Album](#Get-Photos-of-an-Album)
+    - [GeInitiate Album or Product](#Initiate-Album-or-Product)
     - [Get Photos of a Product](#Get-Photos-of-a-Product)
     - [Get more Photos](#Get-more-Photos)
     - [Uploading Photos](#Uploading-Photos)
@@ -89,7 +89,7 @@ AlbumId and SKU available from the Pixlee dashboard).
     PXLClient client = PXLClient.getInstance(context);
     ```
 ## Album Features
-### Initiation
+### Initiate Album or Product
 - #### Option 1: Album    
     To load the photos in an album, you'll want to use the `PXLAlbum` class. Instantiate one with your album ID and client:
         
@@ -139,14 +139,51 @@ AlbumId and SKU available from the Pixlee dashboard).
     
 #### Uploading Photos
 - Prerequisite:
-    - option 1: [Get Photos of an Album](#Get-Photos-of-an-Album)
-    - option 2: [Get Photos of a Product](#Get-Photos-of-a-Product)
-- Call the `uploadImage` method of the PXLBaseAlbum object you are using.
+    - [Initiate Album or Product](#Initiate-Album-or-Product)
+    - prepare PXLBaseAlbum and declare a variable as 'album' 
+- Option 1: Upload an image url
+    
     ```
     #!java
-    
-    album.uploadImage("test", "test@test.com", "testuser", "https://timedotcom.files.wordpress.com/2019/05/drake-nba-finals-warning.jpg", true);
+    album.uploadImage(
+                "<title>",
+                "<email>",
+                "<name>",
+                "<image URL>",
+                <true/false>,
+                new PXLBaseAlbum.RequestHandlers<MediaResult>() {
+                    @Override
+                    public void onComplete(MediaResult result) {
+                        // process the result 
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        // error
+                    }
+                });
     ```
+- Option 2: Upload an image file
+    ```
+    album.uploadLocalImage(
+                "<title>",
+                "<email>",
+                "<name>",
+                <true/false>,
+                "<local image path>",
+                new PXLBaseAlbum.RequestHandlers<MediaResult>() {
+                    @Override
+                    public void onComplete(MediaResult result) {
+                        // process the result
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        // error
+                    }
+                });
+    ```    
+
 ## How to get image urls
 Some imageURL fields can be empty or null depending on its data's status. In order to get appropriate images, you can use this method.
 ```

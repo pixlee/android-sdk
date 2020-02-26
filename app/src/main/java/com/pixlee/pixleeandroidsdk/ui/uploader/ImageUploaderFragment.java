@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -35,6 +34,8 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.view.View.GONE;
 
 /**
  * Image Upload example
@@ -77,14 +78,15 @@ public class ImageUploaderFragment extends BaseFragment {
 
         // UI Settings
         tv_status.setText("Ready");
-        v_progress.setVisibility(View.GONE);
+        v_progress.setVisibility(GONE);
         setClickListeners();
 
         // Pixlee Settings
         setPixleeCredentials();
         initPixleeAlbum();
 
-        /*album.uploadImage(
+        /*v_progress.setVisibility(View.VISIBLE);
+        album.uploadImage(
                 "Waikiki",
                 "sungjun.app@gmail.com",
                 "jun",
@@ -93,13 +95,14 @@ public class ImageUploaderFragment extends BaseFragment {
                 new PXLBaseAlbum.RequestHandlers<MediaResult>() {
                     @Override
                     public void onComplete(MediaResult result) {
-                        showAnalytics("Upload Success: " + result);
-
+                        showMessage("Upload Success: " + result);
+                        v_progress.setVisibility(GONE);
                     }
 
                     @Override
                     public void onError(String error) {
                         tv_status.setText(error);
+                        v_progress.setVisibility(GONE);
                     }
                 });*/
     }
@@ -123,8 +126,9 @@ public class ImageUploaderFragment extends BaseFragment {
     }
 
     void uploadImage(String filePath) {
-        showAnalytics("uploadLocalImage(filePath: " + filePath +  ")");
-
+        showMessage("Uploading  " + filePath);
+        v_progress.setVisibility(View.VISIBLE);
+        bt_start.setEnabled(false);
         album.uploadLocalImage(
                 "hong photo2",
                 "sungjun@pixleeteam.com",
@@ -134,19 +138,21 @@ public class ImageUploaderFragment extends BaseFragment {
                 new PXLBaseAlbum.RequestHandlers<MediaResult>() {
                     @Override
                     public void onComplete(MediaResult result) {
-                        showAnalytics("Upload Success: " + result);
-
+                        showMessage("Uploading Succeeded: " + result);
+                        v_progress.setVisibility(View.GONE);
+                        bt_start.setEnabled(true);
                     }
 
                     @Override
                     public void onError(String error) {
                         tv_status.setText(error);
+                        v_progress.setVisibility(View.GONE);
+                        bt_start.setEnabled(true);
                     }
                 });
     }
 
-    private void showAnalytics(String methodName) {
-        String message = getString(R.string.xxx_is_called, methodName);
+    private void showMessage(String message) {
         tv_status.setText(message);
         showToast(message);
     }

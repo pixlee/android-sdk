@@ -122,7 +122,7 @@ public class AnalyticsFragment extends BaseFragment {
         bt_open_widget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAnalytics("openWidget(..)");
+                showMessage("openWidget(..)");
                 album.openedWidget(PXLWidgetType.photowall);
                 // Alternatives
                 // album.openedWidget(PXLWidgetType.photowall);
@@ -137,7 +137,7 @@ public class AnalyticsFragment extends BaseFragment {
                 album.loadNextPageOfPhotos(new PXLBaseAlbum.RequestHandlers<ArrayList<PXLPhoto>>() {
                     @Override
                     public void onComplete(ArrayList<PXLPhoto> result) {
-                        showAnalytics("loadMore()");
+                        showMessage("loadMore()");
                         // todo: uncomment this showDialog("Load More", getString(R.string.guide_load_more));
                         // todo: implement load more accordingly
 
@@ -160,7 +160,7 @@ public class AnalyticsFragment extends BaseFragment {
         bt_opened_lightbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAnalytics("openedLightbox()");
+                showMessage("openedLightbox()");
                 if (!photos.isEmpty()) {
                     album.openedLightbox(photos.get(0));
                 }
@@ -170,7 +170,7 @@ public class AnalyticsFragment extends BaseFragment {
         bt_action_clicked.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAnalytics("actionClicked()");
+                showMessage("actionClicked()");
                 if (!photos.isEmpty()) {
                     album.actionClicked(photos.get(0), "<link you want>");
                 }
@@ -180,7 +180,7 @@ public class AnalyticsFragment extends BaseFragment {
         bt_add_to_cart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAnalytics("addToCart()");
+                showMessage("addToCart()");
                 analytics.addToCart(BuildConfig.PIXLEE_SKU, "12000", 3);
             }
         });
@@ -188,7 +188,7 @@ public class AnalyticsFragment extends BaseFragment {
         bt_conversion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAnalytics("conversion()");
+                showMessage("conversion()");
                 ArrayList<HashMap<String, Object>> cartContents = new ArrayList();
                 HashMap<String, Object> cart1 = new HashMap();
                 cart1.put("price", "123");
@@ -206,7 +206,7 @@ public class AnalyticsFragment extends BaseFragment {
         bt_action_clicked.setEnabled(enabled);
     }
 
-    private void showAnalytics(String methodName) {
+    private void showMessage(String methodName) {
         String message = getString(R.string.xxx_is_called, methodName);
         tv_status.setText(message);
         showToast(message);

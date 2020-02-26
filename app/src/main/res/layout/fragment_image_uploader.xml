@@ -12,7 +12,7 @@
         android:padding="25dp">
 
         <com.google.android.material.button.MaterialButton
-            style="@style/NextButtonOutLined"
+            style="@style/NextButtonDefault"
             android:id="@+id/bt_start"
             android:layout_marginTop="10dp"
             android:text="Get file -> Upload it"
