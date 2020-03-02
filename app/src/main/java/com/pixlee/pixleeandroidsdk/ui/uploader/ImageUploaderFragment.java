@@ -85,6 +85,7 @@ public class ImageUploaderFragment extends BaseFragment {
         setPixleeCredentials();
         initPixleeAlbum();
 
+        // Sample: Upload an image by a link
         /*v_progress.setVisibility(View.VISIBLE);
         album.uploadImage(
                 "Waikiki",
