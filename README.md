@@ -233,7 +233,9 @@ See the onComplete function in GalleryFragment.java for an example.
     ```
     #!java
     
-    photo.actionClicked("https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html", context);
+    album.actionClicked(photo.albumPhotoId, "https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html");
+    album.actionClicked(photo, "https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html");
+
     ```
 ## Ecommerce Analytics
 - initialize:
