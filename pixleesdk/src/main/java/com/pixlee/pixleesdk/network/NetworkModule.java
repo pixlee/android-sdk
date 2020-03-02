@@ -57,10 +57,7 @@ public class NetworkModule {
         );
     }
 
-//    public static final String url = "https://distillery.pixlee.com/api/v2/";
-//    public static final String analyticsUrl = "https://inbound-analytics.pixlee.com/";
-
-    public static final String url = "http://192.168.0.26:9000/api/v2/";
+    public static final String url = "https://distillery.pixlee.com/api/v2/";
     public static final String analyticsUrl = "https://inbound-analytics.pixlee.com/";
 
     private static final Long timeout_read = 30L;
