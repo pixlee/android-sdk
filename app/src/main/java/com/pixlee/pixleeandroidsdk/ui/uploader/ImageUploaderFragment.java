@@ -115,8 +115,8 @@ public class ImageUploaderFragment extends BaseFragment {
         });
     }
 
+    // Sample 1: Upload an image using a link
     private void uploadLink() {
-        // Sample: Upload an image by a link
         setUploadingUI(true);
         album.uploadImage(
                 "Waikiki",
@@ -139,6 +139,7 @@ public class ImageUploaderFragment extends BaseFragment {
                 });
     }
 
+    // Sample 2: Upload an image using a file
     private void uploadFile(String filePath) {
         showMessage("Uploading  " + filePath);
         setUploadingUI(true);
