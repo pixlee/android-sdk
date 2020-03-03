@@ -12,16 +12,15 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.R;
+import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleeandroidsdk.ui.viewer.ImageViewerFragment;
 import com.pixlee.pixleeandroidsdk.ui.viewer.VideoViewerFragment;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortType;
-import com.pixlee.pixleesdk.PXLAnalytics;
 import com.pixlee.pixleesdk.PXLBaseAlbum;
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLPhoto;
@@ -42,7 +41,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         return R.string.title_album;
     }
 
-    private PXLAlbum album;
+    private PXLBaseAlbum album;
     private ArrayList<PXLPhoto> photoList;
 
     private int lastImg = R.drawable.grid_2x;
@@ -102,8 +101,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         PXLClient client = PXLClient.getInstance(getContext().getApplicationContext());
 
         album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
-        //Alternative
-        //album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client.getBasicRepo(), client.getAnalyticsRepo());
+        // Alternative: album = new PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client.getBasicRepo(), client.getAnalyticsRepo());
 
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
