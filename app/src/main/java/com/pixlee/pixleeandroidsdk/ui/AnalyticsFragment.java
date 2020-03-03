@@ -10,10 +10,10 @@ import androidx.annotation.Nullable;
 
 import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.R;
-import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAnalytics;
 import com.pixlee.pixleesdk.PXLBaseAlbum;
 import com.pixlee.pixleesdk.PXLClient;
+import com.pixlee.pixleesdk.PXLPdpAlbum;
 import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.PXLWidgetType;
 
@@ -57,7 +57,7 @@ public class AnalyticsFragment extends BaseFragment {
     @BindView(R.id.bt_conversion)
     View bt_conversion;
 
-    PXLAlbum album;
+    PXLBaseAlbum album;
     PXLAnalytics analytics;
     ArrayList<PXLPhoto> photos = new ArrayList<>();
 
@@ -94,7 +94,9 @@ public class AnalyticsFragment extends BaseFragment {
 
     private void initPixleeAlbum() {
         PXLClient client = PXLClient.getInstance(getContext());
-        album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
+        album = new PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client);
+        // Alternative: album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
+
         album.loadNextPageOfPhotos(new PXLBaseAlbum.RequestHandlers<ArrayList<PXLPhoto>>() {
             @Override
             public void onComplete(ArrayList<PXLPhoto> result) {
