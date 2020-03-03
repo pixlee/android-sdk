@@ -136,7 +136,10 @@ public class AnalyticsFragment extends BaseFragment {
                 album.loadNextPageOfPhotos(new PXLBaseAlbum.RequestHandlers<ArrayList<PXLPhoto>>() {
                     @Override
                     public void onComplete(ArrayList<PXLPhoto> result) {
+                        // TODO: uncomment this showDialog("Load More", getString(R.string.guide_load_more));
                         showMessage("loadMore()");
+
+                        // TODO: implement load more accordingly
                         album.loadMore();
 
                         photos.addAll(result);
