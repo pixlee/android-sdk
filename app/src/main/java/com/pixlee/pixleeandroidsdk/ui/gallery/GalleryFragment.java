@@ -166,34 +166,6 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         album.setSortOptions(so);
         PXLAlbum.RequestHandlers rh = this;
         album.loadNextPageOfPhotos(rh);
-
-
-        PXLAnalytics analytics = new PXLAnalytics(client);
-        //Alternative
-        //PXLAnalytics analytics = new PXLAnalytics(client.getAnalyticsRepo());
-
-        analytics.addToCart(BuildConfig.PIXLEE_SKU, "13000",2, "AUD");
-        /* ~~~ content upload example ~~~
-
-          album.uploadImage("test",
-                "kb@pixleeteam.com",
-                "K.B.",
-                "https://timedotcom.files.wordpress.com/2019/05/drake-nba-finals-warning.jpg",
-                true,
-                new PXLBaseAlbum.RequestHandlers<MediaResult>() {
-            @Override
-            public void onComplete(MediaResult result) {
-
-            }
-
-            @Override
-            public void onError(String error) {
-
-            }
-        });
-
-        */
-
     }
 
     private void configureViews() {
