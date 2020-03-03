@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk.gallery;
+package com.pixlee.pixleeandroidsdk.ui.gallery;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -12,12 +12,11 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.pixlee.pixleeandroidsdk.BaseFragment;
+import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleeandroidsdk.BuildConfig;
-import com.pixlee.pixleeandroidsdk.GalleryClickListener;
 import com.pixlee.pixleeandroidsdk.R;
-import com.pixlee.pixleeandroidsdk.viewer.ImageViewerFragment;
-import com.pixlee.pixleeandroidsdk.viewer.VideoViewerFragment;
+import com.pixlee.pixleeandroidsdk.ui.viewer.ImageViewerFragment;
+import com.pixlee.pixleeandroidsdk.ui.viewer.VideoViewerFragment;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;
@@ -34,10 +33,13 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * This shows how you can load photos of Pixlee using PXLAlbum.java
+ */
 public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHandlers<ArrayList<PXLPhoto>>{
     @Override
     public int getTitleResource() {
-        return R.string.title_gallery;
+        return R.string.title_album;
     }
 
     private PXLAlbum album;
@@ -157,41 +159,13 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         // fo.inStockOnly = false;
 
         PXLAlbumSortOptions so = new PXLAlbumSortOptions();
-        so.sortType = PXLAlbumSortType.RECENCY;
+        so.sortType = PXLAlbumSortType.APPROVED_TIME;
         so.descending = true;
         album.setPerPage(20);
         album.setFilterOptions(fo);
         album.setSortOptions(so);
         PXLAlbum.RequestHandlers rh = this;
         album.loadNextPageOfPhotos(rh);
-
-
-        PXLAnalytics analytics = new PXLAnalytics(client);
-        //Alternative
-        //PXLAnalytics analytics = new PXLAnalytics(client.getAnalyticsRepo());
-
-        analytics.addToCart(BuildConfig.PIXLEE_SKU, "13000",2, "AUD");
-        /* ~~~ content upload example ~~~
-
-          album.uploadImage("test",
-                "kb@pixleeteam.com",
-                "K.B.",
-                "https://timedotcom.files.wordpress.com/2019/05/drake-nba-finals-warning.jpg",
-                true,
-                new PXLBaseAlbum.RequestHandlers<MediaResult>() {
-            @Override
-            public void onComplete(MediaResult result) {
-
-            }
-
-            @Override
-            public void onError(String error) {
-
-            }
-        });
-
-        */
-
     }
 
     private void configureViews() {

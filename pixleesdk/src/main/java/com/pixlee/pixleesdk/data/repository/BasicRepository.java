@@ -7,16 +7,24 @@ import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.data.MediaResult;
 import com.pixlee.pixleesdk.data.PhotoResult;
 import com.pixlee.pixleesdk.data.api.BasicAPI;
+import com.pixlee.pixleesdk.network.HMAC;
+import com.pixlee.pixleesdk.network.multiparts.MultipartUtil;
 
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 
@@ -30,6 +38,17 @@ public class BasicRepository implements BasicDataSource {
         this.api = api;
     }
 
+    private String getSignature(JSONObject json) {
+        String signature = null;
+        try {
+            signature = HMAC.computeHmac(json.toString().replace("\\/", "/"), PXLClient.secretKey);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+        return signature;
+    }
 
     @Override
     public Call<PhotoResult> getPhotosWithSKU(String sku, String api_key, String filters, String sort, int per_page, int page) {
@@ -47,28 +66,21 @@ public class BasicRepository implements BasicDataSource {
     }
 
     @Override
-    public Call<MediaResult> postMedia(String api_key, JSONObject json) {
-        if (PXLClient.secretKey == null ) {
+    public Call<MediaResult> postMedia(JSONObject json) {
+        if (PXLClient.secretKey == null) {
             throw new IllegalArgumentException("no secretKey, please set secretKey before start");
         }
-        String signature = null;
-        try {
-            signature = computeHmac(json.toString().replace("\\/", "/" ), PXLClient.secretKey);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        }
+
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json.toString());
-        return api.postMedia(signature, api_key, body);
+        return api.postMedia(getSignature(json), PXLClient.apiKey, body);
     }
 
-    private String computeHmac(String baseString, String secretKey)
-            throws NoSuchAlgorithmException, InvalidKeyException, IllegalStateException {
-        SecretKeySpec key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA1");
-        Mac mac = Mac.getInstance("HmacSHA1");
-        mac.init(key);
-        byte[] bytes = mac.doFinal(baseString.getBytes());
-        return Base64.encodeToString(bytes, Base64.NO_WRAP);
+    @Override
+    public Call<MediaResult> uploadImage(JSONObject json, String filePath) {
+        List<MultipartBody.Part> bodyList = new ArrayList<>();
+        File photo = new File(filePath);
+        bodyList.add(new MultipartUtil().getMultipartBody("file", photo));
+        bodyList.add(MultipartBody.Part.createFormData("json", json.toString()));
+        return api.uploadImage(getSignature(json), PXLClient.apiKey, bodyList);
     }
 }

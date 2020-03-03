@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk.viewer;
+package com.pixlee.pixleeandroidsdk.ui.viewer;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -14,13 +14,17 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.pixlee.pixleeandroidsdk.BaseFragment;
+import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleeandroidsdk.config.GlideApp;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * This is an image viewer
+ * Created by sungjun.
+ */
 public class ImageViewerFragment extends BaseFragment {
     @Override
     public int getTitleResource() {

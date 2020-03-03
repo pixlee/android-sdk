@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk.gallery;
+package com.pixlee.pixleeandroidsdk.ui.gallery;
 
 
 import androidx.recyclerview.widget.GridLayoutManager;

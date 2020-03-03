@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk.viewer;
+package com.pixlee.pixleeandroidsdk.ui.viewer;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -15,12 +15,16 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 
-import com.pixlee.pixleeandroidsdk.BaseFragment;
+import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleeandroidsdk.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * This is a video player
+ * Created by sungjun.
+ */
 public class VideoViewerFragment extends BaseFragment {
     @Override
     public int getTitleResource() {

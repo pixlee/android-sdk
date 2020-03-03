@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk;
+package com.pixlee.pixleeandroidsdk.ui.gallery;
 
 import com.pixlee.pixleesdk.PXLPhoto;
 

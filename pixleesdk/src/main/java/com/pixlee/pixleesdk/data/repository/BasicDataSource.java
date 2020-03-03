@@ -32,8 +32,7 @@ public interface BasicDataSource {
 
     Call<PXLPhoto> getMedia(String album_photo_id, String api_key);
 
-    Call<MediaResult> postMedia(
-            String api_key,
-            JSONObject json
-    );
+    Call<MediaResult> postMedia(JSONObject json);
+
+    Call<MediaResult> uploadImage(JSONObject json, String filePath);
 }

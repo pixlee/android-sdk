@@ -61,8 +61,8 @@ public class NetworkModule {
     public static final String analyticsUrl = "https://inbound-analytics.pixlee.com/";
 
     private static final Long timeout_read = 30L;
-    private static final Long timeout_connect = 20L;
-    private static final Long timeout_write = 30L;
+    private static final Long timeout_connect = 60L;
+    private static final Long timeout_write = 180L;
 
     public static Moshi provideMoshi(){
         return new Moshi.Builder()
