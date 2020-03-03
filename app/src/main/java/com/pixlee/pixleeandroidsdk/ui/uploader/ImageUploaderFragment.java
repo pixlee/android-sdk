@@ -217,6 +217,19 @@ public class ImageUploaderFragment extends BaseFragment {
 
     }
 
+    /**
+     *
+     * Put any random number for reqStorage in ActivityCompat.requestPermissions
+     * Example:
+     *        ActivityCompat.requestPermissions(
+     *          getActivity(),
+     *          new String[]{permission},
+     *          reqStorage
+     *        );
+     *
+     * Try to filter requestCode with the same number inside onRequestPermissionsResult(int requestCode).
+     * This will aloow you to receive the result about permission
+     */
     private final int reqStorage = 1729;
 
     @Override

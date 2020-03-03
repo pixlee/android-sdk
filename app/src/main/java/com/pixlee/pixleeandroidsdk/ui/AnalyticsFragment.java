@@ -123,10 +123,9 @@ public class AnalyticsFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 showMessage("openWidget(..)");
+
                 album.openedWidget(PXLWidgetType.photowall);
-                // Alternatives
-                // album.openedWidget(PXLWidgetType.photowall);
-                // album.openedWidget("<Customized name>");
+                // Alternative: album.openedWidget("<Customized name>");
             }
         });
 
@@ -138,9 +137,6 @@ public class AnalyticsFragment extends BaseFragment {
                     @Override
                     public void onComplete(ArrayList<PXLPhoto> result) {
                         showMessage("loadMore()");
-                        // todo: uncomment this showDialog("Load More", getString(R.string.guide_load_more));
-                        // todo: implement load more accordingly
-
                         album.loadMore();
 
                         photos.addAll(result);

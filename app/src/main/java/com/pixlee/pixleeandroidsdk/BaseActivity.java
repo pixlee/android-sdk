@@ -27,10 +27,9 @@ public class BaseActivity extends AppCompatActivity {
         if (fragmentCount > 0) {
             FragmentManager.BackStackEntry backEntry = fm.getBackStackEntryAt(fragmentCount - 1);
             Fragment f = fm.findFragmentByTag(backEntry.getName());
-            if (f != null)
+            if (f != null){
                 return (BaseFragment) f;
-            else
-                return null;
+            }
         }
 
         return null;

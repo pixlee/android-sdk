@@ -8,7 +8,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
     - [Register Pixlee credentials](#Register-Pixlee-credentials)
     - [Get PXLClient](#Get-PXLClient)
 - [Album Features](#Album-Features)
-    - [GeInitiate Album or Product](#Initiate-Album-or-Product)
+    - [Initiate Album or Product](#Initiate-Album-or-Product)
     - [Get Photos of a Product](#Get-Photos-of-a-Product)
     - [Get more Photos](#Get-more-Photos)
     - [Uploading Photos](#Uploading-Photos)
