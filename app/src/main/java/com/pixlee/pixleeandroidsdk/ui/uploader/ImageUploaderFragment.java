@@ -47,8 +47,11 @@ public class ImageUploaderFragment extends BaseFragment {
         return R.string.title_upload_image;
     }
 
-    @BindView(R.id.bt_start)
-    View bt_start;
+    @BindView(R.id.bt_link)
+    View bt_link;
+
+    @BindView(R.id.bt_file)
+    View bt_file;
 
     @BindView(R.id.v_progress)
     View v_progress;
@@ -85,27 +88,7 @@ public class ImageUploaderFragment extends BaseFragment {
         setPixleeCredentials();
         initPixleeAlbum();
 
-        // Sample: Upload an image by a link
-        /*v_progress.setVisibility(View.VISIBLE);
-        album.uploadImage(
-                "Waikiki",
-                "sungjun.app@gmail.com",
-                "jun",
-                "https://radiokorea.com/images/news/2019/06/10/316856/1.jpg",
-                true,
-                new PXLBaseAlbum.RequestHandlers<MediaResult>() {
-                    @Override
-                    public void onComplete(MediaResult result) {
-                        showMessage("Upload Success: " + result);
-                        v_progress.setVisibility(GONE);
-                    }
 
-                    @Override
-                    public void onError(String error) {
-                        tv_status.setText(error);
-                        v_progress.setVisibility(GONE);
-                    }
-                });*/
     }
 
     public void setPixleeCredentials() {
@@ -118,7 +101,13 @@ public class ImageUploaderFragment extends BaseFragment {
     }
 
     private void setClickListeners() {
-        bt_start.setOnClickListener(new View.OnClickListener() {
+        bt_link.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uploadLink();
+            }
+        });
+        bt_file.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setupExternalStoragePermission();
@@ -126,10 +115,33 @@ public class ImageUploaderFragment extends BaseFragment {
         });
     }
 
-    void uploadImage(String filePath) {
+    private void uploadLink() {
+        // Sample: Upload an image by a link
+        setUploadingUI(true);
+        album.uploadImage(
+                "Waikiki",
+                "sungjun.app@gmail.com",
+                "jun",
+                "https://radiokorea.com/images/news/2019/06/10/316856/1.jpg",
+                true,
+                new PXLBaseAlbum.RequestHandlers<MediaResult>() {
+                    @Override
+                    public void onComplete(MediaResult result) {
+                        showMessage("Upload Success: " + result);
+                        setUploadingUI(false);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        tv_status.setText(error);
+                        setUploadingUI(false);
+                    }
+                });
+    }
+
+    private void uploadFile(String filePath) {
         showMessage("Uploading  " + filePath);
-        v_progress.setVisibility(View.VISIBLE);
-        bt_start.setEnabled(false);
+        setUploadingUI(true);
         album.uploadLocalImage(
                 "hong photo2",
                 "sungjun@pixleeteam.com",
@@ -140,17 +152,21 @@ public class ImageUploaderFragment extends BaseFragment {
                     @Override
                     public void onComplete(MediaResult result) {
                         showMessage("Uploading Succeeded: " + result);
-                        v_progress.setVisibility(View.GONE);
-                        bt_start.setEnabled(true);
+                        setUploadingUI(false);
                     }
 
                     @Override
                     public void onError(String error) {
                         tv_status.setText(error);
-                        v_progress.setVisibility(View.GONE);
-                        bt_start.setEnabled(true);
+                        setUploadingUI(false);
                     }
                 });
+    }
+
+    private void setUploadingUI(boolean enabled) {
+        bt_file.setEnabled(!enabled);
+        bt_link.setEnabled(!enabled);
+        v_progress.setVisibility(enabled ? View.VISIBLE: View.GONE );
     }
 
     private void showMessage(String message) {
@@ -191,7 +207,7 @@ public class ImageUploaderFragment extends BaseFragment {
                     cursor.moveToFirst();
 
                     String filePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
-                    uploadImage(filePath);
+                    uploadFile(filePath);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -218,15 +234,14 @@ public class ImageUploaderFragment extends BaseFragment {
     }
 
     /**
-     *
      * Put any random number for reqStorage in ActivityCompat.requestPermissions
      * Example:
-     *        ActivityCompat.requestPermissions(
-     *          getActivity(),
-     *          new String[]{permission},
-     *          reqStorage
-     *        );
-     *
+     * ActivityCompat.requestPermissions(
+     * getActivity(),
+     * new String[]{permission},
+     * reqStorage
+     * );
+     * <p>
      * Try to filter requestCode with the same number inside onRequestPermissionsResult(int requestCode).
      * This will aloow you to receive the result about permission
      */

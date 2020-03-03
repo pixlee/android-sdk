@@ -11,11 +11,28 @@
         android:orientation="vertical"
         android:padding="25dp">
 
+
         <com.google.android.material.button.MaterialButton
             style="@style/NextButtonDefault"
-            android:id="@+id/bt_start"
+            android:id="@+id/bt_link"
             android:layout_marginTop="10dp"
-            android:text="Get file -> Upload it"
+            android:text="Upload a link"
+            android:textSize="14sp"
+            android:layout_marginBottom="20dp"
+            app:cornerRadius="10dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="↓ added since ver 1.3.0"
+            android:textColor="@android:color/black"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+        <com.google.android.material.button.MaterialButton
+            style="@style/NextButtonDefault"
+            android:id="@+id/bt_file"
+            android:layout_marginTop="10dp"
+            android:text="Upload a file"
             android:textSize="14sp"
             app:cornerRadius="10dp"
             />

@@ -159,7 +159,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         // fo.inStockOnly = false;
 
         PXLAlbumSortOptions so = new PXLAlbumSortOptions();
-        so.sortType = PXLAlbumSortType.RECENCY;
+        so.sortType = PXLAlbumSortType.APPROVED_TIME;
         so.descending = true;
         album.setPerPage(20);
         album.setFilterOptions(fo);
