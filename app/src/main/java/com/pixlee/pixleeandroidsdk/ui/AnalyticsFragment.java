@@ -181,6 +181,8 @@ public class AnalyticsFragment extends BaseFragment {
             public void onClick(View view) {
                 showMessage("addToCart()");
                 analytics.addToCart(BuildConfig.PIXLEE_SKU, "12000", 3);
+
+                // Alternative: analytics.addToCart(BuildConfig.PIXLEE_SKU, "13000",2, "AUD");
             }
         });
 
