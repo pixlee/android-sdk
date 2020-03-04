@@ -1,6 +1,7 @@
 package com.pixlee.pixleeandroidsdk.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.R;
+import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAnalytics;
 import com.pixlee.pixleesdk.PXLBaseAlbum;
 import com.pixlee.pixleesdk.PXLClient;
@@ -41,6 +43,9 @@ public class AnalyticsFragment extends BaseFragment {
 
     @BindView(R.id.bt_open_widget)
     View bt_open_widget;
+
+    @BindView(R.id.bt_widget_visible)
+    View bt_widget_visible;
 
     @BindView(R.id.bt_load_more)
     View bt_load_more;
@@ -78,14 +83,13 @@ public class AnalyticsFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
 
         // UI Settings
-        v_progress.setVisibility(View.VISIBLE);
-        enableAlbumButtons(false);
         setClickListeners();
 
         // Pixlee Settings
         setPixleeCredentials();
-        initPixleeAlbum();
         initPixleeAnalytics();
+        initPixleeAlbum();
+        loadPixleeAlbum();
     }
 
     private void setPixleeCredentials() {
@@ -95,8 +99,13 @@ public class AnalyticsFragment extends BaseFragment {
     private void initPixleeAlbum() {
         PXLClient client = PXLClient.getInstance(getContext());
         album = new PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client);
-        // Alternative: album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
+        // Alternative:
+        // album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
+    }
 
+    private void loadPixleeAlbum() {
+        v_progress.setVisibility(View.VISIBLE);
+        enableAlbumButtons(false);
         album.loadNextPageOfPhotos(new PXLBaseAlbum.RequestHandlers<ArrayList<PXLPhoto>>() {
             @Override
             public void onComplete(ArrayList<PXLPhoto> result) {
@@ -124,10 +133,18 @@ public class AnalyticsFragment extends BaseFragment {
         bt_open_widget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showMessage("openWidget(..)");
-
+                showMessage("openedWidget(..)");
                 album.openedWidget(PXLWidgetType.photowall);
                 // Alternative: album.openedWidget("<Customized name>");
+            }
+        });
+
+        bt_widget_visible.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showMessage("widgetVisible(..)");
+                album.widgetVisible(PXLWidgetType.photowall);
+                // Alternative: album.widgetVisible("<Customized name>");
             }
         });
 
@@ -204,6 +221,12 @@ public class AnalyticsFragment extends BaseFragment {
     }
 
     private void enableAlbumButtons(boolean enabled) {
+        // This conditional means that you can use openWidget() and widgetVisible() on PXLPdpAlbum after receiving album data by firing loadNextPageOfPhotos() is successfully done.
+        if(album instanceof PXLPdpAlbum){
+            bt_open_widget.setEnabled(enabled);
+            bt_widget_visible.setEnabled(enabled);
+        }
+
         bt_load_more.setEnabled(enabled);
         bt_opened_lightbox.setEnabled(enabled);
         bt_action_clicked.setEnabled(enabled);

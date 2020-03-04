@@ -460,15 +460,52 @@ public abstract class PXLBaseAlbum {
                 });
     }
 
-    /***
-     * Analytics methods
+    /**
+     * widgetVisible Analytics
+     * @param widgetType: PXLWidgetType enum class
+     * @return true: api called, false: cannot use this. please see the LogCat
      */
+    public boolean widgetVisible(PXLWidgetType widgetType) {
+        return widgetVisible(widgetType.getType());
+    }
 
+    /**
+     * openedWiwidgetVisibledget Analytics
+     * @param widgetType: String
+     * @return true: api called, false: cannot use this. please see the LogCat
+     */
+    public boolean widgetVisible(String widgetType) {
+        return fireWidgetCall("events/widgetVisible", widgetType);
+    }
+
+    /**
+     * openedWidget Analytics
+     * @param widgetType: PXLWidgetType enum class
+     * @return true: api called, false: cannot use this. please see the LogCat
+     */
     public boolean openedWidget(PXLWidgetType widgetType) {
         return openedWidget(widgetType.getType());
     }
 
+    /**
+     * openedWidget Analytics
+     * @param widgetType: String
+     * @return true: api called, false: cannot use this. please see the LogCat
+     */
     public boolean openedWidget(String widgetType) {
+        return fireWidgetCall("events/openedWidget", widgetType);
+    }
+
+    private boolean fireWidgetCall(String requestPath, String widgetType){
+        if (album_id == null) {
+            Log.w(
+                    TAG,
+                    "missing album id. " +
+                            "When using PXLAlbum, you need to set album_id or when using PXLPdpAlbum, you should use loadNextPageOfPhotos() and get 200(http code) from the api so that this object will receive album_id from it"
+            );
+            return false;
+        }
+
         JSONObject body = new JSONObject();
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < this.photos.size(); i++) {
@@ -494,7 +531,7 @@ public abstract class PXLBaseAlbum {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/openedWidget", body)
+        analyticsRepo.makeAnalyticsCall(requestPath, body)
                 .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -506,6 +543,7 @@ public abstract class PXLBaseAlbum {
 
                     }
                 });
+
         return true;
     }
 
