@@ -470,7 +470,7 @@ public abstract class PXLBaseAlbum {
     }
 
     /**
-     * openedWiwidgetVisibledget Analytics
+     * widgetVisible Analytics
      * @param widgetType: String
      * @return true: api called, false: cannot use this. please see the LogCat
      */
