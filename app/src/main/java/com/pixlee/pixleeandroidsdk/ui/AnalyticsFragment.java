@@ -283,8 +283,8 @@ public class AnalyticsFragment extends BaseFragment {
                         if (!widgetVisible) {
                             String message2 = "visibleWidget " +
                                     (album.widgetVisible(PXLWidgetType.photowall) ? "success" : "failed");
-                            addWidgetStaus(false, "visibleWidget ");
-                            showToast(message + "!!");
+                            addWidgetStaus(false, message2);
+                            showToast(message2 + "!!");
                             widgetVisible = true;
                         }
                         if (!v_widget.getLocalVisibleRect(scrollBounds)
