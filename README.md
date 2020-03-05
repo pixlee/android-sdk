@@ -31,7 +31,8 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
 
 - To help you get up and running quickly, we've also built an sample application featuring a grid view, list view, and detail view.  The adapters simply maintain an ArrayList of PXLBaseAlbum, which is updated via calls to `loadNextPageOfPhotos`.  Since the data source contains the full PXLPhoto object, you can easily customize your own widgets to display the desired images and text.  The sample also implements a scroll listener which times calls to `loadNextPageOfPhotos` to provide the endless scroll effect. 
 An example of the proper usage of an opened lightbox event is also included in the sample app!
-<img src="doc/img/demo_1_main.jpg" width="24%"> <img src="doc/img/demo_2_album.jpg" width="24%"> <img src="doc/img/demo_3_uploader.jpg" width="24%"> <img src="doc/img/demo_4_analytics.jpg" width="24%">
+<img src="doc/img/demo_1_main.jpg" width="24%"> <img src="doc/img/demo_2_album.jpg" width="24%"> <img src="doc/img/demo_3_uploader.jpg" width="24%"> 
+<img src="doc/img/demo_4_analytics.jpg" width="24%"> <img src="doc/img/demo_5_analytics.jpg" width="24%">
 
 1. Import this project into Android Studio
 2. Open .gitignore at the root of the project folder and Add 'pixleekey.properties' to the file 
@@ -195,17 +196,37 @@ photo.getUrlForSize(PXLPhotoSize.THUMBNAIL)
 ```
     
 ## Album Analytics
-#### Opened Widget
-- To fire an opened widget event, simply call the `openedWidget` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from the first call of the `loadNextPageOfPhotos` method, and an "Opened Widget" event will be fired containing all of the necessary analytics information.
-See the onComplete function in GalleryFragment.java for an example.
 
-    ```
-    #!java
+
+#### Opened Widget & Widget Visible
+Be aware of the difference between **Opened Widget** and **Widget Visible**. (Need a sample code. Check the demo app in the project)
+
+There is an order of firing these two APIs.
+1. **Opened Widget**: You should fire this when firing the api is done and loading the photo data into your own view for the widget is complete.
+2. **Widget Visible**: **Opened Widget** should be fired first. Then, you can fire this when your own view for the widget started to be visible on the screen.
+
+- ##### Opened Widget
+    - To fire this event, simply call the `openedWidget` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from the first call of the `loadNextPageOfPhotos` method, and an "Opened Widget" event will be fired containing all of the necessary analytics information.
+    See the onComplete function in GalleryFragment.java for an example.
     
-    album.openedWidget(PXLWidgetType.photowall);
-    album.openedWidget(PXLWidgetType.horizontal);
-    album.openedWidget("<Customized name>"); 
-    ```
+        ```
+        #!java
+        
+        album.openedWidget(PXLWidgetType.photowall);
+        album.openedWidget(PXLWidgetType.horizontal);
+        album.openedWidget("<Customized name>"); 
+        ```
+    
+- #### Widget Visible
+    - To fire this event, simply call the `widgetVisible` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from the first call of the `loadNextPageOfPhotos` method, and an "Widget Visible" event will be fired containing all of the necessary analytics information.
+
+        ```
+        #!java
+        
+        album.widgetVisible(PXLWidgetType.photowall);
+        album.widgetVisible(PXLWidgetType.horizontal);
+        album.widgetVisible("<Customized name>"); 
+        ```
 
 #### Load More
 - To fire a load more event, simply call the `loadMore` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from calls via the 'loadNextPageOfPhotos' method, a "Load More" analytics event will be fired containing all of the necessary analytics information.

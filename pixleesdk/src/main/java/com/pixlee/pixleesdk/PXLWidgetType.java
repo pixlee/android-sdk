@@ -3,7 +3,7 @@ package com.pixlee.pixleesdk;
 import androidx.annotation.NonNull;
 
 /**
- * This is for widget type for Action Click Analytics
+ * This is for widget type for Widget Open/Visible Analytics
  * Created by sungjun on 2020-02-05.
  */
 public enum PXLWidgetType {
