@@ -31,4 +31,13 @@
     <string name="upload_failure_message">Failed</string>
     <string name="storage_permission_for_uploading">\'Storage\' permission is needed to upload a photo in the app setting</string>
     <string name="button_setting">Setting</string>
+
+    <string name="guide_widget">
+        This example demonstrates when you have to fire \'Opened Widget\' and \'Widget Visible\'.\n\n
+        Be aware of the difference between \'Opened Widget\' and \'Widget Visible\'.\n\n
+        \'Opened Widget\': You should fire this when firing the api is done and loading the photo data into your own view for the widget is complete.\n\n
+        \'Widget Visible\': \'Opened Widget\' should be fired first. Then, you can fire this when your own view for the widget started to be visible on the screen.
+    </string>
+
+
 </resources>

@@ -1,12 +1,16 @@
 package com.pixlee.pixleeandroidsdk.ui;
 
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 
 import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.R;
@@ -39,8 +43,14 @@ public class AnalyticsFragment extends BaseFragment {
     @BindView(R.id.tv_status)
     TextView tv_status;
 
+    @BindView(R.id.bt_widget_example)
+    View bt_widget_example;
+
     @BindView(R.id.bt_open_widget)
     View bt_open_widget;
+
+    @BindView(R.id.bt_widget_visible)
+    View bt_widget_visible;
 
     @BindView(R.id.bt_load_more)
     View bt_load_more;
@@ -57,9 +67,37 @@ public class AnalyticsFragment extends BaseFragment {
     @BindView(R.id.bt_conversion)
     View bt_conversion;
 
+    @BindView(R.id.v_widget_box)
+    View v_widget_box;
+
+    @BindView(R.id.v_widget)
+    View v_widget;
+
+    @BindView(R.id.tv_msg1)
+    TextView tv_msg1;
+
+    @BindView(R.id.tv_msg2)
+    TextView tv_msg2;
+
+    @BindView(R.id.tv_widget_status)
+    TextView tv_widget_status;
+
+    @BindView(R.id.scroll_widget)
+    NestedScrollView scroll_widget;
+
     PXLBaseAlbum album;
     PXLAnalytics analytics;
     ArrayList<PXLPhoto> photos = new ArrayList<>();
+
+    @Override
+    public boolean isBackInUse() {
+        if (v_widget_box != null && v_widget_box.isShown()) {
+            closeWidget();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,14 +116,14 @@ public class AnalyticsFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
 
         // UI Settings
-        v_progress.setVisibility(View.VISIBLE);
-        enableAlbumButtons(false);
         setClickListeners();
+        setScrollView();
 
         // Pixlee Settings
         setPixleeCredentials();
-        initPixleeAlbum();
         initPixleeAnalytics();
+        initPixleeAlbum();
+        loadPixleeAlbum();
     }
 
     private void setPixleeCredentials() {
@@ -96,7 +134,11 @@ public class AnalyticsFragment extends BaseFragment {
         PXLClient client = PXLClient.getInstance(getContext());
         album = new PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client);
         // Alternative: album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
+    }
 
+    private void loadPixleeAlbum() {
+        v_progress.setVisibility(View.VISIBLE);
+        enableAlbumButtons(false);
         album.loadNextPageOfPhotos(new PXLBaseAlbum.RequestHandlers<ArrayList<PXLPhoto>>() {
             @Override
             public void onComplete(ArrayList<PXLPhoto> result) {
@@ -121,13 +163,28 @@ public class AnalyticsFragment extends BaseFragment {
     }
 
     private void setClickListeners() {
+        bt_widget_example.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openWidget();
+            }
+        });
+
         bt_open_widget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showMessage("openWidget(..)");
-
+                showMessage("openedWidget(..)");
                 album.openedWidget(PXLWidgetType.photowall);
                 // Alternative: album.openedWidget("<Customized name>");
+            }
+        });
+
+        bt_widget_visible.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showMessage("widgetVisible(..)");
+                album.widgetVisible(PXLWidgetType.photowall);
+                // Alternative: album.widgetVisible("<Customized name>");
             }
         });
 
@@ -203,7 +260,88 @@ public class AnalyticsFragment extends BaseFragment {
         });
     }
 
+    StringBuilder widgetStatus;
+    boolean widgetVisible = false;
+
+    void openWidget() {
+        v_widget_box.setVisibility(View.VISIBLE);
+        String message = "openedWidget " +
+                (album.openedWidget(PXLWidgetType.photowall) ? "success" : "failed");
+        addWidgetStaus(true, message);
+
+        showToast(message + "!!\n\nScroll down to fire Widget Visible");
+        widgetVisible = false;
+        final Rect scrollBounds = new Rect();
+        scroll_widget.getHitRect(scrollBounds);
+        scroll_widget.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (v_widget != null) {
+
+                    if (v_widget.getLocalVisibleRect(scrollBounds)) {
+
+                        if (!widgetVisible) {
+                            String message2 = "visibleWidget " +
+                                    (album.widgetVisible(PXLWidgetType.photowall) ? "success" : "failed");
+                            addWidgetStaus(false, "visibleWidget ");
+                            showToast(message + "!!");
+                            widgetVisible = true;
+                        }
+                        if (!v_widget.getLocalVisibleRect(scrollBounds)
+                                || scrollBounds.height() < v_widget.getHeight()) {
+                            Log.i("PXLAnalytics", "BTN APPEAR PARCIALY");
+                        } else {
+                            Log.i("PXLAnalytics", "BTN APPEAR FULLY!!!");
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    void closeWidget() {
+        scroll_widget.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+            }
+        });
+        scroll_widget.fullScroll(ScrollView.FOCUS_UP);
+        v_widget_box.setVisibility(View.GONE);
+    }
+
+    void addWidgetStaus(boolean clearHistory, String message) {
+        if (widgetStatus == null || clearHistory)
+            widgetStatus = new StringBuilder();
+
+        widgetStatus.append("- " + message).append("\n");
+        tv_widget_status.setText(widgetStatus.toString());
+    }
+
+    void setScrollView() {
+        tv_msg1.setText(getListMsg("Before Widget Visible", false));
+        tv_msg2.setText(getListMsg("After Widget Visible", true));
+    }
+
+    String getListMsg(String text, boolean isASC) {
+        StringBuilder sb = new StringBuilder();
+        if (isASC) {
+            for (int i = 1; i <= 100; i++)
+                sb.append("----- " + text + " " + String.format("%03d", i) + " ----\n");
+        } else {
+            for (int i = 100; i > 0; i--)
+                sb.append("----- " + text + " " + String.format("%03d", i) + " ----\n");
+        }
+        return sb.toString();
+    }
+
     private void enableAlbumButtons(boolean enabled) {
+        // This conditional means that you can use openWidget() and widgetVisible() on PXLPdpAlbum after receiving album data by firing loadNextPageOfPhotos() is successfully done.
+        if (album instanceof PXLPdpAlbum) {
+            bt_open_widget.setEnabled(enabled);
+            bt_widget_visible.setEnabled(enabled);
+            bt_widget_example.setEnabled(enabled);
+        }
+
         bt_load_more.setEnabled(enabled);
         bt_opened_lightbox.setEnabled(enabled);
         bt_action_clicked.setEnabled(enabled);

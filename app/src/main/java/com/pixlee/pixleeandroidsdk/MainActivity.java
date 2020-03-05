@@ -90,6 +90,11 @@ public class MainActivity extends BaseActivity {
     public void onBackPressed() {
         try {
             int fragmentStackSize = getSupportFragmentManager().getBackStackEntryCount();
+            BaseFragment baseFragment = getCurrentFragment();
+            if (baseFragment != null && baseFragment.isBackInUse()) {
+                return;
+            }
+
             if (fragmentStackSize <= 1) {
                 finish();
             }

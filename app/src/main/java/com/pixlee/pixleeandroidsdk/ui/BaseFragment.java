@@ -16,6 +16,10 @@ abstract public class BaseFragment extends Fragment {
     //this is to display a title in Toolbar
     public abstract int getTitleResource();
 
+    public boolean isBackInUse(){
+        return false;
+    }
+
     //this is to display a a custom title in Toolbar. This has a higher priority over getTitleResource()
     public String getCustomTitle() {
         return null;
