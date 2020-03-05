@@ -265,11 +265,11 @@ public class AnalyticsFragment extends BaseFragment {
 
     void openWidget() {
         v_widget_box.setVisibility(View.VISIBLE);
-        String message = "openedWidget " +
+        String openedWidgetStatus = "openedWidget " +
                 (album.openedWidget(PXLWidgetType.photowall) ? "success" : "failed");
-        addWidgetStaus(true, message);
+        addWidgetStaus(true, openedWidgetStatus);
 
-        showToast(message + "!!\n\nScroll down to fire Widget Visible");
+        showToast(openedWidgetStatus + "!!\n\nScroll down to fire Widget Visible");
         widgetVisible = false;
         final Rect scrollBounds = new Rect();
         scroll_widget.getHitRect(scrollBounds);
@@ -277,16 +277,15 @@ public class AnalyticsFragment extends BaseFragment {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 if (v_widget != null) {
-
                     if (v_widget.getLocalVisibleRect(scrollBounds)) {
-
                         if (!widgetVisible) {
-                            String message2 = "visibleWidget " +
+                            String widgetVisibleStatus = "widgetVisible " +
                                     (album.widgetVisible(PXLWidgetType.photowall) ? "success" : "failed");
-                            addWidgetStaus(false, message2);
-                            showToast(message2 + "!!");
+                            addWidgetStaus(false, widgetVisibleStatus);
+                            showToast(widgetVisibleStatus + "!!");
                             widgetVisible = true;
                         }
+
                         if (!v_widget.getLocalVisibleRect(scrollBounds)
                                 || scrollBounds.height() < v_widget.getHeight()) {
                             Log.i("PXLAnalytics", "BTN APPEAR PARCIALY");
