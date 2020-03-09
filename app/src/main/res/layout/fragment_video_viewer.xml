@@ -12,7 +12,7 @@
         android:layout_height="match_parent"/>
 
     <TextView
-        android:id="@+id/tv_time"
+        android:id="@+id/tvTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
@@ -21,7 +21,7 @@
         tools:text="00:10"
         android:padding="10dp"/>
     <ProgressBar
-        android:id="@+id/v_loading"
+        android:id="@+id/vLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

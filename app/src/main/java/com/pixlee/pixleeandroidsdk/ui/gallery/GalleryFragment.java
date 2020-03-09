@@ -5,8 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ViewSwitcher;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -14,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.R;
+import com.pixlee.pixleeandroidsdk.databinding.FragmentGalleryBinding;
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleeandroidsdk.ui.viewer.ImageViewerFragment;
 import com.pixlee.pixleeandroidsdk.ui.viewer.VideoViewerFragment;
@@ -29,9 +28,6 @@ import com.pixlee.pixleesdk.PXLWidgetType;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * This shows how you can load photos of Pixlee using PXLAlbum.java
  */
@@ -46,17 +42,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
 
     private int lastImg = R.drawable.grid_2x;
 
-    @BindView(R.id.viewSwitcher1)
-    ViewSwitcher viewSwitcher;
-
-    @BindView(R.id.gridToggle)
-    ImageView gridToggleButton;
-
-    @BindView(R.id.imagegallery)
-    RecyclerView gridView;
-
-    @BindView(R.id.imagelist)
-    RecyclerView listView;
+    FragmentGalleryBinding binding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,25 +51,25 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_gallery, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentGalleryBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
         return view;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        gridToggleButton.setImageResource(lastImg);
-        gridToggleButton.setOnClickListener(new View.OnClickListener() {
+        binding.gridToggleButton.setImageResource(lastImg);
+        binding.gridToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewSwitcher.showNext();
+                binding.viewSwitcher.showNext();
                 if (lastImg == R.drawable.grid_2x) {
                     lastImg = R.drawable.column_2x;
                 } else {
                     lastImg = R.drawable.grid_2x;
                 }
-                gridToggleButton.setImageResource(lastImg);
+                binding.gridToggleButton.setImageResource(lastImg);
             }
         });
 
@@ -167,13 +153,13 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
     }
 
     private void configureViews() {
-        gridView.setHasFixedSize(true);
-        listView.setHasFixedSize(true);
+        binding.gridView.setHasFixedSize(true);
+        binding.listView.setHasFixedSize(true);
 
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(getContext().getApplicationContext(), 2);
         RecyclerView.LayoutManager listLayoutManager = new GridLayoutManager(getContext().getApplicationContext(), 1);
-        gridView.setLayoutManager(gridLayoutManager);
-        listView.setLayoutManager(listLayoutManager);
+        binding.gridView.setLayoutManager(gridLayoutManager);
+        binding.listView.setLayoutManager(listLayoutManager);
 
         GalleryClickListener li = new GalleryClickListener() {
             @Override
@@ -184,8 +170,8 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
 
         GridAdapter gridAdapter = new GridAdapter(getContext().getApplicationContext(), photoList, li);
         ListAdapter listAdapter = new ListAdapter(getContext().getApplicationContext(), photoList, li);
-        gridView.setAdapter(gridAdapter);
-        listView.setAdapter(listAdapter);
+        binding.gridView.setAdapter(gridAdapter);
+        binding.listView.setAdapter(listAdapter);
 
         RecyclerViewEndlessScrollListener gridScrollListener = new RecyclerViewEndlessScrollListener(gridLayoutManager) {
             @Override
@@ -200,8 +186,8 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
             }
         };
 
-        gridView.addOnScrollListener(gridScrollListener);
-        listView.addOnScrollListener(listScrollListener);
+        binding.gridView.addOnScrollListener(gridScrollListener);
+        binding.listView.addOnScrollListener(listScrollListener);
     }
 
     /**
@@ -270,8 +256,8 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
 
         this.photoList.clear();
         this.photoList.addAll(photos);
-        gridView.getAdapter().notifyDataSetChanged();
-        listView.getAdapter().notifyDataSetChanged();
+        binding.gridView.getAdapter().notifyDataSetChanged();
+        binding.listView.getAdapter().notifyDataSetChanged();
 
         if(photos.size()>0){
             samplePhotoLoad(photos.get(0));

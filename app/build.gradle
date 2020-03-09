@@ -14,6 +14,9 @@ android {
         buildConfigField "String", "PIXLEE_ALBUM_ID", "\"" + PIXLEE_ALBUM_ID + "\""
         buildConfigField "String", "PIXLEE_SKU", "\"" + PIXLEE_SKU + "\""
     }
+    viewBinding {
+        enabled = true
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -63,10 +66,5 @@ dependencies {
     implementation "com.github.bumptech.glide:annotations:$glide"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide"
 
-    /**
-     * Butter Knife
-     * This is not to use View.findViewById() every time
-     */
-    implementation 'com.jakewharton:butterknife:10.2.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+    annotationProcessor 'androidx.annotation:annotation:1.1.0'
 }

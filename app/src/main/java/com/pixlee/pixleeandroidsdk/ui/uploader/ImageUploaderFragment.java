@@ -14,7 +14,6 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +22,7 @@ import androidx.core.content.ContextCompat;
 
 import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.R;
+import com.pixlee.pixleeandroidsdk.databinding.FragmentImageUploaderBinding;
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLBaseAlbum;
@@ -31,9 +31,6 @@ import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.data.MediaResult;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static android.view.View.GONE;
 
@@ -47,18 +44,7 @@ public class ImageUploaderFragment extends BaseFragment {
         return R.string.title_upload_image;
     }
 
-    @BindView(R.id.bt_link)
-    View bt_link;
-
-    @BindView(R.id.bt_file)
-    View bt_file;
-
-    @BindView(R.id.v_progress)
-    View v_progress;
-
-    @BindView(R.id.tv_status)
-    TextView tv_status;
-
+    FragmentImageUploaderBinding binding;
 
     PXLAlbum album;
     ArrayList<PXLPhoto> photos = new ArrayList<>();
@@ -70,8 +56,8 @@ public class ImageUploaderFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_image_uploader, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentImageUploaderBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
         return view;
     }
 
@@ -80,8 +66,8 @@ public class ImageUploaderFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
 
         // UI Settings
-        tv_status.setText("Ready");
-        v_progress.setVisibility(GONE);
+        binding.tvStatus.setText("Ready");
+        binding.vProgress.setVisibility(GONE);
         setClickListeners();
 
         // Pixlee Settings
@@ -101,13 +87,13 @@ public class ImageUploaderFragment extends BaseFragment {
     }
 
     private void setClickListeners() {
-        bt_link.setOnClickListener(new View.OnClickListener() {
+        binding.btLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 uploadLink();
             }
         });
-        bt_file.setOnClickListener(new View.OnClickListener() {
+        binding.btFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setupExternalStoragePermission();
@@ -133,7 +119,7 @@ public class ImageUploaderFragment extends BaseFragment {
 
                     @Override
                     public void onError(String error) {
-                        tv_status.setText(error);
+                        binding.tvStatus.setText(error);
                         setUploadingUI(false);
                     }
                 });
@@ -158,20 +144,20 @@ public class ImageUploaderFragment extends BaseFragment {
 
                     @Override
                     public void onError(String error) {
-                        tv_status.setText(error);
+                        binding.tvStatus.setText(error);
                         setUploadingUI(false);
                     }
                 });
     }
 
     private void setUploadingUI(boolean enabled) {
-        bt_file.setEnabled(!enabled);
-        bt_link.setEnabled(!enabled);
-        v_progress.setVisibility(enabled ? View.VISIBLE: View.GONE );
+        binding.btFile.setEnabled(!enabled);
+        binding.btLink.setEnabled(!enabled);
+        binding.vProgress.setVisibility(enabled ? View.VISIBLE: View.GONE );
     }
 
     private void showMessage(String message) {
-        tv_status.setText(message);
+        binding.tvStatus.setText(message);
         showToast(message);
     }
 

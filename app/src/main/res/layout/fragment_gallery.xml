@@ -11,13 +11,13 @@
         <!-- navigation -->
 
         <ImageView
-            android:id="@+id/gridToggle"
+            android:id="@+id/gridToggleButton"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_gravity="right" />
 
         <ViewSwitcher
-            android:id="@+id/viewSwitcher1"
+            android:id="@+id/viewSwitcher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/imagegallery"
+                    android:id="@+id/gridView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#cc0100cc"
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/imagelist"
+                    android:id="@+id/listView"
                     tools:layout_editor_absoluteX="8dp"
                     tools:layout_editor_absoluteY="8dp"
                     android:layout_width="fill_parent"
