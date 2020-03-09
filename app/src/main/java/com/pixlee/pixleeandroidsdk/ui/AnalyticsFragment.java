@@ -7,13 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 
 import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.R;
+import com.pixlee.pixleeandroidsdk.databinding.FragmentAnalyticsBinding;
 import com.pixlee.pixleesdk.PXLAnalytics;
 import com.pixlee.pixleesdk.PXLBaseAlbum;
 import com.pixlee.pixleesdk.PXLClient;
@@ -23,9 +23,6 @@ import com.pixlee.pixleesdk.PXLWidgetType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * This shows how you can fire all analytics of Pixlee.
@@ -37,53 +34,7 @@ public class AnalyticsFragment extends BaseFragment {
         return R.string.title_analytics;
     }
 
-    @BindView(R.id.v_progress)
-    View v_progress;
-
-    @BindView(R.id.tv_status)
-    TextView tv_status;
-
-    @BindView(R.id.bt_widget_example)
-    View bt_widget_example;
-
-    @BindView(R.id.bt_open_widget)
-    View bt_open_widget;
-
-    @BindView(R.id.bt_widget_visible)
-    View bt_widget_visible;
-
-    @BindView(R.id.bt_load_more)
-    View bt_load_more;
-
-    @BindView(R.id.bt_opened_lightbox)
-    View bt_opened_lightbox;
-
-    @BindView(R.id.bt_action_clicked)
-    View bt_action_clicked;
-
-    @BindView(R.id.bt_add_to_cart)
-    View bt_add_to_cart;
-
-    @BindView(R.id.bt_conversion)
-    View bt_conversion;
-
-    @BindView(R.id.v_widget_box)
-    View v_widget_box;
-
-    @BindView(R.id.v_widget)
-    View v_widget;
-
-    @BindView(R.id.tv_msg1)
-    TextView tv_msg1;
-
-    @BindView(R.id.tv_msg2)
-    TextView tv_msg2;
-
-    @BindView(R.id.tv_widget_status)
-    TextView tv_widget_status;
-
-    @BindView(R.id.scroll_widget)
-    NestedScrollView scroll_widget;
+    FragmentAnalyticsBinding binding;
 
     PXLBaseAlbum album;
     PXLAnalytics analytics;
@@ -91,7 +42,7 @@ public class AnalyticsFragment extends BaseFragment {
 
     @Override
     public boolean isBackInUse() {
-        if (v_widget_box != null && v_widget_box.isShown()) {
+        if (binding != null && binding.vWidgetBox.isShown()) {
             closeWidget();
             return true;
         } else {
@@ -106,8 +57,8 @@ public class AnalyticsFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_analytics, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentAnalyticsBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
         return view;
     }
 
@@ -137,24 +88,24 @@ public class AnalyticsFragment extends BaseFragment {
     }
 
     private void loadPixleeAlbum() {
-        v_progress.setVisibility(View.VISIBLE);
+        binding.vProgress.setVisibility(View.VISIBLE);
         enableAlbumButtons(false);
         album.loadNextPageOfPhotos(new PXLBaseAlbum.RequestHandlers<ArrayList<PXLPhoto>>() {
             @Override
             public void onComplete(ArrayList<PXLPhoto> result) {
                 photos.addAll(result);
-                tv_status.setText(R.string.album_loading_complete);
+                binding.tvStatus.setText(R.string.album_loading_complete);
                 enableAlbumButtons(true);
-                v_progress.setVisibility(View.INVISIBLE);
+                binding.vProgress.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onError(String error) {
-                tv_status.setText(getString(R.string.album_loading_failed, error));
-                v_progress.setVisibility(View.INVISIBLE);
+                binding.tvStatus.setText(getString(R.string.album_loading_failed, error));
+                binding.vProgress.setVisibility(View.INVISIBLE);
             }
         });
-        tv_status.setText(R.string.album_loading_ing);
+        binding.tvStatus.setText(R.string.album_loading_ing);
     }
 
     private void initPixleeAnalytics() {
@@ -163,14 +114,14 @@ public class AnalyticsFragment extends BaseFragment {
     }
 
     private void setClickListeners() {
-        bt_widget_example.setOnClickListener(new View.OnClickListener() {
+        binding.btWidgetExample.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openWidget();
             }
         });
 
-        bt_open_widget.setOnClickListener(new View.OnClickListener() {
+        binding.btOpenWidget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showMessage("openedWidget(..)");
@@ -179,7 +130,7 @@ public class AnalyticsFragment extends BaseFragment {
             }
         });
 
-        bt_widget_visible.setOnClickListener(new View.OnClickListener() {
+        binding.btWidgetVisible.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showMessage("widgetVisible(..)");
@@ -188,10 +139,10 @@ public class AnalyticsFragment extends BaseFragment {
             }
         });
 
-        bt_load_more.setOnClickListener(new View.OnClickListener() {
+        binding.btLoadMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tv_status.setText("Load More...");
+                binding.tvStatus.setText("Load More...");
                 album.loadNextPageOfPhotos(new PXLBaseAlbum.RequestHandlers<ArrayList<PXLPhoto>>() {
                     @Override
                     public void onComplete(ArrayList<PXLPhoto> result) {
@@ -202,20 +153,20 @@ public class AnalyticsFragment extends BaseFragment {
                         album.loadMore();
 
                         photos.addAll(result);
-                        tv_status.setText(R.string.album_loading_complete);
+                        binding.tvStatus.setText(R.string.album_loading_complete);
                     }
 
                     @Override
                     public void onError(String error) {
                         String msg = getString(R.string.album_loading_failed, error);
                         showToast(msg);
-                        tv_status.setText(msg);
+                        binding.tvStatus.setText(msg);
                     }
                 });
             }
         });
 
-        bt_opened_lightbox.setOnClickListener(new View.OnClickListener() {
+        binding.btOpenedLightbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showMessage("openedLightbox()");
@@ -225,7 +176,7 @@ public class AnalyticsFragment extends BaseFragment {
             }
         });
 
-        bt_action_clicked.setOnClickListener(new View.OnClickListener() {
+        binding.btActionClicked.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showMessage("actionClicked()");
@@ -235,7 +186,7 @@ public class AnalyticsFragment extends BaseFragment {
             }
         });
 
-        bt_add_to_cart.setOnClickListener(new View.OnClickListener() {
+        binding.btAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showMessage("addToCart()");
@@ -245,7 +196,7 @@ public class AnalyticsFragment extends BaseFragment {
             }
         });
 
-        bt_conversion.setOnClickListener(new View.OnClickListener() {
+        binding.btConversion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showMessage("conversion()");
@@ -264,7 +215,7 @@ public class AnalyticsFragment extends BaseFragment {
     boolean widgetVisible = false;
 
     void openWidget() {
-        v_widget_box.setVisibility(View.VISIBLE);
+        binding.vWidgetBox.setVisibility(View.VISIBLE);
         String message = "openedWidget " +
                 (album.openedWidget(PXLWidgetType.photowall) ? "success" : "failed");
         addWidgetStaus(true, message);
@@ -272,13 +223,13 @@ public class AnalyticsFragment extends BaseFragment {
         showToast(message + "!!\n\nScroll down to fire Widget Visible");
         widgetVisible = false;
         final Rect scrollBounds = new Rect();
-        scroll_widget.getHitRect(scrollBounds);
-        scroll_widget.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+        binding.scrollWidget.getHitRect(scrollBounds);
+        binding.scrollWidget.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if (v_widget != null) {
+                if (binding.vWidget != null) {
 
-                    if (v_widget.getLocalVisibleRect(scrollBounds)) {
+                    if (binding.vWidget.getLocalVisibleRect(scrollBounds)) {
 
                         if (!widgetVisible) {
                             String message2 = "visibleWidget " +
@@ -287,8 +238,8 @@ public class AnalyticsFragment extends BaseFragment {
                             showToast(message + "!!");
                             widgetVisible = true;
                         }
-                        if (!v_widget.getLocalVisibleRect(scrollBounds)
-                                || scrollBounds.height() < v_widget.getHeight()) {
+                        if (!binding.vWidget.getLocalVisibleRect(scrollBounds)
+                                || scrollBounds.height() < binding.vWidget.getHeight()) {
                             Log.i("PXLAnalytics", "BTN APPEAR PARCIALY");
                         } else {
                             Log.i("PXLAnalytics", "BTN APPEAR FULLY!!!");
@@ -300,13 +251,13 @@ public class AnalyticsFragment extends BaseFragment {
     }
 
     void closeWidget() {
-        scroll_widget.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+        binding.scrollWidget.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
             }
         });
-        scroll_widget.fullScroll(ScrollView.FOCUS_UP);
-        v_widget_box.setVisibility(View.GONE);
+        binding.scrollWidget.fullScroll(ScrollView.FOCUS_UP);
+        binding.vWidgetBox.setVisibility(View.GONE);
     }
 
     void addWidgetStaus(boolean clearHistory, String message) {
@@ -314,12 +265,12 @@ public class AnalyticsFragment extends BaseFragment {
             widgetStatus = new StringBuilder();
 
         widgetStatus.append("- " + message).append("\n");
-        tv_widget_status.setText(widgetStatus.toString());
+        binding.tvWidgetStatus.setText(widgetStatus.toString());
     }
 
     void setScrollView() {
-        tv_msg1.setText(getListMsg("Before Widget Visible", false));
-        tv_msg2.setText(getListMsg("After Widget Visible", true));
+        binding.tvMsg1.setText(getListMsg("Before Widget Visible", false));
+        binding.tvMsg2.setText(getListMsg("After Widget Visible", true));
     }
 
     String getListMsg(String text, boolean isASC) {
@@ -337,19 +288,19 @@ public class AnalyticsFragment extends BaseFragment {
     private void enableAlbumButtons(boolean enabled) {
         // This conditional means that you can use openWidget() and widgetVisible() on PXLPdpAlbum after receiving album data by firing loadNextPageOfPhotos() is successfully done.
         if (album instanceof PXLPdpAlbum) {
-            bt_open_widget.setEnabled(enabled);
-            bt_widget_visible.setEnabled(enabled);
-            bt_widget_example.setEnabled(enabled);
+            binding.btOpenWidget.setEnabled(enabled);
+            binding.btWidgetVisible.setEnabled(enabled);
+            binding.btWidgetExample.setEnabled(enabled);
         }
 
-        bt_load_more.setEnabled(enabled);
-        bt_opened_lightbox.setEnabled(enabled);
-        bt_action_clicked.setEnabled(enabled);
+        binding.btLoadMore.setEnabled(enabled);
+        binding.btOpenedLightbox.setEnabled(enabled);
+        binding.btActionClicked.setEnabled(enabled);
     }
 
     private void showMessage(String methodName) {
         String message = getString(R.string.xxx_is_called, methodName);
-        tv_status.setText(message);
+        binding.tvStatus.setText(message);
         showToast(message);
     }
 }

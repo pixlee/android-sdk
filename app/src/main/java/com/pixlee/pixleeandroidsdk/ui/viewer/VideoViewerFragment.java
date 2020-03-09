@@ -6,8 +6,6 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,11 +13,9 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 
-import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleeandroidsdk.R;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.pixlee.pixleeandroidsdk.databinding.FragmentVideoViewerBinding;
+import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 
 /**
  * This is a video player
@@ -31,28 +27,21 @@ public class VideoViewerFragment extends BaseFragment {
         return R.string.title_video_viewer;
     }
 
-    @BindView(R.id.videoView)
-    VideoView videoView;
-
-    @BindView(R.id.v_loading)
-    View v_loading;
-
-    @BindView(R.id.tv_time)
-    TextView tv_time;
+    FragmentVideoViewerBinding binding;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_video_viewer, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentVideoViewerBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
         return view;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        binding.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
-                v_loading.setVisibility(View.GONE);
+                binding.vLoading.setVisibility(View.GONE);
                 getViewLifecycleOwner().getLifecycle().addObserver(new LifecycleEventObserver() {
                     @Override
                     public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
@@ -66,8 +55,8 @@ public class VideoViewerFragment extends BaseFragment {
             }
         });
 
-        videoView.setVideoPath(getVideoUrl());
-        videoView.start();
+        binding.videoView.setVideoPath(getVideoUrl());
+        binding.videoView.start();
     }
 
     Handler handler = new Handler();
@@ -75,16 +64,16 @@ public class VideoViewerFragment extends BaseFragment {
 
         @Override
         public void run() {
-            boolean started = videoView.isPlaying();
-            if (!started || videoView.isPlaying()) {
+            boolean started = binding.videoView.isPlaying();
+            if (!started || binding.videoView.isPlaying()) {
                 if (!started) {
-                    started = videoView.isPlaying();
+                    started = binding.videoView.isPlaying();
                 }
 
-                tv_time.setText(showMMSS(videoView.getDuration(), videoView.getCurrentPosition()));
+                binding.tvTime.setText(showMMSS(binding.videoView.getDuration(), binding.videoView.getCurrentPosition()));
                 handler.postDelayed(runnableTimer, 1000);
             }else{
-                tv_time.setText(showMMSS(videoView.getDuration(), videoView.getDuration()));
+                binding.tvTime.setText(showMMSS(binding.videoView.getDuration(), binding.videoView.getDuration()));
             }
         }
     };

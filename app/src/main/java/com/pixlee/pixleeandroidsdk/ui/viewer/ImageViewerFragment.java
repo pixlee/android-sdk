@@ -14,12 +14,10 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleeandroidsdk.config.GlideApp;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.pixlee.pixleeandroidsdk.databinding.FragmentImageViewerBinding;
+import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 
 /**
  * This is an image viewer
@@ -31,15 +29,11 @@ public class ImageViewerFragment extends BaseFragment {
         return R.string.title_image_viewer;
     }
 
-    @BindView(R.id.iv)
-    ImageView iv;
-
-    @BindView(R.id.v_loading)
-    View v_loading;
+    FragmentImageViewerBinding binding;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_image_viewer, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentImageViewerBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
         return view;
     }
 
@@ -54,17 +48,17 @@ public class ImageViewerFragment extends BaseFragment {
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        iv.setScaleType(ImageView.ScaleType.CENTER);
+                        binding.imageView.setScaleType(ImageView.ScaleType.CENTER);
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        v_loading.setVisibility(View.GONE);
-                        iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                        binding.vLoading.setVisibility(View.GONE);
+                        binding.imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                         return false;
                     }
-                }).into(iv);
+                }).into(binding.imageView);
     }
 
     private String getImageUrl() {

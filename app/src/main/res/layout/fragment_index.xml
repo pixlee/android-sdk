@@ -15,7 +15,7 @@
             android:orientation="vertical">
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonDefault"
-                android:id="@+id/bt_album"
+                android:id="@+id/btAlbum"
                 android:text="@string/title_album"
                 android:textSize="14sp"
                 app:cornerRadius="10dp"
@@ -23,7 +23,7 @@
 
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonDefault"
-                android:id="@+id/bt_image_uploader"
+                android:id="@+id/btImageUploader"
                 android:text="@string/title_upload_image"
                 android:textSize="14sp"
                 app:cornerRadius="10dp"
@@ -31,7 +31,7 @@
 
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonOutLined"
-                android:id="@+id/bt_analytics"
+                android:id="@+id/btAnalytics"
                 android:text="@string/title_analytics"
                 android:textSize="14sp"
                 app:cornerRadius="10dp"

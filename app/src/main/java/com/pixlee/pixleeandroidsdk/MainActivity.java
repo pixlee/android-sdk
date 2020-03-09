@@ -5,15 +5,12 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.pixlee.pixleeandroidsdk.databinding.ActivityMainBinding;
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleeandroidsdk.ui.IndexFragment;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * This activity only manage Fragments and a Toolbar.
@@ -22,19 +19,18 @@ public class MainActivity extends BaseActivity {
     final String TAG = "MainActivity";
     public int frameLayoutId = R.id.contentFrame;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
 
-        if (toolbar.getNavigationIcon() != null) {
-            toolbar.getNavigationIcon().setColorFilter(
+        if (binding.toolbar.getNavigationIcon() != null) {
+            binding.toolbar.getNavigationIcon().setColorFilter(
                     ContextCompat.getColor(this, R.color.grey_60),
                     PorterDuff.Mode.SRC_ATOP
             );
@@ -70,7 +66,7 @@ public class MainActivity extends BaseActivity {
 
             Log.d(TAG, "fragmentCount: " + fragmentCount);
 
-            setSupportActionBar(toolbar);
+            setSupportActionBar(binding.toolbar);
             ActionBar bar = getSupportActionBar();
             bar.setTitle(title);
             bar.setDisplayHomeAsUpEnabled(fragmentCount > 1);
