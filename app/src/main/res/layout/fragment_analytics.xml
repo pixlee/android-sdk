@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
-                    android:id="@+id/v_button_box1"
+                    android:id="@+id/vButtonBox1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
@@ -42,7 +42,7 @@
                     android:orientation="vertical">
                     <com.google.android.material.button.MaterialButton
                         style="@style/NextButtonOutLined"
-                        android:id="@+id/bt_open_widget"
+                        android:id="@+id/btOpenWidget"
                         android:text="Opened Widget"
                         android:textSize="14sp"
                         app:cornerRadius="10dp"
@@ -50,7 +50,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         style="@style/NextButtonOutLined"
-                        android:id="@+id/bt_widget_visible"
+                        android:id="@+id/btWidgetVisible"
                         android:text="Widget Visible"
                         android:textSize="14sp"
                         app:cornerRadius="10dp"
@@ -59,7 +59,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     style="@style/NextButtonDefault"
-                    android:id="@+id/bt_widget_example"
+                    android:id="@+id/btWidgetExample"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:text="Example:\n- Opened Widget\n- Widget Visible"
@@ -67,16 +67,16 @@
                     android:textSize="10sp"
                     app:cornerRadius="10dp"
                     app:layout_constraintHorizontal_weight="2"
-                    app:layout_constraintTop_toTopOf="@+id/v_button_box1"
-                    app:layout_constraintBottom_toBottomOf="@+id/v_button_box1"
-                    app:layout_constraintLeft_toRightOf="@+id/v_button_box1"
+                    app:layout_constraintTop_toTopOf="@+id/vButtonBox1"
+                    app:layout_constraintBottom_toBottomOf="@+id/vButtonBox1"
+                    app:layout_constraintLeft_toRightOf="@+id/vButtonBox1"
                     app:layout_constraintRight_toRightOf="parent"
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonOutLined"
-                android:id="@+id/bt_load_more"
+                android:id="@+id/btLoadMore"
                 android:text="Load More"
                 android:textSize="14sp"
                 app:cornerRadius="10dp"
@@ -84,7 +84,7 @@
 
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonOutLined"
-                android:id="@+id/bt_opened_lightbox"
+                android:id="@+id/btOpenedLightbox"
                 android:text="Opened Lightbox"
                 android:textSize="14sp"
                 app:cornerRadius="10dp"
@@ -92,7 +92,7 @@
 
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonOutLined"
-                android:id="@+id/bt_action_clicked"
+                android:id="@+id/btActionClicked"
                 android:text="Action Clicked"
                 android:textSize="14sp"
                 app:cornerRadius="10dp"
@@ -109,7 +109,7 @@
 
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonOutLined"
-                android:id="@+id/bt_add_to_cart"
+                android:id="@+id/btAddToCart"
                 android:text="Add to Cart"
                 android:textSize="14sp"
                 app:cornerRadius="10dp"
@@ -117,7 +117,7 @@
 
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonOutLined"
-                android:id="@+id/bt_conversion"
+                android:id="@+id/btConversion"
                 android:text="Conversion"
                 android:textSize="14sp"
                 app:cornerRadius="10dp"
@@ -128,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical">
                 <TextView
-                    android:id="@+id/tv_status"
+                    android:id="@+id/tvStatus"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -137,7 +137,7 @@
                     tools:text="Album Loading..."
                     />
                 <ProgressBar
-                    android:id="@+id/v_progress"
+                    android:id="@+id/vProgress"
                     android:layout_width="40dp"
                     android:layout_height="40dp"/>
             </LinearLayout>
@@ -146,13 +146,13 @@
     </ScrollView>
 
     <LinearLayout
-        android:id="@+id/v_widget_box"
+        android:id="@+id/vWidgetBox"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
         android:orientation="vertical">
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/scroll_widget"
+            android:id="@+id/scrollWidget"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -172,7 +172,7 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                     />
                 <TextView
-                    android:id="@+id/tv_msg1"
+                    android:id="@+id/tvMsg1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
@@ -180,7 +180,7 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     />
                 <TextView
-                    android:id="@+id/v_widget"
+                    android:id="@+id/vWidget"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:layout_margin="20dp"
@@ -191,7 +191,7 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     />
                 <TextView
-                    android:id="@+id/tv_msg2"
+                    android:id="@+id/tvMsg2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
@@ -215,7 +215,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             />
         <TextView
-            android:id="@+id/tv_widget_status"
+            android:id="@+id/tvWidgetStatus"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:paddingLeft="30dp"
