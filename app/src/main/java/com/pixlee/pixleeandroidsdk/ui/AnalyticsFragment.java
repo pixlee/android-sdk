@@ -216,11 +216,11 @@ public class AnalyticsFragment extends BaseFragment {
 
     void openWidget() {
         binding.vWidgetBox.setVisibility(View.VISIBLE);
-        String message = "openedWidget " +
+        String openedWidgetStatus = "openedWidget " +
                 (album.openedWidget(PXLWidgetType.photowall) ? "success" : "failed");
-        addWidgetStaus(true, message);
+        addWidgetStaus(true, openedWidgetStatus);
 
-        showToast(message + "!!\n\nScroll down to fire Widget Visible");
+        showToast(openedWidgetStatus + "!!\n\nScroll down to fire Widget Visible");
         widgetVisible = false;
         final Rect scrollBounds = new Rect();
         binding.scrollWidget.getHitRect(scrollBounds);
@@ -232,10 +232,10 @@ public class AnalyticsFragment extends BaseFragment {
                     if (binding.vWidget.getLocalVisibleRect(scrollBounds)) {
 
                         if (!widgetVisible) {
-                            String message2 = "visibleWidget " +
+                            String visibleWidgetStatus = "visibleWidget " +
                                     (album.widgetVisible(PXLWidgetType.photowall) ? "success" : "failed");
-                            addWidgetStaus(false, "visibleWidget ");
-                            showToast(message + "!!");
+                            addWidgetStaus(false, visibleWidgetStatus);
+                            showToast(visibleWidgetStatus + "!!");
                             widgetVisible = true;
                         }
                         if (!binding.vWidget.getLocalVisibleRect(scrollBounds)
