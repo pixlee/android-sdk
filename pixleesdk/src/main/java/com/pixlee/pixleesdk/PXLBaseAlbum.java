@@ -164,6 +164,7 @@ public abstract class PXLBaseAlbum {
 
             @Override
             public void onFailure(Call<PhotoResult> call, Throwable t) {
+                t.printStackTrace();
                 if (handlers != null) {
                     handlers.onError(t.toString());
                 }
