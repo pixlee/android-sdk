@@ -3,8 +3,9 @@ package com.pixlee.pixleesdk;
 import com.pixlee.pixleesdk.data.CDNPhotos;
 import com.pixlee.pixleesdk.network.annotation.FieldDate;
 import com.pixlee.pixleesdk.network.annotation.FieldURL;
+import com.pixlee.pixleesdk.network.annotation.NullableBoolean;
 import com.pixlee.pixleesdk.network.annotation.NullableDouble;
-import com.serjltt.moshi.adapters.Wrapped;
+import com.pixlee.pixleesdk.network.annotation.NullableInt;
 import com.squareup.moshi.Json;
 
 import java.net.URL;
@@ -39,9 +40,11 @@ public class PXLPhoto {
     public String email_address;
 
     @Json(name = "instagram_followers")
+    @NullableInt
     public int instagramFollowers;
 
     @Json(name = "twitter_followers")
+    @NullableInt
     public int twitterFollowers;
 
     @FieldURL
@@ -52,6 +55,7 @@ public class PXLPhoto {
     public String userName;
 
     @Json(name = "connected_user_id")
+    @NullableInt
     public int connectedUserId;
 
     /**
@@ -89,6 +93,7 @@ public class PXLPhoto {
     public String mediaId;
 
     @Json(name = "exist_in")
+    @NullableInt
     public int existIn;
 
     @Json(name = "collect_term")
@@ -98,9 +103,11 @@ public class PXLPhoto {
     public String albumPhotoId;
 
     @Json(name = "like_count")
+    @NullableInt
     public int likeCount;
 
     @Json(name = "share_count")
+    @NullableInt
     public int shareCount;
 
     @FieldURL
@@ -121,20 +128,25 @@ public class PXLPhoto {
     public Date updatedAt;
 
     @Json(name = "is_starred")
+    @NullableBoolean
     public boolean isStarred;
 
     @Json(name = "approved")
+    @NullableBoolean
     public boolean approved;
 
     @Json(name = "archived")
+    @NullableBoolean
     public boolean archived;
 
     @Json(name = "is_flagged")
+    @NullableBoolean
     public boolean isFlagged;
 
 
     //public PXLAlbum album;
     @Json(name = "unread_count")
+    @NullableInt
     public int unreadCount;
 
     @FieldURL
@@ -145,16 +157,20 @@ public class PXLPhoto {
     public String title;
 
     @Json(name = "messaged")
-    public Boolean messaged;
+    @NullableBoolean
+    public boolean messaged;
 
     @Json(name = "has_permission")
-    public Boolean hasPermission;
+    @NullableBoolean
+    public boolean hasPermission;
 
     @Json(name = "awaiting_permission")
-    public Boolean awaitingPermission;
+    @NullableBoolean
+    public boolean awaitingPermission;
 
     @Json(name = "inst_user_has_liked")
-    public Boolean instUserHasLiked;
+    @NullableBoolean
+    public boolean instUserHasLiked;
 
     @FieldURL
     @Json(name = "platform_link")
