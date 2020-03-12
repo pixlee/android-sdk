@@ -56,13 +56,6 @@ public class PXLAlbumFilterOptions {
                 JSONArray sources = new JSONArray();
                 for (int i = 0; i < contentSource.size(); i++) {
                     sources.put(contentSource.get(i).value);
-
-                    // if instagram_feed or instagram_story is added here, instagram has to be added together.
-                    // this is a rule. For your understanding, please read the comment of 'content_source' on this document: https://developers.pixlee.com/reference#consuming-content
-                    if (PXLContentSource.INSTAGRAM_FEED == contentSource.get(i) ||
-                            PXLContentSource.INSTAGRAM_STORY == contentSource.get(i)) {
-                        sources.put("instagram");
-                    }
                 }
                 jsonFilters.put("content_source", sources);
             }
