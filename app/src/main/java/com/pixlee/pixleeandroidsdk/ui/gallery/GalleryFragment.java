@@ -96,7 +96,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
 
         /* ~~~ content source and content filter examples ~~~
           ArrayList contentSource = new ArrayList();
-          contentSource.add(PXLContentSource.INSTAGRAM_FEED);
+          contentSource.add(PXLContentSource.INSTAGRAM);
           fo.contentSource = contentSource;
 
           ArrayList contentType = new ArrayList();
