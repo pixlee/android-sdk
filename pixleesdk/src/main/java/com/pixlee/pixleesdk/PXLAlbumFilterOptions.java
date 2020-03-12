@@ -6,7 +6,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Map;
 
 /***
  * Represents the filter options for a PXLAlbum. Initialize an instance then set the desired
@@ -54,13 +56,6 @@ public class PXLAlbumFilterOptions {
                 JSONArray sources = new JSONArray();
                 for (int i = 0; i < contentSource.size(); i++) {
                     sources.put(contentSource.get(i).value);
-
-                    // if instagram_feed or instagram_story is added here, instagram has to be added together.
-                    // this is a rule. For your understanding, please read the comment of 'content_source' on this document: https://developers.pixlee.com/reference#consuming-content
-                    if (PXLContentSource.INSTAGRAM_FEED == contentSource.get(i) ||
-                            PXLContentSource.INSTAGRAM_STORY == contentSource.get(i)) {
-                        sources.put("instagram");
-                    }
                 }
                 jsonFilters.put("content_source", sources);
             }
@@ -88,17 +83,17 @@ public class PXLAlbumFilterOptions {
                 jsonFilters.put("in_categories", categoriesJson);
             }
 
-            if (filterByUserhandle != null && !filterByUserhandle.isEmpty()) {
+            if(filterByUserhandle != null && !filterByUserhandle.isEmpty()){
                 JSONObject userhandleJson = new JSONObject(filterByUserhandle);
                 jsonFilters.put("filter_by_userhandle", userhandleJson);
             }
 
-            if (computerVision != null && !computerVision.isEmpty()) {
+            if(computerVision != null && !computerVision.isEmpty()){
                 JSONObject computerVisionJson = new JSONObject(computerVision);
                 jsonFilters.put("computer_vision", computerVisionJson);
             }
 
-            if (filterByLocation != null && !filterByLocation.isEmpty()) {
+            if(filterByLocation != null && !filterByLocation.isEmpty()){
                 JSONObject filterByLocationJson = new JSONObject(filterByLocation);
                 jsonFilters.put("filter_by_location", filterByLocationJson);
             }
