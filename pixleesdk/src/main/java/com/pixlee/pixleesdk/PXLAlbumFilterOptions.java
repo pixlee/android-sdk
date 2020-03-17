@@ -53,14 +53,17 @@ public class PXLAlbumFilterOptions {
             jsonFilters.putOpt("filter_by_radius", filterByRadius);
             //TODO: handle the arrays and dates properly
             if (contentSource != null && contentSource.size() > 0) {
+                boolean isInstagramAdded = false;
                 JSONArray sources = new JSONArray();
                 for (int i = 0; i < contentSource.size(); i++) {
                     sources.put(contentSource.get(i).value);
 
                     // if instagram_feed or instagram_story is added here, instagram has to be added together.
                     // this is a rule. For your understanding, please read the comment of 'content_source' on this document: https://developers.pixlee.com/reference#consuming-content
-                    if (PXLContentSource.INSTAGRAM_FEED == contentSource.get(i) ||
-                            PXLContentSource.INSTAGRAM_STORY == contentSource.get(i)) {
+                    if (!isInstagramAdded &&
+                            (PXLContentSource.INSTAGRAM_FEED == contentSource.get(i) ||
+                                    PXLContentSource.INSTAGRAM_STORY == contentSource.get(i))) {
+                        isInstagramAdded = true;
                         sources.put("instagram");
                     }
                 }
