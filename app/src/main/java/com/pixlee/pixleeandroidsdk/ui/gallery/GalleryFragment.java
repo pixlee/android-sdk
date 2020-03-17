@@ -94,10 +94,6 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 0;
 
-        ArrayList contentSource = new ArrayList();
-        contentSource.add(PXLContentSource.INSTAGRAM_FEED);
-        contentSource.add(PXLContentSource.INSTAGRAM_STORY);
-        fo.contentSource = contentSource;
         /* ~~~ content source and content filter examples ~~~
           ArrayList contentSource = new ArrayList();
           contentSource.add(PXLContentSource.INSTAGRAM_FEED);
