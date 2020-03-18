@@ -22,6 +22,7 @@ import com.pixlee.pixleesdk.PXLAlbumSortOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortType;
 import com.pixlee.pixleesdk.PXLBaseAlbum;
 import com.pixlee.pixleesdk.PXLClient;
+import com.pixlee.pixleesdk.PXLContentSource;
 import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.PXLPhotoSize;
 import com.pixlee.pixleesdk.PXLWidgetType;
@@ -93,10 +94,10 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         fo.minTwitterFollowers = 0;
         fo.minInstagramFollowers = 0;
 
-
         /* ~~~ content source and content filter examples ~~~
           ArrayList contentSource = new ArrayList();
           contentSource.add(PXLContentSource.INSTAGRAM_FEED);
+          contentSource.add(PXLContentSource.INSTAGRAM_STORY);
           fo.contentSource = contentSource;
 
           ArrayList contentType = new ArrayList();
