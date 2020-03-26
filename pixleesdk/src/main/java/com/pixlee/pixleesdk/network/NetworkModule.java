@@ -16,20 +16,22 @@ import com.pixlee.pixleesdk.network.adaptor.URLAdapter;
 import com.serjltt.moshi.adapters.Wrapped;
 import com.squareup.moshi.Moshi;
 
-import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
-import kotlin.text.Charsets;
-import okhttp3.Interceptor;
+import okhttp3.CipherSuite;
+import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import okhttp3.TlsVersion;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
@@ -57,6 +59,7 @@ public class NetworkModule {
         );
     }
 
+    //    public static final String url = "http://distillery-sungjun.kube.pixlee.io/api/v2/";
     public static final String url = "https://distillery.pixlee.com/api/v2/";
     public static final String analyticsUrl = "https://inbound-analytics.pixlee.com/";
 
@@ -64,7 +67,7 @@ public class NetworkModule {
     private static final Long timeout_connect = 60L;
     private static final Long timeout_write = 180L;
 
-    public static Moshi provideMoshi(){
+    public static Moshi provideMoshi() {
         return new Moshi.Builder()
                 .add(Wrapped.ADAPTER_FACTORY)
                 .add(new PrimitiveAdapter()) // null -> a specified default value, same as the return value of JSONObject.opt{PrimitiveType}(...)
@@ -87,10 +90,20 @@ public class NetworkModule {
                 .readTimeout(timeout_read, TimeUnit.SECONDS)
                 .writeTimeout(timeout_write, TimeUnit.SECONDS);
 
+        try {
+            TLSSocketFactory tlsSocketFactory = new TLSSocketFactory();
+            if (tlsSocketFactory.getTrustManager() != null) {
+                ok.sslSocketFactory(tlsSocketFactory, tlsSocketFactory.getTrustManager());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
                 @Override
-                public void log(@NotNull String s) {
+                public void log(String s) {
                     if (isJSONValid(s))
                         Logger.json(s);
                     else

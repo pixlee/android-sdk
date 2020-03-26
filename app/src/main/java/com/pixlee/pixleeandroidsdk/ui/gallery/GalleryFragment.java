@@ -23,6 +23,7 @@ import com.pixlee.pixleesdk.PXLAlbumSortType;
 import com.pixlee.pixleesdk.PXLBaseAlbum;
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLContentSource;
+import com.pixlee.pixleesdk.PXLPdpAlbum;
 import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.PXLPhotoSize;
 import com.pixlee.pixleesdk.PXLWidgetType;
@@ -88,7 +89,8 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         PXLClient client = PXLClient.getInstance(getContext().getApplicationContext());
 
         album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
-        // Alternative: album = new PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client.getBasicRepo(), client.getAnalyticsRepo());
+         //Alternative:
+//         album = new PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client.getBasicRepo(), client.getAnalyticsRepo());
 
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
         fo.minTwitterFollowers = 0;
@@ -251,9 +253,9 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         if (photos == null) {
             return;
         }
-        album.openedWidget(PXLWidgetType.horizontal);
-        album.openedWidget("gallery");
-        album.loadMore();
+        //album.openedWidget(PXLWidgetType.horizontal);
+        //album.openedWidget("gallery");
+        //album.loadMore();
 
         this.photoList.clear();
         this.photoList.addAll(photos);
