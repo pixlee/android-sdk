@@ -59,7 +59,6 @@ public class NetworkModule {
         );
     }
 
-    //    public static final String url = "http://distillery-sungjun.kube.pixlee.io/api/v2/";
     public static final String url = "https://distillery.pixlee.com/api/v2/";
     public static final String analyticsUrl = "https://inbound-analytics.pixlee.com/";
 
