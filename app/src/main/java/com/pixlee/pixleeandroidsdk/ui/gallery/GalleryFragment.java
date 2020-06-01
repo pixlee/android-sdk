@@ -249,7 +249,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         // PXLPhotoSize Options: [ORIGINAL, BIG, MEDIUM, THUMBNAIL]
         String url = photo.getUrlForSize(PXLPhotoSize.ORIGINAL).toString();
         if (photo.isVideo()) {
-            addFragmentToActivity(VideoViewerFragment.getInstance(url));
+            addFragmentToActivity(VideoViewerFragment.getInstance(url, photo.userName, photo.photoTitle));
         } else {
             addFragmentToActivity(ImageViewerFragment.getInstance(url, photo.userName, photo.photoTitle));
         }

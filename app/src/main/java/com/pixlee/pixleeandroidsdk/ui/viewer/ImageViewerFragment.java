@@ -18,6 +18,7 @@ import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleeandroidsdk.config.GlideApp;
 import com.pixlee.pixleeandroidsdk.databinding.FragmentImageViewerBinding;
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
+import com.pixlee.pixleeandroidsdk.ui.util.AssetUtil;
 
 /**
  * This is an image viewer
@@ -44,6 +45,10 @@ public class ImageViewerFragment extends BaseFragment {
         binding.tvNickname.setText("@" + getNickname());
         binding.tvMessage.setText(getMessage());
 
+        String json = AssetUtil.getLottieLoadingJson(getContext());
+        binding.lottieView.setAnimationFromJson(json, json);
+        binding.lottieView.playAnimation();
+
         GlideApp.with(getContext()).asDrawable().clone()
                 .load(getImageUrl())
                 .thumbnail(0.2f)
@@ -58,7 +63,7 @@ public class ImageViewerFragment extends BaseFragment {
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        binding.vLoading.setVisibility(View.GONE);
+                        binding.lottieView.setVisibility(View.GONE);
                         binding.imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                         return false;
                     }
