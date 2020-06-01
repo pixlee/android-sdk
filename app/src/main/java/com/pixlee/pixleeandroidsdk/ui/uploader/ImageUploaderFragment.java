@@ -105,9 +105,9 @@ public class ImageUploaderFragment extends BaseFragment {
     private void uploadLink() {
         setUploadingUI(true);
         album.uploadImage(
-                "title-" + System.currentTimeMillis(),
+                "title uploaded from SDK-" + System.currentTimeMillis(),
                 "sungjun@pixleeteam.com",
-                "sungjun",
+                "android sdk user",
                 "https://cdn.pixabay.com/photo/2017/01/17/10/39/italy-1986418_960_720.jpg",
                 true,
                 new PXLBaseAlbum.RequestHandlers<MediaResult>() {
