@@ -105,7 +105,7 @@ public class ImageUploaderFragment extends BaseFragment {
     private void uploadLink() {
         setUploadingUI(true);
         album.uploadImage(
-                "title uploaded from SDK-" + System.currentTimeMillis(),
+                "uploaded from SDK-" + System.currentTimeMillis() + " using a image link",
                 "sungjun@pixleeteam.com",
                 "android sdk user",
                 "https://cdn.pixabay.com/photo/2017/01/17/10/39/italy-1986418_960_720.jpg",
@@ -130,7 +130,7 @@ public class ImageUploaderFragment extends BaseFragment {
         showMessage("Uploading  " + filePath);
         setUploadingUI(true);
         album.uploadLocalImage(
-                "hong photo2",
+                "uploaded from SDK-" + System.currentTimeMillis() + " using a file",
                 "sungjun@pixleeteam.com",
                 "jun",
                 true,
