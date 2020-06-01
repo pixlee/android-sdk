@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.pixlee.pixleeandroidsdk"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -67,4 +67,9 @@ dependencies {
     annotationProcessor "com.github.bumptech.glide:compiler:$glide"
 
     annotationProcessor 'androidx.annotation:annotation:1.1.0'
+
+    /**
+     * Lottie for animation
+     */
+    implementation 'com.airbnb.android:lottie:3.4.0'
 }

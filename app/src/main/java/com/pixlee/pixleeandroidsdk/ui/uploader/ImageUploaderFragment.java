@@ -105,10 +105,10 @@ public class ImageUploaderFragment extends BaseFragment {
     private void uploadLink() {
         setUploadingUI(true);
         album.uploadImage(
-                "Waikiki",
-                "sungjun.app@gmail.com",
-                "jun",
-                "https://radiokorea.com/images/news/2019/06/10/316856/1.jpg",
+                "title-" + System.currentTimeMillis(),
+                "sungjun@pixleeteam.com",
+                "sungjun",
+                "https://cdn.pixabay.com/photo/2017/01/17/10/39/italy-1986418_960_720.jpg",
                 true,
                 new PXLBaseAlbum.RequestHandlers<MediaResult>() {
                     @Override

@@ -124,7 +124,7 @@ public class AlbumTests {
     public void testOtherFilter() throws Exception {
         PXLAlbumFilterOptions filterOptions = new PXLAlbumFilterOptions();
         filterOptions.contentSource = new ArrayList<>();
-        filterOptions.contentSource.add(PXLContentSource.INSTAGRAM);
+        filterOptions.contentSource.add(PXLContentSource.INSTAGRAM_FEED);
         filterOptions.contentType.add(PXLContentType.IMAGE);
 
     }

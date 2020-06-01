@@ -3,8 +3,12 @@ package com.pixlee.pixleeandroidsdk.ui.gallery;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -14,6 +18,7 @@ import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleeandroidsdk.databinding.FragmentGalleryBinding;
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
+import com.pixlee.pixleeandroidsdk.ui.util.AssetUtil;
 import com.pixlee.pixleeandroidsdk.ui.viewer.ImageViewerFragment;
 import com.pixlee.pixleeandroidsdk.ui.viewer.VideoViewerFragment;
 import com.pixlee.pixleesdk.PXLAlbum;
@@ -33,7 +38,7 @@ import java.util.ArrayList;
 /**
  * This shows how you can load photos of Pixlee using PXLAlbum.java
  */
-public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHandlers<ArrayList<PXLPhoto>>{
+public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHandlers<ArrayList<PXLPhoto>> {
     @Override
     public int getTitleResource() {
         return R.string.title_album;
@@ -49,10 +54,12 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         photoList = new ArrayList<>();
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentGalleryBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         return view;
@@ -75,10 +82,12 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
             }
         });
 
-        loadAlbum();
+        if (gridAdapter == null) {
+            loadAlbum();
+        }
+
         configureViews();
     }
-
 
 
     /***
@@ -89,12 +98,17 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         PXLClient client = PXLClient.getInstance(getContext().getApplicationContext());
 
         album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
-         //Alternative:
+        //Alternative:
 //         album = new PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client.getBasicRepo(), client.getAnalyticsRepo());
 
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
-        fo.minTwitterFollowers = 0;
-        fo.minInstagramFollowers = 0;
+
+//        fo.minTwitterFollowers = 0;
+//        fo.minInstagramFollowers = 0;
+//        fo.hasPermission = true;
+//        fo.hasProduct = true;
+
+
 
         /* ~~~ content source and content filter examples ~~~
           ArrayList contentSource = new ArrayList();
@@ -148,12 +162,34 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         PXLAlbumSortOptions so = new PXLAlbumSortOptions();
         so.sortType = PXLAlbumSortType.APPROVED_TIME;
         so.descending = true;
-        album.setPerPage(20);
+        //album.setPerPage(9);
         album.setFilterOptions(fo);
         album.setSortOptions(so);
         PXLAlbum.RequestHandlers rh = this;
+
+        setLoading(true);
         album.loadNextPageOfPhotos(rh);
     }
+
+    void setLoading(boolean visible) {
+        if (visible) {
+            binding.lottieView.setVisibility(View.VISIBLE);
+            String json = AssetUtil.getLottieLoadingJson(getContext());
+            binding.lottieView.setAnimationFromJson(json, json);
+            binding.lottieView.playAnimation();
+        } else {
+            binding.lottieView.setVisibility(View.GONE);
+        }
+
+    }
+
+    class Mode {
+        boolean isGridMode = true;
+    }
+
+    Mode mode;
+    GridAdapter gridAdapter;
+    ListAdapter listAdapter;
 
     private void configureViews() {
         binding.gridView.setHasFixedSize(true);
@@ -166,13 +202,16 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
 
         GalleryClickListener li = new GalleryClickListener() {
             @Override
-            public void onItemClicked(PXLPhoto photo) {
-                moveToViewer(photo);
+            public void onItemClicked(View view, PXLPhoto photo) {
+                moveToViewer(view, photo);
             }
         };
 
-        GridAdapter gridAdapter = new GridAdapter(getContext().getApplicationContext(), photoList, li);
-        ListAdapter listAdapter = new ListAdapter(getContext().getApplicationContext(), photoList, li);
+        if (gridAdapter == null) {
+            gridAdapter = new GridAdapter(getContext().getApplicationContext(), photoList, li);
+            listAdapter = new ListAdapter(getContext().getApplicationContext(), photoList, li);
+        }
+
         binding.gridView.setAdapter(gridAdapter);
         binding.listView.setAdapter(listAdapter);
 
@@ -191,20 +230,28 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
 
         binding.gridView.addOnScrollListener(gridScrollListener);
         binding.listView.addOnScrollListener(listScrollListener);
+
+        if (mode == null) {
+            mode = new Mode();
+        }
+
+        if(!mode.isGridMode)
+            binding.viewSwitcher.showNext();
     }
 
     /**
      * When an item in the list is clicked, this method call Video player or Image viewer using PXLPhoto.isVideo()
+     *
      * @param photo
      */
-    void moveToViewer(PXLPhoto photo) {
+    void moveToViewer(View view, PXLPhoto photo) {
         // You can choose images by using this example below.
         // PXLPhotoSize Options: [ORIGINAL, BIG, MEDIUM, THUMBNAIL]
         String url = photo.getUrlForSize(PXLPhotoSize.ORIGINAL).toString();
-        if(photo.isVideo()){
+        if (photo.isVideo()) {
             addFragmentToActivity(VideoViewerFragment.getInstance(url));
-        }else{
-            addFragmentToActivity(ImageViewerFragment.getInstance(url));
+        } else {
+            addFragmentToActivity(ImageViewerFragment.getInstance(url, photo.userName, photo.photoTitle));
         }
     }
 
@@ -217,7 +264,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
 
     private void samplePhotoLoad(PXLPhoto photo) {
         // load PXLPhoto with album_photo_id
-        album.getPhotoWithId(photo.albumPhotoId,new PXLBaseAlbum.RequestHandlers<PXLPhoto>(){
+        album.getPhotoWithId(photo.albumPhotoId, new PXLBaseAlbum.RequestHandlers<PXLPhoto>() {
 
             @Override
             public void onComplete(PXLPhoto result) {
@@ -250,6 +297,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
      */
     @Override
     public void onComplete(ArrayList<PXLPhoto> photos) {
+        setLoading(false);
         if (photos == null) {
             return;
         }
@@ -259,10 +307,11 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
 
         this.photoList.clear();
         this.photoList.addAll(photos);
+
         binding.gridView.getAdapter().notifyDataSetChanged();
         binding.listView.getAdapter().notifyDataSetChanged();
 
-        if(photos.size()>0){
+        if (photos.size() > 0) {
             samplePhotoLoad(photos.get(0));
         }
     }
@@ -274,5 +323,44 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
     @Override
     public void onError(String error) {
         Log.e("pixlee", String.format("Failed to fetch next page of photos: %s", error));
+    }
+
+    private Menu menuList;
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_gallery, menu);
+        menuList = menu;
+        changeMenuForList(mode.isGridMode);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        binding.viewSwitcher.showNext();
+        switch (item.getItemId()) {
+            case R.id.action_grid: {
+                changeMenuForList(false);
+                break;
+            }
+            case R.id.action_list: {
+                changeMenuForList(true);
+                break;
+            }
+        }
+        return false;
+    }
+
+    void changeMenuForList(boolean gridMode) {
+        if (gridMode) {
+            mode.isGridMode = true;
+            menuList.findItem(R.id.action_grid).setVisible(true);
+            menuList.findItem(R.id.action_list).setVisible(false);
+        } else {
+            mode.isGridMode = false;
+            menuList.findItem(R.id.action_grid).setVisible(false);
+            menuList.findItem(R.id.action_list).setVisible(true);
+
+        }
     }
 }

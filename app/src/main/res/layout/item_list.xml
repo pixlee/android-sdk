@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+        <RelativeLayout
+            android:id="@+id/v_img"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="16dp">
+            <ImageView
+                android:id="@+id/netimg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <ImageView
+                android:id="@+id/iv_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha=".5"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                android:src="@drawable/round_play_circle_outline_white_36"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/v_img"
+            android:orientation="vertical"
+            android:padding="5dp">
+            <TextView
+                android:id="@+id/tv_nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:singleLine="false"
+                android:text="Support Text"
+                android:textStyle="bold"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"/>
+            <TextView
+                android:id="@+id/tv_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:singleLine="false"
+                android:text="Support Text"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"/>
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

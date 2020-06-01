@@ -31,7 +31,8 @@ public class ImageViewerFragment extends BaseFragment {
 
     FragmentImageViewerBinding binding;
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentImageViewerBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         return view;
@@ -40,6 +41,9 @@ public class ImageViewerFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        binding.tvNickname.setText("@" + getNickname());
+        binding.tvMessage.setText(getMessage());
+
         GlideApp.with(getContext()).asDrawable().clone()
                 .load(getImageUrl())
                 .thumbnail(0.2f)
@@ -65,10 +69,26 @@ public class ImageViewerFragment extends BaseFragment {
         return getArguments().getString("imageUrl");
     }
 
-    public static Fragment getInstance(String imageUrl){
+    private String getNickname() {
+        return getArguments().getString("nickname");
+    }
+
+    private String getMessage() {
+        return getArguments().getString("message");
+    }
+
+    public static Fragment getInstance(String imageUrl, String nickname, String message) {
         Fragment f = new ImageViewerFragment();
         Bundle bundle = new Bundle();
         bundle.putString("imageUrl", imageUrl);
+        if (nickname != null) {
+            bundle.putString("nickname", nickname);
+        }
+
+        if (message != null) {
+            bundle.putString("message", message);
+        }
+
         f.setArguments(bundle);
         return f;
     }
