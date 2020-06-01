@@ -32,4 +32,9 @@
     <color name="overlay_dark_70">#B3000000</color>
     <color name="overlay_dark_80">#CC000000</color>
     <color name="overlay_dark_90">#E6000000</color>
+
+    <color name="pixlee_logo_1">#F89C43</color>
+    <color name="pixlee_logo_2">#FFE65C</color>
+    <color name="pixlee_logo_3">#EA66A6</color>
+    <color name="pixlee_logo_4">#33C3E5</color>
 </resources>

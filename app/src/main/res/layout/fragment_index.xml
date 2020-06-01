@@ -13,28 +13,32 @@
             android:layout_height="wrap_content"
             android:padding="25dp"
             android:orientation="vertical">
+
             <com.google.android.material.button.MaterialButton
-                style="@style/NextButtonDefault"
                 android:id="@+id/btAlbum"
+                style="@style/NextButtonOutLined"
+                android:paddingTop="16sp"
+                android:paddingBottom="13dp"
                 android:text="@string/title_album"
-                android:textSize="14sp"
-                app:cornerRadius="10dp"
                 />
 
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonDefault"
                 android:id="@+id/btImageUploader"
                 android:text="@string/title_upload_image"
-                android:textSize="14sp"
-                app:cornerRadius="10dp"
+                android:textSize="16sp"
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp"
                 />
 
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonOutLined"
                 android:id="@+id/btAnalytics"
                 android:text="@string/title_analytics"
-                android:textSize="14sp"
-                app:cornerRadius="10dp"
+                android:textSize="16sp"
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp"
+                android:layout_marginTop="40dp"
                 />
 
 
