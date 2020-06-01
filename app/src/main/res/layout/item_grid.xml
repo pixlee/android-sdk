@@ -4,7 +4,7 @@
     android:background="#FFFFFF"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp">
+    android:layout_margin="5dp">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="200dp">
@@ -12,6 +12,7 @@
             android:id="@+id/netimg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#efefef"
             android:adjustViewBounds="true" />
         <ImageView
             android:id="@+id/iv_video"

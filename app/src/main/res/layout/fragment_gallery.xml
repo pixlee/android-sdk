@@ -31,6 +31,8 @@
                 android:id="@+id/gridView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:padding="5dp"
+                android:clipToPadding="false"
                 android:choiceMode="singleChoice"
                 android:divider="@android:color/transparent"
                 android:dividerHeight="0dp" />
@@ -39,6 +41,8 @@
                 android:id="@+id/listView"
                 tools:layout_editor_absoluteX="8dp"
                 tools:layout_editor_absoluteY="8dp"
+                android:padding="5dp"
+                android:clipToPadding="false"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </ViewSwitcher>
