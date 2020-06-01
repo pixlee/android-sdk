@@ -51,7 +51,6 @@ public class ImageViewerFragment extends BaseFragment {
 
         GlideApp.with(getContext()).asDrawable().clone()
                 .load(getImageUrl())
-                .thumbnail(0.2f)
                 .fitCenter()
                 .error(R.drawable.baseline_cloud_off_black_48)
                 .listener(new RequestListener<Drawable>() {

@@ -23,6 +23,8 @@
                     android:id="@+id/lottieView"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
+                    android:layout_marginTop="100dp"
+                    android:layout_marginBottom="100dp"
                     android:layout_centerInParent="true"
                     app:lottie_loop="true"/>
             </RelativeLayout>
