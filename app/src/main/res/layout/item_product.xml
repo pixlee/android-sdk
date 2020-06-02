@@ -32,6 +32,7 @@
             android:paddingRight="10dp">
             <TextView
                 android:id="@+id/tvMessage"
+                android:maxWidth="200dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="2"
@@ -49,7 +50,7 @@
                 android:singleLine="false"
                 android:text="Support Text"
                 android:textStyle="bold"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"/>
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"/>
         </LinearLayout>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

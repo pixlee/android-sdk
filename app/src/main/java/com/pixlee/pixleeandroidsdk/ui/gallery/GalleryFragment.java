@@ -21,6 +21,7 @@ import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleeandroidsdk.ui.util.AssetUtil;
 import com.pixlee.pixleeandroidsdk.ui.viewer.ImageViewerActivity;
 import com.pixlee.pixleeandroidsdk.ui.viewer.ImageViewerFragment;
+import com.pixlee.pixleeandroidsdk.ui.viewer.VideoViewerActivity;
 import com.pixlee.pixleeandroidsdk.ui.viewer.VideoViewerFragment;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
@@ -248,9 +249,9 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
     void moveToViewer(View view, PXLPhoto photo) {
         // You can choose images by using this example below.
         // PXLPhotoSize Options: [ORIGINAL, BIG, MEDIUM, THUMBNAIL]
-        String url = photo.getUrlForSize(PXLPhotoSize.ORIGINAL).toString();
         if (photo.isVideo()) {
-            addFragmentToActivity(VideoViewerFragment.getInstance(url, photo.userName, photo.photoTitle));
+            VideoViewerActivity.launch(getContext(), photo);
+            //addFragmentToActivity(VideoViewerFragment.getInstance(url, photo.userName, photo.photoTitle));
         } else {
             ImageViewerActivity.launch(getContext(), photo);
             //addFragmentToActivity(ImageViewerFragment.getInstance(url, photo.userName, photo.photoTitle));

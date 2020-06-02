@@ -2,25 +2,22 @@ package com.pixlee.pixleeandroidsdk.ui.viewer;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
-import android.widget.ImageView;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleEventObserver;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.pixlee.pixleeandroidsdk.BaseActivity;
-import com.pixlee.pixleeandroidsdk.R;
-import com.pixlee.pixleeandroidsdk.config.GlideApp;
-import com.pixlee.pixleeandroidsdk.databinding.ActivityImageViewerBinding;
+import com.pixlee.pixleeandroidsdk.databinding.ActivityVideoViewerBinding;
 import com.pixlee.pixleeandroidsdk.ui.util.AssetUtil;
 import com.pixlee.pixleeandroidsdk.ui.viewer.adapter.ProductAdapter;
 import com.pixlee.pixleesdk.PXLPhoto;
@@ -32,14 +29,14 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
 /**
  * This activity only manage Fragments and a Toolbar.
  */
-public class ImageViewerActivity extends BaseActivity {
-    ActivityImageViewerBinding binding;
+public class VideoViewerActivity extends BaseActivity {
+    ActivityVideoViewerBinding binding;
     PXLPhoto pxlPhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityImageViewerBinding.inflate(getLayoutInflater());
+        binding = ActivityVideoViewerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         expandContentAreaOverStatusBar();
@@ -62,25 +59,7 @@ public class ImageViewerActivity extends BaseActivity {
                 return;
             }
 
-            String imageUrl = pxlPhoto.getUrlForSize(PXLPhotoSize.BIG).toString();
-            GlideApp.with(this)
-                    .load(imageUrl)
-                    .fitCenter()
-                    .error(R.drawable.baseline_cloud_off_black_48)
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            binding.imageView.setScaleType(ImageView.ScaleType.CENTER);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            binding.lottieView.setVisibility(View.GONE);
-                            binding.imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                            return false;
-                        }
-                    }).into(binding.imageView);
+            setVideoViewer(pxlPhoto.getUrlForSize(PXLPhotoSize.ORIGINAL).toString());
 
             Glide.with(this)
                     .load(pxlPhoto.getUrlForSize(PXLPhotoSize.THUMBNAIL).toString())
@@ -118,8 +97,59 @@ public class ImageViewerActivity extends BaseActivity {
 
     ProductAdapter adapter;
 
+    void setVideoViewer(String videoUrl){
+        binding.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                binding.lottieView.setVisibility(View.GONE);
+
+                getLifecycle().addObserver(new LifecycleEventObserver() {
+                    @Override
+                    public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
+                        if(event==Lifecycle.Event.ON_DESTROY){
+                            handler.removeCallbacks(runnableTimer);
+                        }else{
+                            handler.postDelayed(runnableTimer, 0);
+                        }
+                    }
+                });
+            }
+        });
+
+        binding.videoView.setVideoPath(videoUrl);
+        binding.videoView.setZOrderOnTop(true);
+        binding.videoView.start();
+    }
+
+    Handler handler = new Handler();
+    Runnable runnableTimer = new Runnable(){
+
+        @Override
+        public void run() {
+            boolean started = binding.videoView.isPlaying();
+            if (!started || binding.videoView.isPlaying()) {
+                if (!started) {
+                    started = binding.videoView.isPlaying();
+                }
+
+                binding.tvTime.setText(showMMSS(binding.videoView.getDuration(), binding.videoView.getCurrentPosition()));
+                handler.postDelayed(runnableTimer, 1000);
+            }else{
+                binding.tvTime.setText(showMMSS(binding.videoView.getDuration(), binding.videoView.getDuration()));
+            }
+        }
+    };
+
+    String showMMSS(int duration, int timeInMilli) {
+        int gap = duration - timeInMilli;
+        int sec = gap / 1000;
+        int min = sec / 60;
+        int secOfMin = sec % 60;
+        return String.format(min + ":%02d", secOfMin);
+    }
+
     public static void launch(Context context, PXLPhoto pxlPhoto) {
-        Intent i = new Intent(context, ImageViewerActivity.class);
+        Intent i = new Intent(context, VideoViewerActivity.class);
         i.putExtra("pxlPhoto", pxlPhoto);
         context.startActivity(i);
     }
