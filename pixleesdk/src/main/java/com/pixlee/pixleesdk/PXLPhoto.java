@@ -1,5 +1,8 @@
 package com.pixlee.pixleesdk;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.pixlee.pixleesdk.data.CDNPhotos;
 import com.pixlee.pixleesdk.network.annotation.FieldDate;
 import com.pixlee.pixleesdk.network.annotation.FieldURL;
@@ -15,7 +18,7 @@ import java.util.List;
 /***
  * PXLPhoto represents an individual photo. Exposes all the data retrieved from an API call.
  */
-public class PXLPhoto {
+public class PXLPhoto implements Parcelable {
     public static final String TAG = "PXLPhoto";
 
     @Json(name = "id")
@@ -275,4 +278,120 @@ public class PXLPhoto {
                 return null;
         }
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.photoTitle);
+        dest.writeDouble(this.latitude);
+        dest.writeDouble(this.longitude);
+        dest.writeLong(this.taggedAt != null ? this.taggedAt.getTime() : -1);
+        dest.writeString(this.email_address);
+        dest.writeInt(this.instagramFollowers);
+        dest.writeInt(this.twitterFollowers);
+        dest.writeSerializable(this.avatarUrl);
+        dest.writeString(this.userName);
+        dest.writeInt(this.connectedUserId);
+        dest.writeString(this.source);
+        dest.writeString(this.contentType);
+        dest.writeString(this.dataFileName);
+        dest.writeSerializable(this.mediumUrl);
+        dest.writeSerializable(this.bigUrl);
+        dest.writeSerializable(this.thumbnailUrl);
+        dest.writeSerializable(this.sourceUrl);
+        dest.writeString(this.mediaId);
+        dest.writeInt(this.existIn);
+        dest.writeString(this.collectTerm);
+        dest.writeString(this.albumPhotoId);
+        dest.writeInt(this.likeCount);
+        dest.writeInt(this.shareCount);
+        dest.writeSerializable(this.actionLink);
+        dest.writeString(this.actionLinkText);
+        dest.writeString(this.actionLinkTitle);
+        dest.writeString(this.actionLinkPhoto);
+        dest.writeLong(this.updatedAt != null ? this.updatedAt.getTime() : -1);
+        dest.writeByte(this.isStarred ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.approved ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.archived ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isFlagged ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.unreadCount);
+        dest.writeSerializable(this.albumActionLink);
+        dest.writeString(this.title);
+        dest.writeByte(this.messaged ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.hasPermission ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.awaitingPermission ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.instUserHasLiked ? (byte) 1 : (byte) 0);
+        dest.writeSerializable(this.platformLink);
+        dest.writeTypedList(this.products);
+        dest.writeParcelable(this.cdnPhotos, flags);
+    }
+
+    public PXLPhoto() {
+    }
+
+    protected PXLPhoto(Parcel in) {
+        this.id = in.readString();
+        this.photoTitle = in.readString();
+        this.latitude = in.readDouble();
+        this.longitude = in.readDouble();
+        long tmpTaggedAt = in.readLong();
+        this.taggedAt = tmpTaggedAt == -1 ? null : new Date(tmpTaggedAt);
+        this.email_address = in.readString();
+        this.instagramFollowers = in.readInt();
+        this.twitterFollowers = in.readInt();
+        this.avatarUrl = (URL) in.readSerializable();
+        this.userName = in.readString();
+        this.connectedUserId = in.readInt();
+        this.source = in.readString();
+        this.contentType = in.readString();
+        this.dataFileName = in.readString();
+        this.mediumUrl = (URL) in.readSerializable();
+        this.bigUrl = (URL) in.readSerializable();
+        this.thumbnailUrl = (URL) in.readSerializable();
+        this.sourceUrl = (URL) in.readSerializable();
+        this.mediaId = in.readString();
+        this.existIn = in.readInt();
+        this.collectTerm = in.readString();
+        this.albumPhotoId = in.readString();
+        this.likeCount = in.readInt();
+        this.shareCount = in.readInt();
+        this.actionLink = (URL) in.readSerializable();
+        this.actionLinkText = in.readString();
+        this.actionLinkTitle = in.readString();
+        this.actionLinkPhoto = in.readString();
+        long tmpUpdatedAt = in.readLong();
+        this.updatedAt = tmpUpdatedAt == -1 ? null : new Date(tmpUpdatedAt);
+        this.isStarred = in.readByte() != 0;
+        this.approved = in.readByte() != 0;
+        this.archived = in.readByte() != 0;
+        this.isFlagged = in.readByte() != 0;
+        this.unreadCount = in.readInt();
+        this.albumActionLink = (URL) in.readSerializable();
+        this.title = in.readString();
+        this.messaged = in.readByte() != 0;
+        this.hasPermission = in.readByte() != 0;
+        this.awaitingPermission = in.readByte() != 0;
+        this.instUserHasLiked = in.readByte() != 0;
+        this.platformLink = (URL) in.readSerializable();
+        this.products = in.createTypedArrayList(PXLProduct.CREATOR);
+        this.cdnPhotos = in.readParcelable(CDNPhotos.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<PXLPhoto> CREATOR = new Parcelable.Creator<PXLPhoto>() {
+        @Override
+        public PXLPhoto createFromParcel(Parcel source) {
+            return new PXLPhoto(source);
+        }
+
+        @Override
+        public PXLPhoto[] newArray(int size) {
+            return new PXLPhoto[size];
+        }
+    };
 }

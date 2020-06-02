@@ -10,6 +10,7 @@ import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.AnalyticsRepository;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicRepository;
+import com.pixlee.pixleesdk.network.adaptor.BigDecimalAdapter;
 import com.pixlee.pixleesdk.network.adaptor.DateAdapter;
 import com.pixlee.pixleesdk.network.adaptor.PrimitiveAdapter;
 import com.pixlee.pixleesdk.network.adaptor.URLAdapter;
@@ -72,6 +73,7 @@ public class NetworkModule {
                 .add(new PrimitiveAdapter()) // null -> a specified default value, same as the return value of JSONObject.opt{PrimitiveType}(...)
                 .add(new URLAdapter())  // String -> URL
                 .add(new DateAdapter()) // String -> Date
+                .add(new BigDecimalAdapter()) //String -> BigDecimal
                 .build();
     }
 

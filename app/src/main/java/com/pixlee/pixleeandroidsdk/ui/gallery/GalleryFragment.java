@@ -19,6 +19,7 @@ import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleeandroidsdk.databinding.FragmentGalleryBinding;
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleeandroidsdk.ui.util.AssetUtil;
+import com.pixlee.pixleeandroidsdk.ui.viewer.ImageViewerActivity;
 import com.pixlee.pixleeandroidsdk.ui.viewer.ImageViewerFragment;
 import com.pixlee.pixleeandroidsdk.ui.viewer.VideoViewerFragment;
 import com.pixlee.pixleesdk.PXLAlbum;
@@ -251,7 +252,8 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         if (photo.isVideo()) {
             addFragmentToActivity(VideoViewerFragment.getInstance(url, photo.userName, photo.photoTitle));
         } else {
-            addFragmentToActivity(ImageViewerFragment.getInstance(url, photo.userName, photo.photoTitle));
+            ImageViewerActivity.launch(getContext(), photo);
+            //addFragmentToActivity(ImageViewerFragment.getInstance(url, photo.userName, photo.photoTitle));
         }
     }
 
