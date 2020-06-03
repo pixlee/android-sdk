@@ -18,27 +18,18 @@ import com.pixlee.pixleesdk.network.adaptor.URLAdapter;
 import com.serjltt.moshi.adapters.Wrapped;
 import com.squareup.moshi.Moshi;
 
-//import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.SSLContext;
-
-import okhttp3.CipherSuite;
-import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
-import okhttp3.TlsVersion;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
+
+//import org.jetbrains.annotations.NotNull;
 
 /**
  * This class generates Data Source classes that include Retrofit HTTP API interfaces.
@@ -101,14 +92,6 @@ public class NetworkModule {
                 if (tlsSocketFactory.getTrustManager() != null) {
                     ok.sslSocketFactory(tlsSocketFactory, tlsSocketFactory.getTrustManager());
                 }
-
-//                ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-//                        .tlsVersions(TlsVersion.TLS_1_0)
-//                        .allEnabledCipherSuites()
-//                        .build();
-
-                //ok.connectionSpecs(Collections.singletonList(spec));
-
             }
         } catch (Exception e) {
             e.printStackTrace();
