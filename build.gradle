@@ -44,6 +44,6 @@ ext {
     rxJava = "2.2.8"
     rxAndroid = "2.1.1"
     gson = "2.8.5"
-    glide = "4.9.0"
+    glide = "4.11.0"
     orhanobutLogger = "2.2.0"
 }

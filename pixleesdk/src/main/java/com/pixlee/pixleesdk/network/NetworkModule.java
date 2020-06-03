@@ -1,5 +1,6 @@
 package com.pixlee.pixleesdk.network;
 
+import android.os.Build;
 import android.util.Log;
 
 import com.orhanobut.logger.Logger;
@@ -28,6 +29,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLContext;
 
 import okhttp3.CipherSuite;
 import okhttp3.ConnectionSpec;
@@ -91,15 +94,25 @@ public class NetworkModule {
                 .readTimeout(timeout_read, TimeUnit.SECONDS)
                 .writeTimeout(timeout_write, TimeUnit.SECONDS);
 
+        // enable Tls12 on Pre Lollipop
         try {
-            TLSSocketFactory tlsSocketFactory = new TLSSocketFactory();
-            if (tlsSocketFactory.getTrustManager() != null) {
-                ok.sslSocketFactory(tlsSocketFactory, tlsSocketFactory.getTrustManager());
+            if (Build.VERSION.SDK_INT < 21) {
+                TLSSocketFactory tlsSocketFactory = new TLSSocketFactory();
+                if (tlsSocketFactory.getTrustManager() != null) {
+                    ok.sslSocketFactory(tlsSocketFactory, tlsSocketFactory.getTrustManager());
+                }
+
+//                ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+//                        .tlsVersions(TlsVersion.TLS_1_0)
+//                        .allEnabledCipherSuites()
+//                        .build();
+
+                //ok.connectionSpecs(Collections.singletonList(spec));
+
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {

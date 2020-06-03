@@ -135,6 +135,8 @@ public class VideoViewerActivity extends BaseActivity {
             }
         });
 
+        binding.videoView.setVideoURI(Uri.parse(videoUrl));
+
         binding.videoView.setVideoPath(videoUrl);
         binding.videoView.setZOrderOnTop(true);
         binding.videoView.start();
