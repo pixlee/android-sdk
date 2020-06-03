@@ -8,7 +8,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -20,20 +19,14 @@ import com.pixlee.pixleeandroidsdk.databinding.FragmentGalleryBinding;
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleeandroidsdk.ui.util.AssetUtil;
 import com.pixlee.pixleeandroidsdk.ui.viewer.ImageViewerActivity;
-import com.pixlee.pixleeandroidsdk.ui.viewer.ImageViewerFragment;
 import com.pixlee.pixleeandroidsdk.ui.viewer.VideoViewerActivity;
-import com.pixlee.pixleeandroidsdk.ui.viewer.VideoViewerFragment;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortType;
 import com.pixlee.pixleesdk.PXLBaseAlbum;
 import com.pixlee.pixleesdk.PXLClient;
-import com.pixlee.pixleesdk.PXLContentSource;
-import com.pixlee.pixleesdk.PXLPdpAlbum;
 import com.pixlee.pixleesdk.PXLPhoto;
-import com.pixlee.pixleesdk.PXLPhotoSize;
-import com.pixlee.pixleesdk.PXLWidgetType;
 
 import java.util.ArrayList;
 
@@ -250,10 +243,8 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         // PXLPhotoSize Options: [ORIGINAL, BIG, MEDIUM, THUMBNAIL]
         if (photo.isVideo()) {
             VideoViewerActivity.launch(getContext(), photo);
-            //addFragmentToActivity(VideoViewerFragment.getInstance(url, photo.userName, photo.photoTitle));
         } else {
             ImageViewerActivity.launch(getContext(), photo);
-            //addFragmentToActivity(ImageViewerFragment.getInstance(url, photo.userName, photo.photoTitle));
         }
     }
 

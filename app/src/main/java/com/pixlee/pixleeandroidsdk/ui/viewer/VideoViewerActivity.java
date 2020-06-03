@@ -27,7 +27,7 @@ import com.pixlee.pixleesdk.PXLProduct;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
 /**
- * This activity only manage Fragments and a Toolbar.
+ * This shows how to play the video and its product list
  */
 public class VideoViewerActivity extends BaseActivity {
     ActivityVideoViewerBinding binding;
@@ -39,8 +39,13 @@ public class VideoViewerActivity extends BaseActivity {
         binding = ActivityVideoViewerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // set a full screen mode
         expandContentAreaOverStatusBar();
+
+        // give a padding to the top as much as the status bar's height
         binding.bodyView.setPadding(0, getStatusBarHeight(), 0, 0);
+
+        // back button's click effect
         binding.backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,44 +54,50 @@ public class VideoViewerActivity extends BaseActivity {
         });
 
         Intent i = getIntent();
-        if (i != null) {
-            String json = AssetUtil.getLottieLoadingJson(this);
-            binding.lottieView.setAnimationFromJson(json, json);
-            binding.lottieView.playAnimation();
-            pxlPhoto = i.getParcelableExtra("pxlPhoto");
-            if (pxlPhoto == null) {
-                finish();
-                return;
-            }
-
-            playVideo();
-
-            Glide.with(this)
-                    .load(pxlPhoto.getUrlForSize(PXLPhotoSize.THUMBNAIL).toString())
-                    .centerCrop()
-                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(70, 3)))
-                    .into(binding.imageViewBg);
-
-            if (pxlPhoto.products != null) {
-                adapter = new ProductAdapter(pxlPhoto.products, new ProductAdapter.ProductListener() {
-                    @Override
-                    public void onClicked(PXLProduct product) {
-                        if (product.link != null) {
-                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(product.link.toString()));
-                            startActivity(browserIntent);
-                        }
-
-                    }
-                });
-                binding.list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-                binding.list.setAdapter(adapter);
-            }
-
-
-        } else {
+        if (i == null) {
             finish();
+            return;
         }
 
+        pxlPhoto = i.getParcelableExtra("pxlPhoto");
+
+        // if the photo is null, close this image view
+        if (pxlPhoto == null) {
+            finish();
+            return;
+        }
+
+        // start a pixlee loading view
+        String json = AssetUtil.getLottieLoadingJson(this);
+        binding.lottieView.setAnimationFromJson(json, json);
+        binding.lottieView.playAnimation();
+
+
+        // play the video
+        playVideo();
+
+        // load a main image into an ImageView
+        Glide.with(this)
+                .load(pxlPhoto.getUrlForSize(PXLPhotoSize.THUMBNAIL).toString())
+                .centerCrop()
+                .apply(RequestOptions.bitmapTransform(new BlurTransformation(70, 3)))
+                .into(binding.imageViewBg);
+
+        // initiate the product list view
+        if (pxlPhoto.products != null) {
+            adapter = new ProductAdapter(pxlPhoto.products, new ProductAdapter.ProductListener() {
+                @Override
+                public void onClicked(PXLProduct product) {
+                    if (product.link != null) {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(product.link.toString()));
+                        startActivity(browserIntent);
+                    }
+
+                }
+            });
+            binding.list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            binding.list.setAdapter(adapter);
+        }
     }
 
     int stopPosition = 0;
@@ -169,6 +180,7 @@ public class VideoViewerActivity extends BaseActivity {
         return String.format(min + ":%02d", secOfMin);
     }
 
+    // start video view with a photo data
     public static void launch(Context context, PXLPhoto pxlPhoto) {
         Intent i = new Intent(context, VideoViewerActivity.class);
         i.putExtra("pxlPhoto", pxlPhoto);
