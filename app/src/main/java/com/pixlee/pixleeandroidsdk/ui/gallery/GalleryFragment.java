@@ -93,8 +93,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         PXLClient client = PXLClient.getInstance(getContext().getApplicationContext());
 
         album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
-        //Alternative:
-//         album = new PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client.getBasicRepo(), client.getAnalyticsRepo());
+        //Alternative: album = new PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client.getBasicRepo(), client.getAnalyticsRepo());
 
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
 //        fo.minTwitterFollowers = 0;
