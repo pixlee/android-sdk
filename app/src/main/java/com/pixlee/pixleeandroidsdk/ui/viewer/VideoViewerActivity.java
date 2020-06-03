@@ -95,6 +95,7 @@ public class VideoViewerActivity extends BaseActivity {
         binding.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
+                mediaPlayer.setLooping(true);
                 binding.lottieView.setVisibility(View.GONE);
 
                 getLifecycle().addObserver(new LifecycleEventObserver() {
