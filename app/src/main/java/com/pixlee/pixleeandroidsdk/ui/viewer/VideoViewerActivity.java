@@ -44,7 +44,7 @@ public class VideoViewerActivity extends BaseActivity {
         binding.backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onBackPressed();
             }
         });
 
@@ -87,12 +87,6 @@ public class VideoViewerActivity extends BaseActivity {
             finish();
         }
 
-        binding.backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     ProductAdapter adapter;

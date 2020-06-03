@@ -104,7 +104,6 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
 //         album = new PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client.getBasicRepo(), client.getAnalyticsRepo());
 
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
-
 //        fo.minTwitterFollowers = 0;
 //        fo.minInstagramFollowers = 0;
 //        fo.hasPermission = true;

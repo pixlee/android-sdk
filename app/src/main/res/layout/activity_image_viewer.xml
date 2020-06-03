@@ -30,7 +30,7 @@
             android:id="@+id/backButton"
             android:layout_width="?attr/actionBarSize"
             android:layout_height="?attr/actionBarSize"
-            android:tint="@android:color/white"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="center"
             android:src="@drawable/baseline_arrow_back_white_24"/>
         <TextView

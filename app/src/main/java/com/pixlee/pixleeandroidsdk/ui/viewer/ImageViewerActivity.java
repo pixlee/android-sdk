@@ -107,13 +107,6 @@ public class ImageViewerActivity extends BaseActivity {
         } else {
             finish();
         }
-
-        binding.backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     ProductAdapter adapter;
