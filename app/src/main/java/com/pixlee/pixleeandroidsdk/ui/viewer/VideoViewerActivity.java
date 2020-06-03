@@ -59,7 +59,7 @@ public class VideoViewerActivity extends BaseActivity {
                 return;
             }
 
-            setVideoViewer(pxlPhoto.getUrlForSize(PXLPhotoSize.ORIGINAL).toString());
+            playVideo();
 
             Glide.with(this)
                     .load(pxlPhoto.getUrlForSize(PXLPhotoSize.THUMBNAIL).toString())
@@ -89,9 +89,33 @@ public class VideoViewerActivity extends BaseActivity {
 
     }
 
+    int stopPosition = 0;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!binding.videoView.isPlaying()) {
+            binding.videoView.seekTo(stopPosition);
+            binding.videoView.start();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (binding.videoView.isPlaying()) {
+            stopPosition = binding.videoView.getCurrentPosition();
+            binding.videoView.pause();
+        }
+    }
+
+    void playVideo() {
+        setVideoViewer(pxlPhoto.getUrlForSize(PXLPhotoSize.ORIGINAL).toString());
+    }
+
     ProductAdapter adapter;
 
-    void setVideoViewer(String videoUrl){
+    void setVideoViewer(String videoUrl) {
         binding.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
@@ -101,9 +125,9 @@ public class VideoViewerActivity extends BaseActivity {
                 getLifecycle().addObserver(new LifecycleEventObserver() {
                     @Override
                     public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
-                        if(event==Lifecycle.Event.ON_DESTROY){
+                        if (event == Lifecycle.Event.ON_DESTROY) {
                             handler.removeCallbacks(runnableTimer);
-                        }else{
+                        } else {
                             handler.postDelayed(runnableTimer, 0);
                         }
                     }
@@ -117,7 +141,7 @@ public class VideoViewerActivity extends BaseActivity {
     }
 
     Handler handler = new Handler();
-    Runnable runnableTimer = new Runnable(){
+    Runnable runnableTimer = new Runnable() {
 
         @Override
         public void run() {
@@ -129,7 +153,7 @@ public class VideoViewerActivity extends BaseActivity {
 
                 binding.tvTime.setText(showMMSS(binding.videoView.getDuration(), binding.videoView.getCurrentPosition()));
                 handler.postDelayed(runnableTimer, 1000);
-            }else{
+            } else {
                 binding.tvTime.setText(showMMSS(binding.videoView.getDuration(), binding.videoView.getDuration()));
             }
         }
