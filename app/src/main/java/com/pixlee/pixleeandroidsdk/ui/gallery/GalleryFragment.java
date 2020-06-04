@@ -10,9 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.radiobutton.MaterialRadioButton;
 import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleeandroidsdk.databinding.FragmentGalleryBinding;
@@ -26,6 +28,9 @@ import com.pixlee.pixleesdk.PXLAlbumSortOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortType;
 import com.pixlee.pixleesdk.PXLBaseAlbum;
 import com.pixlee.pixleesdk.PXLClient;
+import com.pixlee.pixleesdk.PXLContentSource;
+import com.pixlee.pixleesdk.PXLContentType;
+import com.pixlee.pixleesdk.PXLPdpAlbum;
 import com.pixlee.pixleesdk.PXLPhoto;
 
 import java.util.ArrayList;
@@ -63,6 +68,20 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        // set filter buttons
+        binding.fabFilter.setOnClickListener(v -> {
+            binding.drawerLayout.openDrawer(GravityCompat.END);
+        });
+
+        binding.btnCloseFilter.setOnClickListener(v -> {
+            binding.drawerLayout.closeDrawer(GravityCompat.END);
+        });
+
+        binding.btnApply.setOnClickListener(v -> {
+            binding.drawerLayout.closeDrawer(GravityCompat.END);
+            loadAlbum();
+        });
+
         binding.gridToggleButton.setImageResource(lastImg);
         binding.gridToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,34 +111,135 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         PXLClient.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY);
         PXLClient client = PXLClient.getInstance(getContext().getApplicationContext());
 
-        album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
-        //Alternative: album = new PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client.getBasicRepo(), client.getAnalyticsRepo());
+        // initiate album
+        for (int i = 0; i < binding.radioGroupAlbum.getChildCount(); i++) {
+            MaterialRadioButton rb = (MaterialRadioButton) binding.radioGroupAlbum.getChildAt(i);
+            if (binding.radioGroupAlbum.getCheckedRadioButtonId() == rb.getId()) {
+                String text = rb.getText().toString();
+                if (text.equals(getString(R.string.radio_album)))
+                    album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
+                else if (text.equals(getString(R.string.radio_pdp)))
+                    album = new PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client.getBasicRepo(), client.getAnalyticsRepo());
+                break;
+            }
+        }
 
+        // if album is not properly started, stop loading it.
+        if (album == null) {
+            showDialog("No Album", "Album is not properly set. Please check the code and try again");
+            return;
+        }
+
+        PXLAlbumFilterOptions fo = readFilterOptionsFromUI();
+
+        PXLAlbumSortOptions so = new PXLAlbumSortOptions();
+        so.sortType = PXLAlbumSortType.APPROVED_TIME;
+        so.descending = true;
+        album.setPerPage(20);
+        album.setFilterOptions(fo);
+        album.setSortOptions(so);
+        PXLAlbum.RequestHandlers rh = this;
+
+        setLoading(true);
+        album.loadNextPageOfPhotos(rh);
+    }
+
+    PXLAlbumFilterOptions readFilterOptionsFromUI() {
         PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
-//        fo.minTwitterFollowers = 0;
-//        fo.minInstagramFollowers = 0;
-//        fo.hasPermission = true;
-//        fo.hasProduct = true;
 
+        // Set minTwitterFollowers filter if text is not empty
+        String minTwitterFollowers = binding.textViewMinTwitterFollowers.getText().toString();
+        if (!minTwitterFollowers.isEmpty()) {
+            fo.minTwitterFollowers = Integer.valueOf(minTwitterFollowers);
+        }
 
+        // Set minInstagramFollowers filter if text is not empty
+        String minInstagramFollowers = binding.textViewMinInstagramFollowers.getText().toString();
+        if (!minInstagramFollowers.isEmpty()) {
+            fo.minInstagramFollowers = Integer.valueOf(minInstagramFollowers);
+        }
 
-        /* ~~~ content source and content filter examples ~~~
-          ArrayList contentSource = new ArrayList();
-          contentSource.add(PXLContentSource.INSTAGRAM_FEED);
-          contentSource.add(PXLContentSource.INSTAGRAM_STORY);
-          fo.contentSource = contentSource;
+        // Set hasProduct filter if false or not true is set
+        for (int i = 0; i < binding.radioGroupHasPermission.getChildCount(); i++) {
+            MaterialRadioButton rb = (MaterialRadioButton) binding.radioGroupHasPermission.getChildAt(i);
+            if (binding.radioGroupHasPermission.getCheckedRadioButtonId() == rb.getId()) {
+                String text = rb.getText().toString();
+                if (text.equals(getString(R.string.radio_false)))
+                    fo.hasPermission = false;
+                else if (text.equals(getString(R.string.radio_true)))
+                    fo.hasPermission = true;
+                break;
+            }
+        }
 
-          ArrayList contentType = new ArrayList();
-          contentType.add(PXLContentType.IMAGE);
-          fo.contentType = contentType;
-        */
+        // Set hasProduct filter if false or not true is set
+        for (int i = 0; i < binding.radioGroupHasProduct.getChildCount(); i++) {
+            MaterialRadioButton rb = (MaterialRadioButton) binding.radioGroupHasProduct.getChildAt(i);
+            if (binding.radioGroupHasProduct.getCheckedRadioButtonId() == rb.getId()) {
+                String text = rb.getText().toString();
+                if (text.equals(getString(R.string.radio_false)))
+                    fo.hasProduct = false;
+                else if (text.equals(getString(R.string.radio_true)))
+                    fo.hasProduct = true;
+                break;
+            }
+        }
 
+        // Set inStockOnly filter if false or not true is set
+        for (int i = 0; i < binding.radioGroupInStockOnly.getChildCount(); i++) {
+            MaterialRadioButton rb = (MaterialRadioButton) binding.radioGroupInStockOnly.getChildAt(i);
+            if (binding.radioGroupInStockOnly.getCheckedRadioButtonId() == rb.getId()) {
+                String text = rb.getText().toString();
+                if (text.equals(getString(R.string.radio_false)))
+                    fo.inStockOnly = false;
+                else if (text.equals(getString(R.string.radio_true)))
+                    fo.inStockOnly = true;
+                break;
+            }
+        }
+
+        // Set contentSource filter if any of its check boxes is selected
+        ArrayList contentSource = new ArrayList();
+        for (int i = 0; i < binding.radioGroupContentSource.getChildCount(); i++) {
+            if (binding.radioGroupContentSource.getCheckedRadioButtonId() == binding.radioGroupContentSourceInstagramFeed.getId())
+                contentSource.add(PXLContentSource.INSTAGRAM_FEED);
+
+            else if (binding.radioGroupContentSource.getCheckedRadioButtonId() == binding.radioGroupContentSourceInstagramStory.getId())
+                contentSource.add(PXLContentSource.INSTAGRAM_STORY);
+
+            else if (binding.radioGroupContentSource.getCheckedRadioButtonId() == binding.radioGroupContentSourceTwitter.getId())
+                contentSource.add(PXLContentSource.TWITTER);
+
+            else if (binding.radioGroupContentSource.getCheckedRadioButtonId() == binding.radioGroupContentSourceFacebook.getId())
+                contentSource.add(PXLContentSource.FACEBOOK);
+
+            else if (binding.radioGroupContentSource.getCheckedRadioButtonId() == binding.radioGroupContentSourceApi.getId())
+                contentSource.add(PXLContentSource.API);
+
+            else if (binding.radioGroupContentSource.getCheckedRadioButtonId() == binding.radioGroupContentSourceDesktop.getId())
+                contentSource.add(PXLContentSource.DESKTOP);
+
+            else if (binding.radioGroupContentSource.getCheckedRadioButtonId() == binding.radioGroupContentSourceEmail.getId())
+                contentSource.add(PXLContentSource.EMAIL);
+        }
+        if (!contentSource.isEmpty())
+            fo.contentSource = contentSource;
+
+        // Set contentType filter if any of its check boxes is selected
+        ArrayList contentType = new ArrayList();
+        for (int i = 0; i < binding.radioGroupContentType.getChildCount(); i++) {
+            if (binding.radioGroupContentType.getCheckedRadioButtonId() == binding.radioGroupContentTypeImage.getId())
+                contentType.add(PXLContentType.IMAGE);
+            else if (binding.radioGroupContentType.getCheckedRadioButtonId() == binding.radioGroupContentTypeVideo.getId())
+                contentType.add(PXLContentType.VIDEO);
+        }
+        if (!contentType.isEmpty())
+            fo.contentType = contentType;
 
         /* ~~~ date filter examples ~~~
           fo.submittedDateEnd = new Date(2019, 7, 16);
           fo.submittedDateStart = new Date(2019, 7, 17);
         */
-
 
         // fo.filterByRadius = "21.3069,-157.8583,20";  radius filter example
 
@@ -146,23 +266,9 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
           fo.computerVision = computerVisionFilter;
 
          */
-
-
-        // fo.hasProduct = false;
-        // fo.hasPermission = false;
-        // fo.inStockOnly = false;
-
-        PXLAlbumSortOptions so = new PXLAlbumSortOptions();
-        so.sortType = PXLAlbumSortType.APPROVED_TIME;
-        so.descending = true;
-        //album.setPerPage(9);
-        album.setFilterOptions(fo);
-        album.setSortOptions(so);
-        PXLAlbum.RequestHandlers rh = this;
-
-        setLoading(true);
-        album.loadNextPageOfPhotos(rh);
+        return fo;
     }
+
 
     void setLoading(boolean visible) {
         if (visible) {
@@ -228,7 +334,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
             mode = new Mode();
         }
 
-        if(!mode.isGridMode)
+        if (!mode.isGridMode)
             binding.viewSwitcher.showNext();
     }
 
