@@ -174,13 +174,13 @@
                     <RadioGroup style="@style/filterContentView" android:id="@+id/radioGroupSortType">
                         <com.google.android.material.radiobutton.MaterialRadioButton
                             style="@style/filterRadioButton"
-                            android:id="@+id/radioGroupSortType_recency"
+                            android:id="@+id/radioGroupSortType_approved_time"
                             android:checked="true"
-                            android:text="recency" />
+                            android:text="approved_time" />
                         <com.google.android.material.radiobutton.MaterialRadioButton
                             style="@style/filterRadioButton"
-                            android:id="@+id/radioGroupSortType_approved_time"
-                            android:text="approved_time" />
+                            android:id="@+id/radioGroupSortType_recency"
+                            android:text="recency" />
                         <com.google.android.material.radiobutton.MaterialRadioButton
                             style="@style/filterRadioButton"
                             android:id="@+id/radioGroupSortType_random"
@@ -220,13 +220,13 @@
                     <RadioGroup style="@style/filterContentView" android:id="@+id/radioGroupSortDirection">
                         <com.google.android.material.radiobutton.MaterialRadioButton
                             style="@style/filterRadioButton"
-                            android:id="@+id/radioGroupSortDirectionASC"
+                            android:id="@+id/radioGroupSortDirectionDESC"
                             android:checked="true"
-                            android:text="ASC: descending is false" />
+                            android:text="DESC: descending is true" />
                         <com.google.android.material.radiobutton.MaterialRadioButton
                             style="@style/filterRadioButton"
-                            android:id="@+id/radioGroupSortDirectionDESC"
-                            android:text="DESC: descending is true" />
+                            android:id="@+id/radioGroupSortDirectionASC"
+                            android:text="ASC: descending is false" />
                     </RadioGroup>
 
                     <!-- hasProduct-->

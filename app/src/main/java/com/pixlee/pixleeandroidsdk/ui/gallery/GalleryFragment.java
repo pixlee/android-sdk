@@ -177,12 +177,6 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
                     sortOptions.sortType = PXLAlbumSortType.POPULARITY;
                 else if (text.equals(PXLAlbumSortType.DYNAMIC.value))
                     sortOptions.sortType = PXLAlbumSortType.DYNAMIC;
-                else if (text.equals(PXLAlbumSortType.DESC.value))
-                    sortOptions.sortType = PXLAlbumSortType.DESC;
-                else if (text.equals(PXLAlbumSortType.ASC.value))
-                    sortOptions.sortType = PXLAlbumSortType.ASC;
-                else if (text.equals(PXLAlbumSortType.NONE.value))
-                    sortOptions.sortType = PXLAlbumSortType.NONE;
                 break;
             }
         }
@@ -190,7 +184,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         // Set sorting direction
         if (binding.radioGroupSortDirection.getCheckedRadioButtonId() == binding.radioGroupSortDirectionASC.getId())
             sortOptions.descending = false;
-        else if (binding.radioGroupSortDirection.getCheckedRadioButtonId() == binding.radioGroupSortDirectionASC.getId())
+        else if (binding.radioGroupSortDirection.getCheckedRadioButtonId() == binding.radioGroupSortDirectionDESC.getId())
             sortOptions.descending = true;
 
         return sortOptions;
@@ -251,7 +245,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         }
 
         // Set contentSource filter if any of its check boxes is selected
-        ArrayList contentSource = new ArrayList();
+        ArrayList<PXLContentSource> contentSource = new ArrayList();
         if (binding.radioGroupContentSourceInstagramFeed.isChecked())
             contentSource.add(PXLContentSource.INSTAGRAM_FEED);
 
@@ -276,7 +270,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
             filterOptions.contentSource = contentSource;
 
         // Set contentType filter if any of its check boxes is selected
-        ArrayList contentType = new ArrayList();
+        ArrayList<PXLContentType> contentType = new ArrayList();
         if (binding.radioGroupContentTypeImage.isChecked())
             contentType.add(PXLContentType.IMAGE);
         else if (binding.radioGroupContentTypeVideo.isChecked())
