@@ -31,9 +31,11 @@ public class BigDecimalAdapter {
     @FromJson
     @FieldBigDecimal
     public BigDecimal fromJson(@NonNull final JsonReader reader) throws IOException {
-        if (reader.peek() == JsonReader.Token.NUMBER || reader.peek() == JsonReader.Token.STRING) {
-            String value = reader.nextString();
-            return new BigDecimal(value);
+        if(reader.peek() == JsonReader.Token.STRING){
+            return new BigDecimal(reader.nextString());
+        }
+        if (reader.peek() == JsonReader.Token.NUMBER) {
+            return new BigDecimal(String.valueOf(reader.nextDouble()));
         } else if (reader.peek() == JsonReader.Token.NULL) {
             reader.nextNull();
         }
