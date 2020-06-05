@@ -151,7 +151,7 @@
                             android:text="@string/radio_pdp" />
                     </RadioGroup>
 
-                    <TextView style="@style/filterBulletTextView" android:text="perPage" />
+                    <!-- perPage -->
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/filterContentTextInputLayout"
                         android:layout_width="match_parent"
@@ -287,7 +287,6 @@
 
 
                     <!-- minTwitterFollowers -->
-                    <TextView style="@style/filterBulletTextView" android:text="minTwitterFollowers" />
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/filterContentTextInputLayout"
                         android:layout_width="match_parent"
@@ -305,7 +304,6 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- minInstagramFollowers -->
-                    <TextView style="@style/filterBulletTextView" android:text="minInstagramFollowers" />
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/filterContentTextInputLayout"
                         android:layout_width="match_parent"
