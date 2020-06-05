@@ -340,7 +340,7 @@
                         <com.google.android.material.checkbox.MaterialCheckBox
                             style="@style/filterRadioButton"
                             android:id="@+id/radioGroupContentSource_facebook"
-                            android:text="twitter" />
+                            android:text="facebook" />
                         <com.google.android.material.checkbox.MaterialCheckBox
                             style="@style/filterRadioButton"
                             android:id="@+id/radioGroupContentSource_api"

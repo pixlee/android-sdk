@@ -249,23 +249,24 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         if (binding.radioGroupContentSourceInstagramFeed.isChecked())
             contentSource.add(PXLContentSource.INSTAGRAM_FEED);
 
-        else if (binding.radioGroupContentSourceInstagramStory.isChecked())
+        if (binding.radioGroupContentSourceInstagramStory.isChecked())
             contentSource.add(PXLContentSource.INSTAGRAM_STORY);
 
-        else if (binding.radioGroupContentSourceTwitter.isChecked())
+        if (binding.radioGroupContentSourceTwitter.isChecked())
             contentSource.add(PXLContentSource.TWITTER);
 
-        else if (binding.radioGroupContentSourceFacebook.isChecked())
+        if (binding.radioGroupContentSourceFacebook.isChecked())
             contentSource.add(PXLContentSource.FACEBOOK);
 
-        else if (binding.radioGroupContentSourceApi.isChecked())
+        if (binding.radioGroupContentSourceApi.isChecked())
             contentSource.add(PXLContentSource.API);
 
-        else if (binding.radioGroupContentSourceDesktop.isChecked())
+        if (binding.radioGroupContentSourceDesktop.isChecked())
             contentSource.add(PXLContentSource.DESKTOP);
 
-        else if (binding.radioGroupContentSourceEmail.isChecked())
+        if (binding.radioGroupContentSourceEmail.isChecked())
             contentSource.add(PXLContentSource.EMAIL);
+
         if (!contentSource.isEmpty())
             filterOptions.contentSource = contentSource;
 
@@ -273,7 +274,8 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         ArrayList<PXLContentType> contentType = new ArrayList();
         if (binding.radioGroupContentTypeImage.isChecked())
             contentType.add(PXLContentType.IMAGE);
-        else if (binding.radioGroupContentTypeVideo.isChecked())
+
+        if (binding.radioGroupContentTypeVideo.isChecked())
             contentType.add(PXLContentType.VIDEO);
 
         if (!contentType.isEmpty())
