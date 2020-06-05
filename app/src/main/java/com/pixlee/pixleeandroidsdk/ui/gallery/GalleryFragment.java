@@ -108,7 +108,10 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
      * Initializes the PXLClient and creates the PXLAlbum
      */
     private void loadAlbum() {
+        // set credentials for the SDK
         PXLClient.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY);
+
+        // get PXLClient
         PXLClient client = PXLClient.getInstance(getContext().getApplicationContext());
 
         // initiate album
@@ -130,33 +133,82 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
             return;
         }
 
-        PXLAlbumFilterOptions fo = readFilterOptionsFromUI();
-
-        PXLAlbumSortOptions so = new PXLAlbumSortOptions();
-        so.sortType = PXLAlbumSortType.APPROVED_TIME;
-        so.descending = true;
-        album.setPerPage(20);
-        album.setFilterOptions(fo);
-        album.setSortOptions(so);
-        PXLAlbum.RequestHandlers rh = this;
-
+        // show a loading UI on the mobile screen
         setLoading(true);
-        album.loadNextPageOfPhotos(rh);
+
+        // set GET request parameters for the API
+        album.setPerPage(readPerPage());
+        album.setFilterOptions(readFilterOptionsFromUI());
+        album.setSortOptions(readSortOptionsFromUI());
+
+        // start requesting the API
+        album.loadNextPageOfPhotos(this);
+    }
+
+    int readPerPage() {
+        // Set textViewPerPage filter if text is not empty
+        String minTwitterFollowers = binding.textViewPerPage.getText().toString();
+        if (!minTwitterFollowers.isEmpty()) {
+            return Integer.valueOf(minTwitterFollowers);
+        }
+
+        // a default for perPage
+        return 20;
+    }
+
+    PXLAlbumSortOptions readSortOptionsFromUI() {
+        PXLAlbumSortOptions sortOptions = new PXLAlbumSortOptions();
+        // Set sortType filter if a radio button is selected
+        for (int i = 0; i < binding.radioGroupSortType.getChildCount(); i++) {
+            MaterialRadioButton rb = (MaterialRadioButton) binding.radioGroupSortType.getChildAt(i);
+            if (binding.radioGroupSortType.getCheckedRadioButtonId() == rb.getId()) {
+                String text = rb.getText().toString();
+                if (text.equals(PXLAlbumSortType.RECENCY.value))
+                    sortOptions.sortType = PXLAlbumSortType.RECENCY;
+                else if (text.equals(PXLAlbumSortType.APPROVED_TIME.value))
+                    sortOptions.sortType = PXLAlbumSortType.APPROVED_TIME;
+                else if (text.equals(PXLAlbumSortType.RANDOM.value))
+                    sortOptions.sortType = PXLAlbumSortType.RANDOM;
+                else if (text.equals(PXLAlbumSortType.PIXLEE_SHARES.value))
+                    sortOptions.sortType = PXLAlbumSortType.PIXLEE_SHARES;
+                else if (text.equals(PXLAlbumSortType.PIXLEE_LIKES.value))
+                    sortOptions.sortType = PXLAlbumSortType.PIXLEE_LIKES;
+                else if (text.equals(PXLAlbumSortType.POPULARITY.value))
+                    sortOptions.sortType = PXLAlbumSortType.POPULARITY;
+                else if (text.equals(PXLAlbumSortType.DYNAMIC.value))
+                    sortOptions.sortType = PXLAlbumSortType.DYNAMIC;
+                else if (text.equals(PXLAlbumSortType.DESC.value))
+                    sortOptions.sortType = PXLAlbumSortType.DESC;
+                else if (text.equals(PXLAlbumSortType.ASC.value))
+                    sortOptions.sortType = PXLAlbumSortType.ASC;
+                else if (text.equals(PXLAlbumSortType.NONE.value))
+                    sortOptions.sortType = PXLAlbumSortType.NONE;
+                break;
+            }
+        }
+
+        // Set sorting direction
+        if (binding.radioGroupSortDirection.getCheckedRadioButtonId() == binding.radioGroupSortDirectionASC.getId())
+            sortOptions.descending = false;
+        else if (binding.radioGroupSortDirection.getCheckedRadioButtonId() == binding.radioGroupSortDirectionASC.getId())
+            sortOptions.descending = true;
+
+        return sortOptions;
     }
 
     PXLAlbumFilterOptions readFilterOptionsFromUI() {
-        PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
+        PXLAlbumFilterOptions filterOptions = new PXLAlbumFilterOptions();
 
         // Set minTwitterFollowers filter if text is not empty
         String minTwitterFollowers = binding.textViewMinTwitterFollowers.getText().toString();
         if (!minTwitterFollowers.isEmpty()) {
-            fo.minTwitterFollowers = Integer.valueOf(minTwitterFollowers);
+            filterOptions.minTwitterFollowers = Integer.valueOf(minTwitterFollowers);
         }
 
         // Set minInstagramFollowers filter if text is not empty
         String minInstagramFollowers = binding.textViewMinInstagramFollowers.getText().toString();
         if (!minInstagramFollowers.isEmpty()) {
-            fo.minInstagramFollowers = Integer.valueOf(minInstagramFollowers);
+            filterOptions.minInstagramFollowers = Integer.valueOf(minInstagramFollowers);
         }
 
         // Set hasProduct filter if false or not true is set
@@ -165,9 +217,9 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
             if (binding.radioGroupHasPermission.getCheckedRadioButtonId() == rb.getId()) {
                 String text = rb.getText().toString();
                 if (text.equals(getString(R.string.radio_false)))
-                    fo.hasPermission = false;
+                    filterOptions.hasPermission = false;
                 else if (text.equals(getString(R.string.radio_true)))
-                    fo.hasPermission = true;
+                    filterOptions.hasPermission = true;
                 break;
             }
         }
@@ -178,9 +230,9 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
             if (binding.radioGroupHasProduct.getCheckedRadioButtonId() == rb.getId()) {
                 String text = rb.getText().toString();
                 if (text.equals(getString(R.string.radio_false)))
-                    fo.hasProduct = false;
+                    filterOptions.hasProduct = false;
                 else if (text.equals(getString(R.string.radio_true)))
-                    fo.hasProduct = true;
+                    filterOptions.hasProduct = true;
                 break;
             }
         }
@@ -191,82 +243,72 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
             if (binding.radioGroupInStockOnly.getCheckedRadioButtonId() == rb.getId()) {
                 String text = rb.getText().toString();
                 if (text.equals(getString(R.string.radio_false)))
-                    fo.inStockOnly = false;
+                    filterOptions.inStockOnly = false;
                 else if (text.equals(getString(R.string.radio_true)))
-                    fo.inStockOnly = true;
+                    filterOptions.inStockOnly = true;
                 break;
             }
         }
 
         // Set contentSource filter if any of its check boxes is selected
         ArrayList contentSource = new ArrayList();
-        for (int i = 0; i < binding.radioGroupContentSource.getChildCount(); i++) {
-            if (binding.radioGroupContentSource.getCheckedRadioButtonId() == binding.radioGroupContentSourceInstagramFeed.getId())
-                contentSource.add(PXLContentSource.INSTAGRAM_FEED);
+        if (binding.radioGroupContentSourceInstagramFeed.isChecked())
+            contentSource.add(PXLContentSource.INSTAGRAM_FEED);
 
-            else if (binding.radioGroupContentSource.getCheckedRadioButtonId() == binding.radioGroupContentSourceInstagramStory.getId())
-                contentSource.add(PXLContentSource.INSTAGRAM_STORY);
+        else if (binding.radioGroupContentSourceInstagramStory.isChecked())
+            contentSource.add(PXLContentSource.INSTAGRAM_STORY);
 
-            else if (binding.radioGroupContentSource.getCheckedRadioButtonId() == binding.radioGroupContentSourceTwitter.getId())
-                contentSource.add(PXLContentSource.TWITTER);
+        else if (binding.radioGroupContentSourceTwitter.isChecked())
+            contentSource.add(PXLContentSource.TWITTER);
 
-            else if (binding.radioGroupContentSource.getCheckedRadioButtonId() == binding.radioGroupContentSourceFacebook.getId())
-                contentSource.add(PXLContentSource.FACEBOOK);
+        else if (binding.radioGroupContentSourceFacebook.isChecked())
+            contentSource.add(PXLContentSource.FACEBOOK);
 
-            else if (binding.radioGroupContentSource.getCheckedRadioButtonId() == binding.radioGroupContentSourceApi.getId())
-                contentSource.add(PXLContentSource.API);
+        else if (binding.radioGroupContentSourceApi.isChecked())
+            contentSource.add(PXLContentSource.API);
 
-            else if (binding.radioGroupContentSource.getCheckedRadioButtonId() == binding.radioGroupContentSourceDesktop.getId())
-                contentSource.add(PXLContentSource.DESKTOP);
+        else if (binding.radioGroupContentSourceDesktop.isChecked())
+            contentSource.add(PXLContentSource.DESKTOP);
 
-            else if (binding.radioGroupContentSource.getCheckedRadioButtonId() == binding.radioGroupContentSourceEmail.getId())
-                contentSource.add(PXLContentSource.EMAIL);
-        }
+        else if (binding.radioGroupContentSourceEmail.isChecked())
+            contentSource.add(PXLContentSource.EMAIL);
         if (!contentSource.isEmpty())
-            fo.contentSource = contentSource;
+            filterOptions.contentSource = contentSource;
 
         // Set contentType filter if any of its check boxes is selected
         ArrayList contentType = new ArrayList();
-        for (int i = 0; i < binding.radioGroupContentType.getChildCount(); i++) {
-            if (binding.radioGroupContentType.getCheckedRadioButtonId() == binding.radioGroupContentTypeImage.getId())
-                contentType.add(PXLContentType.IMAGE);
-            else if (binding.radioGroupContentType.getCheckedRadioButtonId() == binding.radioGroupContentTypeVideo.getId())
-                contentType.add(PXLContentType.VIDEO);
-        }
+        if (binding.radioGroupContentTypeImage.isChecked())
+            contentType.add(PXLContentType.IMAGE);
+        else if (binding.radioGroupContentTypeVideo.isChecked())
+            contentType.add(PXLContentType.VIDEO);
+
         if (!contentType.isEmpty())
-            fo.contentType = contentType;
+            filterOptions.contentType = contentType;
 
-        /* ~~~ date filter examples ~~~
-          fo.submittedDateEnd = new Date(2019, 7, 16);
-          fo.submittedDateStart = new Date(2019, 7, 17);
-        */
+        // Apart from the examples above, there are more filters you can implement in you app.
+        // These are the example codes
 
+        // ###### date filter examples ######
+        // fo.submittedDateEnd = new Date(2019, 7, 16);
+        // fo.submittedDateStart = new Date(2019, 7, 17);
         // fo.filterByRadius = "21.3069,-157.8583,20";  radius filter example
 
+        // ###### in_categories filter example ######
+        // ArrayList incategories = new ArrayList<Integer>();
+        // incategories.add(1234);
+        // incategories.add(5678);
+        // fo.inCategories = incategories;
 
-        /* ~~~ in_categories filter example ~~~
-          ArrayList incategories = new ArrayList<Integer>();
-          incategories.add(1234);
-          incategories.add(5678);
-          fo.inCategories = incategories;
-         */
+        // ###### filter_by_userhandle filter example ######
+        // HashMap userHandleFilter = new HashMap<String, Object> ();
+        // userHandleFilter.put("contains", new String[] {"test1", "test2"});
+        // fo.filterByUserhandle = userHandleFilter;
 
-        /* ~~~ filter_by_userhandle filter example ~~~
-
-          HashMap userHandleFilter = new HashMap<String, Object> ();
-          userHandleFilter.put("contains", new String[] {"test1", "test2"});
-          fo.filterByUserhandle = userHandleFilter;
-
-         */
-
-         /* ~~~ computer_vision filter example ~~~
-
-          HashMap computerVisionFilter = new HashMap<String, Object> ();
-          computerVisionFilter.put("contains", new String[] {"hat"});
-          fo.computerVision = computerVisionFilter;
-
-         */
-        return fo;
+        // ###### computer_vision filter example ######
+        // HashMap computerVisionFilter = new HashMap<String, Object> ();
+        // computerVisionFilter.put("contains", new String[] {"hat"});
+        // fo.computerVision = computerVisionFilter;
+        return filterOptions;
     }
 
 

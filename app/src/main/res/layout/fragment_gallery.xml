@@ -137,7 +137,8 @@
                 <LinearLayout
                     android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                     <!-- load from album or sku-->
-                    <TextView style="@style/filterHeaderTextView" android:text="Load photos from Album or PDP" />
+                    <TextView style="@style/filterHeaderTextView" android:text="Album class settings" />
+                    <TextView style="@style/filterBulletTextView" android:text="Load photos from Album or PDP" />
                     <RadioGroup style="@style/filterContentView" android:orientation="horizontal" android:id="@+id/radioGroupAlbum">
                         <com.google.android.material.radiobutton.MaterialRadioButton
                             style="@style/filterRadioButton"
@@ -148,6 +149,84 @@
                             style="@style/filterRadioButton"
                             android:id="@+id/radioGroupAlbumPDP"
                             android:text="@string/radio_pdp" />
+                    </RadioGroup>
+
+                    <TextView style="@style/filterBulletTextView" android:text="perPage" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/filterContentTextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:endIconMode="clear_text">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/textViewPerPage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="perPage"
+                            android:inputType="number"
+                            android:maxLength="20"
+                            android:maxLines="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- hasProduct-->
+                    <TextView style="@style/filterHeaderTextView" android:text="Sorting" android:layout_marginTop="10dp"/>
+                    <TextView style="@style/filterBulletTextView" android:text="hasProduct" />
+                    <RadioGroup style="@style/filterContentView" android:id="@+id/radioGroupSortType">
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_recency"
+                            android:checked="true"
+                            android:text="recency" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_approved_time"
+                            android:text="approved_time" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_random"
+                            android:text="random" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_pixlee_shares"
+                            android:text="pixlee_shares" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_pixlee_likes"
+                            android:text="pixlee_likes" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_popularity"
+                            android:text="popularity" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_dynamic"
+                            android:text="dynamic" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_desc"
+                            android:text="desc" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_asc"
+                            android:text="asc" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_none"
+                            android:text="none" />
+                    </RadioGroup>
+
+                    <!-- sorting direction -->
+                    <TextView style="@style/filterBulletTextView" android:text="descending" />
+                    <RadioGroup style="@style/filterContentView" android:id="@+id/radioGroupSortDirection">
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortDirectionASC"
+                            android:checked="true"
+                            android:text="ASC: descending is false" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortDirectionDESC"
+                            android:text="DESC: descending is true" />
                     </RadioGroup>
 
                     <!-- hasProduct-->
