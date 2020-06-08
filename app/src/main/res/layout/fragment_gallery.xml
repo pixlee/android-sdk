@@ -1,56 +1,386 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    tools:openDrawer="end">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical">
-        <!-- navigation -->
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+            <!-- navigation -->
 
-        <ImageView
-            android:id="@+id/gridToggleButton"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_gravity="right" />
-
-        <ViewSwitcher
-            android:id="@+id/viewSwitcher"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:inAnimation="@android:anim/slide_in_left"
-            android:visibility="visible">
-
-            <RelativeLayout
+            <ImageView
+                android:id="@+id/gridToggleButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:visibility="gone"
+                android:layout_height="60dp"
+                android:layout_gravity="right" />
+
+            <ViewSwitcher
+                android:id="@+id/viewSwitcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:inAnimation="@android:anim/slide_in_left"
+                android:visibility="visible">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/gridView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#cc0100cc"
+                    android:padding="5dp"
+                    android:clipToPadding="false"
                     android:choiceMode="singleChoice"
                     android:divider="@android:color/transparent"
                     android:dividerHeight="0dp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/listView"
                     tools:layout_editor_absoluteX="8dp"
                     tools:layout_editor_absoluteY="8dp"
-                    android:layout_width="fill_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="7dp" />
-            </RelativeLayout>
-        </ViewSwitcher>
-    </LinearLayout>
-</RelativeLayout>
+                    android:padding="5dp"
+                    android:clipToPadding="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </ViewSwitcher>
+        </LinearLayout>
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieView"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            app:lottie_loop="true"/>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabFilter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/spacing_smlarge"
+            android:layout_marginLeft="@dimen/spacing_smlarge"
+            android:layout_marginRight="@dimen/spacing_smlarge"
+            android:layout_marginTop="@dimen/spacing_middle"
+            android:clickable="true"
+            android:tint="@android:color/white"
+            app:fabSize="normal"
+            app:rippleColor="@android:color/white"
+            android:src="@drawable/baseline_filter_alt_24" />
+    </RelativeLayout>
+    <!--navigation drawer menu-->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:fitsSystemWindows="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/AppTheme.AppBarOverlay">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/white"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/spacing_large"
+                        android:layout_marginRight="@dimen/spacing_large"
+                        android:gravity="center_vertical"
+                        android:text="Customize searching"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+                        android:textColor="@color/red_500"
+                        app:fontFamily="sans-serif-medium" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <ImageButton
+                        android:id="@+id/btnCloseFilter"
+                        android:layout_width="?attr/actionBarSize"
+                        android:layout_height="?attr/actionBarSize"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:tint="@color/red_500"
+                        android:src="@drawable/ic_close" />
+
+                </LinearLayout>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <LinearLayout
+                    android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+                    <!-- load from album or sku-->
+                    <TextView style="@style/filterHeaderTextView" android:text="Album class settings" />
+                    <TextView style="@style/filterBulletTextView" android:text="Load photos from Album or PDP" />
+                    <RadioGroup style="@style/filterContentView" android:orientation="horizontal" android:id="@+id/radioGroupAlbum">
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupAlbumAlbum"
+                            android:checked="true"
+                            android:text="@string/radio_album" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupAlbumPDP"
+                            android:text="@string/radio_pdp" />
+                    </RadioGroup>
+
+                    <!-- perPage -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/filterContentTextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:endIconMode="clear_text">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/textViewPerPage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="perPage"
+                            android:inputType="number"
+                            android:maxLength="20"
+                            android:maxLines="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- hasProduct-->
+                    <TextView style="@style/filterHeaderTextView" android:text="Sorting" android:layout_marginTop="10dp"/>
+                    <TextView style="@style/filterBulletTextView" android:text="hasProduct" />
+                    <RadioGroup style="@style/filterContentView" android:id="@+id/radioGroupSortType">
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_approved_time"
+                            android:checked="true"
+                            android:text="approved_time" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_recency"
+                            android:text="recency" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_random"
+                            android:text="random" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_pixlee_shares"
+                            android:text="pixlee_shares" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_pixlee_likes"
+                            android:text="pixlee_likes" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_popularity"
+                            android:text="popularity" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_dynamic"
+                            android:text="dynamic" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_desc"
+                            android:text="desc" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_asc"
+                            android:text="asc" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortType_none"
+                            android:text="none" />
+                    </RadioGroup>
+
+                    <!-- sorting direction -->
+                    <TextView style="@style/filterBulletTextView" android:text="descending" />
+                    <RadioGroup style="@style/filterContentView" android:id="@+id/radioGroupSortDirection">
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortDirectionDESC"
+                            android:checked="true"
+                            android:text="DESC: descending is true" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupSortDirectionASC"
+                            android:text="ASC: descending is false" />
+                    </RadioGroup>
+
+                    <!-- hasProduct-->
+                    <TextView style="@style/filterHeaderTextView" android:text="Filter" />
+                    <TextView style="@style/filterBulletTextView" android:text="hasProduct" />
+                    <RadioGroup style="@style/filterContentView" android:orientation="horizontal" android:id="@+id/radioGroupHasProduct">
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupHasProductNone"
+                            android:checked="true"
+                            android:text="@string/radio_none" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupHasProductFalse"
+                            android:text="@string/radio_false" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupHasProductTrue"
+                            android:text="@string/radio_true" />
+                    </RadioGroup>
+
+                    <!-- hasProduct -->
+                    <TextView style="@style/filterBulletTextView" android:text="hasPermission" />
+                    <RadioGroup style="@style/filterContentView" android:orientation="horizontal" android:id="@+id/radioGroupHasPermission">
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupHasPermissionNone"
+                            android:checked="true"
+                            android:text="@string/radio_none" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupHasPermissionFalse"
+                            android:text="@string/radio_false" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupHasPermissionTrue"
+                            android:text="@string/radio_true" />
+                    </RadioGroup>
+
+                    <!-- inStockOnly -->
+                    <TextView style="@style/filterBulletTextView" android:text="inStockOnly" />
+                    <RadioGroup style="@style/filterContentView" android:orientation="horizontal" android:id="@+id/radioGroupInStockOnly">
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupInStockOnlyNone"
+                            android:checked="true"
+                            android:text="@string/radio_none" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupInStockOnlyFalse"
+                            android:text="@string/radio_false" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupInStockOnlyTrue"
+                            android:text="@string/radio_true" />
+                    </RadioGroup>
+
+
+
+                    <!-- minTwitterFollowers -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/filterContentTextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:endIconMode="clear_text">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/textViewMinTwitterFollowers"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="minTwitterFollowers"
+                            android:inputType="number"
+                            android:maxLength="20"
+                            android:maxLines="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- minInstagramFollowers -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/filterContentTextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:endIconMode="clear_text">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/textViewMinInstagramFollowers"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="minInstagramFollowers"
+                            android:inputType="number"
+                            android:maxLength="20"
+                            android:maxLines="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- contentSource -->
+                    <TextView style="@style/filterBulletTextView" android:text="contentSource" />
+                    <RadioGroup style="@style/filterContentView" android:orientation="vertical" android:id="@+id/radioGroupContentSource">
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupContentSource_instagram_feed"
+                            android:text="instagram_feed" />
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupContentSource_instagram_story"
+                            android:text="instagram_story" />
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupContentSource_twitter"
+                            android:text="twitter" />
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupContentSource_facebook"
+                            android:text="facebook" />
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupContentSource_api"
+                            android:text="api" />
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupContentSource_desktop"
+                            android:text="desktop" />
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupContentSource_email"
+                            android:text="email" />
+                    </RadioGroup>
+
+                    <!-- contentType -->
+                    <TextView style="@style/filterBulletTextView" android:text="contentType" />
+                    <RadioGroup style="@style/filterContentView" android:orientation="vertical" android:id="@+id/radioGroupContentType">
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupContentType_image"
+                            android:text="image" />
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupContentType_video"
+                            android:text="video" />
+                    </RadioGroup>
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+            <TextView
+                android:id="@+id/btnApply"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/red_500"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:text="APPLY"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                android:textColor="@android:color/white"
+                app:fontFamily="sans-serif-medium" />
+
+        </LinearLayout>
+
+    </com.google.android.material.navigation.NavigationView>
+</androidx.drawerlayout.widget.DrawerLayout>

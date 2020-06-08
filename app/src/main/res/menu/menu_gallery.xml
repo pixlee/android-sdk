@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.pixlee.pixleeandroidsdk.MainActivity">
+
+    <item
+        android:id="@+id/action_grid"
+        android:icon="@drawable/grid_2x"
+        android:orderInCategory="100"
+        android:title="grid"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_list"
+        android:icon="@drawable/column_2x"
+        android:orderInCategory="100"
+        android:title="grid"
+        android:visible="false"
+        app:showAsAction="always" />
+
+    <!--<item
+        android:id="@+id/action_edit"
+        android:icon="@drawable/baseline_edit_white_24"
+        android:orderInCategory="101"
+        android:title="@string/button_edit"
+        app:showAsAction="always" />-->
+</menu>

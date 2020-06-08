@@ -10,12 +10,16 @@ import com.pixlee.pixleeandroidsdk.R;
 
 
 public class ListViewHolder extends RecyclerView.ViewHolder {
-    public TextView title;
+    public TextView message;
+    public TextView userName;
     public ImageView netImg;
-
+    public ImageView iv_video;
     public ListViewHolder(View view) {
         super(view);
-        title = (TextView) view.findViewById(R.id.title);
+        message = (TextView) view.findViewById(R.id.tv_message);
+        userName = (TextView) view.findViewById(R.id.tv_nickname);
         netImg = (ImageView) view.findViewById(R.id.netimg);
+        iv_video = (ImageView) view.findViewById(R.id.iv_video);
+
     }
 }

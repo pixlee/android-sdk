@@ -27,14 +27,23 @@ public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
 
     @Override
     public ListViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_list, viewGroup, false);
         return new ListViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ListViewHolder viewHolder, int i) {
         final PXLPhoto photo = galleryList.get(i);
-        viewHolder.title.setText(photo.photoTitle);
+
+        viewHolder.userName.setText("@" + photo.userName);
+        viewHolder.userName.setVisibility(photo.userName == null || photo.userName.isEmpty() ? View.GONE : View.VISIBLE);
+        if (photo.photoTitle != null)
+            viewHolder.message.setText(photo.photoTitle.trim());
+        else
+            viewHolder.message.setText("");
+        viewHolder.message.setVisibility(photo.photoTitle == null || photo.photoTitle.isEmpty() ? View.GONE : View.VISIBLE);
+
+        viewHolder.iv_video.setVisibility(photo.isVideo() ? View.VISIBLE : View.GONE);
         Glide.with(context)
                 .load(photo.getUrlForSize(PXLPhotoSize.MEDIUM))
                 .centerCrop()
@@ -42,7 +51,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onItemClicked(photo);
+                listener.onItemClicked(viewHolder.netImg, photo);
             }
         });
     }

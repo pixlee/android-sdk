@@ -18,6 +18,6 @@ public class HMAC {
         Mac mac = Mac.getInstance("HmacSHA1");
         mac.init(key);
         byte[] bytes = mac.doFinal(baseString.getBytes());
-        return Base64.encodeToString(bytes, Base64.NO_WRAP);
+        return android.util.Base64.encodeToString(bytes, Base64.NO_WRAP);
     }
 }

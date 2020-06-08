@@ -27,15 +27,22 @@ public class GridAdapter extends RecyclerView.Adapter<GridViewHolder> {
 
     @Override
     public GridViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_layout, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_grid, viewGroup, false);
         return new GridViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(GridViewHolder viewHolder, int i) {
         final PXLPhoto photo = galleryList.get(i);
-        viewHolder.title.setText(photo.photoTitle);
+        viewHolder.userName.setText("@" + photo.userName);
+        viewHolder.userName.setVisibility(photo.userName == null || photo.userName.isEmpty() ? View.GONE : View.VISIBLE);
+        if (photo.photoTitle != null)
+            viewHolder.message.setText(photo.photoTitle.trim());
+        else
+            viewHolder.message.setText("");
+        viewHolder.message.setVisibility(photo.photoTitle == null || photo.photoTitle.isEmpty() ? View.GONE : View.VISIBLE);
 
+        viewHolder.video.setVisibility(photo.isVideo() ? View.VISIBLE : View.GONE);
         Glide.with(context)
                 .load(photo.getUrlForSize(PXLPhotoSize.MEDIUM))
                 .centerCrop()
@@ -44,14 +51,14 @@ public class GridAdapter extends RecyclerView.Adapter<GridViewHolder> {
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onItemClicked(photo);
+                listener.onItemClicked(viewHolder.netImg, photo);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        if (galleryList  != null) {
+        if (galleryList != null) {
             return galleryList.size();
         }
         return 0;

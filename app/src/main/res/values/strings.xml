@@ -39,5 +39,10 @@
         \'Widget Visible\': \'Opened Widget\' should be fired first. Then, you can fire this when your own view for the widget started to be visible on the screen.
     </string>
 
+    <string name="radio_none">none</string>
+    <string name="radio_false">false</string>
+    <string name="radio_true">true</string>
 
+    <string name="radio_album">Album</string>
+    <string name="radio_pdp">PDP</string>
 </resources>
