@@ -22,7 +22,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
     - [Add To Cart](#Add-To-Cart)
     - [Conversion](#Conversion)
 - [UI components](#UI-components)
-    - [Image & Video Viewer with PXLPhoto](#Image-&-Video-Viewer-with-PXLPhoto)
+    - [Image & Video Viewer with PXLPhoto](#Image-and-Video-Viewer-with-PXLPhoto)
 - Migration
     - [from 1.0.6 or older](doc/migration/1.0.6.md)
 
@@ -310,7 +310,7 @@ The parameters for this method are:
     ```
 
 ## UI components
-#### Image & Video Viewer with PXLPhoto
+#### Image and Video Viewer with PXLPhoto
     - after receiving PXLPhoto list via PXLBaseAlbum.loadNextPageOfPhotos(...), you can launch watch the content using PXLPhotoViewerActivity. Depending on its content_type, PXLPhotoViewerActivity will play a video or display a photo.
     - you can use the activity using the code here
     ```
