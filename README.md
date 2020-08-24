@@ -311,8 +311,8 @@ The parameters for this method are:
 
 ## UI components
 #### Image and Video Viewer with PXLPhoto
-    - after receiving PXLPhoto list via PXLBaseAlbum.loadNextPageOfPhotos(...), you can launch watch the content using PXLPhotoViewerActivity. Depending on its content_type, PXLPhotoViewerActivity will play a video or display a photo.
-    - you can use the activity using the code here
+- after receiving PXLPhoto list via PXLBaseAlbum.loadNextPageOfPhotos(...), you can launch watch the content using PXLPhotoViewerActivity. Depending on its content_type, PXLPhotoViewerActivity will play a video or display a photo.
+- you can use the activity using the code here
     ```
     PXLPhotoViewerActivity.launch(getContext(), pxlPhoto, "photo name");
     PXLPhotoViewerActivity.launch(getContext(), pxlPhoto);
