@@ -29,8 +29,7 @@ import com.pixlee.pixleesdk.PXLContentSource;
 import com.pixlee.pixleesdk.PXLContentType;
 import com.pixlee.pixleesdk.PXLPdpAlbum;
 import com.pixlee.pixleesdk.PXLPhoto;
-import com.pixlee.pixleesdk.ui.activity.ImageViewerActivity;
-import com.pixlee.pixleesdk.ui.activity.VideoViewerActivity;
+import com.pixlee.pixleesdk.ui.activity.PXLPhotoViewerActivity;
 
 import java.util.ArrayList;
 
@@ -379,11 +378,8 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
     void moveToViewer(View view, PXLPhoto photo) {
         // You can choose images by using this example below.
         // PXLPhotoSize Options: [ORIGINAL, BIG, MEDIUM, THUMBNAIL]
-        if (photo.isVideo()) {
-            VideoViewerActivity.launch(getContext(), photo);
-        } else {
-            ImageViewerActivity.launch(getContext(), photo);
-        }
+        // optional: PXLPhotoViewerActivity.launch(getContext(), photo, "photo name");
+        PXLPhotoViewerActivity.launch(getContext(), photo);
     }
 
     /***

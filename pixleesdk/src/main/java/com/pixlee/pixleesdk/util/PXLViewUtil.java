@@ -36,8 +36,6 @@ public class PXLViewUtil {
 
     }
 
-
-
     public static int getStatusBarHeight(Activity activity) {
         int resourceId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {

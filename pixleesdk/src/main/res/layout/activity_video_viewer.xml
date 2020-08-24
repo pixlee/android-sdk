@@ -12,9 +12,16 @@
         android:id="@+id/videoView"
         android:layout_width="match_parent"
         android:layout_height="500dp"
+        android:visibility="gone"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:alpha="0"
         />
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
     <TextView
         android:id="@+id/tvTime"
         android:layout_width="wrap_content"
@@ -24,7 +31,7 @@
         android:textColor="@android:color/white"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         android:layout_alignParentRight="true"
-        android:layout_above="@+id/videoView"
+        android:layout_alignTop="@+id/videoView"
         tools:text="00:10"
         android:paddingTop="7dp"
         android:paddingLeft="10dp"
