@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk.ui.viewer;
+package com.pixlee.pixleesdk.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
@@ -16,20 +17,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.pixlee.pixleeandroidsdk.BaseActivity;
-import com.pixlee.pixleeandroidsdk.databinding.ActivityVideoViewerBinding;
-import com.pixlee.pixleeandroidsdk.ui.util.AssetUtil;
-import com.pixlee.pixleeandroidsdk.ui.viewer.adapter.ProductAdapter;
 import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.PXLPhotoSize;
 import com.pixlee.pixleesdk.PXLProduct;
+import com.pixlee.pixleesdk.databinding.ActivityVideoViewerBinding;
+import com.pixlee.pixleesdk.util.PXLViewUtil;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
 /**
  * This shows how to play the video and its product list
  */
-public class VideoViewerActivity extends BaseActivity {
+public class VideoViewerActivity extends AppCompatActivity {
     ActivityVideoViewerBinding binding;
     PXLPhoto pxlPhoto;
 
@@ -40,10 +39,10 @@ public class VideoViewerActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         // set a full screen mode
-        expandContentAreaOverStatusBar();
+        PXLViewUtil.expandContentAreaOverStatusBar(this);
 
         // give a padding to the top as much as the status bar's height
-        binding.bodyView.setPadding(0, getStatusBarHeight(), 0, 0);
+        binding.bodyView.setPadding(0, PXLViewUtil.getStatusBarHeight(this), 0, 0);
 
         // back button's click effect
         binding.backButton.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +67,7 @@ public class VideoViewerActivity extends BaseActivity {
         }
 
         // start a pixlee loading view
-        String json = AssetUtil.getLottieLoadingJson(this);
+        String json = PXLViewUtil.getLottieLoadingJson(this);
         binding.lottieView.setAnimationFromJson(json, json);
         binding.lottieView.playAnimation();
 

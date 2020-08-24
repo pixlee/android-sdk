@@ -19,9 +19,6 @@ import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleeandroidsdk.databinding.FragmentGalleryBinding;
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
-import com.pixlee.pixleeandroidsdk.ui.util.AssetUtil;
-import com.pixlee.pixleeandroidsdk.ui.viewer.ImageViewerActivity;
-import com.pixlee.pixleeandroidsdk.ui.viewer.VideoViewerActivity;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;
@@ -32,6 +29,8 @@ import com.pixlee.pixleesdk.PXLContentSource;
 import com.pixlee.pixleesdk.PXLContentType;
 import com.pixlee.pixleesdk.PXLPdpAlbum;
 import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.ui.ImageViewerActivity;
+import com.pixlee.pixleesdk.ui.VideoViewerActivity;
 
 import java.util.ArrayList;
 
@@ -311,13 +310,9 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
     void setLoading(boolean visible) {
         if (visible) {
             binding.lottieView.setVisibility(View.VISIBLE);
-            String json = AssetUtil.getLottieLoadingJson(getContext());
-            binding.lottieView.setAnimationFromJson(json, json);
-            binding.lottieView.playAnimation();
         } else {
             binding.lottieView.setVisibility(View.GONE);
         }
-
     }
 
     class Mode {

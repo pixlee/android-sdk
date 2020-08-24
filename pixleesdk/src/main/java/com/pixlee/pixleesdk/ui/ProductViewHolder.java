@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk.ui.viewer.adapter;
+package com.pixlee.pixleesdk.ui;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +10,10 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleesdk.PXLProduct;
+import com.pixlee.pixleesdk.R;
+
+import java.text.DecimalFormat;
 
 /**
  * Created by sungjun on 6/2/20.
@@ -21,6 +23,8 @@ class ProductViewHolder extends RecyclerView.ViewHolder {
     ImageView imageView;
     TextView tvMessage;
     TextView tvPrice;
+
+    DecimalFormat formatter = new DecimalFormat("#,##0.##");
 
     public ProductViewHolder(View containerView) {
         super(containerView);
@@ -41,14 +45,14 @@ class ProductViewHolder extends RecyclerView.ViewHolder {
             if (product.currency != null && !product.currency.isEmpty()) {
                 currency = product.currency + " ";
             }
-            tvPrice.setText(currency + product.price.toString());
+
+            tvPrice.setText(currency + formatter.format(product.price));
         } else
             tvPrice.setText("");
     }
 
     public static ProductViewHolder create(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_product, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product, parent, false);
         return new ProductViewHolder(view);
     }
 }
