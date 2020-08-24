@@ -24,8 +24,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.viewer.ImageViewerActivity"/>
-        <activity android:name=".ui.viewer.VideoViewerActivity"/>
+
     </application>
 
 </manifest>

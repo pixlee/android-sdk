@@ -43,7 +43,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridViewHolder> {
         viewHolder.message.setVisibility(photo.photoTitle == null || photo.photoTitle.isEmpty() ? View.GONE : View.VISIBLE);
 
         viewHolder.video.setVisibility(photo.isVideo() ? View.VISIBLE : View.GONE);
-        Glide.with(context)
+        Glide.with(viewHolder.netImg)
                 .load(photo.getUrlForSize(PXLPhotoSize.MEDIUM))
                 .centerCrop()
                 .into(viewHolder.netImg);

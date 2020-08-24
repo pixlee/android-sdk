@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk.ui.viewer.adapter;
+package com.pixlee.pixleesdk.ui.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pixlee.pixleesdk.PXLProduct;
+import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ProductViewHolder holder, int position) {
+    public void onBindViewHolder(final ProductViewHolder holder, int position) {
         holder.bind(list.get(position));
         holder.cardView.setOnClickListener(new View.OnClickListener(){
             @Override
