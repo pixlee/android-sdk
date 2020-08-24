@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk.ui;
+package com.pixlee.pixleesdk.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +21,7 @@ import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.PXLPhotoSize;
 import com.pixlee.pixleesdk.PXLProduct;
 import com.pixlee.pixleesdk.databinding.ActivityVideoViewerBinding;
+import com.pixlee.pixleesdk.ui.adapter.ProductAdapter;
 import com.pixlee.pixleesdk.util.PXLViewUtil;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;

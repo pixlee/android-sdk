@@ -24,8 +24,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.pixlee.pixleesdk.ui.ImageViewerActivity"/>
-        <activity android:name="com.pixlee.pixleesdk.ui.VideoViewerActivity"/>
+        <activity android:name="com.pixlee.pixleesdk.ui.activity.ImageViewerActivity"/>
+        <activity android:name="com.pixlee.pixleesdk.ui.activity.VideoViewerActivity"/>
     </application>
 
 </manifest>

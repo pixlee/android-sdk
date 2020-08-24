@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk.ui;
+package com.pixlee.pixleesdk.ui.viewholder;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +18,11 @@ import java.text.DecimalFormat;
 /**
  * Created by sungjun on 6/2/20.
  */
-class ProductViewHolder extends RecyclerView.ViewHolder {
-    CardView cardView;
-    ImageView imageView;
-    TextView tvMessage;
-    TextView tvPrice;
+public class ProductViewHolder extends RecyclerView.ViewHolder {
+    public CardView cardView;
+    public ImageView imageView;
+    public TextView tvMessage;
+    public TextView tvPrice;
 
     DecimalFormat formatter = new DecimalFormat("#,##0.##");
 

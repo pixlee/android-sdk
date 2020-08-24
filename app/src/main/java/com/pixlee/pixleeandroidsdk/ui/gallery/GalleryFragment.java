@@ -29,8 +29,8 @@ import com.pixlee.pixleesdk.PXLContentSource;
 import com.pixlee.pixleesdk.PXLContentType;
 import com.pixlee.pixleesdk.PXLPdpAlbum;
 import com.pixlee.pixleesdk.PXLPhoto;
-import com.pixlee.pixleesdk.ui.ImageViewerActivity;
-import com.pixlee.pixleesdk.ui.VideoViewerActivity;
+import com.pixlee.pixleesdk.ui.activity.ImageViewerActivity;
+import com.pixlee.pixleesdk.ui.activity.VideoViewerActivity;
 
 import java.util.ArrayList;
 

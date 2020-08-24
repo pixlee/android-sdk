@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk.ui;
+package com.pixlee.pixleesdk.ui.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pixlee.pixleesdk.PXLProduct;
+import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder;
 
 import java.util.List;
 
