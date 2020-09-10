@@ -36,11 +36,26 @@ An example of the proper usage of an opened lightbox event is also included in t
 - <img src="doc/img/demo_1_main.jpg" width="24%"> <img src="doc/img/demo_2_album.jpg" width="24%"> <img src="doc/img/demo_2_album_filter.jpg" width="24%"> <img src="doc/img/demo_2_image_viewer.jpg" width="24%">
 - <img src="doc/img/demo_3_uploader.jpg" width="24%"> <img src="doc/img/demo_4_analytics.jpg" width="24%"> <img src="doc/img/demo_5_analytics.jpg" width="24%">
 
-1. Import this project into Android Studio
-2. Open .gitignore at the root of the project folder and Add 'pixleekey.properties' to the file 
-3. Generate **pixleekey.properties** at the root of the project folder
+1. Add it in your root build.gradle at the end of repositories:
+    ```
+    allprojects {
+        repositories {
+            ...
+            maven { url 'https://jitpack.io' }
+        }
+    }
+    ```
+2. Add the dependency. Replace `<version>` with [![](https://jitpack.io/v/pixlee/android-sdk.svg)](https://jitpack.io/#pixlee/android-sdk)
+    ```
+    dependencies {
+            implementation 'com.github.pixlee:android-sdk:<version>'
+    }
+    ```
+
+3. Open .gitignore at the root of the project folder and Add 'pixleekey.properties' to the file
+4. Generate **pixleekey.properties** at the root of the project folder
     - <img src="doc/img/pixleekey.png" width="40%">
-4. Fill the file with the example below and edit it with your own credentials, albumId and SKU.  
+5. Fill the file with the example below and edit it with your own credentials, albumId and SKU.
 pixleeAPIKey and pixleeSecretKey are in here (https://app.pixlee.com/app#settings/pixlee_api)
 AlbumId and SKU available from the Pixlee dashboard).
     ```
@@ -57,7 +72,7 @@ AlbumId and SKU available from the Pixlee dashboard).
     pixleeSKU=35123
     ```
 
-4. Run the project on an Android device
+6. Run the project on an Android device
 
 # Add the SDK to your App
 - import pixleesdk as a library project into your project
