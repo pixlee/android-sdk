@@ -27,7 +27,9 @@ task clean(type: Delete) {
 
 def keystorePropertiesFile = rootProject.file("pixleekey.properties")
 def keystoreProperties = new Properties()
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
 
 ext {
     PIXLEE_API_KEY = keystoreProperties['pixleeAPIKey']
