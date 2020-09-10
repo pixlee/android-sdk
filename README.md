@@ -45,10 +45,10 @@ An example of the proper usage of an opened lightbox event is also included in t
         }
     }
     ```
-2. Add the dependency. Replace `<version>` with [![](https://jitpack.io/v/pixlee/android-sdk.svg)](https://jitpack.io/#pixlee/android-sdk)
+2. Add the dependency. Replace `$pixleeSDKversion` with this latest version, [![](https://jitpack.io/v/pixlee/android-sdk.svg)](https://jitpack.io/#pixlee/android-sdk)
     ```
     dependencies {
-            implementation 'com.github.pixlee:android-sdk:<version>'
+            implementation 'com.github.pixlee:android-sdk:$pixleeSDKversion'
     }
     ```
 
