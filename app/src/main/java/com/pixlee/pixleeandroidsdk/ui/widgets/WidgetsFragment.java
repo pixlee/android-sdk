@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk.ui.gallery;
+package com.pixlee.pixleeandroidsdk.ui.widgets;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +19,10 @@ import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleeandroidsdk.databinding.FragmentGalleryBinding;
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
+import com.pixlee.pixleeandroidsdk.ui.gallery.GalleryClickListener;
+import com.pixlee.pixleeandroidsdk.ui.gallery.GridAdapter;
+import com.pixlee.pixleeandroidsdk.ui.gallery.ListAdapter;
+import com.pixlee.pixleeandroidsdk.ui.gallery.RecyclerViewEndlessScrollListener;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.PXLAlbumSortOptions;
@@ -29,17 +33,14 @@ import com.pixlee.pixleesdk.PXLContentSource;
 import com.pixlee.pixleesdk.PXLContentType;
 import com.pixlee.pixleesdk.PXLPdpAlbum;
 import com.pixlee.pixleesdk.PXLPhoto;
-import com.pixlee.pixleesdk.PXLProduct;
 import com.pixlee.pixleesdk.ui.activity.PXLPhotoViewerActivity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
 
 /**
  * This shows how you can load photos of Pixlee using PXLAlbum.java
  */
-public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHandlers<ArrayList<PXLPhoto>> {
+public class WidgetsFragment extends BaseFragment implements PXLAlbum.RequestHandlers<ArrayList<PXLPhoto>> {
     @Override
     public int getTitleResource() {
         return R.string.title_album;
@@ -382,13 +383,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         // You can choose images by using this example below.
         // PXLPhotoSize Options: [ORIGINAL, BIG, MEDIUM, THUMBNAIL]
         // optional: PXLPhotoViewerActivity.launch(getContext(), photo, "photo name");
-        HashMap<String, Boolean> bookmarkMap = new HashMap<>();
-        if (photo.products != null) {
-            for (PXLProduct product : photo.products) {
-                bookmarkMap.put(product.id, new Random().nextBoolean());
-            }
-        }
-        PXLPhotoViewerActivity.launch(getContext(), null, photo, bookmarkMap);
+        PXLPhotoViewerActivity.launch(getContext(), photo);
     }
 
     /***

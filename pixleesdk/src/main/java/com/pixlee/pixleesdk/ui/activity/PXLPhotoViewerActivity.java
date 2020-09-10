@@ -32,6 +32,9 @@ import com.pixlee.pixleesdk.databinding.ActivityVideoViewerBinding;
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter;
 import com.pixlee.pixleesdk.util.PXLViewUtil;
 
+import java.util.HashMap;
+import java.util.Random;
+
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
 /**
@@ -73,176 +76,25 @@ public class PXLPhotoViewerActivity extends AppCompatActivity {
         }
 
         pxlPhoto = i.getParcelableExtra("pxlPhoto");
-
+        HashMap<String, Boolean> bookmarks = (HashMap<String, Boolean>) i.getSerializableExtra("bookmarks");
         // if the photo is null, close this image view
         if (pxlPhoto == null) {
             finish();
             return;
         }
 
-        startBlurBG();
-        loadProducts();
-
-        if (pxlPhoto.isVideo()) {
-            startVideo();
-        } else {
-            startPhoto();
-        }
-    }
-
-    void startBlurBG() {
-        // load a main image into an ImageView
-        Glide.with(this)
-                .load(pxlPhoto.getUrlForSize(PXLPhotoSize.THUMBNAIL).toString())
-                .centerCrop()
-                .apply(RequestOptions.bitmapTransform(new BlurTransformation(70, 3)))
-                .into(binding.imageViewBg);
-    }
-
-    void loadProducts() {
-        // initiate the product list view
-        if (pxlPhoto.products != null) {
-            adapter = new ProductAdapter(pxlPhoto.products, new ProductAdapter.ProductListener() {
-                @Override
-                public void onClicked(PXLProduct product) {
-                    if (product.link != null) {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(product.link.toString()));
-                        startActivity(browserIntent);
-                    }
-
-                }
-            });
-            binding.list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-            binding.list.setAdapter(adapter);
-        }
-    }
-
-    void startPhoto() {
-        binding.imageView.setVisibility(View.VISIBLE);
-        String imageUrl = pxlPhoto.getUrlForSize(PXLPhotoSize.BIG).toString();
-        // load a main image into an ImageView
-        Glide.with(this)
-                .load(imageUrl)
-                .fitCenter()
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        binding.imageView.setScaleType(ImageView.ScaleType.CENTER);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        binding.lottieView.setVisibility(View.GONE);
-                        binding.imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                        return false;
-                    }
-                }).into(binding.imageView);
-    }
-
-    void startVideo() {
-        // start a pixlee loading view
-        String json = PXLViewUtil.getLottieLoadingJson(this);
-        binding.lottieView.setAnimationFromJson(json, json);
-        binding.lottieView.playAnimation();
-
-        // play the video
-        playVideo();
-    }
-
-    int stopPosition = 0;
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (pxlPhoto.isVideo() && !binding.videoView.isPlaying()) {
-            binding.videoView.seekTo(stopPosition);
-            binding.videoView.start();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (pxlPhoto.isVideo() && binding.videoView.isPlaying()) {
-            stopPosition = binding.videoView.getCurrentPosition();
-            binding.videoView.pause();
-        }
-    }
-
-    void playVideo() {
-        setVideoViewer(pxlPhoto.getUrlForSize(PXLPhotoSize.ORIGINAL).toString());
-    }
-
-    ProductAdapter adapter;
-
-    void setVideoViewer(String videoUrl) {
-        binding.videoView.setVisibility(View.VISIBLE);
-        binding.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mediaPlayer) {
-                mediaPlayer.setOnInfoListener(new MediaPlayer.OnInfoListener() {
-                    @Override
-                    public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                        if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                            binding.videoView.setAlpha(1);
-                        }
-                        return true;
-                    }
-                });
-                mediaPlayer.setLooping(true);
-                binding.lottieView.setVisibility(View.GONE);
-                getLifecycle().addObserver(new LifecycleEventObserver() {
-                    @Override
-                    public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
-                        if (event == Lifecycle.Event.ON_DESTROY) {
-                            handler.removeCallbacks(runnableTimer);
-                        } else {
-                            handler.postDelayed(runnableTimer, 0);
-                        }
-                    }
-                });
-            }
-        });
-
-        binding.videoView.setVideoURI(Uri.parse(videoUrl));
-
-        binding.videoView.setVideoPath(videoUrl);
-        binding.videoView.start();
-    }
-
-    Handler handler = new Handler();
-    Runnable runnableTimer = new Runnable() {
-
-        @Override
-        public void run() {
-            boolean started = binding.videoView.isPlaying();
-            if (!started || binding.videoView.isPlaying()) {
-                if (!started) {
-                    started = binding.videoView.isPlaying();
-                }
-
-                binding.tvTime.setText(showMMSS(binding.videoView.getDuration(), binding.videoView.getCurrentPosition()));
-                handler.postDelayed(runnableTimer, 1000);
-            } else {
-                binding.tvTime.setText(showMMSS(binding.videoView.getDuration(), binding.videoView.getDuration()));
-            }
-        }
-    };
-
-    String showMMSS(int duration, int timeInMilli) {
-        int gap = duration - timeInMilli;
-        int sec = gap / 1000;
-        int min = sec / 60;
-        int secOfMin = sec % 60;
-        return String.format(min + ":%02d", secOfMin);
+        binding.pxlPhotoProductView.setPhoto(pxlPhoto, bookmarks);
     }
 
     // start video view with a photo data
-    public static void launch(Context context, PXLPhoto pxlPhoto, String title) {
+    public static void launch(Context context, String title, PXLPhoto pxlPhoto, HashMap<String, Boolean> bookmarks) {
         Intent i = new Intent(context, PXLPhotoViewerActivity.class);
         if (title != null) {
             i.putExtra("title", title);
+        }
+
+        if (bookmarks != null) {
+            i.putExtra("bookmarks", bookmarks);
         }
 
         i.putExtra("pxlPhoto", pxlPhoto);
@@ -250,6 +102,6 @@ public class PXLPhotoViewerActivity extends AppCompatActivity {
     }
 
     public static void launch(Context context, PXLPhoto pxlPhoto) {
-        launch(context, pxlPhoto, null);
+        launch(context, null, pxlPhoto, null);
     }
 }

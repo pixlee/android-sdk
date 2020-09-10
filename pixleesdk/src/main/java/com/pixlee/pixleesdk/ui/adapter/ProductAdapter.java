@@ -8,21 +8,29 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.pixlee.pixleesdk.PXLProduct;
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by sungjun on 6/2/20.
  */
 public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder> {
+    /**
+     * String: product id
+     * Boolean: is bookmarked
+     */
+    HashMap<String, Boolean> bookmarkMap;
     public List<PXLProduct> list;
 
-    public interface ProductListener{
+    public interface ProductListener {
         void onClicked(PXLProduct product);
     }
 
     ProductListener listener;
-    public ProductAdapter(List<PXLProduct> list, ProductListener listener) {
+
+    public ProductAdapter(List<PXLProduct> list, HashMap<String, Boolean> bookmarkMap, ProductListener listener) {
         this.list = list;
+        this.bookmarkMap = bookmarkMap;
         this.listener = listener;
     }
 
@@ -32,14 +40,19 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder> {
 
     @Override
     public void onBindViewHolder(final ProductViewHolder holder, int position) {
-        holder.bind(list.get(position));
-        holder.cardView.setOnClickListener(new View.OnClickListener(){
+        PXLProduct product = list.get(position);
+        Boolean isBookmarked = null;
+        if (bookmarkMap != null) {
+            isBookmarked = bookmarkMap.get(product.id);
+        }
+
+        holder.bind(product, isBookmarked);
+        holder.binding.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onClicked(list.get(holder.getAdapterPosition()));
             }
         });
-
     }
 
     @Override

@@ -15,11 +15,20 @@
             android:orientation="vertical">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btAlbum"
                 style="@style/NextButtonOutLined"
+                android:id="@+id/btAlbum"
                 android:paddingTop="16sp"
                 android:paddingBottom="13dp"
                 android:text="@string/title_album"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/NextButtonOutLined"
+                android:id="@+id/btWidgets"
+                android:text="@string/title_widgets"
+                android:textSize="16sp"
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp"
                 />
 
             <com.google.android.material.button.MaterialButton

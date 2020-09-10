@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.pixlee.pixleesdk.PXLProduct;
 import com.pixlee.pixleesdk.R;
+import com.pixlee.pixleesdk.databinding.ItemProductBinding;
 
 import java.text.DecimalFormat;
 
@@ -19,40 +20,47 @@ import java.text.DecimalFormat;
  * Created by sungjun on 6/2/20.
  */
 public class ProductViewHolder extends RecyclerView.ViewHolder {
-    public CardView cardView;
-    public ImageView imageView;
-    public TextView tvMessage;
-    public TextView tvPrice;
+    public ItemProductBinding binding;
 
     DecimalFormat formatter = new DecimalFormat("#,##0.##");
 
-    public ProductViewHolder(View containerView) {
-        super(containerView);
-        cardView = containerView.findViewById(R.id.cardView);
-        imageView = containerView.findViewById(R.id.imageView);
-        tvMessage = containerView.findViewById(R.id.tvMessage);
-        tvPrice = containerView.findViewById(R.id.tvPrice);
+    public ProductViewHolder(ItemProductBinding binding) {
+        super(binding.getRoot());
+        this.binding = binding;
     }
 
-    public void bind(PXLProduct product) {
-        Glide.with(imageView.getContext())
+    public void bind(PXLProduct product, Boolean isBookmarked) {
+        Glide.with(binding.imageView.getContext())
                 .load(product.imageThumb)
                 .centerCrop()
-                .into(imageView);
-        tvMessage.setText(product.title);
+                .into(binding.imageView);
+        binding.tvMessage.setText(product.title);
         if (product.price != null) {
             String currency = "";
             if (product.currency != null && !product.currency.isEmpty()) {
                 currency = product.currency + " ";
             }
 
-            tvPrice.setText(currency + formatter.format(product.price));
-        } else
-            tvPrice.setText("");
+            binding.tvPrice.setText(currency + formatter.format(product.price));
+        } else {
+            binding.tvPrice.setText("");
+        }
+
+        if (isBookmarked != null) {
+            binding.bookmark.setVisibility(View.VISIBLE);
+            binding.bookmark.setChecked(isBookmarked);
+        } else {
+            binding.bookmark.setVisibility(View.GONE);
+        }
     }
 
     public static ProductViewHolder create(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product, parent, false);
-        return new ProductViewHolder(view);
+        return new ProductViewHolder(
+                ItemProductBinding.inflate(
+                        LayoutInflater.from(parent.getContext()),
+                        parent,
+                        false
+                )
+        );
     }
 }

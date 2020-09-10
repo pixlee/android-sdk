@@ -11,6 +11,7 @@ import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleeandroidsdk.databinding.FragmentIndexBinding;
 import com.pixlee.pixleeandroidsdk.ui.gallery.GalleryFragment;
 import com.pixlee.pixleeandroidsdk.ui.uploader.ImageUploaderFragment;
+import com.pixlee.pixleeandroidsdk.ui.widgets.WidgetsFragment;
 
 /**
  * This is an index page of the app.
@@ -33,8 +34,7 @@ public class IndexFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentIndexBinding.inflate(inflater, container, false);
-        View view = binding.getRoot();
-        return view;
+        return binding.getRoot();
     }
 
     @Override
@@ -47,6 +47,12 @@ public class IndexFragment extends BaseFragment {
             }
         });
 
+        binding.btWidgets.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addFragmentToActivity(new WidgetsFragment());
+            }
+        });
 
         binding.btImageUploader.setOnClickListener(new View.OnClickListener() {
             @Override
