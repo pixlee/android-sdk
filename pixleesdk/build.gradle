@@ -1,4 +1,11 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+androidExtensions {
+    experimental = true
+}
 
 android {
     compileSdkVersion 28
@@ -23,6 +30,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
     testOptions {
             unitTests.returnDefaultValues = true
     }
@@ -30,6 +40,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20160810'
@@ -57,7 +68,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide"
     implementation "com.github.bumptech.glide:annotations:$glide"
     implementation "com.github.bumptech.glide:okhttp3-integration:$glide"
-    annotationProcessor "com.github.bumptech.glide:compiler:$glide"
+    kapt "com.github.bumptech.glide:compiler:$glide"
 
     /**
      * Glide Transformation

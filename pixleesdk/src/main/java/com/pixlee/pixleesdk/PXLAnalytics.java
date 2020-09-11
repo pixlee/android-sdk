@@ -1,8 +1,5 @@
 package com.pixlee.pixleesdk;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 
 import org.json.JSONArray;
