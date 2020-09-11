@@ -33,9 +33,12 @@ import com.pixlee.pixleesdk.PXLContentSource;
 import com.pixlee.pixleesdk.PXLContentType;
 import com.pixlee.pixleesdk.PXLPdpAlbum;
 import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.PXLProduct;
 import com.pixlee.pixleesdk.ui.activity.PXLPhotoViewerActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 /**
  * This shows how you can load photos of Pixlee using PXLAlbum.java
@@ -383,7 +386,13 @@ public class WidgetsFragment extends BaseFragment implements PXLAlbum.RequestHan
         // You can choose images by using this example below.
         // PXLPhotoSize Options: [ORIGINAL, BIG, MEDIUM, THUMBNAIL]
         // optional: PXLPhotoViewerActivity.launch(getContext(), photo, "photo name");
-        PXLPhotoViewerActivity.launch(getContext(), photo);
+        HashMap<String, Boolean> bookmarkMap = new HashMap<>();
+        if (photo.products != null) {
+            for (PXLProduct product : photo.products) {
+                bookmarkMap.put(product.id, new Random().nextBoolean());
+            }
+        }
+        PXLPhotoViewerActivity.launch(getContext(), null, photo, bookmarkMap);
     }
 
     /***

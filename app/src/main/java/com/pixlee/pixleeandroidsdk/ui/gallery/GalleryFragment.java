@@ -382,13 +382,7 @@ public class GalleryFragment extends BaseFragment implements PXLAlbum.RequestHan
         // You can choose images by using this example below.
         // PXLPhotoSize Options: [ORIGINAL, BIG, MEDIUM, THUMBNAIL]
         // optional: PXLPhotoViewerActivity.launch(getContext(), photo, "photo name");
-        HashMap<String, Boolean> bookmarkMap = new HashMap<>();
-        if (photo.products != null) {
-            for (PXLProduct product : photo.products) {
-                bookmarkMap.put(product.id, new Random().nextBoolean());
-            }
-        }
-        PXLPhotoViewerActivity.launch(getContext(), null, photo, bookmarkMap);
+        PXLPhotoViewerActivity.launch(getContext(), photo);
     }
 
     /***
