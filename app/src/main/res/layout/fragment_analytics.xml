@@ -16,7 +16,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+                android:textColor="?attr/colorOnSurface"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                 android:text="To see network data,\nplease check Logcat"
                 />
@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:textColor="@android:color/black"
+                android:textColor="?attr/colorOnSurface"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:text="Album Analytics"
                 />
@@ -102,7 +102,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+                android:textColor="?attr/colorOnSurface"
                 android:layout_marginTop="20dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:text="Ecommerce Analytics"
@@ -133,7 +133,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/colorOnSurface"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     tools:text="Album Loading..."
                     />
@@ -152,7 +152,7 @@
         android:layout_height="match_parent"
         android:visibility="gone"
         android:orientation="vertical"
-        android:background="@android:color/white">
+        android:background="?attr/colorSurface">
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollWidget"
             android:layout_width="match_parent"
@@ -169,7 +169,7 @@
                     android:padding="10dp"
                     android:paddingLeft="10dp"
                     android:text="@string/guide_widget"
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/colorOnSurface"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                     />
                 <TextView
@@ -187,7 +187,7 @@
                     android:layout_margin="20dp"
                     android:text="Widget"
                     android:gravity="center"
-                    android:background="#efefef"
+                    android:background="?attr/colorOnSurface"
                     android:textColor="#000000"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     />
@@ -196,7 +196,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:textColor="@android:color/holo_red_dark"
+                    android:textColor="?attr/colorError"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     />
             </LinearLayout>
@@ -204,7 +204,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
+            android:background="?attr/colorOnSurface"
+            android:alpha="0.1"
             />
         <TextView
             android:layout_width="match_parent"
@@ -212,7 +213,7 @@
             android:paddingTop="10dp"
             android:paddingLeft="10dp"
             android:text="Console:"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/colorOnSurface"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             />
         <TextView
@@ -221,7 +222,7 @@
             android:layout_height="100dp"
             android:paddingLeft="30dp"
             android:paddingBottom="10dp"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/colorOnSurface"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             />
     </LinearLayout>

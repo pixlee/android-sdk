@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
@@ -22,7 +23,7 @@ public class MainActivity extends BaseActivity {
     ActivityMainBinding binding;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -36,8 +37,12 @@ public class MainActivity extends BaseActivity {
             );
         }
 
-        setSystemBarColor(R.color.grey_5);
-        setSystemBarLight();
+        getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        if (getDelegate().getLocalNightMode() != AppCompatDelegate.MODE_NIGHT_YES) {
+            setSystemBarColor(R.color.grey_5);
+            setSystemBarLight();
+        }
+
 
         FragmentManager fm = getSupportFragmentManager();
         fm.addOnBackStackChangedListener(onBackStackChangedListener);
@@ -51,10 +56,10 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onBackStackChanged() {
             FragmentManager fm = getSupportFragmentManager();
-            int fragmentCount = fm.getBackStackEntryCount();
+            int fragmentCount = fm.getFragments().size();
             String title;
             if (fragmentCount > 0) {
-                BaseFragment fragment = (BaseFragment) fm.getFragments().get(fm.getFragments().size() - 1);
+                BaseFragment fragment = (BaseFragment) fm.getFragments().get(fragmentCount - 1);
                 if (fragment.getCustomTitle() != null) {
                     title = fragment.getCustomTitle();
                 } else {

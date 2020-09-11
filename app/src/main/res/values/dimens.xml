@@ -1,5 +1,6 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="elevation_default_top_app_bar">4dp</dimen>
 
     <!--genaral spacing-->
     <dimen name="spacing_xsmall">2dp</dimen>
