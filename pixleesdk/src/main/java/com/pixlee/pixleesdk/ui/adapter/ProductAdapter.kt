@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pixlee.pixleesdk.PXLProduct
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder.Companion.create
+import kotlinx.android.synthetic.main.item_product.*
 import java.util.*
 
 /**
@@ -16,11 +17,8 @@ class ProductAdapter(val list: List<PXLProduct>,
                       * Boolean: is bookmarked
                       */
                      val bookmarkMap: HashMap<String, Boolean>?,
-                     val listener: ProductListener) : RecyclerView.Adapter<ProductViewHolder?>() {
-    interface ProductListener {
-        fun onClicked(product: PXLProduct)
-    }
-
+                     val onBookmarkChanged: (productId: String, isBookmarkChecked: Boolean) -> Unit,
+                     val onItemClicked: (product: PXLProduct) -> Unit) : RecyclerView.Adapter<ProductViewHolder?>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         return create(parent)
     }
@@ -28,8 +26,12 @@ class ProductAdapter(val list: List<PXLProduct>,
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = list[position]
         holder.bind(product, bookmarkMap?.get(product.id))
+        holder.bookmark.setOnClickListener {
+            onBookmarkChanged(list[holder.adapterPosition].id, holder.bookmark.isChecked)
+        }
+
         holder.itemView.setOnClickListener {
-            listener.onClicked(list[holder.adapterPosition])
+            onItemClicked(list[holder.adapterPosition])
         }
     }
 

@@ -27,7 +27,7 @@ class PXLPhotoViewerActivity : AppCompatActivity() {
         bodyView.setPadding(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
 
         // back button's click effect
-        backButton.setOnClickListener(View.OnClickListener { onBackPressed() })
+        backButton.setOnClickListener { onBackPressed() }
         val i = intent
         if (i == null) {
             finish()
@@ -35,7 +35,7 @@ class PXLPhotoViewerActivity : AppCompatActivity() {
         }
         val title = i.getStringExtra("title")
         if (!TextUtils.isEmpty(title)) {
-            tvTitle.setText(title)
+            tvTitle.text = title
         }
         val pxlPhoto:PXLPhoto? = i.getParcelableExtra("pxlPhoto")
         // if the photo is null, close this image view

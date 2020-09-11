@@ -23,10 +23,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.pixlee.pixleesdk.PXLPhoto
 import com.pixlee.pixleesdk.PXLPhotoSize
-import com.pixlee.pixleesdk.PXLProduct
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
-import com.pixlee.pixleesdk.ui.adapter.ProductAdapter.ProductListener
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.widget_viewer.view.*
@@ -38,6 +36,7 @@ import java.util.*
 class PXLPhotoProductView : FrameLayout {
     var pxlPhoto: PXLPhoto? = null
     var bookmarkMap: HashMap<String, Boolean>? = null
+    var onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initView(context)
@@ -53,16 +52,19 @@ class PXLPhotoProductView : FrameLayout {
         addView(view)
     }
 
+
     /**
      * Start the UI
      * @param pxlPhoto
      * @param bookmarkMap: user's current bookmarks < Product id: String, is bookmarked: Boolean >
      *                      if null, hide bookmark toggle
      *                      if not null, show bookmark toggle
+     * @param onBookmarkClicked {productId: String, isBookmarkChecked: Boolean -> ... }
      */
-    fun setPhoto(pxlPhoto: PXLPhoto, bookmarkMap: HashMap<String, Boolean>? = null) {
+    fun setPhoto(pxlPhoto: PXLPhoto, bookmarkMap: HashMap<String, Boolean>? = null, onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null) {
         this.pxlPhoto = pxlPhoto
         this.bookmarkMap = bookmarkMap
+        this.onBookmarkClicked = onBookmarkClicked
         startBlurBG()
         loadProducts()
         if (pxlPhoto.isVideo) {
@@ -86,15 +88,23 @@ class PXLPhotoProductView : FrameLayout {
     private fun loadProducts() {
         // initiate the product list view
         pxlPhoto?.also {
-            it.products?.also {
-                adapter = ProductAdapter(it, bookmarkMap, object : ProductListener {
-                    override fun onClicked(product: PXLProduct) {
-                        product.link.also {
-                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it.toString()))
-                            context.startActivity(browserIntent)
+            it.products?.also { products ->
+                adapter = ProductAdapter(
+                        list = products,
+                        bookmarkMap = bookmarkMap,
+                        onBookmarkChanged = { productId, isBookmarkChecked ->
+                            onBookmarkClicked?.let { it -> it(productId, isBookmarkChecked) }
+                        },
+                        onItemClicked = {
+                            it.link.also {
+                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it.toString()))
+                                context.startActivity(browserIntent)
+                            }
                         }
-                    }
-                })
+                )
+
+
+
                 list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 list.adapter = adapter
             }

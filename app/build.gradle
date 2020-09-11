@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+androidExtensions {
+    experimental = true
+}
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -41,6 +45,7 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation "androidx.appcompat:appcompat:$androidxAppcompat"
     implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"

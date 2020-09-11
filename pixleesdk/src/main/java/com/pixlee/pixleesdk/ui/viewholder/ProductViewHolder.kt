@@ -11,6 +11,7 @@ import kotlinx.android.extensions.LayoutContainer
 import java.text.DecimalFormat
 
 import kotlinx.android.synthetic.main.item_product.*
+
 /**
  * Created by sungjun on 9/11/20.
  */
@@ -21,21 +22,22 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
                 .load(product.imageThumb)
                 .centerCrop()
                 .into(imageView)
+
         tvMessage.text = product.title
+
         if (product.price != null) {
-            var currency = ""
-            if (product.currency != null && !product.currency.isEmpty()) {
-                currency = product.currency + " "
+            tvPrice.text = if (product.currency != null && product.currency.isNotEmpty()) {
+                product.currency + " " + formatter.format(product.price)
+            } else {
+                formatter.format(product.price)
             }
-            tvPrice.text = currency + formatter.format(product.price)
         } else {
             tvPrice.text = ""
         }
+
+        bookmark.visibility = if (isBookmarked != null) View.VISIBLE else View.GONE
         if (isBookmarked != null) {
-            bookmark.visibility = View.VISIBLE
             bookmark.isChecked = isBookmarked
-        } else {
-            bookmark.visibility = View.GONE
         }
     }
 
