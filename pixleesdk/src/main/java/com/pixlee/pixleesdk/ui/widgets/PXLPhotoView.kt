@@ -1,7 +1,6 @@
 package com.pixlee.pixleesdk.ui.widgets
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
 import android.net.Uri
@@ -24,7 +23,6 @@ import com.bumptech.glide.request.target.Target
 import com.pixlee.pixleesdk.PXLPhoto
 import com.pixlee.pixleesdk.PXLPhotoSize
 import com.pixlee.pixleesdk.util.PXLViewUtil
-import com.pixlee.pixleesdk.util.dp
 import com.pixlee.pixleesdk.util.px
 
 /**
@@ -51,11 +49,11 @@ class PXLPhotoView : FrameLayout {
     private var pxlPhoto: PXLPhoto? = null
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        initView(context)
+        initView()
     }
 
     constructor(context: Context) : super(context, null) {
-        initView(context)
+        initView()
     }
 
     val imageView: ImageView by lazy {
@@ -75,23 +73,25 @@ class PXLPhotoView : FrameLayout {
         }
     }
 
-    private fun initView(context: Context) {
+    private fun initView() {
         ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT).apply {
             leftToLeft = PARENT_ID
             topToTop = PARENT_ID
             rightToRight = PARENT_ID
             bottomToBottom = PARENT_ID
             imageView.layoutParams = this
-            imageView.setBackgroundColor(Color.RED)
             addView(imageView)
         }
 
-        ConstraintLayout.LayoutParams(0, 0).apply {
+        ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT).apply {
             leftToLeft = imageView.id
             topToTop = imageView.id
             rightToRight = imageView.id
             bottomToBottom = imageView.id
+            horizontalWeight = 1f
+            verticalWeight = 1f
             videoView.layoutParams = this
+
             addView(videoView)
         }
 
@@ -162,7 +162,9 @@ class PXLPhotoView : FrameLayout {
     private fun setVideoViewer(videoUrl: String?) {
         videoView.visibility = VISIBLE
         videoView.setOnPreparedListener { mediaPlayer ->
+            mediaPlayer.setVolume(0f, 0f)
             mediaPlayer.setOnInfoListener { mp, what, extra ->
+                Log.d("PPV", "MediaPlayer : " + what)
                 if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                     videoView.alpha = 1f
                 }
@@ -184,6 +186,8 @@ class PXLPhotoView : FrameLayout {
                         onPause()
                     }
                 })
+            }else{
+                onResume()
             }
         }
         videoView.setVideoURI(Uri.parse(videoUrl))
