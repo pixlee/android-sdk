@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.pixlee.pixleeandroidsdk.data.Config;
+import com.pixlee.pixleeandroidsdk.data.LocalRepository;
 import com.pixlee.pixleeandroidsdk.databinding.ActivityMainBinding;
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleeandroidsdk.ui.IndexFragment;
@@ -37,18 +39,23 @@ public class MainActivity extends BaseActivity {
             );
         }
 
-        getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        if (getDelegate().getLocalNightMode() != AppCompatDelegate.MODE_NIGHT_YES) {
-            setSystemBarColor(R.color.grey_5);
-            setSystemBarLight();
-        }
-
+        setConfig(LocalRepository.Companion.getInstance(this).getConfig());
 
         FragmentManager fm = getSupportFragmentManager();
         fm.addOnBackStackChangedListener(onBackStackChangedListener);
 
         replaceFragmentInActivity(frameLayoutId, new IndexFragment(), null);
 
+    }
+
+    public void setConfig(Config config){
+        if(config!=null && config.isDarkMode()){
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }else{
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            setSystemBarColor(R.color.grey_5);
+            setSystemBarLight();
+        }
     }
 
     FragmentManager.OnBackStackChangedListener onBackStackChangedListener = new FragmentManager.OnBackStackChangedListener() {

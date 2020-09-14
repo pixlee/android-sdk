@@ -51,4 +51,7 @@
 
     <string name="radio_album">Album</string>
     <string name="radio_pdp">PDP</string>
+
+    <string name="darkMode">Dark Mode</string>
+    <string name="drakModeTip">This demonstrates how Pixlee\'s widgets look when local DarkMode is turned ON or OFF</string>
 </resources>
