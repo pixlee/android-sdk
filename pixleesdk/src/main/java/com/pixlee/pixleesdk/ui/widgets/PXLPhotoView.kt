@@ -41,13 +41,12 @@ enum class ImageScaleType(val type: ImageView.ScaleType) {
     CENTER_CROP(ImageView.ScaleType.CENTER_CROP);
 }
 
-class ImageViewParam(val imageScaleType: ImageScaleType = ImageScaleType.FIT_CENTER)
-
 /**
  * This view is to show a photo of PXLPhoto inside a RecyclerView or a ViewGroup
  */
 class PXLPhotoView : FrameLayout {
-    var imageViewParam: ImageViewParam = ImageViewParam()
+    val defaultScaleType = ImageScaleType.FIT_CENTER
+    var imageScaleType: ImageScaleType = defaultScaleType
     private var pxlPhoto: PXLPhoto? = null
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -110,9 +109,9 @@ class PXLPhotoView : FrameLayout {
      * @param pxlPhoto
      * @param ImageViewParam
      */
-    fun setPhoto(pxlPhoto: PXLPhoto, imageViewParam: ImageViewParam = ImageViewParam()) {
+    fun setPhoto(pxlPhoto: PXLPhoto, imageScaleType: ImageScaleType = defaultScaleType) {
         this.pxlPhoto = pxlPhoto
-        this.imageViewParam = imageViewParam
+        this.imageScaleType = imageScaleType
         startPhoto()
         if (pxlPhoto.isVideo) {
             startVideo()
@@ -134,7 +133,7 @@ class PXLPhotoView : FrameLayout {
 
                 override fun onResourceReady(resource: Drawable?, model: Any, target: Target<Drawable?>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
                     lottieView.visibility = GONE
-                    imageView.scaleType = imageViewParam.imageScaleType.type
+                    imageView.scaleType = imageScaleType.type
                     return false
                 }
             }).into(imageView)
