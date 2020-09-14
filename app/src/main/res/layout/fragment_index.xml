@@ -80,17 +80,6 @@
                 android:layout_marginRight="@dimen/margin"
                 />
 
-            <com.google.android.material.button.MaterialButton
-                style="@style/NextButtonOutLined"
-                android:id="@+id/btPhotoOnList"
-                android:text="@string/title_photo_on_list"
-                android:textSize="16sp"
-                android:paddingTop="13dp"
-                android:paddingBottom="13dp"
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"
-                />
-
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

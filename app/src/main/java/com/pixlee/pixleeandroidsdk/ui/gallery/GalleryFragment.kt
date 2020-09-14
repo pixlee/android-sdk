@@ -13,6 +13,7 @@ import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewFragment
+import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewInRecyclerViewFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.ViewerActivity
 import com.pixlee.pixleesdk.*
 import com.pixlee.pixleesdk.PXLBaseAlbum.RequestHandlers
@@ -301,7 +302,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
                                 when (list[itemSelected.position]) {
                                     PhotoLauncher.ViewerActivity -> ViewerActivity.launch(it, photo)
                                     PhotoLauncher.PXLPhotoView -> addFragmentToActivity(PXLPhotoViewFragment.getInstance(photo))
-                                    PhotoLauncher.PXLPhotoViewInRecyclerView -> ViewerActivity.launch(it, photo)
+                                    PhotoLauncher.PXLPhotoViewInRecyclerView -> addFragmentToActivity(PXLPhotoViewInRecyclerViewFragment.getInstance(photo))
                                 }
                             }
                             //.setNegativeButton(getString(R.string.dialog_cancel), null)

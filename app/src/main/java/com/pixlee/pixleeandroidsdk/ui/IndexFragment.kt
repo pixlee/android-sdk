@@ -49,10 +49,6 @@ class IndexFragment : BaseFragment() {
             addFragmentToActivity(GalleryFragment.getInstance(true))
         }
 
-        btPhotoOnList.setOnClickListener {
-
-        }
-
         localDataSource.getConfig().also {
             switchDarkMode.isChecked = it.isDarkMode
         }

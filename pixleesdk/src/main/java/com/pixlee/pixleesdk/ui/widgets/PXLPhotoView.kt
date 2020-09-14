@@ -25,6 +25,7 @@ import com.pixlee.pixleesdk.PXLPhoto
 import com.pixlee.pixleesdk.PXLPhotoSize
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import com.pixlee.pixleesdk.util.dp
+import com.pixlee.pixleesdk.util.px
 
 /**
  * This class is to let PXLPhotoView support a limited number of ImageView.ScaleType
@@ -94,7 +95,7 @@ class PXLPhotoView : FrameLayout {
             addView(videoView)
         }
 
-        ConstraintLayout.LayoutParams(80.dp, 80.dp).apply {
+        ConstraintLayout.LayoutParams(80.px, 80.px).apply {
             leftToLeft = PARENT_ID
             topToTop = PARENT_ID
             rightToRight = PARENT_ID
