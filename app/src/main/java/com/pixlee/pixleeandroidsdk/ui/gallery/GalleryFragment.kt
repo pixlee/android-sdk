@@ -1,9 +1,9 @@
 package com.pixlee.pixleeandroidsdk.ui.gallery
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.annotation.StringRes
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -12,12 +12,12 @@ import com.google.android.material.radiobutton.MaterialRadioButton
 import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
+import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.ViewerActivity
 import com.pixlee.pixleesdk.*
 import com.pixlee.pixleesdk.PXLBaseAlbum.RequestHandlers
 import com.pixlee.pixleesdk.ui.activity.PXLPhotoViewerActivity
 import kotlinx.android.synthetic.main.fragment_gallery.*
-import kotlin.collections.ArrayList
 
 /**
  * This shows how you can load photos of Pixlee using PXLAlbum.java
@@ -264,10 +264,10 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
         }
     }
 
-    enum class PhotoLauncher(val viewName: String) {
-        ViewerActivity("ViewerActivity"),
-        PXLPhotoView("PXLPhotoView"),
-        PXLPhotoViewInRecyclerView("PXLPhotoView in RecyclerView")
+    enum class PhotoLauncher(@StringRes val stringRes: Int) {
+        ViewerActivity(R.string.title_pxlphoto_activity),
+        PXLPhotoView(R.string.title_pxlphotoview),
+        PXLPhotoViewInRecyclerView(R.string.title_pxlphotoview_in_recyclerview)
     }
 
     /**
@@ -275,7 +275,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
      *
      * @param photo
      */
-    fun moveToViewer(view: View?, photo: PXLPhoto?) {
+    fun moveToViewer(view: View, photo: PXLPhoto) {
         // You can choose images by using this example below.
         // PXLPhotoSize Options: [ORIGINAL, BIG, MEDIUM, THUMBNAIL]
         // optional: PXLPhotoViewerActivity.launch(getContext(), photo, "photo name");
@@ -286,7 +286,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
 
                 val listTexts = arrayOfNulls<String>(list.size)
                 for (i in list.indices) {
-                    listTexts[i] = list[i].viewName
+                    listTexts[i] = getString(list[i].stringRes)
                 }
 
                 context?.also {
@@ -300,6 +300,8 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
                             .setPositiveButton(R.string.next) { dialog, which ->
                                 when (list[itemSelected.position]) {
                                     PhotoLauncher.ViewerActivity -> ViewerActivity.launch(it, photo)
+                                    PhotoLauncher.PXLPhotoView -> addFragmentToActivity(PXLPhotoViewFragment.getInstance(photo))
+                                    PhotoLauncher.PXLPhotoViewInRecyclerView -> ViewerActivity.launch(it, photo)
                                 }
                             }
                             //.setNegativeButton(getString(R.string.dialog_cancel), null)

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/padding"
+            android:paddingBottom="@dimen/padding">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding"
+                android:text="CENTER_CROP"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="if you want to fix your view size, you can use this mode to get the content cropped"
+                android:textColor="?attr/colorOnSurface"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Tooltip"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin" />
+            <com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+                android:id="@+id/pxlPhotoViewCrop"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/margin"
+                android:layout_marginBottom="@dimen/margin"
+                android:alpha="0.1"
+                android:background="?attr/colorOnSurface"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin"
+                android:text="FIT_CENTER"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="if you want to have a view that adjust its size dynamically, you can use this mode to show the whole content keeping the ratio the same"
+                android:textColor="?attr/colorOnSurface"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Tooltip"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin" />
+            <com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+                android:id="@+id/pxlPhotoViewFit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"/>
+
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

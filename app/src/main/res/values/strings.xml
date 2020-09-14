@@ -9,6 +9,9 @@
     <string name="title_analytics">Call Analytics</string>
     <string name="title_image_viewer">Image Viewer</string>
     <string name="title_video_viewer">Video Viewer</string>
+    <string name="title_pxlphoto_activity">pxlphoto in Activity</string>
+    <string name="title_pxlphotoview">PXLPhotoView</string>
+    <string name="title_pxlphotoview_in_recyclerview">PXLPhotoView in RecyclerView</string>
 
     <string name="title_widgets">Widgets</string>
     <string name="title_photo_on_list">PXLPhoto on RecyclerView</string>

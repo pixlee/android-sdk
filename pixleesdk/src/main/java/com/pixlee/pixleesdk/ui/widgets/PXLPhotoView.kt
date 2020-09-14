@@ -1,35 +1,30 @@
 package com.pixlee.pixleesdk.ui.widgets
 
 import android.content.Context
-import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Handler
 import android.util.AttributeSet
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.VideoView
 import androidx.activity.ComponentActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.pixlee.pixleesdk.PXLPhoto
 import com.pixlee.pixleesdk.PXLPhotoSize
-import com.pixlee.pixleesdk.R
-import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
 import com.pixlee.pixleesdk.util.PXLViewUtil
-import jp.wasabeef.glide.transformations.BlurTransformation
-import kotlinx.android.synthetic.main.widget_photo.view.*
-import java.util.HashMap
+import com.pixlee.pixleesdk.util.dp
 
 /**
  * This class is to let PXLPhotoView support a limited number of ImageView.ScaleType
@@ -46,9 +41,7 @@ enum class ImageScaleType(val type: ImageView.ScaleType) {
     CENTER_CROP(ImageView.ScaleType.CENTER_CROP);
 }
 
-class ImageViewParam(val width: Int = ViewGroup.LayoutParams.WRAP_CONTENT,
-                     val height: Int = ViewGroup.LayoutParams.WRAP_CONTENT,
-                     val imageScaleType: ImageScaleType = ImageScaleType.FIT_CENTER)
+class ImageViewParam(val imageScaleType: ImageScaleType = ImageScaleType.FIT_CENTER)
 
 /**
  * This view is to show a photo of PXLPhoto inside a RecyclerView or a ViewGroup
@@ -65,10 +58,51 @@ class PXLPhotoView : FrameLayout {
         initView(context)
     }
 
+    val imageView: ImageView by lazy {
+        ImageView(context).apply {
+            id = ViewCompat.generateViewId()
+        }
+    }
+    val videoView: VideoView by lazy {
+        VideoView(context).apply {
+            alpha = 0f
+            id = ViewCompat.generateViewId()
+        }
+    }
+    val lottieView: PXLLoading by lazy {
+        PXLLoading(context).apply {
+            id = ViewCompat.generateViewId()
+        }
+    }
+
     private fun initView(context: Context) {
-        val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = li.inflate(R.layout.widget_photo, this, false)
-        addView(view)
+        ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT).apply {
+            leftToLeft = PARENT_ID
+            topToTop = PARENT_ID
+            rightToRight = PARENT_ID
+            bottomToBottom = PARENT_ID
+            imageView.layoutParams = this
+            imageView.setBackgroundColor(Color.RED)
+            addView(imageView)
+        }
+
+        ConstraintLayout.LayoutParams(0, 0).apply {
+            leftToLeft = imageView.id
+            topToTop = imageView.id
+            rightToRight = imageView.id
+            bottomToBottom = imageView.id
+            videoView.layoutParams = this
+            addView(videoView)
+        }
+
+        ConstraintLayout.LayoutParams(80.dp, 80.dp).apply {
+            leftToLeft = PARENT_ID
+            topToTop = PARENT_ID
+            rightToRight = PARENT_ID
+            bottomToBottom = PARENT_ID
+            lottieView.layoutParams = this
+            addView(lottieView)
+        }
     }
 
     /**
@@ -86,29 +120,24 @@ class PXLPhotoView : FrameLayout {
     }
 
     private fun startPhoto() {
-        imageView.scaleType = imageViewParam.imageScaleType.type
-        imageView.layoutParams.width = imageViewParam.width
-        imageView.layoutParams.height = imageViewParam.height
-
         imageView.visibility = VISIBLE
         pxlPhoto?.also {
             val imageUrl = it.getUrlForSize(PXLPhotoSize.BIG).toString()
+            Log.d("pxlphoto", "pxlphoto.url: $imageUrl")
             // load a main image into an ImageView
-            Glide.with(this)
-                    .load(imageUrl)
-                    .fitCenter()
-                    .listener(object : RequestListener<Drawable?> {
-                        override fun onLoadFailed(e: GlideException?, model: Any, target: Target<Drawable?>, isFirstResource: Boolean): Boolean {
-                            imageView.scaleType = ImageView.ScaleType.CENTER
-                            return false
-                        }
+            var builder = Glide.with(this).load(imageUrl)
+            builder.listener(object : RequestListener<Drawable?> {
+                override fun onLoadFailed(e: GlideException?, model: Any, target: Target<Drawable?>, isFirstResource: Boolean): Boolean {
+                    imageView.scaleType = ImageView.ScaleType.CENTER
+                    return false
+                }
 
-                        override fun onResourceReady(resource: Drawable?, model: Any, target: Target<Drawable?>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-                            lottieView.visibility = GONE
-                            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-                            return false
-                        }
-                    }).into(imageView)
+                override fun onResourceReady(resource: Drawable?, model: Any, target: Target<Drawable?>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
+                    lottieView.visibility = GONE
+                    imageView.scaleType = imageViewParam.imageScaleType.type
+                    return false
+                }
+            }).into(imageView)
         }
     }
 
@@ -124,7 +153,9 @@ class PXLPhotoView : FrameLayout {
 
     private fun playVideo() {
         pxlPhoto?.also {
-            setVideoViewer(it.getUrlForSize(PXLPhotoSize.ORIGINAL).toString())
+            if (it.isVideo) {
+                setVideoViewer(it.getUrlForSize(PXLPhotoSize.ORIGINAL).toString())
+            }
         }
     }
 
@@ -142,11 +173,11 @@ class PXLPhotoView : FrameLayout {
             if (context is ComponentActivity) {
                 (context as ComponentActivity).lifecycle.addObserver(LifecycleEventObserver { source, event ->
                     Log.d("PPV", "Lifecycle.Event : " + event.name)
-                    if (event == Lifecycle.Event.ON_DESTROY) {
+                    /*if (event == Lifecycle.Event.ON_DESTROY) {
                         localHandler.removeCallbacks(runnableTimer)
                     } else {
                         localHandler.postDelayed(runnableTimer, 0)
-                    }
+                    }*/
                     if (event == Lifecycle.Event.ON_RESUME) {
                         onResume()
                     } else if (event == Lifecycle.Event.ON_PAUSE) {
@@ -158,22 +189,6 @@ class PXLPhotoView : FrameLayout {
         videoView.setVideoURI(Uri.parse(videoUrl))
         videoView.setVideoPath(videoUrl)
         videoView.start()
-    }
-
-    private val localHandler = Handler()
-    private var runnableTimer: Runnable = object : Runnable {
-        override fun run() {
-            var started: Boolean = videoView.isPlaying
-            if (!started || videoView.isPlaying) {
-                if (!started) {
-                    started = videoView.isPlaying
-                }
-                tvTime.text = showMMSS(videoView.duration, videoView.currentPosition)
-                localHandler.postDelayed(this, 1000)
-            } else {
-                tvTime.text = showMMSS(videoView.duration, videoView.duration)
-            }
-        }
     }
 
     private fun showMMSS(duration: Int, timeInMilli: Int): String {
