@@ -79,4 +79,6 @@ dependencies {
      * Lottie for animation
      */
     implementation "com.airbnb.android:lottie:$lottie"
+
+    implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"
 }

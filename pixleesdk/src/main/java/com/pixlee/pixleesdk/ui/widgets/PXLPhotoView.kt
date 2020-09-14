@@ -9,6 +9,7 @@ import android.os.Handler
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.activity.ComponentActivity
@@ -27,16 +28,34 @@ import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import jp.wasabeef.glide.transformations.BlurTransformation
-import kotlinx.android.synthetic.main.widget_viewer.view.*
-import java.util.*
+import kotlinx.android.synthetic.main.widget_photo.view.*
+import java.util.HashMap
 
 /**
- * Created by sungjun on 9/11/20.
+ * This class is to let PXLPhotoView support a limited number of ImageView.ScaleType
  */
-class PXLPhotoProductView : FrameLayout {
+enum class ImageScaleType(val type: ImageView.ScaleType) {
+    /**
+     * ImageScaleType.FIT_CENTER: we keep the ratio of the video, so there must be empty areas. To cover it, Pixlee’s SDK will show a full-screen-size blurry image background. All parts of the video will be visible on the screen.
+     */
+    FIT_CENTER(ImageView.ScaleType.FIT_CENTER),
+
+    /**
+     * ImageScaleType.CENTER_CROP: there is no empty area. Some parts of the video going outside of the screen will not be visible on the screen
+     */
+    CENTER_CROP(ImageView.ScaleType.CENTER_CROP);
+}
+
+class ImageViewParam(val width: Int = ViewGroup.LayoutParams.WRAP_CONTENT,
+                     val height: Int = ViewGroup.LayoutParams.WRAP_CONTENT,
+                     val imageScaleType: ImageScaleType = ImageScaleType.FIT_CENTER)
+
+/**
+ * This view is to show a photo of PXLPhoto inside a RecyclerView or a ViewGroup
+ */
+class PXLPhotoView : FrameLayout {
+    var imageViewParam: ImageViewParam = ImageViewParam()
     private var pxlPhoto: PXLPhoto? = null
-    var bookmarkMap: HashMap<String, Boolean>? = null
-    var onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initView(context)
@@ -48,69 +67,29 @@ class PXLPhotoProductView : FrameLayout {
 
     private fun initView(context: Context) {
         val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = li.inflate(R.layout.widget_viewer, this, false)
+        val view = li.inflate(R.layout.widget_photo, this, false)
         addView(view)
     }
 
     /**
      * Start the UI
      * @param pxlPhoto
-     * @param bookmarkMap: user's current bookmarks < Product id: String, is bookmarked: Boolean >
-     *                      if null, hide bookmark toggle
-     *                      if not null, show bookmark toggle
-     * @param onBookmarkClicked {productId: String, isBookmarkChecked: Boolean -> ... }
+     * @param ImageViewParam
      */
-    fun setPhoto(pxlPhoto: PXLPhoto, bookmarkMap: HashMap<String, Boolean>? = null, onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null) {
+    fun setPhoto(pxlPhoto: PXLPhoto, imageViewParam: ImageViewParam = ImageViewParam()) {
         this.pxlPhoto = pxlPhoto
-        this.bookmarkMap = bookmarkMap
-        this.onBookmarkClicked = onBookmarkClicked
-        startBlurBG()
-        loadProducts()
+        this.imageViewParam = imageViewParam
+        startPhoto()
         if (pxlPhoto.isVideo) {
             startVideo()
-        } else {
-            startPhoto()
-        }
-    }
-
-    private fun startBlurBG() {
-        // load a main image into an ImageView
-        pxlPhoto?.also {
-            Glide.with(this)
-                    .load(it.getUrlForSize(PXLPhotoSize.THUMBNAIL).toString())
-                    .centerCrop()
-                    .apply(RequestOptions.bitmapTransform(BlurTransformation(70, 3)))
-                    .into(imageViewBg)
-        }
-    }
-
-    private fun loadProducts() {
-        // initiate the product list view
-        pxlPhoto?.also {
-            it.products?.also { products ->
-                adapter = ProductAdapter(
-                        list = products,
-                        bookmarkMap = bookmarkMap,
-                        onBookmarkChanged = { productId, isBookmarkChecked ->
-                            onBookmarkClicked?.let { it -> it(productId, isBookmarkChecked) }
-                        },
-                        onItemClicked = {
-                            it.link.also {
-                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it.toString()))
-                                context.startActivity(browserIntent)
-                            }
-                        }
-                )
-
-
-
-                list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                list.adapter = adapter
-            }
         }
     }
 
     private fun startPhoto() {
+        imageView.scaleType = imageViewParam.imageScaleType.type
+        imageView.layoutParams.width = imageViewParam.width
+        imageView.layoutParams.height = imageViewParam.height
+
         imageView.visibility = VISIBLE
         pxlPhoto?.also {
             val imageUrl = it.getUrlForSize(PXLPhotoSize.BIG).toString()
@@ -149,7 +128,6 @@ class PXLPhotoProductView : FrameLayout {
         }
     }
 
-    private var adapter: ProductAdapter? = null
     private fun setVideoViewer(videoUrl: String?) {
         videoView.visibility = VISIBLE
         videoView.setOnPreparedListener { mediaPlayer ->

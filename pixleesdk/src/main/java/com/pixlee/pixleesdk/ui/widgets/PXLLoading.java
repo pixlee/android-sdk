@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk.view;
+package com.pixlee.pixleesdk.ui.widgets;
 
 import android.content.Context;
 import android.util.AttributeSet;

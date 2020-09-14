@@ -12,7 +12,6 @@ import com.pixlee.pixleeandroidsdk.data.LocalRepository.Companion.getInstance
 import com.pixlee.pixleeandroidsdk.databinding.FragmentIndexBinding
 import com.pixlee.pixleeandroidsdk.ui.gallery.GalleryFragment
 import com.pixlee.pixleeandroidsdk.ui.uploader.ImageUploaderFragment
-import com.pixlee.pixleeandroidsdk.ui.widgets.WidgetsFragment
 import kotlinx.android.synthetic.main.fragment_index.*
 
 /**
@@ -34,6 +33,26 @@ class IndexFragment : BaseFragment() {
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        btAlbum.setOnClickListener {
+            addFragmentToActivity(GalleryFragment.getInstance(false))
+        }
+
+        btImageUploader.setOnClickListener {
+            addFragmentToActivity(ImageUploaderFragment())
+        }
+
+        btAnalytics.setOnClickListener {
+            addFragmentToActivity(AnalyticsFragment())
+        }
+
+        btWidgets.setOnClickListener {
+            addFragmentToActivity(GalleryFragment.getInstance(true))
+        }
+
+        btPhotoOnList.setOnClickListener {
+
+        }
+
         localDataSource.getConfig().also {
             switchDarkMode.isChecked = it.isDarkMode
         }
@@ -44,22 +63,6 @@ class IndexFragment : BaseFragment() {
                 localDataSource.setConfig(it)
                 (activity as MainActivity).setConfig(it)
             }
-        }
-
-        btAlbum.setOnClickListener {
-            addFragmentToActivity(GalleryFragment())
-        }
-
-        btWidgets.setOnClickListener {
-            addFragmentToActivity(WidgetsFragment())
-        }
-
-        btImageUploader.setOnClickListener {
-            addFragmentToActivity(ImageUploaderFragment())
-        }
-
-        btAnalytics.setOnClickListener {
-            addFragmentToActivity(AnalyticsFragment())
         }
     }
 }

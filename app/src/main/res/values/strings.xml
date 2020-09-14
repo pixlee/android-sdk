@@ -53,5 +53,8 @@
     <string name="radio_pdp">PDP</string>
 
     <string name="darkMode">Dark Mode</string>
-    <string name="drakModeTip">This demonstrates how Pixlee\'s widgets look when local DarkMode is turned ON or OFF</string>
+    <string name="darkModeTip">This demonstrates how Pixlee\'s widgets look when local DarkMode is turned ON or OFF</string>
+
+    <string name="galleryPhotoLauncherMessage">To open PXLPhoto, which viewer would like to launch?</string>
+    <string name="next">Next</string>
 </resources>

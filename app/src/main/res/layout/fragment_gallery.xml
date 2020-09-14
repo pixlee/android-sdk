@@ -52,7 +52,7 @@
                     android:layout_height="match_parent" />
             </ViewSwitcher>
         </LinearLayout>
-        <com.pixlee.pixleesdk.view.PXLLoading
+        <com.pixlee.pixleesdk.ui.widgets.PXLLoading
             android:id="@+id/lottieView"
             android:layout_width="80dp"
             android:layout_height="80dp"
@@ -324,31 +324,31 @@
                     <RadioGroup style="@style/filterContentView" android:orientation="vertical" android:id="@+id/radioGroupContentSource">
                         <com.google.android.material.checkbox.MaterialCheckBox
                             style="@style/filterRadioButton"
-                            android:id="@+id/radioGroupContentSource_instagram_feed"
+                            android:id="@+id/radioGroupContentSourceInstagramFeed"
                             android:text="instagram_feed" />
                         <com.google.android.material.checkbox.MaterialCheckBox
                             style="@style/filterRadioButton"
-                            android:id="@+id/radioGroupContentSource_instagram_story"
+                            android:id="@+id/radioGroupContentSourceInstagramStory"
                             android:text="instagram_story" />
                         <com.google.android.material.checkbox.MaterialCheckBox
                             style="@style/filterRadioButton"
-                            android:id="@+id/radioGroupContentSource_twitter"
+                            android:id="@+id/radioGroupContentSourceTwitter"
                             android:text="twitter" />
                         <com.google.android.material.checkbox.MaterialCheckBox
                             style="@style/filterRadioButton"
-                            android:id="@+id/radioGroupContentSource_facebook"
+                            android:id="@+id/radioGroupContentSourceFacebook"
                             android:text="facebook" />
                         <com.google.android.material.checkbox.MaterialCheckBox
                             style="@style/filterRadioButton"
-                            android:id="@+id/radioGroupContentSource_api"
+                            android:id="@+id/radioGroupContentSourceApi"
                             android:text="api" />
                         <com.google.android.material.checkbox.MaterialCheckBox
                             style="@style/filterRadioButton"
-                            android:id="@+id/radioGroupContentSource_desktop"
+                            android:id="@+id/radioGroupContentSourceDesktop"
                             android:text="desktop" />
                         <com.google.android.material.checkbox.MaterialCheckBox
                             style="@style/filterRadioButton"
-                            android:id="@+id/radioGroupContentSource_email"
+                            android:id="@+id/radioGroupContentSourceEmail"
                             android:text="email" />
                     </RadioGroup>
 
@@ -357,11 +357,11 @@
                     <RadioGroup style="@style/filterContentView" android:orientation="vertical" android:id="@+id/radioGroupContentType">
                         <com.google.android.material.checkbox.MaterialCheckBox
                             style="@style/filterRadioButton"
-                            android:id="@+id/radioGroupContentType_image"
+                            android:id="@+id/radioGroupContentTypeImage"
                             android:text="image" />
                         <com.google.android.material.checkbox.MaterialCheckBox
                             style="@style/filterRadioButton"
-                            android:id="@+id/radioGroupContentType_video"
+                            android:id="@+id/radioGroupContentTypeVideo"
                             android:text="video" />
                     </RadioGroup>
                 </LinearLayout>
