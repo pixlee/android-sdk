@@ -81,4 +81,5 @@ dependencies {
     implementation "com.airbnb.android:lottie:$lottie"
 
     implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"
+    implementation "com.github.SungjunApp:VideoPlayerManager:$videoPlayerManager"
 }

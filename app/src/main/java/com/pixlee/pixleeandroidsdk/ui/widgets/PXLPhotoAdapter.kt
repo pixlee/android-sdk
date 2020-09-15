@@ -2,13 +2,14 @@ package com.pixlee.pixleeandroidsdk.ui.widgets
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.pixlee.pixleesdk.PXLPhoto
+import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager
+import com.volokh.danylo.video_player_manager.meta.MetaData
 
 /**
  * Created by sungjun on 9/11/20.
  */
-class PXLPhotoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    val list: ArrayList <Any> = ArrayList()
+class PXLPhotoAdapter(val videoPlayerManager: VideoPlayerManager<MetaData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    val list: ArrayList <PhotoWithImageScaleType> = ArrayList()
     private val TYPE_PXLPHOTO = 0
     private val TYPE_TEXT = 1
 

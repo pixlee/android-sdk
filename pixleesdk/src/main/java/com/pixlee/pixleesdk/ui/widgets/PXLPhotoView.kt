@@ -1,29 +1,29 @@
 package com.pixlee.pixleesdk.ui.widgets
 
+import android.R.attr
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.media.MediaPlayer
-import android.net.Uri
 import android.util.AttributeSet
 import android.util.Log
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.VideoView
-import androidx.activity.ComponentActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.signature.ObjectKey
 import com.pixlee.pixleesdk.PXLPhoto
 import com.pixlee.pixleesdk.PXLPhotoSize
-import com.pixlee.pixleesdk.util.PXLViewUtil
 import com.pixlee.pixleesdk.util.px
+import com.volokh.danylo.video_player_manager.ui.MediaPlayerWrapper
+import com.volokh.danylo.video_player_manager.ui.ScalableTextureView
+import com.volokh.danylo.video_player_manager.ui.VideoPlayerView
+
 
 /**
  * This class is to let PXLPhotoView support a limited number of ImageView.ScaleType
@@ -61,9 +61,9 @@ class PXLPhotoView : FrameLayout {
             id = ViewCompat.generateViewId()
         }
     }
-    val videoView: VideoView by lazy {
-        VideoView(context).apply {
-            alpha = 0f
+    val videoView: VideoPlayerView by lazy {
+        VideoPlayerView(context).apply {
+            //alpha = 0f
             id = ViewCompat.generateViewId()
         }
     }
@@ -125,75 +125,64 @@ class PXLPhotoView : FrameLayout {
             val imageUrl = it.getUrlForSize(PXLPhotoSize.BIG).toString()
             Log.d("pxlphoto", "pxlphoto.url: $imageUrl")
             // load a main image into an ImageView
-            var builder = Glide.with(this).load(imageUrl)
-            builder.listener(object : RequestListener<Drawable?> {
-                override fun onLoadFailed(e: GlideException?, model: Any, target: Target<Drawable?>, isFirstResource: Boolean): Boolean {
+
+
+            var builder = Glide.with(this).asBitmap().load(imageUrl)
+            builder = builder.signature(ObjectKey(imageUrl + imageScaleType.type))
+//            builder = builder.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            builder = builder.skipMemoryCache(true)
+//            builder = when(imageScaleType){
+//                ImageScaleType.FIT_CENTER -> builder.fitCenter()
+//                ImageScaleType.CENTER_CROP -> builder.centerCrop()
+//            }
+
+            builder.listener(object : RequestListener<Bitmap?> {
+                override fun onLoadFailed(e: GlideException?, model: Any, target: Target<Bitmap?>, isFirstResource: Boolean): Boolean {
                     imageView.scaleType = ImageView.ScaleType.CENTER
                     return false
                 }
 
-                override fun onResourceReady(resource: Drawable?, model: Any, target: Target<Drawable?>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
+                override fun onResourceReady(resource: Bitmap?, model: Any, target: Target<Bitmap?>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
                     lottieView.visibility = GONE
                     imageView.scaleType = imageScaleType.type
+                    val viewWidth = imageView.measuredWidth
+                    val targetHeight: Int = viewWidth * height / (resource?.width ?: 0)
+                    Log.e("PXLPhotoView", "remote.w: ${(resource?.width ?: 0)}, remote.h: ${(resource?.height ?:0)} , iv.w: $viewWidth, targetHeight: $targetHeight")
+                    if (imageView.layoutParams.height != targetHeight) {
+                        imageView.layoutParams.height = targetHeight
+                        imageView.requestLayout()
+                    }
                     return false
                 }
             }).into(imageView)
         }
     }
 
-    private fun startVideo() {
-        // start a pixlee loading view
-        val json = PXLViewUtil.getLottieLoadingJson(context)
-        lottieView.setAnimationFromJson(json, json)
-        lottieView.playAnimation()
+    fun startVideo(){
+//        when(imageScaleType){
+//            ImageScaleType.FIT_CENTER -> videoView.setScaleType(ScalableTextureView.ScaleType.TOP)
+//            ImageScaleType.CENTER_CROP -> videoView.setScaleType(ScalableTextureView.ScaleType.CENTER_CROP)
+//        }
+        //videoView.setScaleType(ScalableTextureView.ScaleType.FILL)
 
-        // play the video
-        playVideo()
+        videoView.addMediaPlayerListener(object : MediaPlayerWrapper.MainThreadMediaPlayerListener {
+            override fun onVideoSizeChangedMainThread(width: Int, height: Int) {}
+            override fun onVideoPreparedMainThread() {
+                // When video is prepared it's about to start playback. So we hide the cover
+                //imageView.visibility = View.INVISIBLE
+            }
+
+            override fun onVideoCompletionMainThread() {}
+            override fun onErrorMainThread(what: Int, extra: Int) {}
+            override fun onBufferingUpdateMainThread(percent: Int) {}
+            override fun onVideoStoppedMainThread() {
+                // Show the cover when video stopped
+                //imageView.visibility = View.VISIBLE
+            }
+        })
     }
 
-    private fun playVideo() {
-        pxlPhoto?.also {
-            if (it.isVideo) {
-                setVideoViewer(it.getUrlForSize(PXLPhotoSize.ORIGINAL).toString())
-            }
-        }
-    }
 
-    private fun setVideoViewer(videoUrl: String?) {
-        videoView.visibility = VISIBLE
-        videoView.setOnPreparedListener { mediaPlayer ->
-            mediaPlayer.setVolume(0f, 0f)
-            mediaPlayer.setOnInfoListener { mp, what, extra ->
-                Log.d("PPV", "MediaPlayer : " + what)
-                if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                    videoView.alpha = 1f
-                }
-                true
-            }
-            mediaPlayer.isLooping = true
-            lottieView.visibility = GONE
-            if (context is ComponentActivity) {
-                (context as ComponentActivity).lifecycle.addObserver(LifecycleEventObserver { source, event ->
-                    Log.d("PPV", "Lifecycle.Event : " + event.name)
-                    /*if (event == Lifecycle.Event.ON_DESTROY) {
-                        localHandler.removeCallbacks(runnableTimer)
-                    } else {
-                        localHandler.postDelayed(runnableTimer, 0)
-                    }*/
-                    if (event == Lifecycle.Event.ON_RESUME) {
-                        onResume()
-                    } else if (event == Lifecycle.Event.ON_PAUSE) {
-                        onPause()
-                    }
-                })
-            }else{
-                onResume()
-            }
-        }
-        videoView.setVideoURI(Uri.parse(videoUrl))
-        videoView.setVideoPath(videoUrl)
-        videoView.start()
-    }
 
     private fun showMMSS(duration: Int, timeInMilli: Int): String {
         val gap = duration - timeInMilli
@@ -204,24 +193,6 @@ class PXLPhotoView : FrameLayout {
     }
 
     private var stopPosition = 0
-    fun onResume() {
-        pxlPhoto?.also {
-            if (it.isVideo && !videoView.isPlaying) {
-                videoView.seekTo(stopPosition)
-                videoView.start()
-            }
-        }
-
-    }
-
-    fun onPause() {
-        pxlPhoto?.also {
-            if (it.isVideo && videoView.isPlaying) {
-                stopPosition = videoView.currentPosition
-                videoView.pause()
-            }
-        }
-    }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()

@@ -255,6 +255,10 @@ public class PXLPhoto implements Parcelable {
         return "video".equals(contentType);
     }
 
+    public String getVideoUrl(){
+        return getUrlForSize(PXLPhotoSize.ORIGINAL).toString();
+    }
+
 
     /***
      * Returns a resource ID to an image representing the current photo's source
