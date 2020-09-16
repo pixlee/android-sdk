@@ -90,12 +90,12 @@ class PXLPhotoViewInRecyclerViewFragment : BaseFragment() {
 //            pxlPhotoViewCrop.setPhoto(it, ImageScaleType.CENTER_CROP)
 //            pxlPhotoViewFit.setPhoto(it)
 
-            for (i in 1..5) {
-                //adapter.list.add("$i")
-                adapter.list.add(PhotoWithImageScaleType(it, ImageScaleType.CENTER_CROP, videoPlayerManager))
-            }
-
-            adapter.list.add(PhotoWithImageScaleType(it, ImageScaleType.CENTER_CROP, videoPlayerManager))
+//            for (i in 1..5) {
+//                //adapter.list.add("$i")
+//                adapter.list.add(PhotoWithImageScaleType(it, ImageScaleType.CENTER_CROP, videoPlayerManager))
+//            }
+//
+//            adapter.list.add(PhotoWithImageScaleType(it, ImageScaleType.CENTER_CROP, videoPlayerManager))
 
             for (i in 6..10) {
                 //adapter.list.add("$i")

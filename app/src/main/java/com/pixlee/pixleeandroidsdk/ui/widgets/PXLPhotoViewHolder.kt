@@ -28,10 +28,10 @@ class PXLPhotoViewHolder(override val containerView: View) :
     fun bind(data: PhotoWithImageScaleType) {
         when (data.imageScaleType) {
             ImageScaleType.CENTER_CROP -> {
-                pxlPhotoView.layoutParams.height = 200.px
+                pxlPhotoView.layoutParams.height = 600.px
             }
             ImageScaleType.FIT_CENTER -> {
-                pxlPhotoView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                pxlPhotoView.layoutParams.height = 600.px
             }
         }
         pxlPhotoView.setPhoto(data.pxlPhoto, data.imageScaleType)

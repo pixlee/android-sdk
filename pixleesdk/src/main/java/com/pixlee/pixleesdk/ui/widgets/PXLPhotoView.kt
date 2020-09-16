@@ -1,28 +1,28 @@
 package com.pixlee.pixleesdk.ui.widgets
 
-import android.R.attr
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
+import android.graphics.Color
 import android.util.AttributeSet
 import android.util.Log
-import android.widget.FrameLayout
+import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
+import android.widget.RelativeLayout
+import androidx.annotation.ColorInt
 import androidx.core.view.ViewCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.pixlee.pixleesdk.PXLPhoto
 import com.pixlee.pixleesdk.PXLPhotoSize
-import com.pixlee.pixleesdk.util.px
+import com.bumptech.glide.request.target.Target
 import com.volokh.danylo.video_player_manager.ui.MediaPlayerWrapper
 import com.volokh.danylo.video_player_manager.ui.ScalableTextureView
 import com.volokh.danylo.video_player_manager.ui.VideoPlayerView
+import jp.wasabeef.glide.transformations.BlurTransformation
 
 
 /**
@@ -43,7 +43,7 @@ enum class ImageScaleType(val type: ImageView.ScaleType) {
 /**
  * This view is to show a photo of PXLPhoto inside a RecyclerView or a ViewGroup
  */
-class PXLPhotoView : FrameLayout {
+class PXLPhotoView : RelativeLayout {
     val defaultScaleType = ImageScaleType.FIT_CENTER
     var imageScaleType: ImageScaleType = defaultScaleType
     private var pxlPhoto: PXLPhoto? = null
@@ -54,6 +54,12 @@ class PXLPhotoView : FrameLayout {
 
     constructor(context: Context) : super(context, null) {
         initView()
+    }
+
+    val bgImageView: ImageView by lazy {
+        ImageView(context).apply {
+            id = ViewCompat.generateViewId()
+        }
     }
 
     val imageView: ImageView by lazy {
@@ -67,42 +73,74 @@ class PXLPhotoView : FrameLayout {
             id = ViewCompat.generateViewId()
         }
     }
-    val lottieView: PXLLoading by lazy {
-        PXLLoading(context).apply {
-            id = ViewCompat.generateViewId()
-        }
-    }
+//    val lottieView: PXLLoading by lazy {
+//        PXLLoading(context).apply {
+//            id = ViewCompat.generateViewId()
+//        }
+//    }
 
     private fun initView() {
-        ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT).apply {
-            leftToLeft = PARENT_ID
-            topToTop = PARENT_ID
-            rightToRight = PARENT_ID
-            bottomToBottom = PARENT_ID
+        LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).apply {
+            addRule(ALIGN_TOP, imageView.id)
+            addRule(ALIGN_LEFT, imageView.id)
+            addRule(ALIGN_RIGHT, imageView.id)
+            addRule(ALIGN_BOTTOM, imageView.id)
+            bgImageView.layoutParams = this
+            bgImageView.scaleType = ImageView.ScaleType.FIT_XY
+            addView(bgImageView)
+        }
+
+        LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).apply {
             imageView.layoutParams = this
+            imageView.adjustViewBounds = true
             addView(imageView)
         }
 
-        ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT).apply {
-            leftToLeft = imageView.id
-            topToTop = imageView.id
-            rightToRight = imageView.id
-            bottomToBottom = imageView.id
-            horizontalWeight = 1f
-            verticalWeight = 1f
+        LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).apply {
+            addRule(ALIGN_TOP, imageView.id)
+            addRule(ALIGN_LEFT, imageView.id)
+            addRule(ALIGN_RIGHT, imageView.id)
+            addRule(ALIGN_BOTTOM, imageView.id)
             videoView.layoutParams = this
 
             addView(videoView)
         }
 
-        ConstraintLayout.LayoutParams(80.px, 80.px).apply {
-            leftToLeft = PARENT_ID
-            topToTop = PARENT_ID
-            rightToRight = PARENT_ID
-            bottomToBottom = PARENT_ID
-            lottieView.layoutParams = this
-            addView(lottieView)
+//        LayoutParams(80.px, 80.px).apply {
+//            addRule(CENTER_IN_PARENT, TRUE)
+//            lottieView.layoutParams = this
+//            addView(lottieView)
+//        }
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+//        bgImageView.layoutParams.let {
+//            imageView.layoutParams = it
+//        }
+    }
+
+    var parentWidth = 0
+    var parentHeight = 0
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
+        val parentHeight = MeasureSpec.getSize(heightMeasureSpec)
+        if (this.parentWidth != parentWidth || this.parentHeight != parentHeight) {
+            this.parentWidth = parentWidth
+            this.parentHeight = parentHeight
+            imageView.layoutParams.let {
+                it.width = parentWidth
+                it.height = parentHeight
+                imageView.layoutParams = it
+            }
         }
+
+        //this.setMeasuredDimension(parentWidth/2, parentHeight);
+        //this.setLayoutParams(new *ParentLayoutType*.LayoutParams(parentWidth/2,parentHeight));
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+
     }
 
     /**
@@ -113,14 +151,27 @@ class PXLPhotoView : FrameLayout {
     fun setPhoto(pxlPhoto: PXLPhoto, imageScaleType: ImageScaleType = defaultScaleType) {
         this.pxlPhoto = pxlPhoto
         this.imageScaleType = imageScaleType
+        startBlurBG()
         startPhoto()
         if (pxlPhoto.isVideo) {
             startVideo()
         }
     }
 
+    private fun startBlurBG() {
+        // load a main image into an ImageView
+        pxlPhoto?.also {
+            Glide.with(this)
+                    .load(it.getUrlForSize(PXLPhotoSize.THUMBNAIL).toString())
+                    .centerCrop()
+                    .apply(RequestOptions.bitmapTransform(BlurTransformation(70, 3)))
+                    .into(bgImageView)
+        }
+    }
+
     private fun startPhoto() {
         imageView.visibility = VISIBLE
+        imageView.scaleType = imageScaleType.type
         pxlPhoto?.also {
             val imageUrl = it.getUrlForSize(PXLPhotoSize.BIG).toString()
             Log.d("pxlphoto", "pxlphoto.url: $imageUrl")
@@ -131,39 +182,47 @@ class PXLPhotoView : FrameLayout {
             builder = builder.signature(ObjectKey(imageUrl + imageScaleType.type))
 //            builder = builder.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             builder = builder.skipMemoryCache(true)
-//            builder = when(imageScaleType){
-//                ImageScaleType.FIT_CENTER -> builder.fitCenter()
-//                ImageScaleType.CENTER_CROP -> builder.centerCrop()
-//            }
+            builder = when (imageScaleType) {
+                ImageScaleType.FIT_CENTER -> builder.fitCenter()
+                ImageScaleType.CENTER_CROP -> builder.centerCrop()
+            }
 
-            builder.listener(object : RequestListener<Bitmap?> {
+            builder/*.listener(object : RequestListener<Bitmap?> {
                 override fun onLoadFailed(e: GlideException?, model: Any, target: Target<Bitmap?>, isFirstResource: Boolean): Boolean {
                     imageView.scaleType = ImageView.ScaleType.CENTER
                     return false
                 }
 
                 override fun onResourceReady(resource: Bitmap?, model: Any, target: Target<Bitmap?>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-                    lottieView.visibility = GONE
+                    //lottieView.visibility = GONE
                     imageView.scaleType = imageScaleType.type
-                    val viewWidth = imageView.measuredWidth
-                    val targetHeight: Int = viewWidth * height / (resource?.width ?: 0)
-                    Log.e("PXLPhotoView", "remote.w: ${(resource?.width ?: 0)}, remote.h: ${(resource?.height ?:0)} , iv.w: $viewWidth, targetHeight: $targetHeight")
-                    if (imageView.layoutParams.height != targetHeight) {
-                        imageView.layoutParams.height = targetHeight
-                        imageView.requestLayout()
+
+                    if (imageScaleType == ImageScaleType.FIT_CENTER) {
+                        //imageView.scaleType = imageScaleType.type
+                        val viewWidth = imageView.measuredWidth
+                        val targetHeight: Int = viewWidth * (resource?.height
+                                ?: 1) / (resource?.width ?: 1)
+                        Log.e("PXLPhotoView", "scale.type: ${imageScaleType.type.name}, targetHeight: $targetHeight")
+                        if (imageView.layoutParams.height != targetHeight) {
+                            imageView.layoutParams.height = targetHeight
+
+                        }
+
                     }
+                    imageView.requestLayout()
                     return false
                 }
-            }).into(imageView)
+            })*/.into(imageView)
         }
     }
 
-    fun startVideo(){
-//        when(imageScaleType){
-//            ImageScaleType.FIT_CENTER -> videoView.setScaleType(ScalableTextureView.ScaleType.TOP)
-//            ImageScaleType.CENTER_CROP -> videoView.setScaleType(ScalableTextureView.ScaleType.CENTER_CROP)
-//        }
-        //videoView.setScaleType(ScalableTextureView.ScaleType.FILL)
+    fun startVideo() {
+        Log.d("pxlphoto", "pxlphoto.videoUrl: ${pxlPhoto?.videoUrl}")
+        when (imageScaleType) {
+            ImageScaleType.FIT_CENTER -> videoView.setScaleType(ScalableTextureView.ScaleType.FIT_CENTER)
+            ImageScaleType.CENTER_CROP -> videoView.setScaleType(ScalableTextureView.ScaleType.CENTER_CROP)
+        }
+
 
         videoView.addMediaPlayerListener(object : MediaPlayerWrapper.MainThreadMediaPlayerListener {
             override fun onVideoSizeChangedMainThread(width: Int, height: Int) {}
@@ -182,20 +241,23 @@ class PXLPhotoView : FrameLayout {
         })
     }
 
+    /**
+     * @param size: in pixel
+     */
+    fun setTitleSize(size:Int) {
 
-
-    private fun showMMSS(duration: Int, timeInMilli: Int): String {
-        val gap = duration - timeInMilli
-        val sec = gap / 1000
-        val min = sec / 60
-        val secOfMin = sec % 60
-        return String.format("$min:%02d", secOfMin)
     }
 
-    private var stopPosition = 0
+    /**
+     * @param text: default is PXLPhoto title
+     */
+    fun setTitleText(text:String) {
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        // Stop media player
     }
+
+    fun setTitleColor(@ColorInt color: Int) {
+
+    }
+
+
 }

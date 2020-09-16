@@ -82,4 +82,6 @@ dependencies {
 
     implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"
     implementation "com.github.SungjunApp:VideoPlayerManager:$videoPlayerManager"
+
+
 }

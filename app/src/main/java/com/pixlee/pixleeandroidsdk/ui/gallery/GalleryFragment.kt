@@ -290,24 +290,25 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
                     listTexts[i] = getString(list[i].stringRes)
                 }
 
-                context?.also {
-                    class ItemSelected(var position: Int = 0)
-                    val itemSelected = ItemSelected()
-                    androidx.appcompat.app.AlertDialog.Builder(it)
-                            .setTitle(getString(R.string.galleryPhotoLauncherMessage))
-                            .setSingleChoiceItems(listTexts, itemSelected.position) { dialog, which ->
-                                itemSelected.position = which
-                            }
-                            .setPositiveButton(R.string.next) { dialog, which ->
-                                when (list[itemSelected.position]) {
-                                    PhotoLauncher.ViewerActivity -> ViewerActivity.launch(it, photo)
-                                    PhotoLauncher.PXLPhotoView -> addFragmentToActivity(PXLPhotoViewFragment.getInstance(photo))
-                                    PhotoLauncher.PXLPhotoViewInRecyclerView -> addFragmentToActivity(PXLPhotoViewInRecyclerViewFragment.getInstance(photo))
-                                }
-                            }
-                            //.setNegativeButton(getString(R.string.dialog_cancel), null)
-                            .show()
-                }
+                addFragmentToActivity(PXLPhotoViewInRecyclerViewFragment.getInstance(photo))
+//                context?.also {
+//                    class ItemSelected(var position: Int = 0)
+//                    val itemSelected = ItemSelected()
+//                    androidx.appcompat.app.AlertDialog.Builder(it)
+//                            .setTitle(getString(R.string.galleryPhotoLauncherMessage))
+//                            .setSingleChoiceItems(listTexts, itemSelected.position) { dialog, which ->
+//                                itemSelected.position = which
+//                            }
+//                            .setPositiveButton(R.string.next) { dialog, which ->
+//                                when (list[itemSelected.position]) {
+//                                    PhotoLauncher.ViewerActivity -> ViewerActivity.launch(it, photo)
+//                                    PhotoLauncher.PXLPhotoView -> addFragmentToActivity(PXLPhotoViewFragment.getInstance(photo))
+//                                    PhotoLauncher.PXLPhotoViewInRecyclerView -> addFragmentToActivity(PXLPhotoViewInRecyclerViewFragment.getInstance(photo))
+//                                }
+//                            }
+//                            //.setNegativeButton(getString(R.string.dialog_cancel), null)
+//                            .show()
+//                }
 
             } else {
                 PXLPhotoViewerActivity.launch(context!!, photo)
