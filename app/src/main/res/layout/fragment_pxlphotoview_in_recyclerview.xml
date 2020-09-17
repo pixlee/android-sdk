@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <com.pixlee.pixleesdk.ui.widgets.PXLPhotoRecyclerView
+        android:id="@+id/pxlPhotoRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </RelativeLayout>

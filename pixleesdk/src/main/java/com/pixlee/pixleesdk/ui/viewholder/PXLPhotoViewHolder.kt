@@ -1,12 +1,12 @@
-package com.pixlee.pixleeandroidsdk.ui.widgets
+package com.pixlee.pixleesdk.ui.viewholder
 
 import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleesdk.PXLPhoto
+import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.util.px
 import com.volokh.danylo.video_player_manager.manager.VideoItem
@@ -26,14 +26,7 @@ class PXLPhotoViewHolder(override val containerView: View) :
         LayoutContainer {
 
     fun bind(data: PhotoWithImageScaleType) {
-        when (data.imageScaleType) {
-            ImageScaleType.CENTER_CROP -> {
-                pxlPhotoView.layoutParams.height = 600.px
-            }
-            ImageScaleType.FIT_CENTER -> {
-                pxlPhotoView.layoutParams.height = 600.px
-            }
-        }
+        pxlPhotoView.layoutParams.height = data.heightInPixel
         pxlPhotoView.setPhoto(data.pxlPhoto, data.imageScaleType)
         tv.text = "ScaleType: ${data.imageScaleType.name}\nwidth: ${pxlPhotoView.layoutParams.width}, height: ${pxlPhotoView.layoutParams.height}"
     }
@@ -48,7 +41,8 @@ class PXLPhotoViewHolder(override val containerView: View) :
     }
 }
 
-class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto, val imageScaleType: ImageScaleType, val videoPlayerManager: VideoPlayerManager<MetaData>) : ListItem, VideoItem {
+class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto, val imageScaleType: ImageScaleType, val heightInPixel:Int = 400.px.toInt()) : ListItem, VideoItem {
+    lateinit var videoPlayerManager: VideoPlayerManager<MetaData>
     private val mCurrentViewRect = Rect()
 
     // a part of ListItem
@@ -67,10 +61,16 @@ class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto, val imageScaleType: ImageS
                     percents = mCurrentViewRect.bottom * 100 / height
                 }
 
-//                if (percents == 100) {
-//                    currentView.alpha = 1f
-//                } else {
-//                    currentView.alpha = 0.3f
+
+
+//                currentView.tag?.also {
+//                    val videoViewHolder: PXLPhotoViewHolder = it as PXLPhotoViewHolder
+//                    if (percents == 100) {
+//                        videoViewHolder.pxlPhotoView.videoView.alpha = 1f
+//                    } else {
+//                        videoViewHolder.pxlPhotoView.videoView.alpha = 0f
+//                    }
+//
 //                }
 
                 setVisibilityPercentsText(currentView, percents)

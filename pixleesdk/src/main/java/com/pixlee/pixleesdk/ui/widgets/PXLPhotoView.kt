@@ -1,24 +1,27 @@
 package com.pixlee.pixleesdk.ui.widgets
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.util.Log
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.view.ViewCompat
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.pixlee.pixleesdk.PXLPhoto
 import com.pixlee.pixleesdk.PXLPhotoSize
-import com.bumptech.glide.request.target.Target
+import com.pixlee.pixleesdk.R
+import com.pixlee.pixleesdk.util.px
 import com.volokh.danylo.video_player_manager.ui.MediaPlayerWrapper
 import com.volokh.danylo.video_player_manager.ui.ScalableTextureView
 import com.volokh.danylo.video_player_manager.ui.VideoPlayerView
@@ -48,15 +51,14 @@ class PXLPhotoView : RelativeLayout {
     var imageScaleType: ImageScaleType = defaultScaleType
     private var pxlPhoto: PXLPhoto? = null
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+
+    constructor(context: Context) : this(context, null)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
         initView()
     }
-
-    constructor(context: Context) : super(context, null) {
-        initView()
-    }
-
-    val bgImageView: ImageView by lazy {
+    val imageViewBg: ImageView by lazy {
         ImageView(context).apply {
             id = ViewCompat.generateViewId()
         }
@@ -67,17 +69,53 @@ class PXLPhotoView : RelativeLayout {
             id = ViewCompat.generateViewId()
         }
     }
+
     val videoView: VideoPlayerView by lazy {
         VideoPlayerView(context).apply {
-            //alpha = 0f
             id = ViewCompat.generateViewId()
         }
     }
-//    val lottieView: PXLLoading by lazy {
-//        PXLLoading(context).apply {
-//            id = ViewCompat.generateViewId()
-//        }
-//    }
+
+    val mainTextView: TextView by lazy {
+        TextView(context).apply {
+            text = "Main"
+            setTextColor(Color.WHITE)
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, 30.px)
+            id = ViewCompat.generateViewId()
+        }
+    }
+
+    val subTextView: TextView by lazy {
+        TextView(context).apply {
+            text = "Sub"
+            setTextColor(Color.WHITE)
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, 18.px)
+            id = ViewCompat.generateViewId()
+        }
+    }
+
+    val buttonBg: GradientDrawable by lazy {
+        GradientDrawable()
+    }
+
+    val button: TextView by lazy {
+        TextView(context).apply {
+            setTextColor(Color.WHITE)
+            text = "1234567890"
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, 20.px)
+            id = ViewCompat.generateViewId()
+            val leftRight = 40.px.toInt()
+            val topBottom = 10.px.toInt()
+            setPadding(20.px.toInt(), topBottom, leftRight, topBottom)
+            compoundDrawablePadding = (leftRight * 0.6f).toInt()
+            setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_play_arrow_white_24, 0, 0, 0)
+            background = buttonBg.apply {
+                buttonBg.cornerRadius = 25.px
+                setStroke(2.px.toInt(), Color.WHITE)
+            }
+        }
+    }
+
 
     private fun initView() {
         LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).apply {
@@ -85,9 +123,9 @@ class PXLPhotoView : RelativeLayout {
             addRule(ALIGN_LEFT, imageView.id)
             addRule(ALIGN_RIGHT, imageView.id)
             addRule(ALIGN_BOTTOM, imageView.id)
-            bgImageView.layoutParams = this
-            bgImageView.scaleType = ImageView.ScaleType.FIT_XY
-            addView(bgImageView)
+            imageViewBg.layoutParams = this
+            imageViewBg.scaleType = ImageView.ScaleType.FIT_XY
+            addView(imageViewBg)
         }
 
         LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).apply {
@@ -102,22 +140,34 @@ class PXLPhotoView : RelativeLayout {
             addRule(ALIGN_RIGHT, imageView.id)
             addRule(ALIGN_BOTTOM, imageView.id)
             videoView.layoutParams = this
-
             addView(videoView)
         }
 
-//        LayoutParams(80.px, 80.px).apply {
-//            addRule(CENTER_IN_PARENT, TRUE)
-//            lottieView.layoutParams = this
-//            addView(lottieView)
-//        }
-    }
+        val linearLayout = LinearLayout(context)
+        LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+            addRule(CENTER_IN_PARENT, TRUE)
+            linearLayout.layoutParams = this
+            linearLayout.orientation = LinearLayout.VERTICAL
+            linearLayout.gravity = Gravity.CENTER_HORIZONTAL
+            addView(linearLayout)
 
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-//        bgImageView.layoutParams.let {
-//            imageView.layoutParams = it
-//        }
+            LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                bottomMargin = 14.px.toInt()
+                subTextView.layoutParams = this
+                linearLayout.addView(subTextView)
+            }
+
+            LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                bottomMargin = 14.px.toInt()
+                mainTextView.layoutParams = this
+                linearLayout.addView(mainTextView)
+            }
+
+            LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                button.layoutParams = this
+                linearLayout.addView(button)
+            }
+        }
     }
 
     var parentWidth = 0
@@ -136,17 +186,13 @@ class PXLPhotoView : RelativeLayout {
             }
         }
 
-        //this.setMeasuredDimension(parentWidth/2, parentHeight);
-        //this.setLayoutParams(new *ParentLayoutType*.LayoutParams(parentWidth/2,parentHeight));
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-
     }
 
     /**
      * Start the UI
      * @param pxlPhoto
-     * @param ImageViewParam
+     * @param imageScaleType
      */
     fun setPhoto(pxlPhoto: PXLPhoto, imageScaleType: ImageScaleType = defaultScaleType) {
         this.pxlPhoto = pxlPhoto
@@ -165,7 +211,7 @@ class PXLPhotoView : RelativeLayout {
                     .load(it.getUrlForSize(PXLPhotoSize.THUMBNAIL).toString())
                     .centerCrop()
                     .apply(RequestOptions.bitmapTransform(BlurTransformation(70, 3)))
-                    .into(bgImageView)
+                    .into(imageViewBg)
         }
     }
 
@@ -187,32 +233,7 @@ class PXLPhotoView : RelativeLayout {
                 ImageScaleType.CENTER_CROP -> builder.centerCrop()
             }
 
-            builder/*.listener(object : RequestListener<Bitmap?> {
-                override fun onLoadFailed(e: GlideException?, model: Any, target: Target<Bitmap?>, isFirstResource: Boolean): Boolean {
-                    imageView.scaleType = ImageView.ScaleType.CENTER
-                    return false
-                }
-
-                override fun onResourceReady(resource: Bitmap?, model: Any, target: Target<Bitmap?>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-                    //lottieView.visibility = GONE
-                    imageView.scaleType = imageScaleType.type
-
-                    if (imageScaleType == ImageScaleType.FIT_CENTER) {
-                        //imageView.scaleType = imageScaleType.type
-                        val viewWidth = imageView.measuredWidth
-                        val targetHeight: Int = viewWidth * (resource?.height
-                                ?: 1) / (resource?.width ?: 1)
-                        Log.e("PXLPhotoView", "scale.type: ${imageScaleType.type.name}, targetHeight: $targetHeight")
-                        if (imageView.layoutParams.height != targetHeight) {
-                            imageView.layoutParams.height = targetHeight
-
-                        }
-
-                    }
-                    imageView.requestLayout()
-                    return false
-                }
-            })*/.into(imageView)
+            builder.into(imageView)
         }
     }
 
@@ -223,12 +244,13 @@ class PXLPhotoView : RelativeLayout {
             ImageScaleType.CENTER_CROP -> videoView.setScaleType(ScalableTextureView.ScaleType.CENTER_CROP)
         }
 
-
-        videoView.addMediaPlayerListener(object : MediaPlayerWrapper.MainThreadMediaPlayerListener {
+        addMediaPlayerListener(object : MediaPlayerWrapper.MainThreadMediaPlayerListener {
             override fun onVideoSizeChangedMainThread(width: Int, height: Int) {}
             override fun onVideoPreparedMainThread() {
                 // When video is prepared it's about to start playback. So we hide the cover
                 //imageView.visibility = View.INVISIBLE
+                //videoView.alpha = 1f
+                videoView.setLooping(true)
             }
 
             override fun onVideoCompletionMainThread() {}
@@ -237,27 +259,70 @@ class PXLPhotoView : RelativeLayout {
             override fun onVideoStoppedMainThread() {
                 // Show the cover when video stopped
                 //imageView.visibility = View.VISIBLE
+                //videoView.alpha = 0f
             }
         })
     }
 
-    /**
-     * @param size: in pixel
-     */
-    fun setTitleSize(size:Int) {
-
+    fun addMediaPlayerListener(listener: MediaPlayerWrapper.MainThreadMediaPlayerListener) {
+        videoView.addMediaPlayerListener(listener)
     }
 
     /**
-     * @param text: default is PXLPhoto title
+     * @param unit : example TypedValue.COMPLEX_UNIT_PX
+     * @param size for main title TextView
      */
-    fun setTitleText(text:String) {
-
+    fun setMainTitleSize(unit: Int, size: Float) {
+        mainTextView.setTextSize(unit, size)
     }
 
-    fun setTitleColor(@ColorInt color: Int) {
-
+    /**
+     * @param text for main title TextView: default is PXLPhoto title
+     */
+    fun setMainTitleText(text: String?) {
+        mainTextView.text = text
     }
 
+    /**
+     * color for main title TextView: color should be in @ColorInt
+     */
+    fun setMainTitleColor(@ColorInt color: Int) {
+        mainTextView.setTextColor(color)
+    }
 
+    /**
+     * Typeface for main title TextView
+     */
+    fun setMainTitleTypeface(typeface: Typeface) {
+        mainTextView.typeface = typeface
+    }
+
+    /**
+     * @param unit : example TypedValue.COMPLEX_UNIT_PX
+     * @param size for sub title TextView
+     */
+    fun setSubTitleSize(unit: Int, size: Float) {
+        subTextView.setTextSize(unit, size)
+    }
+
+    /**
+     * @param text for sub title TextView: default is PXLPhoto title
+     */
+    fun setSubTitleText(text: String?) {
+        subTextView.text = text
+    }
+
+    /**
+     * color for sub title TextView: color should be in @ColorInt
+     */
+    fun setSubTitleColor(@ColorInt color: Int) {
+        subTextView.setTextColor(color)
+    }
+
+    /**
+     * Typeface for sub title TextView
+     */
+    fun setSubTitleTypeface(typeface: Typeface) {
+        subTextView.typeface = typeface
+    }
 }
