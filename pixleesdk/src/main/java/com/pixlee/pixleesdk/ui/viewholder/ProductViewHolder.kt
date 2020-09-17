@@ -1,5 +1,7 @@
 package com.pixlee.pixleesdk.ui.viewholder
 
+import android.graphics.PorterDuff
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,8 +39,29 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
 
         bookmark.visibility = if (isBookmarked != null) View.VISIBLE else View.GONE
         if (isBookmarked != null) {
-            bookmark.isChecked = isBookmarked
+            changeBookmarkUI(isBookmarked)
         }
+    }
+
+    fun changeBookmarkUI(bookmarked: Boolean) {
+        when (bookmarked) {
+            false -> bookmark.setBackgroundResource(R.drawable.baseline_bookmark_border_black_48)
+            true -> bookmark.setBackgroundResource(R.drawable.baseline_bookmark_black_48)
+        }
+
+        val color = when (bookmarked) {
+            false -> {
+                val value = TypedValue()
+                containerView.context.theme.resolveAttribute(R.attr.colorOnSurface, value, true)
+                value.data
+            }
+            true -> {
+                val value = TypedValue()
+                containerView.context.theme.resolveAttribute(R.attr.colorPrimary, value, true)
+                value.data
+            }
+        }
+        bookmark.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
     }
 
     companion object {

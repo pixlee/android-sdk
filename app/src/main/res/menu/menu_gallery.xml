@@ -5,6 +5,14 @@
     tools:context="com.pixlee.pixleeandroidsdk.MainActivity">
 
     <item
+        android:id="@+id/action_live_list"
+        android:orderInCategory="99"
+        android:title="Live List"
+        app:showAsAction="always"
+        android:visible="false"
+        />
+
+    <item
         android:id="@+id/action_grid"
         android:icon="@drawable/grid_2x"
         android:orderInCategory="100"

@@ -31,7 +31,11 @@ class PXLPhotoRecyclerView : RecyclerView {
     }
 
     val pxlPhotoAdapter: PXLPhotoAdapter by lazy {
-        PXLPhotoAdapter()
+        PXLPhotoAdapter { pxlPhoto ->
+            itemClickListener?.also {
+                it(pxlPhoto)
+            }
+        }
     }
 
     private var mScrollState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE
@@ -77,6 +81,11 @@ class PXLPhotoRecyclerView : RecyclerView {
         })
     }
 
+    var itemClickListener: ((pxlPhoto: PXLPhoto) -> Unit)? = null
+    fun setOnItemClicked(listener: (pxlPhoto: PXLPhoto) -> Unit) {
+        itemClickListener = listener
+    }
+
     fun replaceList(list: List<PhotoWithImageScaleType>) {
         clearOldList()
         if (list.isNotEmpty()) {
@@ -85,7 +94,7 @@ class PXLPhotoRecyclerView : RecyclerView {
                     videoPlayerManager = singleVideoPlayerManager
                 })
             }
-            pxlPhotoAdapter.notifyItemRangeInserted(0, pxlPhotoAdapter.itemCount)
+            pxlPhotoAdapter.notifyItemRangeInserted(0, pxlPhotoAdapter.list.size)
         }
     }
 
@@ -97,13 +106,13 @@ class PXLPhotoRecyclerView : RecyclerView {
                     videoPlayerManager = singleVideoPlayerManager
                 })
             }
-            pxlPhotoAdapter.notifyItemRangeInserted(0, pxlPhotoAdapter.itemCount)
+            pxlPhotoAdapter.notifyItemRangeInserted(0, pxlPhotoAdapter.list.size)
         }
     }
 
     private fun clearOldList() {
         if (pxlPhotoAdapter.list.isNotEmpty()) {
-            val count = pxlPhotoAdapter.itemCount
+            val count = pxlPhotoAdapter.list.size
             pxlPhotoAdapter.list.clear()
             pxlPhotoAdapter.notifyItemRangeRemoved(0, count)
         }
@@ -118,7 +127,7 @@ class PXLPhotoRecyclerView : RecyclerView {
                         linearLayoutManager.findFirstVisibleItemPosition(),
                         linearLayoutManager.findLastVisibleItemPosition())
             }
-        }, 2000)
+        }, 500)
     }
 
     fun onStop() {

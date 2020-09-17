@@ -12,9 +12,7 @@ import com.google.android.material.radiobutton.MaterialRadioButton
 import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
-import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewInRecyclerViewFragment
-import com.pixlee.pixleeandroidsdk.ui.widgets.ViewerActivity
 import com.pixlee.pixleesdk.*
 import com.pixlee.pixleesdk.PXLBaseAlbum.RequestHandlers
 import com.pixlee.pixleesdk.ui.activity.PXLPhotoViewerActivity
@@ -220,10 +218,12 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
     }
 
     fun setLoading(visible: Boolean) {
-        if (visible) {
-            lottieView.visibility = View.VISIBLE
-        } else {
-            lottieView.visibility = View.GONE
+        lottieView?.also{
+            if (visible) {
+                it.visibility = View.VISIBLE
+            } else {
+                it.visibility = View.GONE
+            }
         }
     }
 
@@ -245,6 +245,9 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
         if (gridAdapter == null) {
             gridAdapter = GridAdapter(context!!.applicationContext, photoList, li)
             listAdapter = ListAdapter(context!!.applicationContext, photoList, li)
+            menuList?.apply { findItem(R.id.action_live_list).isVisible = false }
+        }else{
+            menuList?.apply { findItem(R.id.action_live_list).isVisible = true }
         }
         gridView.adapter = gridAdapter
         listView.adapter = listAdapter
@@ -360,6 +363,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
         if (photos.size > 0) {
             samplePhotoLoad(photos[0])
         }
+        menuList?.apply { findItem(R.id.action_live_list).isVisible = photos.size > 0 }
     }
 
     /***
@@ -374,6 +378,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_gallery, menu)
         menuList = menu
+        menuList?.apply { findItem(R.id.action_live_list).isVisible = photoList!=null && photoList!!.size > 0 }
         changeMenuForList(listMode!!.isGridMode)
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -387,6 +392,12 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
             R.id.action_list -> {
                 changeMenuForList(true)
             }
+            R.id.action_live_list->{
+                photoList?.also {
+                    addFragmentToActivity(PXLPhotoViewInRecyclerViewFragment.getInstance(it))
+                }
+
+            }
         }
         return false
     }
@@ -396,11 +407,17 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
             listMode!!.isGridMode = true
             menuList!!.findItem(R.id.action_grid).isVisible = true
             menuList!!.findItem(R.id.action_list).isVisible = false
+
         } else {
             listMode!!.isGridMode = false
             menuList!!.findItem(R.id.action_grid).isVisible = false
             menuList!!.findItem(R.id.action_list).isVisible = true
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        menuList = null
     }
 
     companion object {

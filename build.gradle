@@ -52,5 +52,5 @@ ext {
     glide = "4.11.0"
     orhanobutLogger = "2.2.0"
     lottie = "3.4.1"
-    videoPlayerManager="55221b867d"
+    videoPlayerManager="a8a03b9988"
 }

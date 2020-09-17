@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:foreground="?android:attr/selectableItemBackground"
     android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp">
+    android:layout_marginRight="20dp"
+    >
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,10 +51,12 @@
                 android:textStyle="bold"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"/>
         </LinearLayout>
-        <com.google.android.material.checkbox.MaterialCheckBox
+        <ImageView
             android:id="@+id/bookmark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="text"/>
+            android:textOn=""
+            android:textOff=""
+            android:text=""/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

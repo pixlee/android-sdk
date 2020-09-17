@@ -56,6 +56,7 @@
             android:id="@+id/lottieView"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:visibility="gone"
             android:layout_centerInParent="true"/>
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabFilter"
@@ -166,7 +167,20 @@
                             android:maxLength="20"
                             android:maxLines="1" />
                     </com.google.android.material.textfield.TextInputLayout>
-
+                    <!-- contentType -->
+                    <TextView style="@style/filterBulletTextView" android:text="contentType" />
+                    <RadioGroup style="@style/filterContentView" android:orientation="vertical" android:id="@+id/radioGroupContentType">
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupContentTypeImage"
+                            android:text="image" />
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGroupContentTypeVideo"
+                            android:text="video"
+                            android:checked="true"
+                            />
+                    </RadioGroup>
                     <!-- hasProduct-->
                     <TextView style="@style/filterHeaderTextView" android:text="Sorting" android:layout_marginTop="10dp"/>
                     <TextView style="@style/filterBulletTextView" android:text="hasProduct" />
@@ -227,6 +241,7 @@
                             android:id="@+id/radioGroupSortDirectionASC"
                             android:text="ASC: descending is false" />
                     </RadioGroup>
+
 
                     <!-- hasProduct-->
                     <TextView style="@style/filterHeaderTextView" android:text="Filter" />
@@ -350,19 +365,6 @@
                             style="@style/filterRadioButton"
                             android:id="@+id/radioGroupContentSourceEmail"
                             android:text="email" />
-                    </RadioGroup>
-
-                    <!-- contentType -->
-                    <TextView style="@style/filterBulletTextView" android:text="contentType" />
-                    <RadioGroup style="@style/filterContentView" android:orientation="vertical" android:id="@+id/radioGroupContentType">
-                        <com.google.android.material.checkbox.MaterialCheckBox
-                            style="@style/filterRadioButton"
-                            android:id="@+id/radioGroupContentTypeImage"
-                            android:text="image" />
-                        <com.google.android.material.checkbox.MaterialCheckBox
-                            style="@style/filterRadioButton"
-                            android:id="@+id/radioGroupContentTypeVideo"
-                            android:text="video" />
                     </RadioGroup>
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>

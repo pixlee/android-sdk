@@ -27,7 +27,14 @@ class ProductAdapter(val list: List<PXLProduct>,
         val product = list[position]
         holder.bind(product, bookmarkMap?.get(product.id))
         holder.bookmark.setOnClickListener {
-            onBookmarkChanged(list[holder.adapterPosition].id, holder.bookmark.isChecked)
+            val productId = list[holder.adapterPosition].id
+            bookmarkMap?.also {
+                val bookmarked = it[productId] ?: false
+                it[productId] = !bookmarked
+                onBookmarkChanged(list[holder.adapterPosition].id, !bookmarked)
+                holder.changeBookmarkUI(!bookmarked)
+            }
+
         }
 
         holder.itemView.setOnClickListener {
