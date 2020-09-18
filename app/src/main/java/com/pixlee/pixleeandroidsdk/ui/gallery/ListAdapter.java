@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleesdk.PXLPhoto;
-import com.pixlee.pixleesdk.PXLPhotoSize;
+import com.pixlee.pixleesdk.enums.PXLPhotoSize;
 
 import java.util.ArrayList;
 

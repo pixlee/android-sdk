@@ -19,7 +19,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.pixlee.pixleesdk.PXLPhoto
-import com.pixlee.pixleesdk.PXLPhotoSize
+import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.util.px
 import com.volokh.danylo.video_player_manager.ui.MediaPlayerWrapper

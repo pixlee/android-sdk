@@ -15,6 +15,9 @@ import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewInRecyclerViewFragment
 import com.pixlee.pixleesdk.*
 import com.pixlee.pixleesdk.PXLBaseAlbum.RequestHandlers
+import com.pixlee.pixleesdk.enums.PXLAlbumSortType
+import com.pixlee.pixleesdk.enums.PXLContentSource
+import com.pixlee.pixleesdk.enums.PXLContentType
 import com.pixlee.pixleesdk.ui.activity.PXLPhotoViewerActivity
 import kotlinx.android.synthetic.main.fragment_gallery.*
 

@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk;
+package com.pixlee.pixleesdk.enums;
 
 /**
  * Created by kyle on 5/2/17.

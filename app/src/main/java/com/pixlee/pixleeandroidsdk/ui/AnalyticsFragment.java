@@ -20,7 +20,7 @@ import com.pixlee.pixleesdk.PXLBaseAlbum;
 import com.pixlee.pixleesdk.PXLClient;
 import com.pixlee.pixleesdk.PXLPdpAlbum;
 import com.pixlee.pixleesdk.PXLPhoto;
-import com.pixlee.pixleesdk.PXLWidgetType;
+import com.pixlee.pixleesdk.enums.PXLWidgetType;
 
 import java.util.ArrayList;
 import java.util.HashMap;

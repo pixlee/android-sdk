@@ -2,6 +2,7 @@ package com.pixlee.pixleesdk;
 
 import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleesdk.data.PhotoResult;
+import com.pixlee.pixleesdk.enums.PXLAlbumSortType;
 
 import org.junit.Assert;
 import org.junit.Test;

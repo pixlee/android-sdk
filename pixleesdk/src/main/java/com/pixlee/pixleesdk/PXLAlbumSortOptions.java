@@ -1,5 +1,7 @@
 package com.pixlee.pixleesdk;
 
+import com.pixlee.pixleesdk.enums.PXLAlbumSortType;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

@@ -1,14 +1,15 @@
 package com.pixlee.pixleesdk;
 
+import com.pixlee.pixleesdk.enums.PXLContentSource;
+import com.pixlee.pixleesdk.enums.PXLContentType;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Map;
 
 /***
  * Represents the filter options for a PXLAlbum. Initialize an instance then set the desired

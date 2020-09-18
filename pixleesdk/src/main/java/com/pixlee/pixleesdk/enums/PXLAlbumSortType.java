@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk;
+package com.pixlee.pixleesdk.enums;
 
 /***
  * An enum of the possible sort criteria. Value is used to construct the actual API call.

@@ -6,6 +6,7 @@ import com.pixlee.pixleesdk.data.MediaResult;
 import com.pixlee.pixleesdk.data.PhotoResult;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;
+import com.pixlee.pixleesdk.enums.PXLWidgetType;
 import com.pixlee.pixleesdk.network.NetworkModule;
 
 import org.json.JSONException;

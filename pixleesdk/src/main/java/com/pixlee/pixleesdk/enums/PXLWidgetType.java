@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk;
+package com.pixlee.pixleesdk.enums;
 
 import androidx.annotation.NonNull;
 

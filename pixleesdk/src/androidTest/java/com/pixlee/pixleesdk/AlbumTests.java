@@ -6,9 +6,12 @@ import android.util.Log;
 import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.pixlee.pixleesdk.enums.PXLContentSource;
+import com.pixlee.pixleesdk.enums.PXLContentType;
+import com.pixlee.pixleesdk.enums.PXLPhotoSize;
+
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -17,7 +20,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;

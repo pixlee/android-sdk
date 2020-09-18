@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk;
+package com.pixlee.pixleesdk.enums;
 
 /***
  * enum of the valid Pixlee content sources

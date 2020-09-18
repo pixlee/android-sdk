@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk;
+package com.pixlee.pixleesdk.enums;
 
 /***
  * enum representing the valid Pixlee photo sizes
