@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk;
+package com.pixlee.pixleesdk.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;

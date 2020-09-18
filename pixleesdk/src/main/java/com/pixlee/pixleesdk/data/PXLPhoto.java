@@ -1,9 +1,9 @@
-package com.pixlee.pixleesdk;
+package com.pixlee.pixleesdk.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.pixlee.pixleesdk.data.CDNPhotos;
+import com.pixlee.pixleesdk.R;
 import com.pixlee.pixleesdk.enums.PXLPhotoSize;
 import com.pixlee.pixleesdk.network.annotation.FieldDate;
 import com.pixlee.pixleesdk.network.annotation.FieldURL;

@@ -8,7 +8,7 @@ import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
-import com.pixlee.pixleesdk.PXLPhoto
+import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.util.px

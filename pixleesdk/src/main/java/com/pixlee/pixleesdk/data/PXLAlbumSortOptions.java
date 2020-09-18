@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk;
+package com.pixlee.pixleesdk.data;
 
 import com.pixlee.pixleesdk.enums.PXLAlbumSortType;
 

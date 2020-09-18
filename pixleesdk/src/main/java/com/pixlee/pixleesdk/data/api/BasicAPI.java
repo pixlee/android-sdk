@@ -1,6 +1,6 @@
 package com.pixlee.pixleesdk.data.api;
 
-import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.data.PXLPhoto;
 import com.pixlee.pixleesdk.data.MediaResult;
 import com.pixlee.pixleesdk.data.PhotoResult;
 import com.serjltt.moshi.adapters.Wrapped;

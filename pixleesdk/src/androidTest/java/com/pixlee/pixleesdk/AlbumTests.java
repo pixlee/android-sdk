@@ -6,6 +6,8 @@ import android.util.Log;
 import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions;
+import com.pixlee.pixleesdk.data.PXLPhoto;
 import com.pixlee.pixleesdk.enums.PXLContentSource;
 import com.pixlee.pixleesdk.enums.PXLContentType;
 import com.pixlee.pixleesdk.enums.PXLPhotoSize;

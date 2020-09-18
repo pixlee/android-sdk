@@ -3,6 +3,10 @@ package com.pixlee.pixleesdk;
 import android.util.Log;
 
 import com.pixlee.pixleesdk.data.MediaResult;
+import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions;
+import com.pixlee.pixleesdk.data.PXLAlbumSortOptions;
+import com.pixlee.pixleesdk.data.PXLHttpError;
+import com.pixlee.pixleesdk.data.PXLPhoto;
 import com.pixlee.pixleesdk.data.PhotoResult;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;

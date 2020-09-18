@@ -6,9 +6,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import com.pixlee.pixleeandroidsdk.R
-import com.pixlee.pixleesdk.PXLPhoto
+import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import kotlinx.android.synthetic.main.activity_viewer.*
 import java.util.*

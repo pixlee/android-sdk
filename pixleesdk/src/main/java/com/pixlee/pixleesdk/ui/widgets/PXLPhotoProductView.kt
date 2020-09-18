@@ -21,7 +21,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.pixlee.pixleesdk.PXLPhoto
+import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter

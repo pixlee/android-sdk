@@ -4,9 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.pixlee.pixleesdk.PXLPhoto
+import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import kotlinx.android.synthetic.main.activity_video_viewer.*
@@ -37,7 +36,7 @@ class PXLPhotoViewerActivity : AppCompatActivity() {
         if (!TextUtils.isEmpty(title)) {
             tvTitle.text = title
         }
-        val pxlPhoto:PXLPhoto? = i.getParcelableExtra("pxlPhoto")
+        val pxlPhoto: PXLPhoto? = i.getParcelableExtra("pxlPhoto")
         // if the photo is null, close this image view
         if (pxlPhoto == null) {
             finish()

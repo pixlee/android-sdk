@@ -1,7 +1,7 @@
 package com.pixlee.pixleesdk.data.repository
 
 import com.pixlee.pixleesdk.PXLClient
-import com.pixlee.pixleesdk.PXLPhoto
+import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.data.MediaResult
 import com.pixlee.pixleesdk.data.PhotoResult
 import com.pixlee.pixleesdk.data.api.BasicAPI

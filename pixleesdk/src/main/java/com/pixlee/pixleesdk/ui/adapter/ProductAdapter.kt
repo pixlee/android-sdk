@@ -2,7 +2,7 @@ package com.pixlee.pixleesdk.ui.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.pixlee.pixleesdk.PXLProduct
+import com.pixlee.pixleesdk.data.PXLProduct
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder.Companion.create
 import kotlinx.android.synthetic.main.item_product.*

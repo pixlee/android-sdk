@@ -27,7 +27,7 @@ import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleesdk.PXLAlbum;
 import com.pixlee.pixleesdk.PXLBaseAlbum;
 import com.pixlee.pixleesdk.PXLClient;
-import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.data.PXLPhoto;
 import com.pixlee.pixleesdk.data.MediaResult;
 
 import java.util.ArrayList;

@@ -2,14 +2,12 @@ package com.pixlee.pixleesdk;
 
 import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleesdk.data.MediaResult;
-import com.pixlee.pixleesdk.data.PhotoResult;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.List;
 
 import retrofit2.Response;
 

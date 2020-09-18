@@ -1,5 +1,6 @@
 package com.pixlee.pixleesdk;
 
+import com.pixlee.pixleesdk.data.PXLPhoto;
 import com.pixlee.pixleesdk.data.PhotoResult;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;

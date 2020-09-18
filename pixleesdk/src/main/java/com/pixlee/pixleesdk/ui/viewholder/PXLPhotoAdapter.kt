@@ -2,7 +2,7 @@ package com.pixlee.pixleesdk.ui.viewholder
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.pixlee.pixleesdk.PXLPhoto
+import com.pixlee.pixleesdk.data.PXLPhoto
 
 /**
  * Created by sungjun on 9/11/20.

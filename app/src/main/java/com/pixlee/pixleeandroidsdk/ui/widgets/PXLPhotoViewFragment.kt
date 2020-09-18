@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
-import com.pixlee.pixleesdk.PXLPhoto
+import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import kotlinx.android.synthetic.main.fragment_pxlphoto_view.*
 
@@ -25,7 +25,7 @@ class PXLPhotoViewFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val pxlPhoto:PXLPhoto? = arguments?.getParcelable("pxlPhoto")
+        val pxlPhoto: PXLPhoto? = arguments?.getParcelable("pxlPhoto")
         pxlPhoto?.also{
             pxlPhotoViewCrop.setPhoto(it, ImageScaleType.CENTER_CROP)
             pxlPhotoViewFit.setPhoto(it)
