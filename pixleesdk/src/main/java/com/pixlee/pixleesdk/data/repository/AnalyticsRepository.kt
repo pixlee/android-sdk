@@ -1,6 +1,6 @@
 package com.pixlee.pixleesdk.data.repository
 
-import com.pixlee.pixleesdk.PXLClient
+import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.data.api.AnalyticsAPI
 import com.pixlee.pixleesdk.network.NetworkModule
 import okhttp3.MediaType

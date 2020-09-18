@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk;
+package com.pixlee.pixleesdk.client;
 
 import android.content.Context;
 import android.provider.Settings.Secure;

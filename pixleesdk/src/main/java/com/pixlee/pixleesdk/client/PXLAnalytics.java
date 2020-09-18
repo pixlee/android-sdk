@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk;
+package com.pixlee.pixleesdk.client;
 
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 

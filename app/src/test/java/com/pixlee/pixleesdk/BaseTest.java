@@ -2,6 +2,7 @@ package com.pixlee.pixleesdk;
 
 import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.util.FileUtils;
+import com.pixlee.pixleesdk.client.PXLClient;
 import com.pixlee.pixleesdk.data.api.AnalyticsAPI;
 import com.pixlee.pixleesdk.data.api.BasicAPI;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;

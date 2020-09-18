@@ -24,9 +24,9 @@ import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleeandroidsdk.databinding.FragmentImageUploaderBinding;
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
-import com.pixlee.pixleesdk.PXLAlbum;
-import com.pixlee.pixleesdk.PXLBaseAlbum;
-import com.pixlee.pixleesdk.PXLClient;
+import com.pixlee.pixleesdk.client.PXLAlbum;
+import com.pixlee.pixleesdk.client.PXLBaseAlbum;
+import com.pixlee.pixleesdk.client.PXLClient;
 import com.pixlee.pixleesdk.data.PXLPhoto;
 import com.pixlee.pixleesdk.data.MediaResult;
 
