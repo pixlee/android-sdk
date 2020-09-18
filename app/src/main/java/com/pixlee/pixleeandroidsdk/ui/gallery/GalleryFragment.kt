@@ -77,38 +77,41 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
      * Initializes the PXLClient and creates the PXLAlbum
      */
     private fun loadAlbum() {
-        // set credentials for the SDK
-        PXLClient.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY)
+        context?.also{
+            // set credentials for the SDK
+            PXLClient.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY)
 
-        // get PXLClient
-        val client = PXLClient.getInstance(context!!.applicationContext)
+            // get PXLClient
+            val client = PXLClient.getInstance(it)
 
-        // initiate album
-        for (i in 0 until radioGroupAlbum.childCount) {
-            val rb = radioGroupAlbum.getChildAt(i) as MaterialRadioButton
-            if (radioGroupAlbum.checkedRadioButtonId == rb.id) {
-                val text = rb.text.toString()
-                if (text == getString(R.string.radio_album)) album = PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client) else if (text == getString(R.string.radio_pdp)) album = PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client.basicRepo, client.analyticsRepo)
-                break
+            // initiate album
+            for (i in 0 until radioGroupAlbum.childCount) {
+                val rb = radioGroupAlbum.getChildAt(i) as MaterialRadioButton
+                if (radioGroupAlbum.checkedRadioButtonId == rb.id) {
+                    val text = rb.text.toString()
+                    if (text == getString(R.string.radio_album)) album = PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client) else if (text == getString(R.string.radio_pdp)) album = PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client.basicRepo, client.analyticsRepo)
+                    break
+                }
             }
+
+            // if album is not properly started, stop loading it.
+            if (album == null) {
+                showDialog("No Album", "Album is not properly set. Please check the code and try again")
+                return
+            }
+
+            // show a loading UI on the mobile screen
+            setLoading(true)
+
+            // set GET request parameters for the API
+            album?.setPerPage(readPerPage())
+            album?.setFilterOptions(readFilterOptionsFromUI())
+            album?.setSortOptions(readSortOptionsFromUI())
+
+            // start requesting the API
+            album?.loadNextPageOfPhotos(this)
         }
 
-        // if album is not properly started, stop loading it.
-        if (album == null) {
-            showDialog("No Album", "Album is not properly set. Please check the code and try again")
-            return
-        }
-
-        // show a loading UI on the mobile screen
-        setLoading(true)
-
-        // set GET request parameters for the API
-        album?.setPerPage(readPerPage())
-        album?.setFilterOptions(readFilterOptionsFromUI())
-        album?.setSortOptions(readSortOptionsFromUI())
-
-        // start requesting the API
-        album?.loadNextPageOfPhotos(this)
     }
 
     fun readPerPage(): Int {

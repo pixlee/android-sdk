@@ -7,10 +7,16 @@ import com.orhanobut.logger.Logger;
 import com.pixlee.pixleesdk.BuildConfig;
 import com.pixlee.pixleesdk.data.api.AnalyticsAPI;
 import com.pixlee.pixleesdk.data.api.BasicAPI;
+import com.pixlee.pixleesdk.data.api.KtxAnalyticsAPI;
+import com.pixlee.pixleesdk.data.api.KtxBasicAPI;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.AnalyticsRepository;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicRepository;
+import com.pixlee.pixleesdk.data.repository.KtxAnalyticsDataSource;
+import com.pixlee.pixleesdk.data.repository.KtxAnalyticsRepository;
+import com.pixlee.pixleesdk.data.repository.KtxBasicDataSource;
+import com.pixlee.pixleesdk.data.repository.KtxBasicRepository;
 import com.pixlee.pixleesdk.network.adaptor.BigDecimalAdapter;
 import com.pixlee.pixleesdk.network.adaptor.DateAdapter;
 import com.pixlee.pixleesdk.network.adaptor.PrimitiveAdapter;
@@ -51,6 +57,24 @@ public class NetworkModule {
                         NetworkModule.analyticsUrl,
                         provideOkHttpClient()
                 ).create(AnalyticsAPI.class)
+        );
+    }
+
+    public static KtxBasicDataSource generateKtxBasicRepository() {
+        return new KtxBasicRepository(
+                provideRetrofit(
+                        NetworkModule.url,
+                        provideOkHttpClient()
+                ).create(KtxBasicAPI.class)
+        );
+    }
+
+    public static KtxAnalyticsDataSource getKtxAnalyticsRepository() {
+        return new KtxAnalyticsRepository(
+                provideRetrofit(
+                        NetworkModule.analyticsUrl,
+                        provideOkHttpClient()
+                ).create(KtxAnalyticsAPI.class)
         );
     }
 

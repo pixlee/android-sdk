@@ -1,0 +1,54 @@
+package com.pixlee.pixleesdk.data.api
+
+import com.pixlee.pixleesdk.data.MediaResult
+import com.pixlee.pixleesdk.data.PXLPhoto
+import com.pixlee.pixleesdk.data.PhotoResult
+import com.serjltt.moshi.adapters.Wrapped
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.http.*
+
+/**
+ * Restful API Access Object for basic APIs
+ * Retrofit Document: https://square.github.io/retrofit/
+ */
+interface BasicAPI {
+    @GET("albums/from_sku")
+    fun getPhotosWithSKU(
+            @Query("sku") sku: String,
+            @Query("api_key") api_key: String,
+            @Query("filters") filters: String?,
+            @Query("sort") sort: String?,
+            @Query("per_page") per_page: Int,
+            @Query("page") page: Int
+    ): Call<PhotoResult>
+
+    @GET("albums/{album_id}/photos")
+    fun getPhotosWithID(
+            @Path("album_id") album_id: String,
+            @Query("api_key") api_key: String,
+            @Query("filters") filters: String?,
+            @Query("sort") sort: String?,
+            @Query("per_page") per_page: Int,
+            @Query("page") page: Int
+    ): Call<PhotoResult>
+
+    @GET("media/{album_photo_id}")
+    @Wrapped(path = ["data"])
+    fun getMedia(@Path("album_photo_id") album_photo_id: String, @Query("api_key") api_key: String): Call<PXLPhoto>
+
+    @POST("media")
+    fun postMedia(
+            @Header("Signature") Signature: String,
+            @Query("api_key") api_key: String,
+            @Body body: RequestBody
+    ): Call<MediaResult>
+
+    @Multipart
+    @POST("media/file")
+    fun uploadImage(
+            @Header("Signature") Signature: String,
+            @Query("api_key") api_key: String,
+            @Part partList: List<MultipartBody.Part>): Call<MediaResult>
+}
