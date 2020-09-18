@@ -4,7 +4,8 @@
 
     <!-- Title -->
     <string name="title_index">Index</string>
-    <string name="title_album">Get Album List</string>
+    <string name="title_java_album">Album List (Java)</string>
+    <string name="title_ktx_album">Album List (Kotlin.coroutines)</string>
     <string name="title_upload_image">Upload Image/Video</string>
     <string name="title_analytics">Call Analytics</string>
     <string name="title_image_viewer">Image Viewer</string>
@@ -16,7 +17,8 @@
     <string name="title_widgets">Widgets</string>
     <string name="title_photo_on_list">PXLPhoto on RecyclerView</string>
 
-    <string name="index_apis">How to use APIs</string>
+    <string name="index_java_apis">How to use Java APIs</string>
+    <string name="index_ktx_apis">How to use Ktx.coroutines APIs</string>
     <string name="index_components">How to use UI components</string>
 
     <!-- Album -->

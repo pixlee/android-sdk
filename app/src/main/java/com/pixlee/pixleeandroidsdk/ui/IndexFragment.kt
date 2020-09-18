@@ -11,6 +11,7 @@ import com.pixlee.pixleeandroidsdk.data.LocalDataSource
 import com.pixlee.pixleeandroidsdk.data.LocalRepository.Companion.getInstance
 import com.pixlee.pixleeandroidsdk.databinding.FragmentIndexBinding
 import com.pixlee.pixleeandroidsdk.ui.gallery.GalleryFragment
+import com.pixlee.pixleeandroidsdk.ui.gallery.KtxGalleryFragment
 import com.pixlee.pixleeandroidsdk.ui.uploader.ImageUploaderFragment
 import kotlinx.android.synthetic.main.fragment_index.*
 
@@ -31,8 +32,29 @@ class IndexFragment : BaseFragment() {
     private val localDataSource: LocalDataSource by lazy {
         getInstance(context!!)
     }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        initKtxButtons()
+        initJavaButtons()
+        initWidgetButtons()
+    }
+
+    fun initKtxButtons() {
+        btKtxAlbum.setOnClickListener {
+            addFragmentToActivity(KtxGalleryFragment())
+        }
+
+        btKtxImageUploader.setOnClickListener {
+            addFragmentToActivity(ImageUploaderFragment())
+        }
+
+        btKtxAnalytics.setOnClickListener {
+            addFragmentToActivity(AnalyticsFragment())
+        }
+    }
+
+    fun initJavaButtons() {
         btAlbum.setOnClickListener {
             addFragmentToActivity(GalleryFragment.getInstance(false))
         }
@@ -44,7 +66,9 @@ class IndexFragment : BaseFragment() {
         btAnalytics.setOnClickListener {
             addFragmentToActivity(AnalyticsFragment())
         }
+    }
 
+    fun initWidgetButtons() {
         btWidgets.setOnClickListener {
             addFragmentToActivity(GalleryFragment.getInstance(true))
         }

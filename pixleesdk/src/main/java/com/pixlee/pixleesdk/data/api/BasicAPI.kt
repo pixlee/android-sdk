@@ -41,7 +41,7 @@ interface BasicAPI {
     @POST("media")
     fun postMedia(
             @Header("Signature") Signature: String,
-            @Query("api_key") api_key: String,
+            @Query("api_key") api_key: String?,
             @Body body: RequestBody
     ): Call<MediaResult>
 
@@ -49,6 +49,6 @@ interface BasicAPI {
     @POST("media/file")
     fun uploadImage(
             @Header("Signature") Signature: String,
-            @Query("api_key") api_key: String,
+            @Query("api_key") api_key: String?,
             @Part partList: List<MultipartBody.Part>): Call<MediaResult>
 }

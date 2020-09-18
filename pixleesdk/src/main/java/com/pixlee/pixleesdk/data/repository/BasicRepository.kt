@@ -8,6 +8,7 @@ import com.pixlee.pixleesdk.data.api.BasicAPI
 import com.pixlee.pixleesdk.network.HMAC
 import com.pixlee.pixleesdk.network.multiparts.MultipartUtil
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONObject
@@ -52,6 +53,7 @@ interface BasicDataSource {
  */
 class BasicRepository(var api: BasicAPI) : BasicDataSource {
     private fun getSignature(json: JSONObject): String {
+        requireNotNull(PXLClient.secretKey) { "no secretKey, please set secretKey before start" }
         var signature: String = ""
         try {
             signature = HMAC.computeHmac(json.toString().replace("\\/", "/"), PXLClient.secretKey)
@@ -76,8 +78,7 @@ class BasicRepository(var api: BasicAPI) : BasicDataSource {
     }
 
     override fun postMedia(json: JSONObject): Call<MediaResult> {
-        requireNotNull(PXLClient.secretKey) { "no secretKey, please set secretKey before start" }
-        val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json.toString())
+        val body = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), json.toString())
         return api.postMedia(getSignature(json), PXLClient.apiKey, body)
     }
 

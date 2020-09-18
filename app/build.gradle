@@ -68,6 +68,7 @@ dependencies {
      * Architecture Component
      */
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
 
     /**
@@ -87,4 +88,5 @@ dependencies {
     //implementation "com.google.code.gson:gson:2.8.5"
 
     implementation "com.github.pixlee:android-video-player:$videoPlayerManager"
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
 }

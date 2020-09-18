@@ -63,12 +63,40 @@
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Tooltip"
                 android:layout_marginLeft="@dimen/margin"
                 android:layout_marginRight="@dimen/margin" />
-            <com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
-                android:id="@+id/pxlPhotoViewFit"
-                android:layout_width="match_parent"
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Landscape"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:layout_marginTop="@dimen/margin"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin" />
+            <com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+                android:id="@+id/pxlPhotoViewFitWrapLandscape"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
                 android:layout_marginLeft="@dimen/margin"
                 android:layout_marginRight="@dimen/margin"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Portrait"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:layout_marginTop="@dimen/margin"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin" />
+            <com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+                android:id="@+id/pxlPhotoViewFitPortrait"
+                android:layout_width="match_parent"
+                android:layout_height="600dp"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginBottom="@dimen/margin"/>
 
 
         </LinearLayout>

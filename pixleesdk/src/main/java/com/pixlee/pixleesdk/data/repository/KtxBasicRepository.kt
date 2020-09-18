@@ -7,6 +7,7 @@ import com.pixlee.pixleesdk.data.api.KtxBasicAPI
 import com.pixlee.pixleesdk.network.HMAC
 import com.pixlee.pixleesdk.network.multiparts.MultipartUtil
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONObject
@@ -74,7 +75,7 @@ class KtxBasicRepository(var api: KtxBasicAPI) : KtxBasicDataSource {
 
     override suspend fun postMedia(json: JSONObject): MediaResult {
         requireNotNull(PXLClient.secretKey) { "no secretKey, please set secretKey before start" }
-        val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json.toString())
+        val body = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), json.toString())
         return api.postMedia(getSignature(json), PXLClient.apiKey, body)
     }
 

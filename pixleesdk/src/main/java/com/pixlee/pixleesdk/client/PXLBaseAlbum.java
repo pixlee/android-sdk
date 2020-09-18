@@ -261,7 +261,7 @@ public abstract class PXLBaseAlbum {
             return;
         }
 
-        basicRepo.getMedia(album_photo_id, PXLClient.apiKey)
+        basicRepo.getMedia(album_photo_id, PXLClient.Companion.getApiKey())
                 .enqueue(new Callback<PXLPhoto>() {
                              @Override
                              public void onResponse(Call<PXLPhoto> call, Response<PXLPhoto> response) {

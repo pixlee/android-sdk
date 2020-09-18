@@ -79,11 +79,11 @@ public class AnalyticsFragment extends BaseFragment {
     }
 
     private void setPixleeCredentials() {
-        PXLClient.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY);
+        PXLClient.Companion.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY);
     }
 
     private void initPixleeAlbum() {
-        PXLClient client = PXLClient.getInstance(getContext());
+        PXLClient client = PXLClient.Companion.getInstance(getContext());
         album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
         // Alternative: album = new PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client);
     }
@@ -110,7 +110,7 @@ public class AnalyticsFragment extends BaseFragment {
     }
 
     private void initPixleeAnalytics() {
-        PXLClient client = PXLClient.getInstance(getContext());
+        PXLClient client = PXLClient.Companion.getInstance(getContext());
         analytics = new PXLAnalytics(client);
     }
 

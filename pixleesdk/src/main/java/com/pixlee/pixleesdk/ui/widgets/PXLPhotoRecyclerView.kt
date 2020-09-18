@@ -86,6 +86,17 @@ class PXLPhotoRecyclerView : RecyclerView {
         itemClickListener = listener
     }
 
+    fun addList(list: List<PhotoWithImageScaleType>) {
+        if (list.isNotEmpty()) {
+            list.forEach {
+                pxlPhotoAdapter.list.add(it.apply {
+                    videoPlayerManager = singleVideoPlayerManager
+                })
+            }
+            pxlPhotoAdapter.notifyItemRangeInserted(0, pxlPhotoAdapter.list.size)
+        }
+    }
+
     fun replaceList(list: List<PhotoWithImageScaleType>) {
         clearOldList()
         if (list.isNotEmpty()) {

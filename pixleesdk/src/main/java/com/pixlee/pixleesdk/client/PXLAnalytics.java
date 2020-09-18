@@ -56,8 +56,8 @@ public class PXLAnalytics {
             if(currency != null){
                 body.put("currency", currency);
             }
-            if (PXLClient.android_id != null) {
-                body.put("fingerprint", PXLClient.android_id);
+            if (PXLClient.Companion.getAndroid_id() != null) {
+                body.put("fingerprint", PXLClient.Companion.getAndroid_id());
             }
 
 

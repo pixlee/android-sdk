@@ -5,6 +5,7 @@ import com.pixlee.pixleesdk.data.api.AnalyticsAPI
 import com.pixlee.pixleesdk.data.api.KtxAnalyticsAPI
 import com.pixlee.pixleesdk.network.NetworkModule
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import org.json.JSONException
 import org.json.JSONObject
@@ -41,7 +42,7 @@ class KtxAnalyticsRepository(var api: KtxAnalyticsAPI) : KtxAnalyticsDataSource 
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json.toString())
+        val body = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), json.toString())
         return api.makeAnalyticsCall(NetworkModule.analyticsUrl + requestPath, body)
     }
 }

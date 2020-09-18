@@ -6,7 +6,6 @@ import com.pixlee.pixleesdk.data.PhotoResult
 import com.serjltt.moshi.adapters.Wrapped
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Call
 import retrofit2.http.*
 
 /**
@@ -18,7 +17,7 @@ interface KtxBasicAPI {
     @GET("albums/from_sku")
     suspend fun getPhotosWithSKU(
             @Query("sku") sku: String,
-            @Query("api_key") api_key: String,
+            @Query("api_key") api_key: String?,
             @Query("filters") filters: String?,
             @Query("sort") sort: String?,
             @Query("per_page") per_page: Int,
@@ -26,9 +25,9 @@ interface KtxBasicAPI {
     ): PhotoResult
 
     @GET("albums/{album_id}/photos")
-    fun getPhotosWithID(
+    suspend fun getPhotosWithID(
             @Path("album_id") album_id: String,
-            @Query("api_key") api_key: String,
+            @Query("api_key") api_key: String?,
             @Query("filters") filters: String?,
             @Query("sort") sort: String?,
             @Query("per_page") per_page: Int,
@@ -37,12 +36,12 @@ interface KtxBasicAPI {
 
     @GET("media/{album_photo_id}")
     @Wrapped(path = ["data"])
-    suspend fun getMedia(@Path("album_photo_id") album_photo_id: String, @Query("api_key") api_key: String): PXLPhoto
+    suspend fun getMedia(@Path("album_photo_id") album_photo_id: String, @Query("api_key") api_key: String?): PXLPhoto
 
     @POST("media")
     suspend fun postMedia(
             @Header("Signature") Signature: String,
-            @Query("api_key") api_key: String,
+            @Query("api_key") api_key: String?,
             @Body body: RequestBody
     ): MediaResult
 
@@ -50,6 +49,6 @@ interface KtxBasicAPI {
     @POST("media/file")
     suspend fun uploadImage(
             @Header("Signature") Signature: String,
-            @Query("api_key") api_key: String,
+            @Query("api_key") api_key: String?,
             @Part partList: List<MultipartBody.Part>): MediaResult
 }

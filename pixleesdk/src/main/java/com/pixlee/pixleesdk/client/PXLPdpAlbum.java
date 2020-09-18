@@ -64,7 +64,7 @@ public class PXLPdpAlbum extends PXLBaseAlbum {
 
         return basicRepo.getPhotosWithSKU(
                 sku,
-                PXLClient.apiKey,
+                PXLClient.Companion.getApiKey(),
                 filterOptions != null ? filterOptions.toParamString() : null,
                 sortOptions != null ? sortOptions.toParamString() : null,
                 perPage,

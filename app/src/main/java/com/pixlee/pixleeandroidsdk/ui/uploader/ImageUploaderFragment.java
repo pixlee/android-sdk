@@ -78,11 +78,11 @@ public class ImageUploaderFragment extends BaseFragment {
     }
 
     public void setPixleeCredentials() {
-        PXLClient.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY);
+        PXLClient.Companion.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY);
     }
 
     private void initPixleeAlbum() {
-        PXLClient client = PXLClient.getInstance(getContext());
+        PXLClient client = PXLClient.Companion.getInstance(getContext());
         album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
     }
 

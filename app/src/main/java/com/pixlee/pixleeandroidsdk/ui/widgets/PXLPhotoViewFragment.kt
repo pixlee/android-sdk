@@ -28,7 +28,8 @@ class PXLPhotoViewFragment : BaseFragment() {
         val pxlPhoto: PXLPhoto? = arguments?.getParcelable("pxlPhoto")
         pxlPhoto?.also{
             pxlPhotoViewCrop.setPhoto(it, ImageScaleType.CENTER_CROP)
-            pxlPhotoViewFit.setPhoto(it)
+            pxlPhotoViewFitWrapLandscape.setPhoto(it)
+            pxlPhotoViewFitPortrait.setPhoto(it)
         }
     }
 

@@ -26,13 +26,14 @@ import com.pixlee.pixleesdk.enums.PXLContentSource
 import com.pixlee.pixleesdk.enums.PXLContentType
 import com.pixlee.pixleesdk.ui.activity.PXLPhotoViewerActivity
 import kotlinx.android.synthetic.main.fragment_gallery.*
+import kotlinx.android.synthetic.main.module_search.*
 
 /**
  * This shows how you can load photos of Pixlee using PXLAlbum.java
  */
 class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
     override fun getTitleResource(): Int {
-        return R.string.title_album
+        return R.string.title_java_album
     }
 
     private var album: PXLBaseAlbum? = null
