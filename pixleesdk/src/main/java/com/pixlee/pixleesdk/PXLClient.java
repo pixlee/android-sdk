@@ -9,27 +9,11 @@ import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;
 import com.pixlee.pixleesdk.network.NetworkModule;
 
-import org.json.JSONObject;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 /***
  * Manages the configuration of volley and calls to the api. Intended to be used as a singleton,
  * so access should occur via the getInstance() method.
  */
 public class PXLClient {
-    private static final String TAG = "PXLClient";
-    public static final String KeyFilters = "filters";
-    public static final String KeySort = "sort";
-    public static final String KeyApiKey = "api_key";
-    public static final String KeyPage = "page";
-    public static final String KeyPerPage = "per_page";
-    public static final String KeySku = "sku";
-
-    public static final String ACTION_MEDIA = "media";
-
     private static PXLClient mInstance;
     private Context mCtx;
 
