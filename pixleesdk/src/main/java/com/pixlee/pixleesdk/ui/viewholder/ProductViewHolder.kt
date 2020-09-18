@@ -1,14 +1,17 @@
 package com.pixlee.pixleesdk.ui.viewholder
 
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.pixlee.pixleesdk.PXLProduct
 import com.pixlee.pixleesdk.R
+import com.pixlee.pixleesdk.util.setCompatColorFilter
 import kotlinx.android.extensions.LayoutContainer
 import java.text.DecimalFormat
 
@@ -25,43 +28,36 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
                 .centerCrop()
                 .into(imageView)
 
-        tvMessage.text = product.title
+        tvMain.text = product.title
 
-        if (product.price != null) {
-            tvPrice.text = if (product.currency != null && product.currency.isNotEmpty()) {
-                product.currency + " " + formatter.format(product.price)
-            } else {
-                formatter.format(product.price)
-            }
+        //tvSub.visibility = if (product.description != null && product.description.isNotEmpty()) View.VISIBLE else View.GONE
+        tvSub.text = "product.description"
+
+        tvPrice.text = if (product.price == null) {
+            ""
+        } else if (product.currency != null && product.currency.isNotEmpty()) {
+            product.currency + " " + formatter.format(product.price)
         } else {
-            tvPrice.text = ""
+            formatter.format(product.price)
         }
 
         bookmark.visibility = if (isBookmarked != null) View.VISIBLE else View.GONE
+
         if (isBookmarked != null) {
             changeBookmarkUI(isBookmarked)
         }
     }
 
-    fun changeBookmarkUI(bookmarked: Boolean) {
-        when (bookmarked) {
-            false -> bookmark.setBackgroundResource(R.drawable.baseline_bookmark_border_black_48)
-            true -> bookmark.setBackgroundResource(R.drawable.baseline_bookmark_black_48)
-        }
+    fun changeBookmarkUI(isBookmarked: Boolean) {
+        bookmark.setBackgroundResource(when (isBookmarked) {
+            false -> R.drawable.baseline_bookmark_border_black_36
+            true -> R.drawable.baseline_bookmark_black_36
+        })
 
-        val color = when (bookmarked) {
-            false -> {
-                val value = TypedValue()
-                containerView.context.theme.resolveAttribute(R.attr.colorOnSurface, value, true)
-                value.data
-            }
-            true -> {
-                val value = TypedValue()
-                containerView.context.theme.resolveAttribute(R.attr.colorPrimary, value, true)
-                value.data
-            }
-        }
-        bookmark.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+        bookmark.setCompatColorFilter(ContextCompat.getColor(containerView.context, when (isBookmarked) {
+            false -> R.color.bookmarkUnselected
+            true -> R.color.bookmarkSelected
+        }))
     }
 
     companion object {

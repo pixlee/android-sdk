@@ -129,7 +129,7 @@ class PXLVideoView : TextureView, SurfaceTextureListener {
     /**
      * @see android.media.MediaPlayer.setDataSource
      */
-    fun setDataSource(context: Context?, uri: Uri?) {
+    fun setDataSource(context: Context, uri: Uri) {
         initPlayer()
         try {
             mMediaPlayer!!.setDataSource(context, uri)
