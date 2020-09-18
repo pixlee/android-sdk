@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk;
+package com.pixlee.pixleesdk.util;
 
 import android.webkit.URLUtil;
 
