@@ -6,8 +6,9 @@
     <string name="title_index">Index</string>
     <string name="title_java_album">Album List (Java)</string>
     <string name="title_ktx_album">Album List (Kotlin.coroutines)</string>
-    <string name="title_upload_image">Upload Image/Video</string>
-    <string name="title_analytics">Call Analytics</string>
+    <string name="title_java_upload">Upload Image/Video (Java)</string>
+    <string name="title_java_analytics">Call Analytics (Java)</string>
+    <string name="title_ktx_analytics">Call Analytics (Kotlin.coroutines)</string>
     <string name="title_image_viewer">Image Viewer</string>
     <string name="title_video_viewer">Video Viewer</string>
     <string name="title_pxlphoto_activity">pxlphoto in Activity</string>

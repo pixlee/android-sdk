@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.pixlee.pixleeandroidsdk.MainActivity
 import com.pixlee.pixleeandroidsdk.R
-import com.pixlee.pixleeandroidsdk.data.Config
 import com.pixlee.pixleeandroidsdk.data.LocalDataSource
 import com.pixlee.pixleeandroidsdk.data.LocalRepository.Companion.getInstance
-import com.pixlee.pixleeandroidsdk.databinding.FragmentIndexBinding
+import com.pixlee.pixleeandroidsdk.ui.analytics.AnalyticsFragment
+import com.pixlee.pixleeandroidsdk.ui.analytics.KtxAnalyticsFragment
 import com.pixlee.pixleeandroidsdk.ui.gallery.GalleryFragment
 import com.pixlee.pixleeandroidsdk.ui.gallery.KtxGalleryFragment
 import com.pixlee.pixleeandroidsdk.ui.uploader.ImageUploaderFragment
@@ -45,12 +45,8 @@ class IndexFragment : BaseFragment() {
             addFragmentToActivity(KtxGalleryFragment())
         }
 
-        btKtxImageUploader.setOnClickListener {
-            addFragmentToActivity(ImageUploaderFragment())
-        }
-
         btKtxAnalytics.setOnClickListener {
-            addFragmentToActivity(AnalyticsFragment())
+            addFragmentToActivity(KtxAnalyticsFragment())
         }
     }
 
@@ -69,10 +65,6 @@ class IndexFragment : BaseFragment() {
     }
 
     fun initWidgetButtons() {
-        btWidgets.setOnClickListener {
-            addFragmentToActivity(GalleryFragment.getInstance(true))
-        }
-
         localDataSource.getConfig().also {
             switchDarkMode.isChecked = it.isDarkMode
         }

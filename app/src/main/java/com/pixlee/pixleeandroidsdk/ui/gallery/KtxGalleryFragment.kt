@@ -13,8 +13,8 @@ import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleeandroidsdk.EventObserver
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
+import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
 import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewFragment
-import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewInRecyclerViewFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.ViewerActivity
 import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
@@ -78,9 +78,9 @@ class KtxGalleryFragment : BaseFragment() {
             lottieView.visibility = if (it) View.VISIBLE else View.GONE
         })
 
-        viewModel.resultEvent.observe(this, EventObserver {
+        viewModel.searchResultEvent.observe(this, EventObserver {
             when (it) {
-                is KtxGalleryViewModel.Command.Data -> {
+                is BaseViewModel.Command.Data -> {
                     if(it.isFistPage) {
                         pxlPhotoRecyclerView.replaceList(it.list)
                         pxlPhotoRecyclerView.onResume()
@@ -114,16 +114,16 @@ class KtxGalleryFragment : BaseFragment() {
     private fun loadAlbum() {
 
         context?.also {
-            var searchSetting: KtxGalleryViewModel.SearchSetting? = null
+            var searchSetting: BaseViewModel.SearchSetting? = null
             // initiate album
             for (i in 0 until radioGroupAlbum.childCount) {
                 val rb = radioGroupAlbum.getChildAt(i) as MaterialRadioButton
                 if (radioGroupAlbum.checkedRadioButtonId == rb.id) {
                     val text = rb.text.toString()
                     if (text == getString(R.string.radio_album)) {
-                        searchSetting = KtxGalleryViewModel.SearchSetting.Album(BuildConfig.PIXLEE_ALBUM_ID)
+                        searchSetting = BaseViewModel.SearchSetting.Album(BuildConfig.PIXLEE_ALBUM_ID)
                     } else if (text == getString(R.string.radio_pdp)) {
-                        searchSetting = KtxGalleryViewModel.SearchSetting.Album(BuildConfig.PIXLEE_SKU)
+                        searchSetting = BaseViewModel.SearchSetting.Album(BuildConfig.PIXLEE_SKU)
                     }
                     break
                 }

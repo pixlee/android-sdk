@@ -117,6 +117,7 @@ class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto, val imageScaleType: ImageS
     // a part of VideoItem
     override fun playNewVideo(currentItemMetaData: MetaData, player: VideoPlayerView, videoPlayerManager: VideoPlayerManager<MetaData>) {
         if (pxlPhoto.isVideo) {
+            player.setLooping(true)
             videoPlayerManager.playNewVideo(currentItemMetaData, player, pxlPhoto.videoUrl)
         }
     }

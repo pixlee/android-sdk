@@ -250,8 +250,6 @@ class PXLPhotoView : RelativeLayout {
                 // When video is prepared it's about to start playback. So we hide the cover
                 //imageView.visibility = View.INVISIBLE
                 //videoView.alpha = 1f
-                if(videoView!=null)
-                    videoView.setLooping(true)
             }
 
             override fun onVideoCompletionMainThread() {}

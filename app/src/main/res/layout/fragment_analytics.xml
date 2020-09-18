@@ -180,17 +180,11 @@
                     android:textColor="@android:color/holo_green_dark"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     />
-                <TextView
-                    android:id="@+id/vWidget"
+
+                <com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+                    android:id="@+id/pxlPhotoView"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_margin="20dp"
-                    android:text="Widget"
-                    android:gravity="center"
-                    android:background="?attr/colorOnSurface"
-                    android:textColor="#000000"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    />
+                    android:layout_height="200dp"/>
                 <TextView
                     android:id="@+id/tvMsg2"
                     android:layout_width="match_parent"

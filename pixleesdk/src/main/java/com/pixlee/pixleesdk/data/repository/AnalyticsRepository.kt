@@ -6,6 +6,7 @@ import com.pixlee.pixleesdk.network.NetworkModule
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
@@ -45,7 +46,6 @@ class AnalyticsRepository(var api: AnalyticsAPI) : AnalyticsDataSource {
             e.printStackTrace()
         }
 
-        val body = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), json.toString())
-        return api.makeAnalyticsCall(NetworkModule.analyticsUrl + requestPath, body)
+        return api.makeAnalyticsCall(NetworkModule.analyticsUrl + requestPath, json.toString().toRequestBody(PXLClient.mediaType))
     }
 }

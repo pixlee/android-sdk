@@ -7,10 +7,12 @@ import com.pixlee.pixleesdk.data.PhotoResult
 import com.pixlee.pixleesdk.data.api.BasicAPI
 import com.pixlee.pixleesdk.network.HMAC
 import com.pixlee.pixleesdk.network.multiparts.MultipartUtil
+import com.pixlee.pixleesdk.util.toHMAC
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import retrofit2.Call
 import java.io.File
@@ -52,19 +54,6 @@ interface BasicDataSource {
  * This object loads data from and uploads data to the server using BasicAPI.java, a Retrofit HTTP API class.
  */
 class BasicRepository(var api: BasicAPI) : BasicDataSource {
-    private fun getSignature(json: JSONObject): String {
-        requireNotNull(PXLClient.secretKey) { "no secretKey, please set secretKey before start" }
-        var signature: String = ""
-        try {
-            signature = HMAC.computeHmac(json.toString().replace("\\/", "/"), PXLClient.secretKey)
-        } catch (e: NoSuchAlgorithmException) {
-            e.printStackTrace()
-        } catch (e: InvalidKeyException) {
-            e.printStackTrace()
-        }
-        return signature
-    }
-
     override fun getPhotosWithSKU(sku: String, api_key: String, filters: String?, sort: String?, per_page: Int, page: Int): Call<PhotoResult> {
         return api.getPhotosWithSKU(sku, api_key, filters, sort, per_page, page)
     }
@@ -78,8 +67,7 @@ class BasicRepository(var api: BasicAPI) : BasicDataSource {
     }
 
     override fun postMedia(json: JSONObject): Call<MediaResult> {
-        val body = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), json.toString())
-        return api.postMedia(getSignature(json), PXLClient.apiKey, body)
+        return api.postMedia(json.toHMAC(), PXLClient.apiKey, json.toString().toRequestBody(PXLClient.mediaType))
     }
 
     override fun uploadImage(json: JSONObject, filePath: String): Call<MediaResult> {
@@ -87,6 +75,6 @@ class BasicRepository(var api: BasicAPI) : BasicDataSource {
         val photo = File(filePath)
         bodyList.add(MultipartUtil().getMultipartBody("file", photo))
         bodyList.add(MultipartBody.Part.createFormData("json", json.toString()))
-        return api.uploadImage(getSignature(json), PXLClient.apiKey, bodyList)
+        return api.uploadImage(json.toHMAC(), PXLClient.apiKey, bodyList)
     }
 }

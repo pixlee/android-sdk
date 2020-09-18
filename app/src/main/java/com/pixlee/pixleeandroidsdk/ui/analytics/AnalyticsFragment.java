@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk.ui;
+package com.pixlee.pixleeandroidsdk.ui.analytics;
 
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import androidx.core.widget.NestedScrollView;
 import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleeandroidsdk.databinding.FragmentAnalyticsBinding;
+import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleesdk.client.PXLAlbum;
 import com.pixlee.pixleesdk.client.PXLAnalytics;
 import com.pixlee.pixleesdk.client.PXLBaseAlbum;
@@ -21,6 +22,7 @@ import com.pixlee.pixleesdk.client.PXLClient;
 import com.pixlee.pixleesdk.client.PXLPdpAlbum;
 import com.pixlee.pixleesdk.data.PXLPhoto;
 import com.pixlee.pixleesdk.enums.PXLWidgetType;
+import com.pixlee.pixleesdk.ui.widgets.ImageScaleType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +34,7 @@ import java.util.HashMap;
 public class AnalyticsFragment extends BaseFragment {
     @Override
     public int getTitleResource() {
-        return R.string.title_analytics;
+        return R.string.title_java_analytics;
     }
 
     FragmentAnalyticsBinding binding;
@@ -72,14 +74,9 @@ public class AnalyticsFragment extends BaseFragment {
         setScrollView();
 
         // Pixlee Settings
-        setPixleeCredentials();
         initPixleeAnalytics();
         initPixleeAlbum();
         loadPixleeAlbum();
-    }
-
-    private void setPixleeCredentials() {
-        PXLClient.Companion.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY);
     }
 
     private void initPixleeAlbum() {
@@ -95,6 +92,10 @@ public class AnalyticsFragment extends BaseFragment {
             @Override
             public void onComplete(ArrayList<PXLPhoto> result) {
                 photos.addAll(result);
+                if(result.size()>0){
+                    binding.pxlPhotoView.setPhoto(result.get(0), ImageScaleType.FIT_CENTER);
+                }
+
                 binding.tvStatus.setText(R.string.album_loading_complete);
                 enableAlbumButtons(true);
                 binding.vProgress.setVisibility(View.INVISIBLE);
@@ -228,9 +229,9 @@ public class AnalyticsFragment extends BaseFragment {
         binding.scrollWidget.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if (binding.vWidget != null) {
+                if (binding.pxlPhotoView != null) {
 
-                    if (binding.vWidget.getLocalVisibleRect(scrollBounds)) {
+                    if (binding.pxlPhotoView.getLocalVisibleRect(scrollBounds)) {
 
                         if (!widgetVisible) {
                             String visibleWidgetStatus = "visibleWidget " +
@@ -239,8 +240,8 @@ public class AnalyticsFragment extends BaseFragment {
                             showToast(visibleWidgetStatus + "!!");
                             widgetVisible = true;
                         }
-                        if (!binding.vWidget.getLocalVisibleRect(scrollBounds)
-                                || scrollBounds.height() < binding.vWidget.getHeight()) {
+                        if (!binding.pxlPhotoView.getLocalVisibleRect(scrollBounds)
+                                || scrollBounds.height() < binding.pxlPhotoView.getHeight()) {
                             Log.i("PXLAnalytics", "BTN APPEAR PARCIALY");
                         } else {
                             Log.i("PXLAnalytics", "BTN APPEAR FULLY!!!");

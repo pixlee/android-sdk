@@ -41,7 +41,7 @@ import static android.view.View.GONE;
 public class ImageUploaderFragment extends BaseFragment {
     @Override
     public int getTitleResource() {
-        return R.string.title_upload_image;
+        return R.string.title_java_upload;
     }
 
     FragmentImageUploaderBinding binding;

@@ -25,6 +25,7 @@
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonDefault"
                 android:id="@+id/btKtxAlbum"
+                android:textSize="14sp"
                 android:paddingTop="16sp"
                 android:paddingBottom="13dp"
                 android:text="@string/title_ktx_album"
@@ -34,20 +35,9 @@
 
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonDefault"
-                android:id="@+id/btKtxImageUploader"
-                android:text="@string/title_upload_image"
-                android:textSize="16sp"
-                android:paddingTop="13dp"
-                android:paddingBottom="13dp"
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"
-                />
-
-            <com.google.android.material.button.MaterialButton
-                style="@style/NextButtonDefault"
                 android:id="@+id/btKtxAnalytics"
-                android:text="@string/title_analytics"
-                android:textSize="16sp"
+                android:text="@string/title_ktx_analytics"
+                android:textSize="14sp"
                 android:paddingTop="13dp"
                 android:paddingBottom="13dp"
                 android:layout_marginLeft="@dimen/margin"
@@ -77,7 +67,7 @@
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonDefault"
                 android:id="@+id/btImageUploader"
-                android:text="@string/title_upload_image"
+                android:text="@string/title_java_upload"
                 android:textSize="16sp"
                 android:paddingTop="13dp"
                 android:paddingBottom="13dp"
@@ -88,7 +78,7 @@
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonDefault"
                 android:id="@+id/btAnalytics"
-                android:text="@string/title_analytics"
+                android:text="@string/title_java_analytics"
                 android:textSize="16sp"
                 android:paddingTop="13dp"
                 android:paddingBottom="13dp"
@@ -102,25 +92,6 @@
                 android:layout_margin="@dimen/margin"
                 android:alpha="0.1"
                 android:background="?attr/colorOnSurface"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/index_components"
-                android:textStyle="bold"
-                android:textColor="?attr/colorOnSurface"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin" />
-            <com.google.android.material.button.MaterialButton
-                style="@style/NextButtonOutLined"
-                android:id="@+id/btWidgets"
-                android:text="@string/title_widgets"
-                android:textSize="16sp"
-                android:paddingTop="13dp"
-                android:paddingBottom="13dp"
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"
-                />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
