@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
         android:id="@+id/pxlPhotoView"
@@ -15,8 +16,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#ffffff"
-        android:padding="10dp"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:paddingTop="3dp"
+        android:paddingRight="5dp"
+        tools:text="Visibility percents: 200"
+        tools:textColor="@color/black_800"
+        android:gravity="right"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/pxlPhotoView"
         />
@@ -25,10 +30,12 @@
         android:id="@+id/tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        tools:text="Visibility percents: 200"
+        tools:textColor="@color/black_800"
+        android:gravity="right"
         android:textColor="#ffffff"
-        android:padding="10dp"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-        android:layout_alignParentRight="true"
-        android:layout_alignBottom="@+id/pxlPhotoView"
+        android:paddingRight="5dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:layout_below="@+id/tvPercent"
         />
 </RelativeLayout>

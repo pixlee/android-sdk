@@ -16,39 +16,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding"
-                android:text="CENTER_CROP"
-                android:textStyle="bold"
-                android:textColor="?attr/colorOnSurface"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="if you want to fix your view size, you can use this mode to get the content cropped"
-                android:textColor="?attr/colorOnSurface"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Tooltip"
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin" />
-            <com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
-                android:id="@+id/pxlPhotoViewCrop"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/margin"
-                android:layout_marginBottom="@dimen/margin"
-                android:alpha="0.1"
-                android:background="?attr/colorOnSurface"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin"
                 android:text="FIT_CENTER"
                 android:textStyle="bold"
                 android:textColor="?attr/colorOnSurface"
@@ -98,7 +65,38 @@
                 android:layout_marginRight="@dimen/margin"
                 android:layout_marginBottom="@dimen/margin"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/margin"
+                android:layout_marginBottom="@dimen/margin"
+                android:alpha="0.1"
+                android:background="?attr/colorOnSurface"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin"
+                android:text="CENTER_CROP"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="if you want to fix your view size, you can use this mode to get the content cropped"
+                android:textColor="?attr/colorOnSurface"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Tooltip"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin" />
+            <com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+                android:id="@+id/pxlPhotoViewCrop"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"/>
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

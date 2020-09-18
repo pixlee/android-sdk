@@ -27,9 +27,9 @@ class PXLPhotoViewFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         val pxlPhoto: PXLPhoto? = arguments?.getParcelable("pxlPhoto")
         pxlPhoto?.also{
+            pxlPhotoViewFitWrapLandscape.setPhoto(it, ImageScaleType.FIT_CENTER)
+            pxlPhotoViewFitPortrait.setPhoto(it, ImageScaleType.FIT_CENTER)
             pxlPhotoViewCrop.setPhoto(it, ImageScaleType.CENTER_CROP)
-            pxlPhotoViewFitWrapLandscape.setPhoto(it)
-            pxlPhotoViewFitPortrait.setPhoto(it)
         }
     }
 

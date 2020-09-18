@@ -11,7 +11,7 @@
     <string name="title_ktx_analytics">Call Analytics (Kotlin.coroutines)</string>
     <string name="title_image_viewer">Image Viewer</string>
     <string name="title_video_viewer">Video Viewer</string>
-    <string name="title_pxlphoto_activity">pxlphoto in Activity</string>
+    <string name="title_pxlphoto_activity">PXLPhoto in Activity</string>
     <string name="title_pxlphotoview">PXLPhotoView</string>
     <string name="title_pxlphotoview_in_recyclerview">PXLPhotoView in RecyclerView</string>
 

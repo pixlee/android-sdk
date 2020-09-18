@@ -290,7 +290,7 @@ class KtxGalleryFragment : BaseFragment() {
      * @param photo
      */
     fun moveToViewer(photo: PXLPhoto) {
-        val list = listOf(PhotoLauncher.ViewerActivity, PhotoLauncher.PXLPhotoView, PhotoLauncher.PXLPhotoViewInRecyclerView)
+        val list = listOf(PhotoLauncher.ViewerActivity, PhotoLauncher.PXLPhotoView/*, PhotoLauncher.PXLPhotoViewInRecyclerView*/)
 
         val listTexts = arrayOfNulls<String>(list.size)
         for (i in list.indices) {
