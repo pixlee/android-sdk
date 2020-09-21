@@ -22,7 +22,7 @@ import com.pixlee.pixleesdk.client.PXLClient;
 import com.pixlee.pixleesdk.client.PXLPdpAlbum;
 import com.pixlee.pixleesdk.data.PXLPhoto;
 import com.pixlee.pixleesdk.enums.PXLWidgetType;
-import com.pixlee.pixleesdk.ui.widgets.ImageScaleType;
+import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,7 +93,7 @@ public class AnalyticsFragment extends BaseFragment {
             public void onComplete(ArrayList<PXLPhoto> result) {
                 photos.addAll(result);
                 if(result.size()>0){
-                    binding.pxlPhotoView.setPhoto(result.get(0), ImageScaleType.FIT_CENTER);
+                    binding.pxlPhotoView.setPhoto(result.get(0), PXLPhotoView.ImageScaleType.FIT_CENTER);
                 }
 
                 binding.tvStatus.setText(R.string.album_loading_complete);

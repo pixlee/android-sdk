@@ -87,18 +87,23 @@
             app:layout_constraintLeft_toRightOf="@+id/barrier"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/icon"
+            app:layout_constraintBottom_toTopOf="@+id/iconBox"
             />
 
-        <ImageView
-            android:id="@+id/icon"
+        <RelativeLayout
+            android:id="@+id/iconBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_shopping_cart_black_48"
             app:layout_constraintLeft_toRightOf="@+id/barrier"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bookmark"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/bookmark">
+            <ImageView
+                android:id="@+id/ivIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+        </RelativeLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

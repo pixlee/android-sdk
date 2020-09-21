@@ -12,7 +12,7 @@ import com.pixlee.pixleesdk.data.PXLAlbumSortOptions
 import com.pixlee.pixleesdk.data.repository.KtxAnalyticsDataSource
 import com.pixlee.pixleesdk.data.repository.KtxBasicDataSource
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
-import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
+import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.px
 
 /**
@@ -82,7 +82,7 @@ open class BaseViewModel(val ktxBasicDataSource: KtxBasicDataSource, val ktxAnal
                     if (it.photos.isNotEmpty()) {
                         val newList = ArrayList<PhotoWithImageScaleType>()
                         it.photos.forEach {
-                            newList.add(PhotoWithImageScaleType(it, ImageScaleType.CENTER_CROP, cellHeightInPixel))
+                            newList.add(PhotoWithImageScaleType(it, PXLPhotoView.ImageScaleType.CENTER_CROP, cellHeightInPixel))
                         }
                         list.addAll(newList)
                         _resultEvent.value = Event(Command.Data(newList, isFirstPage))

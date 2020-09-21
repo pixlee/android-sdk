@@ -2,6 +2,7 @@ package com.pixlee.pixleesdk.ui.widgets
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.widget.AbsListView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,11 +32,7 @@ class PXLPhotoRecyclerView : RecyclerView {
     }
 
     val pxlPhotoAdapter: PXLPhotoAdapter by lazy {
-        PXLPhotoAdapter { pxlPhoto ->
-            itemClickListener?.also {
-                it(pxlPhoto)
-            }
-        }
+        PXLPhotoAdapter()
     }
 
     private var mScrollState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE
@@ -54,8 +51,18 @@ class PXLPhotoRecyclerView : RecyclerView {
     fun initView() {
         layoutManager = linearLayoutManager
         this.adapter = pxlPhotoAdapter
+    }
 
-        mVideoVisibilityCalculator = SingleListViewItemActiveCalculator(DefaultSingleItemCalculatorCallback(), pxlPhotoAdapter.list)
+    fun initiate(/*infiniteScroll: Boolean = false,*/
+                 configuration: PXLPhotoView.Configuration? = null,
+                 onButtonClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null,
+                 onPhotoClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null) {
+        val infiniteScroll = false
+        pxlPhotoAdapter.infiniteScroll = infiniteScroll
+        pxlPhotoAdapter.photoViewConfiguration = configuration
+        pxlPhotoAdapter.onButtonClickedListener = onButtonClickedListener
+        pxlPhotoAdapter.onPhotoClickedListener = onPhotoClickedListener
+        mVideoVisibilityCalculator = SingleListViewItemActiveCalculator(DefaultSingleItemCalculatorCallback(), pxlPhotoAdapter.list, infiniteScroll)
         mItemsPositionGetter = RecyclerViewItemPositionGetter(linearLayoutManager, this)
 
         addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -79,11 +86,7 @@ class PXLPhotoRecyclerView : RecyclerView {
                 }
             }
         })
-    }
-
-    var itemClickListener: ((pxlPhoto: PXLPhoto) -> Unit)? = null
-    fun setOnItemClicked(listener: (pxlPhoto: PXLPhoto) -> Unit) {
-        itemClickListener = listener
+        pxlPhotoAdapter.notifyDataSetChanged()
     }
 
     fun addList(list: List<PhotoWithImageScaleType>) {
@@ -93,7 +96,8 @@ class PXLPhotoRecyclerView : RecyclerView {
                     videoPlayerManager = singleVideoPlayerManager
                 })
             }
-            pxlPhotoAdapter.notifyItemRangeInserted(0, pxlPhotoAdapter.list.size)
+            //pxlPhotoAdapter.notifyItemRangeInserted(0, pxlPhotoAdapter.list.size)
+            pxlPhotoAdapter.notifyDataSetChanged()
         }
     }
 
@@ -105,11 +109,13 @@ class PXLPhotoRecyclerView : RecyclerView {
                     videoPlayerManager = singleVideoPlayerManager
                 })
             }
-            pxlPhotoAdapter.notifyItemRangeInserted(0, pxlPhotoAdapter.list.size)
+            //pxlPhotoAdapter.notifyItemRangeInserted(0, pxlPhotoAdapter.list.size)
+            pxlPhotoAdapter.notifyDataSetChanged()
+            //scrollToPosition(Integer.MAX_VALUE / 2)
         }
     }
 
-    fun replaceList(list: List<PXLPhoto>, imageScaleType: ImageScaleType, heightInPixel: Int = 400.px.toInt()) {
+    fun replaceList(list: List<PXLPhoto>, imageScaleType: PXLPhotoView.ImageScaleType, heightInPixel: Int = 400.px.toInt()) {
         clearOldList()
         if (list.isNotEmpty()) {
             list.forEach {
@@ -117,15 +123,19 @@ class PXLPhotoRecyclerView : RecyclerView {
                     videoPlayerManager = singleVideoPlayerManager
                 })
             }
-            pxlPhotoAdapter.notifyItemRangeInserted(0, pxlPhotoAdapter.list.size)
+            //pxlPhotoAdapter.notifyItemRangeInserted(0, pxlPhotoAdapter.list.size)
+            pxlPhotoAdapter.notifyDataSetChanged()
+            //scrollToPosition(Integer.MAX_VALUE / 2)
         }
+
     }
 
     private fun clearOldList() {
         if (pxlPhotoAdapter.list.isNotEmpty()) {
             val count = pxlPhotoAdapter.list.size
             pxlPhotoAdapter.list.clear()
-            pxlPhotoAdapter.notifyItemRangeRemoved(0, count)
+            //pxlPhotoAdapter.notifyItemRangeRemoved(0, count)
+            pxlPhotoAdapter.notifyDataSetChanged()
         }
     }
 

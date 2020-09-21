@@ -22,42 +22,72 @@ import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.util.px
+import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager
+import com.volokh.danylo.video_player_manager.meta.MetaData
 import com.volokh.danylo.video_player_manager.ui.MediaPlayerWrapper
 import com.volokh.danylo.video_player_manager.ui.ScalableTextureView
 import com.volokh.danylo.video_player_manager.ui.VideoPlayerView
 import jp.wasabeef.glide.transformations.BlurTransformation
 
-
-/**
- * This class is to let PXLPhotoView support a limited number of ImageView.ScaleType
- */
-enum class ImageScaleType(val type: ImageView.ScaleType) {
-    /**
-     * ImageScaleType.FIT_CENTER: we keep the ratio of the video, so there must be empty areas. To cover it, Pixlee’s SDK will show a full-screen-size blurry image background. All parts of the video will be visible on the screen.
-     */
-    FIT_CENTER(ImageView.ScaleType.FIT_CENTER),
-
-    /**
-     * ImageScaleType.CENTER_CROP: there is no empty area. Some parts of the video going outside of the screen will not be visible on the screen
-     */
-    CENTER_CROP(ImageView.ScaleType.CENTER_CROP);
-}
-
 /**
  * This view is to show a photo of PXLPhoto inside a RecyclerView or a ViewGroup
  */
 class PXLPhotoView : RelativeLayout {
+    /**
+     * This class is to let PXLPhotoView support a limited number of ImageView.ScaleType
+     */
+    enum class ImageScaleType(val type: ImageView.ScaleType) {
+        /**
+         * ImageScaleType.FIT_CENTER: we keep the ratio of the video, so there must be empty areas. To cover it, Pixlee’s SDK will show a full-screen-size blurry image background. All parts of the video will be visible on the screen.
+         */
+        FIT_CENTER(ImageView.ScaleType.FIT_CENTER),
+
+        /**
+         * ImageScaleType.CENTER_CROP: there is no empty area. Some parts of the video going outside of the screen will not be visible on the screen
+         */
+        CENTER_CROP(ImageView.ScaleType.CENTER_CROP);
+    }
+
+    class Configuration(var mainTextViewStyle: TextViewStyle = TextViewStyle().apply {
+        text = "Text 1"
+        size = 30.px
+    }, var subTextViewStyle: TextViewStyle = TextViewStyle().apply {
+        text = "Text 2"
+        size = 18.px
+    }, var buttonStyle: ButtonStyle = ButtonStyle().apply {
+        text = "Button"
+        size = 20.px
+    })
+
+    class ButtonStyle(
+            var isButtonVisible: Boolean = true,
+            var buttonIcon: Int? = R.drawable.baseline_play_arrow_white_24,
+            var stroke: Stroke = Stroke(),
+            var padding: Padding = Padding()) : TextViewStyle()
+
+    class Stroke(var width: Int = 2.px.toInt(),
+                 var color: Int = Color.WHITE,
+                 var radiusInPixel: Float = 25.px)
+
+    // in pixel
+    class Padding(
+            var left: Int = 20.px.toInt(),
+            var centerRight: Int = 40.px.toInt(),
+            var topBottom: Int = 10.px.toInt())
+
+
     val defaultScaleType = ImageScaleType.FIT_CENTER
     var imageScaleType: ImageScaleType = defaultScaleType
-    private var pxlPhoto: PXLPhoto? = null
+    var pxlPhoto: PXLPhoto? = null
 
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         initView()
     }
+
     val imageViewBg: ImageView by lazy {
         ImageView(context).apply {
             id = ViewCompat.generateViewId()
@@ -101,21 +131,54 @@ class PXLPhotoView : RelativeLayout {
     val button: TextView by lazy {
         TextView(context).apply {
             setTextColor(Color.WHITE)
-            text = "1234567890"
+            text = ""
             setTextSize(TypedValue.COMPLEX_UNIT_PX, 20.px)
             id = ViewCompat.generateViewId()
-            val leftRight = 40.px.toInt()
-            val topBottom = 10.px.toInt()
-            setPadding(20.px.toInt(), topBottom, leftRight, topBottom)
-            compoundDrawablePadding = (leftRight * 0.6f).toInt()
-            setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_play_arrow_white_24, 0, 0, 0)
-            background = buttonBg.apply {
-                buttonBg.cornerRadius = 25.px
-                setStroke(2.px.toInt(), Color.WHITE)
-            }
         }
     }
 
+    fun setConfiguration(configuration: Configuration) {
+        configuration.buttonStyle.let { style ->
+            button.visibility = if (style.isButtonVisible) VISIBLE else GONE
+            button.setTextViewStyle(style)
+            button.apply {
+                // padding of the parent view
+                style.padding.let {
+                    val left = it.left
+                    val centerRight = it.centerRight
+                    val topBottom = it.topBottom
+                    setPadding(left, topBottom, centerRight, topBottom)
+                    compoundDrawablePadding = (centerRight * 0.6f).toInt()
+                }
+
+                // padding left between image and text
+                setCompoundDrawablesWithIntrinsicBounds(style.buttonIcon ?: 0, 0, 0, 0)
+
+                // stroke design
+                style.stroke.let {
+                    background = buttonBg.apply {
+                        // radius size
+                        cornerRadius = it.radiusInPixel
+
+                        // stroke size and color
+                        setStroke(it.width, it.color)
+                    }
+                }
+            }
+        }
+
+        configuration.mainTextViewStyle.let { style ->
+            mainTextView.setTextViewStyle(style)
+        }
+
+        configuration.subTextViewStyle.let { style ->
+            subTextView.setTextViewStyle(style)
+        }
+    }
+
+    fun setButtonClickListener(buttonClickListener: OnClickListener? = null) {
+        button.setOnClickListener(buttonClickListener)
+    }
 
     private fun initView() {
         LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).apply {
@@ -168,6 +231,8 @@ class PXLPhotoView : RelativeLayout {
                 linearLayout.addView(button)
             }
         }
+
+        setConfiguration(Configuration())
     }
 
     var parentWidth = 0
@@ -200,7 +265,7 @@ class PXLPhotoView : RelativeLayout {
         startBlurBG()
         startPhoto()
         if (pxlPhoto.isVideo) {
-            startVideo()
+            initVideoPlayer()
         }
     }
 
@@ -237,7 +302,7 @@ class PXLPhotoView : RelativeLayout {
         }
     }
 
-    fun startVideo() {
+    fun initVideoPlayer() {
         Log.d("pxlphoto", "pxlphoto.videoUrl: ${pxlPhoto?.videoUrl}")
         when (imageScaleType) {
             ImageScaleType.FIT_CENTER -> videoView.setScaleType(ScalableTextureView.ScaleType.FIT_CENTER)
@@ -323,5 +388,14 @@ class PXLPhotoView : RelativeLayout {
      */
     fun setSubTitleTypeface(typeface: Typeface) {
         subTextView.typeface = typeface
+    }
+}
+
+fun PXLPhotoView.playVideo(videoPlayerManger: VideoPlayerManager<MetaData>, isLooping:Boolean = false, muted:Boolean = false){
+    if(pxlPhoto?.isVideo ?: false){
+        videoView.setLooping(isLooping)
+        if(muted) videoView.muteVideo()
+        else videoView.unMuteVideo()
+        videoPlayerManger.playNewVideo(null, this.videoView, pxlPhoto?.videoUrl)
     }
 }

@@ -25,6 +25,7 @@ import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
+import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.widget_viewer.view.*
@@ -60,12 +61,15 @@ class PXLPhotoProductView : FrameLayout {
      *                      if not null, show bookmark toggle
      * @param onBookmarkClicked {productId: String, isBookmarkChecked: Boolean -> ... }
      */
-    fun setPhoto(pxlPhoto: PXLPhoto, bookmarkMap: HashMap<String, Boolean>? = null, onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null) {
+    fun setPhoto(pxlPhoto: PXLPhoto,
+                 configuration: ProductViewHolder.Configuration = ProductViewHolder.Configuration(),
+                 bookmarkMap: HashMap<String, Boolean>? = null,
+                 onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null) {
         this.pxlPhoto = pxlPhoto
         this.bookmarkMap = bookmarkMap
         this.onBookmarkClicked = onBookmarkClicked
         startBlurBG()
-        loadProducts()
+        loadProducts(configuration)
         if (pxlPhoto.isVideo) {
             startVideo()
         } else {
@@ -84,11 +88,12 @@ class PXLPhotoProductView : FrameLayout {
         }
     }
 
-    private fun loadProducts() {
+    private fun loadProducts(configuration: ProductViewHolder.Configuration) {
         // initiate the product list view
         pxlPhoto?.also {
             it.products?.also { products ->
                 adapter = ProductAdapter(
+                        configuration = configuration,
                         list = products,
                         bookmarkMap = bookmarkMap,
                         onBookmarkChanged = { productId, isBookmarkChecked ->

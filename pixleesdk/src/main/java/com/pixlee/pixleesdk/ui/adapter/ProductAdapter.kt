@@ -11,7 +11,9 @@ import java.util.*
 /**
  * Created by sungjun on 9/11/20.
  */
-class ProductAdapter(val list: List<PXLProduct>,
+class ProductAdapter(
+        val configuration: ProductViewHolder.Configuration,
+        val list: List<PXLProduct>,
                      /**
                       * String: product id
                       * Boolean: is bookmarked
@@ -25,14 +27,14 @@ class ProductAdapter(val list: List<PXLProduct>,
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = list[position]
-        holder.bind(product, bookmarkMap?.get(product.id))
+        holder.bind(product, bookmarkMap?.get(product.id), configuration)
         holder.bookmark.setOnClickListener {
             val productId = list[holder.adapterPosition].id
             bookmarkMap?.also {
                 val bookmarked = it[productId] ?: false
                 it[productId] = !bookmarked
                 onBookmarkChanged(list[holder.adapterPosition].id, !bookmarked)
-                holder.changeBookmarkUI(!bookmarked)
+                holder.changeBookmarkUI(!bookmarked, configuration)
             }
 
         }

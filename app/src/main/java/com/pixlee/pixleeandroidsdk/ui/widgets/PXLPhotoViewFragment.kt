@@ -8,7 +8,11 @@ import androidx.fragment.app.Fragment
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleesdk.data.PXLPhoto
-import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
+import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+import com.pixlee.pixleesdk.ui.widgets.playVideo
+import com.volokh.danylo.video_player_manager.manager.SingleVideoPlayerManager
+import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager
+import com.volokh.danylo.video_player_manager.meta.MetaData
 import kotlinx.android.synthetic.main.fragment_pxlphoto_view.*
 
 /**
@@ -23,13 +27,19 @@ class PXLPhotoViewFragment : BaseFragment() {
         return inflater.inflate(R.layout.fragment_pxlphoto_view, container, false)
     }
 
+    private val mVideoPlayerManager: VideoPlayerManager<MetaData> = SingleVideoPlayerManager { }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val pxlPhoto: PXLPhoto? = arguments?.getParcelable("pxlPhoto")
-        pxlPhoto?.also{
-            pxlPhotoViewFitWrapLandscape.setPhoto(it, ImageScaleType.FIT_CENTER)
-            pxlPhotoViewFitPortrait.setPhoto(it, ImageScaleType.FIT_CENTER)
-            pxlPhotoViewCrop.setPhoto(it, ImageScaleType.CENTER_CROP)
+        pxlPhoto?.also {
+            pxlPhotoViewFitWrapLandscape.setPhoto(it, PXLPhotoView.ImageScaleType.FIT_CENTER)
+            pxlPhotoViewFitPortrait.setPhoto(it, PXLPhotoView.ImageScaleType.FIT_CENTER)
+            pxlPhotoViewCrop.setPhoto(it, PXLPhotoView.ImageScaleType.CENTER_CROP)
+
+            pxlPhotoViewFitPortrait.playVideo(videoPlayerManger = mVideoPlayerManager, isLooping = true, muted = true)
+            pxlPhotoViewFitWrapLandscape.playVideo(videoPlayerManger = mVideoPlayerManager, isLooping = true, muted = true)
+
         }
     }
 

@@ -2,12 +2,15 @@ package com.pixlee.pixleeandroidsdk.ui.widgets
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
+import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import kotlinx.android.synthetic.main.activity_viewer.*
 import java.util.*
@@ -42,9 +45,18 @@ class ViewerActivity : AppCompatActivity() {
             finish()
             return
         }
-        pxlPhotoProductView.setPhoto(pxlPhoto = pxlPhoto, bookmarkMap = readBookmarks(pxlPhoto), onBookmarkClicked = { productId, isBookmarkChecked ->
-            Toast.makeText(this, "productId: $productId\nisBookmarkChecked: $isBookmarkChecked", Toast.LENGTH_SHORT).show()
-        })
+        pxlPhotoProductView.setPhoto(pxlPhoto = pxlPhoto,
+                configuration = ProductViewHolder.Configuration().apply {
+                    circleIcon = ProductViewHolder.CircleIcon().apply {
+                        icon = R.drawable.outline_shopping_bag_black_24
+                        iconColor = Color.DKGRAY
+                        backgroundColor = ContextCompat.getColor(this@ViewerActivity, R.color.yellow_800)
+                    }
+                },
+                bookmarkMap = readBookmarks(pxlPhoto),
+                onBookmarkClicked = { productId, isBookmarkChecked ->
+                    Toast.makeText(this, "productId: $productId\nisBookmarkChecked: $isBookmarkChecked", Toast.LENGTH_SHORT).show()
+                })
     }
 
     fun readBookmarks(pxlPhoto: PXLPhoto): HashMap<String, Boolean> {

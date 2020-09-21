@@ -15,7 +15,7 @@ import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
 import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.enums.PXLWidgetType
-import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
+import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import kotlinx.android.synthetic.main.fragment_analytics.*
 import java.util.*
 
@@ -70,7 +70,7 @@ class KtxAnalyticsFragment : BaseFragment() {
             when (it) {
                 is BaseViewModel.Command.Data -> {
                     it.list.firstOrNull()?.also {
-                        pxlPhotoView.setPhoto(it.pxlPhoto, ImageScaleType.FIT_CENTER)
+                        pxlPhotoView.setPhoto(it.pxlPhoto, PXLPhotoView.ImageScaleType.FIT_CENTER)
                     }
                     tvStatus.setText(R.string.album_loading_complete)
                     tvStatus.text = if(it.isFistPage) "First Load" else "Loaded More..."

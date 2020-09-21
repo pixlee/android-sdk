@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.R
-import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
+import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.px
 import com.volokh.danylo.video_player_manager.manager.VideoItem
 import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager
@@ -25,8 +25,11 @@ class PXLPhotoViewHolder(override val containerView: View) :
         RecyclerView.ViewHolder(containerView),
         LayoutContainer {
 
-    fun bind(data: PhotoWithImageScaleType) {
+    fun bind(data: PhotoWithImageScaleType, configuration: PXLPhotoView.Configuration? = null) {
         pxlPhotoView.layoutParams.height = data.heightInPixel
+        if (configuration != null) {
+            pxlPhotoView.setConfiguration(configuration)
+        }
         pxlPhotoView.setPhoto(data.pxlPhoto, data.imageScaleType)
         tv.text = "ScaleType: ${data.imageScaleType.name}\nwidth: ${pxlPhotoView.layoutParams.width}, height: ${pxlPhotoView.layoutParams.height}"
     }
@@ -41,7 +44,7 @@ class PXLPhotoViewHolder(override val containerView: View) :
     }
 }
 
-class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto, val imageScaleType: ImageScaleType, val heightInPixel:Int = 400.px.toInt()) : ListItem, VideoItem {
+class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto, val imageScaleType: PXLPhotoView.ImageScaleType, val heightInPixel: Int = 400.px.toInt()) : ListItem, VideoItem {
     lateinit var videoPlayerManager: VideoPlayerManager<MetaData>
     private val mCurrentViewRect = Rect()
 
@@ -60,7 +63,6 @@ class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto, val imageScaleType: ImageS
                 } else if (viewIsPartiallyHiddenBottom(height)) {
                     percents = mCurrentViewRect.bottom * 100 / height
                 }
-
 
 
 //                currentView.tag?.also {
@@ -117,8 +119,8 @@ class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto, val imageScaleType: ImageS
     // a part of VideoItem
     override fun playNewVideo(currentItemMetaData: MetaData, player: VideoPlayerView, videoPlayerManager: VideoPlayerManager<MetaData>) {
         if (pxlPhoto.isVideo) {
-            player.setLooping(true)
             videoPlayerManager.playNewVideo(currentItemMetaData, player, pxlPhoto.videoUrl)
+            player.setLooping(true)
         }
     }
 
