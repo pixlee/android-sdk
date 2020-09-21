@@ -28,7 +28,7 @@ An example of the proper usage of an opened lightbox event is also included in t
 2. Add the dependency.
     ```
     dependencies {
-            implementation 'com.github.pixlee:android-sdk:1.4.0-alpha03'
+            implementation 'com.github.pixlee:android-sdk:1.4.0-alpha04'
     }
     ```
 
