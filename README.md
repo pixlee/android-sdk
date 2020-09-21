@@ -74,3 +74,7 @@ AlbumId and SKU available from the Pixlee dashboard).
 
     ```
     4. That's it!
+
+[Development Guide](#Development-Guide)
+    - [Java](doc/JAVA.md)
+    - [Kotlin](doc/KOTLIN.md)
