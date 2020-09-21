@@ -4,6 +4,7 @@ import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.data.MediaResult
 import com.pixlee.pixleesdk.data.PhotoResult
+import com.pixlee.pixleesdk.data.api.AnalyticsAPI
 import com.pixlee.pixleesdk.data.api.BasicAPI
 import com.pixlee.pixleesdk.network.HMAC
 import com.pixlee.pixleesdk.network.multiparts.MultipartUtil

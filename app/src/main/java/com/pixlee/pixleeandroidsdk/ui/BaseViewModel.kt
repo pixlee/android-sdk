@@ -26,7 +26,7 @@ open class BaseViewModel(val ktxBasicDataSource: KtxBasicDataSource, val ktxAnal
         get() = _resultEvent
 
     sealed class Command {
-        class Data(val list: List<PhotoWithImageScaleType>, val isFistPage: Boolean) : Command()
+        class Data(val list: List<PhotoWithImageScaleType>, val isFirstPage: Boolean) : Command()
         class Error(val message: String?) : Command()
     }
 

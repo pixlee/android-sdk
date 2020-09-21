@@ -88,7 +88,7 @@ class KtxGalleryFragment : BaseFragment() {
         viewModel.searchResultEvent.observe(this, EventObserver {
             when (it) {
                 is BaseViewModel.Command.Data -> {
-                    if (it.isFistPage) {
+                    if (it.isFirstPage) {
                         pxlPhotoRecyclerView.replaceList(it.list)
                         //pxlPhotoRecyclerView.onResume()
                     } else {

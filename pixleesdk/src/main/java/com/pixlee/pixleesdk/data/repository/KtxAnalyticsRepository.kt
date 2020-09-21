@@ -1,16 +1,18 @@
 package com.pixlee.pixleesdk.data.repository
 
+import android.util.Log
+import com.pixlee.pixleesdk.client.PXLBaseAlbum
 import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.client.PXLClient.Companion.android_id
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.data.api.KtxAnalyticsAPI
 import com.pixlee.pixleesdk.enums.PXLWidgetType
 import com.pixlee.pixleesdk.network.NetworkModule
-import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.IllegalArgumentException
 import java.util.*
 
 /**
@@ -94,7 +96,7 @@ interface KtxAnalyticsDataSource {
      * @param widgetType: PXLWidgetType enum class
      * @return String: plain response text
      */
-    suspend fun openedWidget(albumId: String, pxlPhotos:List<PXLPhoto>, perPage:Int, page:Int, pxlWidgetType: PXLWidgetType): String
+    suspend fun openedWidget(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: PXLWidgetType): String
 
     /**
      * openedWidget Analytics
@@ -105,7 +107,7 @@ interface KtxAnalyticsDataSource {
      * @param widgetType: String
      * @return String: plain response text
      */
-    suspend fun openedWidget(albumId: String, pxlPhotos:List<PXLPhoto>, perPage:Int, page:Int, pxlWidgetType: String): String
+    suspend fun openedWidget(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String): String
 
     /**
      * widgetVisible Analytics
@@ -116,7 +118,7 @@ interface KtxAnalyticsDataSource {
      * @param widgetType: PXLWidgetType enum class
      * @return String: plain response text
      */
-    suspend fun widgetVisible(albumId: String, pxlPhotos:List<PXLPhoto>, perPage:Int, page:Int, pxlWidgetType: PXLWidgetType): String
+    suspend fun widgetVisible(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: PXLWidgetType): String
 
     /**
      * widgetVisible Analytics
@@ -127,8 +129,17 @@ interface KtxAnalyticsDataSource {
      * @param widgetType: String
      * @return String: plain response text
      */
-    suspend fun widgetVisible(albumId: String, pxlPhotos:List<PXLPhoto>, perPage:Int, page:Int, pxlWidgetType: String): String
+    suspend fun widgetVisible(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String): String
 
+    /**
+     * loadMore Analytics
+     * @param albumId albumId
+     * @param pxlPhotos all PXLPhoto data being shown in your RecyclerView, ListView or any View
+     * @param perPage: current perPage variable used for requesting an api call [albums/{album_id}/photos, albums/from_sku]
+     * @param page: current page count
+     * @return String: plain response text
+     */
+    suspend fun loadMore(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int): String
 }
 
 /**
@@ -216,23 +227,33 @@ class KtxAnalyticsRepository(var api: KtxAnalyticsAPI) : KtxAnalyticsDataSource 
         return widgetAPI("events/widgetVisible", albumId, pxlPhotos, perPage, page, pxlWidgetType)
     }
 
-    suspend fun widgetAPI(requestPath: String, albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String): String {
+    override suspend fun loadMore(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int): String {
+        if (page < 2) {
+            Log.w(PXLBaseAlbum.TAG, "first load detected")
+            throw IllegalArgumentException("first load detected")
+        }
+        return widgetAPI("events/loadMore", albumId, pxlPhotos, perPage, page)
+    }
+
+    suspend fun widgetAPI(requestPath: String, albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String? = null): String {
         return makeAnalyticsCall(requestPath, JSONObject().apply {
             val stringBuilder = StringBuilder();
             pxlPhotos.forEach {
-                if(stringBuilder.isNotEmpty()){
+                if (stringBuilder.isNotEmpty()) {
                     stringBuilder.append(",");
                 }
                 stringBuilder.append(it.id)
             }
 
             try {
-                put("widget", pxlWidgetType);
+                if (pxlWidgetType != null) {
+                    put("widget", pxlWidgetType)
+                }
                 put("album_id", Integer.parseInt(albumId))
                 put("per_page", perPage)
                 put("page", page)
                 put("photos", stringBuilder.toString())
-            } catch (e:Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace();
             }
         })

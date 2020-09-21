@@ -24,6 +24,20 @@ class KtxAnalyticsViewModel(ktxBasicDataSource: KtxBasicDataSource, ktxAnalytics
         })
     }
 
+    fun loadMore(){
+        launchVMScope({
+            searchSetting.also {
+                when (it) {
+                    is SearchSetting.Album -> ktxAnalyticsDataSource.loadMore(it.id, pxlPhotos.map { it.pxlPhoto }, perPage, lastPageLoaded)
+                }
+            }
+        }, {
+            // error handling
+        })
+    }
+
+
+
     fun widgetVisible(pxlWidgetType: PXLWidgetType){
         launchVMScope({
             searchSetting.also {
