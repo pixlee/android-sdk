@@ -3,7 +3,6 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
 
 # Table of Content
 - [Get Started with Demo App](#Get-Started-with-Demo-App)
-- [Add the SDK to your App](#Add-the-SDK-to-your-App)
 - [Development Guide](#Development-Guide)
     - [Java]((doc/JAVA.md)
     - [Kotlin](cod/KOTLIN.md)
@@ -26,10 +25,10 @@ An example of the proper usage of an opened lightbox event is also included in t
     }
     ```
 
-2. Add the dependency. Replace `$pixleeSDKversion` with 1.4.0-alpha02
+2. Add the dependency.
     ```
     dependencies {
-            implementation 'com.github.pixlee:android-sdk:$pixleeSDKversion'
+            implementation 'com.github.pixlee:android-sdk:1.4.0-alpha03'
     }
     ```
 
@@ -55,26 +54,6 @@ AlbumId and SKU available from the Pixlee dashboard).
 
 6. Run the project on an Android device
 
-# Add the SDK to your App
-- import pixleesdk as a library project into your project
-    1. Open your existing project in Android Studio
-    2. Add it in your root build.gradle at the end of repositories:
-    ```
-    allprojects {
-        repositories {
-            ...
-            maven { url 'https://jitpack.io' }
-        }
-    }
-    ```
-    3. Add the dependency and replace <Pixlee SDK Version> below with [![](https://jitpack.io/v/pixlee/android-sdk.svg)](https://jitpack.io/#pixlee/android-sdk)
-    ```
-    dependencies {
-            implementation 'com.github.pixlee:android-video-player:<Pixlee SDK Version>'
-    }
-
-    ```
-    4. That's it!
 
 # Development Guide
 ### [Java](doc/JAVA.md)
