@@ -7,6 +7,6 @@ import com.pixlee.pixleesdk.data.repository.KtxBasicDataSource
 /**
  * Created by sungjun on 9/18/20.
  */
-class KtxGalleryViewModel(ktxBasicDataSource: KtxBasicDataSource, ktxAnalyticsDataSource: KtxAnalyticsDataSource) : BaseViewModel(ktxBasicDataSource, ktxAnalyticsDataSource) {
-
-}
+class KtxGalleryViewModel(ktxBasicDataSource: KtxBasicDataSource,
+                          ktxAnalyticsDataSource: KtxAnalyticsDataSource)
+    : BaseViewModel(ktxBasicDataSource, ktxAnalyticsDataSource)
