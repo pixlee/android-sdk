@@ -42,6 +42,7 @@ class KtxGalleryFragment : BaseFragment() {
 
     val viewModel: KtxGalleryViewModel by lazy {
         // get PXLClient
+
         val client = PXLClient.getInstance(context!!)
         KtxGalleryViewModel(client.ktxBasicRepo, client.ktxAnalyticsRepo)
     }
@@ -176,7 +177,7 @@ class KtxGalleryFragment : BaseFragment() {
                     if (text == getString(R.string.radio_album)) {
                         searchSetting = BaseViewModel.SearchSetting.Album(BuildConfig.PIXLEE_ALBUM_ID)
                     } else if (text == getString(R.string.radio_pdp)) {
-                        searchSetting = BaseViewModel.SearchSetting.Album(BuildConfig.PIXLEE_SKU)
+                        searchSetting = BaseViewModel.SearchSetting.Product(BuildConfig.PIXLEE_SKU)
                     }
                     break
                 }
