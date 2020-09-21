@@ -1,7 +1,6 @@
 package com.pixlee.pixleeandroidsdk.ui
 
 import android.util.Log
-import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,7 +18,7 @@ import com.pixlee.pixleesdk.util.px
  * Created by sungjun on 9/18/20.
  */
 open class BaseViewModel(val ktxBasicDataSource: KtxBasicDataSource, val ktxAnalyticsDataSource: KtxAnalyticsDataSource) : ViewModel() {
-    val list: ArrayList<PhotoWithImageScaleType> = ArrayList()
+    val pxlPhotos: ArrayList<PhotoWithImageScaleType> = ArrayList()
     protected val _resultEvent = MutableLiveData<Event<Command>>()
 
     // KtxGalleryFragment.kt will observe this event
@@ -60,7 +59,7 @@ open class BaseViewModel(val ktxBasicDataSource: KtxBasicDataSource, val ktxAnal
      * retrieve the first page from Pixlee server
      */
     fun getFirstPage() {
-        list.clear()
+        pxlPhotos.clear()
         lastPageLoaded = 0
         getNextPage()
     }
@@ -84,11 +83,11 @@ open class BaseViewModel(val ktxBasicDataSource: KtxBasicDataSource, val ktxAnal
                         it.photos.forEach {
                             newList.add(PhotoWithImageScaleType(it, PXLPhotoView.ImageScaleType.CENTER_CROP, cellHeightInPixel))
                         }
-                        list.addAll(newList)
+                        pxlPhotos.addAll(newList)
                         _resultEvent.value = Event(Command.Data(newList, isFirstPage))
                     }
 
-                    canLoadMore = list.size < it.total
+                    canLoadMore = pxlPhotos.size < it.total
                     _loading.value = false
                 }
             }

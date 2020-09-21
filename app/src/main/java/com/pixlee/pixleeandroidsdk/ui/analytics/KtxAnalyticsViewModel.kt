@@ -1,9 +1,7 @@
 package com.pixlee.pixleeandroidsdk.ui.analytics
 
-import androidx.lifecycle.ViewModel
 import com.pixlee.pixleeandroidsdk.ext.launchVMScope
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
-import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.data.repository.KtxAnalyticsDataSource
 import com.pixlee.pixleesdk.data.repository.KtxBasicDataSource
 import com.pixlee.pixleesdk.enums.PXLWidgetType
@@ -18,7 +16,7 @@ class KtxAnalyticsViewModel(ktxBasicDataSource: KtxBasicDataSource, ktxAnalytics
         launchVMScope({
             searchSetting.also {
                 when (it) {
-                    is SearchSetting.Album -> ktxAnalyticsDataSource.openedWidget(it.id, list.map { it.pxlPhoto }, perPage, lastPageLoaded, pxlWidgetType)
+                    is SearchSetting.Album -> ktxAnalyticsDataSource.openedWidget(it.id, pxlPhotos.map { it.pxlPhoto }, perPage, lastPageLoaded, pxlWidgetType)
                 }
             }
         }, {
@@ -30,7 +28,7 @@ class KtxAnalyticsViewModel(ktxBasicDataSource: KtxBasicDataSource, ktxAnalytics
         launchVMScope({
             searchSetting.also {
                 when (it) {
-                    is SearchSetting.Album -> ktxAnalyticsDataSource.openedWidget(it.id, list.map { it.pxlPhoto }, perPage, lastPageLoaded, pxlWidgetType)
+                    is SearchSetting.Album -> ktxAnalyticsDataSource.openedWidget(it.id, pxlPhotos.map { it.pxlPhoto }, perPage, lastPageLoaded, pxlWidgetType)
                 }
             }
         }, {
@@ -61,7 +59,7 @@ class KtxAnalyticsViewModel(ktxBasicDataSource: KtxBasicDataSource, ktxAnalytics
 
     fun openedLightbox() {
         launchVMScope({
-            list.firstOrNull()?.also {
+            pxlPhotos.firstOrNull()?.also {
                 searchSetting.also { searchSetting ->
                     when (searchSetting) {
                         is SearchSetting.Album -> {
@@ -78,7 +76,7 @@ class KtxAnalyticsViewModel(ktxBasicDataSource: KtxBasicDataSource, ktxAnalytics
 
     fun actionClicked(actionLink: String) {
         launchVMScope({
-            list.firstOrNull()?.also {
+            pxlPhotos.firstOrNull()?.also {
                 searchSetting.also { searchSetting ->
                     when (searchSetting) {
                         is SearchSetting.Album -> {
