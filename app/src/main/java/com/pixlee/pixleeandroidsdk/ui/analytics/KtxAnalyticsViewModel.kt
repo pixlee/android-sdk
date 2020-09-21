@@ -28,7 +28,7 @@ class KtxAnalyticsViewModel(ktxBasicDataSource: KtxBasicDataSource, ktxAnalytics
         launchVMScope({
             searchSetting.also {
                 when (it) {
-                    is SearchSetting.Album -> ktxAnalyticsDataSource.openedWidget(it.id, pxlPhotos.map { it.pxlPhoto }, perPage, lastPageLoaded, pxlWidgetType)
+                    is SearchSetting.Album -> ktxAnalyticsDataSource.widgetVisible(it.id, pxlPhotos.map { it.pxlPhoto }, perPage, lastPageLoaded, pxlWidgetType)
                 }
             }
         }, {
