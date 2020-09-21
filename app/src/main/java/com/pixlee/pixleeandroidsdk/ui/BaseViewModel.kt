@@ -45,7 +45,7 @@ open class BaseViewModel(val ktxBasicDataSource: KtxBasicDataSource, val ktxAnal
     var sortOptions: PXLAlbumSortOptions? = null
     var lastPageLoaded: Int = 0
     var cellHeightInPixel: Int = 200.px.toInt()
-
+    var albumId:Int? = null
 
     /**
      * This is to set essential request parameters
@@ -78,6 +78,9 @@ open class BaseViewModel(val ktxBasicDataSource: KtxBasicDataSource, val ktxAnal
                     is SearchSetting.Album -> ktxBasicDataSource.getPhotosWithID(it.id, filterOptions, sortOptions, perPage, ++lastPageLoaded)
                     is SearchSetting.Product -> ktxBasicDataSource.getPhotosWithSKU(it.sku, filterOptions, sortOptions, perPage, ++lastPageLoaded)
                 }.let {
+                    // update albumId with the albumId from the response
+                    albumId = it.albumId
+
                     if (it.photos.isNotEmpty()) {
                         val newList = ArrayList<PhotoWithImageScaleType>()
                         it.photos.forEach {
