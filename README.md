@@ -5,8 +5,8 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
 - [Get Started with Demo App](#Get-Started-with-Demo-App)
 - [Add the SDK to your App](#Add-the-SDK-to-your-App)
 - [Development Guide](#Development-Guide)
-    - [Java](doc/JAVA.md)
-    - [Kotlin](doc/KOTLIN.md)
+    - [Java]((doc/JAVA.md)
+    - [Kotlin](cod/KOTLIN.md)
 
 # Get Started with Demo App
 - The demo app included with this SDK are meant to be used in Android Studio to create a typical Android app.
@@ -25,7 +25,8 @@ An example of the proper usage of an opened lightbox event is also included in t
         }
     }
     ```
-2. Add the dependency. Replace `$pixleeSDKversion` with this latest version, [![](https://jitpack.io/v/pixlee/android-sdk.svg)](https://jitpack.io/#pixlee/android-sdk)
+
+2. Add the dependency. Replace `$pixleeSDKversion` with 1.4.0-alpha02
     ```
     dependencies {
             implementation 'com.github.pixlee:android-sdk:$pixleeSDKversion'
