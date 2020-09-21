@@ -5,7 +5,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
 - [Get Started with Demo App](#Get-Started-with-Demo-App)
 - [Add the SDK to your App](#Add-the-SDK-to-your-App)
 - [Development Guide](#Development-Guide)
-    - [Java]((doc/JAVA.md)
+    - [Java](doc/JAVA.md)
     - [Kotlin](doc/KOTLIN.md)
 
 # Get Started with Demo App
