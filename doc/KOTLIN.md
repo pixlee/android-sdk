@@ -48,22 +48,26 @@
     val pxlAlbum = PXLKtxAlbum(ktxBasicDataSource, ktxAnalyticsDataSource)
     ```
 ## Album Features
-### Initiate Album or Product
 To prepare to load the photos in an album, you'll need the codes below
+#### Option 1: Album
 ```
 #!kotlin
 val pxlAlbum = PXLKtxAlbum(context)
-
-// when getting Album photos with an album id
 val searchId = PXLKtxBaseAlbum.SearchId.Album("<your ALBUM ID>")
-
-// when getting Product photos with a sku
-// val searchId = PXLKtxBaseAlbum.SearchId.Product("<your Product's SKU>")
-
 pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
      searchId = searchId
 )
 ```
+#### Option 2: Product
+```
+#!kotlin
+val pxlAlbum = PXLKtxAlbum(context)
+val searchId = PXLKtxBaseAlbum.SearchId.Product("<your Product's SKU>")
+pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
+     searchId = searchId
+)
+```
+### Get Photos
 Get the first page
 ```
 pxlAlbum.getFirstPage()
