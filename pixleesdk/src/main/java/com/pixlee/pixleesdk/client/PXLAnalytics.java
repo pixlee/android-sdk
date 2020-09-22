@@ -34,7 +34,7 @@ public class PXLAnalytics {
      * @param client PXLClient
      */
     public PXLAnalytics(PXLClient client) {
-        this(client.getAnalyticsRepo());
+        this(client.getAnalyticsDataSource());
     }
 
     /**

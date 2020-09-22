@@ -54,19 +54,19 @@ class PXLClient(val context: Context) {
         android_id = Secure.getString(context.applicationContext.contentResolver, Secure.ANDROID_ID)
     }
 
-    val ktxBasicRepo : KtxBasicDataSource by lazy {
+    val ktxBasicDataSource : KtxBasicDataSource by lazy {
         NetworkModule.generateKtxBasicRepository()
     }
 
-    val ktxAnalyticsRepo: KtxAnalyticsDataSource by lazy{
+    val ktxAnalyticsDataSource: KtxAnalyticsDataSource by lazy{
         NetworkModule.getKtxAnalyticsRepository()
     }
 
-    val basicRepo : BasicDataSource by lazy {
+    val basicDataSource : BasicDataSource by lazy {
         NetworkModule.generateBasicRepository()
     }
 
-    val analyticsRepo: AnalyticsDataSource by lazy{
+    val analyticsDataSource: AnalyticsDataSource by lazy{
         NetworkModule.getAnalyticsRepository()
     }
 }

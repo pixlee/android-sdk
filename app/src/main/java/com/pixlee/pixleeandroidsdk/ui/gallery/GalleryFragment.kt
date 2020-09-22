@@ -92,7 +92,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
                 val rb = radioGroupAlbum.getChildAt(i) as MaterialRadioButton
                 if (radioGroupAlbum.checkedRadioButtonId == rb.id) {
                     val text = rb.text.toString()
-                    if (text == getString(R.string.radio_album)) album = PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client) else if (text == getString(R.string.radio_pdp)) album = PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client.basicRepo, client.analyticsRepo)
+                    if (text == getString(R.string.radio_album)) album = PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client) else if (text == getString(R.string.radio_pdp)) album = PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client.basicDataSource, client.analyticsDataSource)
                     break
                 }
             }

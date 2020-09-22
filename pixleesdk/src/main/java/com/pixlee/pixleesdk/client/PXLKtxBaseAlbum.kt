@@ -16,13 +16,13 @@ open class PXLKtxBaseAlbum {
 
     constructor(context: Context) {
         val client = PXLClient.getInstance(context)
-        ktxBasicDataSource = client.ktxBasicRepo
-        ktxAnalyticsDataSource = client.ktxAnalyticsRepo
+        ktxBasicDataSource = client.ktxBasicDataSource
+        ktxAnalyticsDataSource = client.ktxAnalyticsDataSource
     }
 
     constructor(client: PXLClient) {
-        ktxBasicDataSource = client.ktxBasicRepo
-        ktxAnalyticsDataSource = client.ktxAnalyticsRepo
+        ktxBasicDataSource = client.ktxBasicDataSource
+        ktxAnalyticsDataSource = client.ktxAnalyticsDataSource
     }
 
     constructor(ktxBasicDataSource: KtxBasicDataSource,
@@ -35,10 +35,10 @@ open class PXLKtxBaseAlbum {
     internal val allPXLPhotos: ArrayList<PXLPhoto> = ArrayList()
 
     // managed by this SDK internally for analytics
-    internal var albumId: Int? = null
+    internal var currentAlbumId: Int? = null
 
     // managed by this SDK internally for pagination
-    internal var lastPageLoaded: Int = 0
+    internal var lastPageLoaded: Int = 1
 
     // managed by this SDK internally for pagination
     internal  var hasMore: Boolean = true
@@ -58,13 +58,13 @@ open class PXLKtxBaseAlbum {
     var params: Params? = null
         set(value) {
             field = value
-            albumId = null
+            currentAlbumId = null
             lastPageLoaded = 0
             allPXLPhotos.clear()
         }
 
     fun getAlbumIdParam():Int {
-        return albumId ?: throw java.lang.IllegalArgumentException("missing album id")
+        return currentAlbumId ?: throw java.lang.IllegalArgumentException("missing album id")
     }
 
     fun getPerPageParam():Int{

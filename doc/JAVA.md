@@ -61,7 +61,7 @@
     ```java
     #!java
     
-    PXLBaseAlbum album = new PXLAlbum(<ALBUM ID>, client.getBasicRepo(), client.getAnalyticsRepo());
+    PXLBaseAlbum album = new PXLAlbum(<ALBUM ID>, client.getBasicDataSource(), client.getAnalyticsDataSource());
     ```
 - #### Option 2: Product    
     To load the photos in an Product album, you'll want to use the `PXLPdpAlbum` class. Instantiate one with your desired sku and client:
@@ -75,7 +75,7 @@
     ```java
     #!java
     
-    PXLBaseAlbum album = new PXLPdpAlbum(<SKU>, client.getBasicRepo(), client.getAnalyticsRepo());
+    PXLBaseAlbum album = new PXLPdpAlbum(<SKU>, client.getBasicDataSource(), client.getAnalyticsDataSource());
     ```
 #### Get more Photos
 - You can then set sort and filter options if desired and use `loadNextPageOfPhotos` to kick off the async request.   
@@ -227,7 +227,7 @@ See the onComplete function in GalleryFragment.java for an example.
     ```java
     #!java
     
-    PXLAnalytics analytics = new PXLAnalytics(client.getAnalyticsRepo());
+    PXLAnalytics analytics = new PXLAnalytics(client.getAnalyticsDataSource());
     ```
     
 #### Add To Cart
@@ -271,7 +271,7 @@ The parameters for this method are:
 - you can use the activity using the code here
     ```java
     #!java
-    
+
     PXLPhotoViewerActivity.launch(getContext(), pxlPhoto, "photo name");
     PXLPhotoViewerActivity.launch(getContext(), pxlPhoto);
     ```

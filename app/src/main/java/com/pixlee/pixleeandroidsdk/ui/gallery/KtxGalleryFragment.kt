@@ -52,6 +52,7 @@ class KtxGalleryFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        radioGroupContentTypeVideo.isChecked = false
         addViewModelListeners()
         addClickListeners()
         configureViews()

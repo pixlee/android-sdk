@@ -1,11 +1,14 @@
 package com.pixlee.pixleesdk.client
 
 import android.content.Context
+import android.util.Log
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.data.PhotoResult
 import com.pixlee.pixleesdk.data.repository.KtxAnalyticsDataSource
 import com.pixlee.pixleesdk.data.repository.KtxBasicDataSource
 import com.pixlee.pixleesdk.enums.PXLWidgetType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.supervisorScope
 import org.json.JSONObject
 import java.util.ArrayList
 import java.util.HashMap
@@ -36,7 +39,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      */
     fun resetState() {
         allPXLPhotos.clear()
-        lastPageLoaded = 0
+        lastPageLoaded = 1
         hasMore = true
     }
 
@@ -66,17 +69,26 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
                 is SearchId.Product -> ktxBasicDataSource.getPhotosWithSKU(it.searchId.sku, it.filterOptions, it.sortOptions, it.perPage, page)
             }.apply {
                 // update albumId with the albumId from the response
-                this.albumId = albumId
+                currentAlbumId = albumId
                 hasMore = next
 
                 if (photos.isNotEmpty()) {
                     allPXLPhotos.addAll(photos)
                 }
 
-                try {
-                    if (!isFirstPage && callLoadMoreAnalytics) loadMore()
-                } catch (e: Exception) {
+                Log.e("KTXAlbum", "before load ui, albumId: $albumId")
+                if (!isFirstPage && callLoadMoreAnalytics) {
+                    supervisorScope {
+                        try {
+                            Log.e("KTXAlbum", "before load supervisorScope , albumId: $albumId")
+                            loadMore()
+                            Log.e("KTXAlbum", "after load supervisorScope , albumId: $albumId")
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
                 }
+                Log.e("KTXAlbum", "after load ui , albumId: $albumId")
             }
         }
     }

@@ -35,7 +35,7 @@ public class PXLPdpAlbum extends PXLBaseAlbum {
      * @param client PXLClient
      */
     public PXLPdpAlbum(String sku, PXLClient client) {
-        this(sku, client.getBasicRepo(), client.getAnalyticsRepo());
+        this(sku, client.getBasicDataSource(), client.getAnalyticsDataSource());
     }
 
     /**
