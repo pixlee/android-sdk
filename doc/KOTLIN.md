@@ -47,9 +47,10 @@
     val ktxAnalyticsDataSource = client.ktxAnalyticsRepo
     val pxlAlbum = PXLKtxAlbum(ktxBasicDataSource, ktxAnalyticsDataSource)
     ```
-## Album Features
-To prepare to load the photos in an album, you'll need the codes below
-#### Option 1: Album
+## Album & Product Features
+To prepare to load the photos, you'll need the codes below
+### initiation
+#### Option 1: for Album photos
 ```
 #!kotlin
 val pxlAlbum = PXLKtxAlbum(context)
@@ -58,7 +59,7 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
      searchId = searchId
 )
 ```
-#### Option 2: Product
+#### Option 2: for Product photos
 ```
 #!kotlin
 val pxlAlbum = PXLKtxAlbum(context)
@@ -77,7 +78,7 @@ Get the next pages
 ```
 pxlAlbum.getNextPage()
 ```
-Advanced Search options
+### Advanced Search options
 ```
 pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
     searchId = searchId,

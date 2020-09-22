@@ -90,6 +90,11 @@ class KtxGalleryFragment : BaseFragment() {
                     if (it.isFirstPage) {
                         pxlPhotoRecyclerView.replaceList(it.list)
                         //pxlPhotoRecyclerView.onResume()
+                        if(it.list.isNotEmpty()){
+                            it.list.firstOrNull()?.pxlPhoto?.also {
+                                viewModel.getPhotoWithId(it)
+                            }
+                        }
                     } else {
                         pxlPhotoRecyclerView.addList(it.list)
                     }
