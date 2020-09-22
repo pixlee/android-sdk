@@ -13,7 +13,8 @@ import com.pixlee.pixleeandroidsdk.EventObserver
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
-import com.pixlee.pixleesdk.client.PXLClient
+import com.pixlee.pixleesdk.client.PXLKtxAlbum
+import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.enums.PXLWidgetType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import kotlinx.android.synthetic.main.fragment_analytics.*
@@ -39,8 +40,8 @@ class KtxAnalyticsFragment : BaseFragment() {
 
     val viewModel: KtxAnalyticsViewModel by lazy {
         // get PXLClient
-        val client = PXLClient.getInstance(context!!)
-        KtxAnalyticsViewModel(client.ktxBasicRepo, client.ktxAnalyticsRepo)
+        val album = PXLKtxAlbum(context!!)
+        KtxAnalyticsViewModel(album)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -92,8 +93,9 @@ class KtxAnalyticsFragment : BaseFragment() {
     }
 
     private fun initPixleeAlbum() {
-        viewModel.searchSetting = BaseViewModel.SearchSetting.Album(BuildConfig.PIXLEE_ALBUM_ID)
-        // Alternative: viewModel.searchSetting = BaseViewModel.SearchSetting.Album(BuildConfig.PIXLEE_SKU)
+        val params = PXLKtxBaseAlbum.Params(PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID))
+        // Alternative val params = PXLKtxBaseAlbum.Params(PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU))
+        viewModel.init(params)
     }
 
     private fun loadPixleeAlbum() {
@@ -125,7 +127,7 @@ class KtxAnalyticsFragment : BaseFragment() {
         })
         btAddToCart.setOnClickListener(View.OnClickListener {
             showMessage("addToCart()")
-            viewModel.addToCart( "12000", 3)
+            viewModel.addToCart( BuildConfig.PIXLEE_SKU, "12000", 3)
             // Alternative: viewModel.addToCart("13000",2, "AUD");
         })
         btConversion.setOnClickListener(View.OnClickListener {
@@ -206,13 +208,10 @@ class KtxAnalyticsFragment : BaseFragment() {
 
     private fun enableAlbumButtons(enabled: Boolean) {
         // This conditional means that you can use openWidget() and widgetVisible() on PXLPdpAlbum after receiving album data by firing loadNextPageOfPhotos() is successfully done.
-        viewModel.searchSetting?.also {
-            if(it is BaseViewModel.SearchSetting.Product){
-                btOpenWidget.isEnabled = enabled
-                btWidgetVisible.isEnabled = enabled
-                btWidgetExample.isEnabled = enabled
-            }
-        }
+        btOpenWidget.isEnabled = enabled
+        btWidgetVisible.isEnabled = enabled
+        btWidgetExample.isEnabled = enabled
+
         btLoadMore.isEnabled = enabled
         btOpenedLightbox.isEnabled = enabled
         btActionClicked.isEnabled = enabled

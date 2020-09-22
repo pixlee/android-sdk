@@ -39,7 +39,7 @@ interface KtxBasicAPI {
     suspend fun getMedia(@Path("album_photo_id") album_photo_id: String, @Query("api_key") api_key: String?): PXLPhoto
 
     @POST("media")
-    suspend fun postMedia(
+    suspend fun postMediaWithURI(
             @Header("Signature") Signature: String,
             @Query("api_key") api_key: String?,
             @Body body: RequestBody
@@ -47,7 +47,7 @@ interface KtxBasicAPI {
 
     @Multipart
     @POST("media/file")
-    suspend fun uploadImage(
+    suspend fun postMediaWithFile(
             @Header("Signature") Signature: String,
             @Query("api_key") api_key: String?,
             @Part partList: List<MultipartBody.Part>): MediaResult

@@ -19,7 +19,8 @@ import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
 import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.ViewerActivity
-import com.pixlee.pixleesdk.client.PXLClient
+import com.pixlee.pixleesdk.client.PXLKtxAlbum
+import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
 import com.pixlee.pixleesdk.data.PXLAlbumSortOptions
 import com.pixlee.pixleesdk.data.PXLPhoto
@@ -41,10 +42,8 @@ class KtxGalleryFragment : BaseFragment() {
     }
 
     val viewModel: KtxGalleryViewModel by lazy {
-        // get PXLClient
-
-        val client = PXLClient.getInstance(context!!)
-        KtxGalleryViewModel(client.ktxBasicRepo, client.ktxAnalyticsRepo)
+        // get PXLKtxAlbum
+        KtxGalleryViewModel(PXLKtxAlbum(context!!))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -168,34 +167,37 @@ class KtxGalleryFragment : BaseFragment() {
     private fun loadAlbum() {
 
         context?.also {
-            var searchSetting: BaseViewModel.SearchSetting? = null
+            var searchId: PXLKtxBaseAlbum.SearchId? = null
             // initiate album
             for (i in 0 until radioGroupAlbum.childCount) {
                 val rb = radioGroupAlbum.getChildAt(i) as MaterialRadioButton
                 if (radioGroupAlbum.checkedRadioButtonId == rb.id) {
                     val text = rb.text.toString()
                     if (text == getString(R.string.radio_album)) {
-                        searchSetting = BaseViewModel.SearchSetting.Album(BuildConfig.PIXLEE_ALBUM_ID)
+                        searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID)
                     } else if (text == getString(R.string.radio_pdp)) {
-                        searchSetting = BaseViewModel.SearchSetting.Product(BuildConfig.PIXLEE_SKU)
+                        searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU)
                     }
                     break
                 }
             }
 
-            if (searchSetting == null) {
+            if (searchId == null) {
                 // if album is not properly started, stop loading it.
                 showDialog("No Album", "Album is not properly set. Please check the code and try again")
             } else {
                 // set GET request parameters for the API
-                viewModel.init(searchSetting)
-                viewModel.perPage = readPerPage()
-                viewModel.filterOptions = readFilterOptionsFromUI()
-                viewModel.sortOptions = readSortOptionsFromUI()
+                viewModel.init(PXLKtxBaseAlbum.Params(
+                        searchId = searchId,
+                        perPage = readPerPage(),
+                        filterOptions = readFilterOptionsFromUI(),
+                        sortOptions = readSortOptionsFromUI()
+                ))
+
+                // retrieve the first page
                 viewModel.getFirstPage()
             }
         }
-
     }
 
     private fun configureViews() {

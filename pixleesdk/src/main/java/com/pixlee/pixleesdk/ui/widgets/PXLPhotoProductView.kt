@@ -24,6 +24,7 @@ import com.bumptech.glide.request.target.Target
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.R
+import com.pixlee.pixleesdk.data.PXLProduct
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.util.PXLViewUtil
@@ -38,6 +39,7 @@ class PXLPhotoProductView : FrameLayout {
     private var pxlPhoto: PXLPhoto? = null
     var bookmarkMap: HashMap<String, Boolean>? = null
     var onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null
+    var onProductClicked: ((pxlProduct: PXLProduct) -> Unit)? = null
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initView(context)
@@ -64,10 +66,12 @@ class PXLPhotoProductView : FrameLayout {
     fun setPhoto(pxlPhoto: PXLPhoto,
                  configuration: ProductViewHolder.Configuration = ProductViewHolder.Configuration(),
                  bookmarkMap: HashMap<String, Boolean>? = null,
-                 onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null) {
+                 onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null,
+                 onProductClicked: ((pxlProduct: PXLProduct) -> Unit)? = null) {
         this.pxlPhoto = pxlPhoto
         this.bookmarkMap = bookmarkMap
         this.onBookmarkClicked = onBookmarkClicked
+        this.onProductClicked = onProductClicked
         startBlurBG()
         loadProducts(configuration)
         if (pxlPhoto.isVideo) {
@@ -99,11 +103,8 @@ class PXLPhotoProductView : FrameLayout {
                         onBookmarkChanged = { productId, isBookmarkChecked ->
                             onBookmarkClicked?.let { it -> it(productId, isBookmarkChecked) }
                         },
-                        onItemClicked = {
-                            it.link.also {
-                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it.toString()))
-                                context.startActivity(browserIntent)
-                            }
+                        onItemClicked = { product ->
+                            onProductClicked?.let { it -> it(product) }
                         }
                 )
 

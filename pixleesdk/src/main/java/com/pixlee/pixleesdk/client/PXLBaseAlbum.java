@@ -292,7 +292,7 @@ public abstract class PXLBaseAlbum {
             e.printStackTrace();
         }
 
-        return basicRepo.postMedia(body);
+        return basicRepo.postMediaWithURI(body);
     }
 
     /**
@@ -306,7 +306,7 @@ public abstract class PXLBaseAlbum {
      * @param approved - boolean specifying whether the photo should be marked as approved on upload
      * @param handlers - a callback fired after this api call is finished
      */
-    public void uploadImage(String title, String email, String username, String photoURI, Boolean approved, final RequestHandlers<MediaResult> handlers) {
+    public void postMediaWithURI(String title, String email, String username, String photoURI, Boolean approved, final RequestHandlers<MediaResult> handlers) {
         try {
             makePostUploadImage(title, email, username, photoURI, approved)
                     .enqueue(new Callback<MediaResult>() {
@@ -327,7 +327,7 @@ public abstract class PXLBaseAlbum {
         }
     }
 
-    Call<MediaResult> makePostUploadLocalImage(String title, String email, String username, Boolean approved, String localPhotoPath) {
+    Call<MediaResult> postMediaWithFile(String title, String email, String username, Boolean approved, String localPhotoPath) {
         JSONObject body = new JSONObject();
         try {
             body.put("album_id", Integer.parseInt(this.album_id));
@@ -340,7 +340,7 @@ public abstract class PXLBaseAlbum {
             e.printStackTrace();
         }
 
-        return basicRepo.uploadImage(body, localPhotoPath);
+        return basicRepo.postMediaWithURI(body, localPhotoPath);
     }
 
     /**
@@ -356,7 +356,7 @@ public abstract class PXLBaseAlbum {
      */
     public void uploadLocalImage(String title, String email, String username, Boolean approved, String localPhotoPath, final RequestHandlers<MediaResult> handlers) {
         try {
-            makePostUploadLocalImage(title, email, username, approved, localPhotoPath)
+            postMediaWithFile(title, email, username, approved, localPhotoPath)
                     .enqueue(new Callback<MediaResult>() {
                         @Override
                         public void onResponse(Call<MediaResult> call, Response<MediaResult> response) {

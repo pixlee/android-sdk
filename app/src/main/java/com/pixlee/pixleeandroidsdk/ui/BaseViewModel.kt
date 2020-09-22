@@ -6,10 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pixlee.pixleeandroidsdk.Event
 import com.pixlee.pixleeandroidsdk.ext.launchVMScope
-import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
-import com.pixlee.pixleesdk.data.PXLAlbumSortOptions
-import com.pixlee.pixleesdk.data.repository.KtxAnalyticsDataSource
-import com.pixlee.pixleesdk.data.repository.KtxBasicDataSource
+import com.pixlee.pixleesdk.client.PXLKtxAlbum
+import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
+import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.px
@@ -17,8 +16,8 @@ import com.pixlee.pixleesdk.util.px
 /**
  * Created by sungjun on 9/18/20.
  */
-open class BaseViewModel(val ktxBasicDataSource: KtxBasicDataSource, val ktxAnalyticsDataSource: KtxAnalyticsDataSource) : ViewModel() {
-    val pxlPhotos: ArrayList<PhotoWithImageScaleType> = ArrayList()
+open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
+
     protected val _resultEvent = MutableLiveData<Event<Command>>()
 
     // KtxGalleryFragment.kt will observe this event
@@ -34,34 +33,26 @@ open class BaseViewModel(val ktxBasicDataSource: KtxBasicDataSource, val ktxAnal
     val loading: LiveData<Boolean>
         get() = _loading
 
-    sealed class SearchSetting {
-        class Album(val id: String) : SearchSetting()
-        class Product(val sku: String) : SearchSetting()
-    }
-
-    var searchSetting: SearchSetting? = null
-    var perPage = 30
-    var filterOptions: PXLAlbumFilterOptions? = null
-    var sortOptions: PXLAlbumSortOptions? = null
-    var lastPageLoaded: Int = 0
     var cellHeightInPixel: Int = 200.px.toInt()
-    var albumId:Int? = null
+    val allPXLPhotos = ArrayList<PXLPhoto>()
 
     /**
      * This is to set essential request parameters
      */
-    fun init(searchSetting: SearchSetting, perPage: Int = 30) {
-        this.searchSetting = searchSetting
-        this.perPage = perPage
+    fun init(params:PXLKtxBaseAlbum.Params) {
+        pxlKtxAlbum.params = params
     }
 
     /**
      * retrieve the first page from Pixlee server
      */
     fun getFirstPage() {
-        pxlPhotos.clear()
-        lastPageLoaded = 0
-        getNextPage()
+        allPXLPhotos.clear()
+         pxlKtxAlbum.resetState()
+         getNextPage()
+
+        // alternative
+        // viewModelScope.launch(..) { pxlKtxAlbum.getFirstPage() }
     }
 
     /**
@@ -69,30 +60,21 @@ open class BaseViewModel(val ktxBasicDataSource: KtxBasicDataSource, val ktxAnal
      */
     fun getNextPage() {
         launchVMScope({
-            searchSetting?.let {
-                val isFirstPage = lastPageLoaded == 0
-                canLoadMore = false
-                // show a loading UI on the mobile screen
-                _loading.value = true
-                when (it) {
-                    is SearchSetting.Album -> ktxBasicDataSource.getPhotosWithID(it.id, filterOptions, sortOptions, perPage, ++lastPageLoaded)
-                    is SearchSetting.Product -> ktxBasicDataSource.getPhotosWithSKU(it.sku, filterOptions, sortOptions, perPage, ++lastPageLoaded)
-                }.let {
-                    // update albumId with the albumId from the response
-                    albumId = it.albumId
-
-                    if (it.photos.isNotEmpty()) {
-                        val newList = ArrayList<PhotoWithImageScaleType>()
-                        it.photos.forEach {
-                            newList.add(PhotoWithImageScaleType(it, PXLPhotoView.ImageScaleType.CENTER_CROP, cellHeightInPixel))
-                        }
-                        pxlPhotos.addAll(newList)
-                        _resultEvent.value = Event(Command.Data(newList, isFirstPage))
+            canLoadMore = false
+            // show a loading UI on the mobile screen
+            _loading.value = true
+            pxlKtxAlbum.getNextPage().let {
+                if (it.photos.isNotEmpty()) {
+                    val newList = ArrayList<PhotoWithImageScaleType>()
+                    it.photos.forEach {
+                        newList.add(PhotoWithImageScaleType(it, PXLPhotoView.ImageScaleType.CENTER_CROP, cellHeightInPixel))
                     }
-
-                    canLoadMore = pxlPhotos.size < it.total
-                    _loading.value = false
+                    allPXLPhotos.addAll(it.photos)
+                    _resultEvent.value = Event(Command.Data(newList, it.page==1))
                 }
+
+                canLoadMore = it.next
+                _loading.value = false
             }
         }, {
             // Callback for a failed call to loadNextPageOfPhotos

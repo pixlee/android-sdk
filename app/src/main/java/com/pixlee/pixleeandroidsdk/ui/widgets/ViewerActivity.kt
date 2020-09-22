@@ -3,6 +3,7 @@ package com.pixlee.pixleeandroidsdk.ui.widgets
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -56,6 +57,11 @@ class ViewerActivity : AppCompatActivity() {
                 bookmarkMap = readBookmarks(pxlPhoto),
                 onBookmarkClicked = { productId, isBookmarkChecked ->
                     Toast.makeText(this, "productId: $productId\nisBookmarkChecked: $isBookmarkChecked", Toast.LENGTH_SHORT).show()
+                },
+                onProductClicked = {
+                    Toast.makeText(this, "product clicked, product id: ${it.id}", Toast.LENGTH_SHORT).show()
+                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it.link.toString()))
+                    startActivity(browserIntent)
                 })
     }
 

@@ -39,7 +39,7 @@ interface BasicAPI {
     fun getMedia(@Path("album_photo_id") album_photo_id: String, @Query("api_key") api_key: String): Call<PXLPhoto>
 
     @POST("media")
-    fun postMedia(
+    fun postMediaWithURI(
             @Header("Signature") Signature: String,
             @Query("api_key") api_key: String?,
             @Body body: RequestBody
@@ -47,7 +47,7 @@ interface BasicAPI {
 
     @Multipart
     @POST("media/file")
-    fun uploadImage(
+    fun postMediaWithFile(
             @Header("Signature") Signature: String,
             @Query("api_key") api_key: String?,
             @Part partList: List<MultipartBody.Part>): Call<MediaResult>

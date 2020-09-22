@@ -104,7 +104,7 @@ public class ImageUploaderFragment extends BaseFragment {
     // Sample 1: Upload an image using a link
     private void uploadLink() {
         setUploadingUI(true);
-        album.uploadImage(
+        album.postMediaWithURI(
                 "uploaded from SDK-" + System.currentTimeMillis() + " using a image link",
                 "sungjun@pixleeteam.com",
                 "android sdk user",

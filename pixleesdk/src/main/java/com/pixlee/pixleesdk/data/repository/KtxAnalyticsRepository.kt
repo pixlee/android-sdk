@@ -61,7 +61,7 @@ interface KtxAnalyticsDataSource {
      * @param albumId albumId
      * @param photo This is to get PXLPhoto.albumPhotoId
      */
-    suspend fun openedLightbox(albumId: String, pxlPhoto: PXLPhoto): String
+    suspend fun openedLightbox(albumId: Int, pxlPhoto: PXLPhoto): String
 
     /**
      * openedLightbox Analytics
@@ -69,7 +69,7 @@ interface KtxAnalyticsDataSource {
      * @param albumId albumId
      * @param albumPhotoId PXLPhoto.albumPhotoId
      */
-    suspend fun openedLightbox(albumId: String, albumPhotoId: String): String
+    suspend fun openedLightbox(albumId: Int, albumPhotoId: String): String
 
     /**
      * actionClicked Analytics
@@ -77,7 +77,7 @@ interface KtxAnalyticsDataSource {
      * @param photo      This is to get PXLPhoto.albumPhotoId
      * @param actionLink
      */
-    suspend fun actionClicked(albumId: String, pxlPhoto: PXLPhoto, actionLink: String): String
+    suspend fun actionClicked(albumId: Int, pxlPhoto: PXLPhoto, actionLink: String): String
 
     /**
      * actionClicked Analytics
@@ -85,7 +85,7 @@ interface KtxAnalyticsDataSource {
      * @param albumPhotoId PXLPhoto.albumPhotoId
      * @param actionLink
      */
-    suspend fun actionClicked(albumId: String, albumPhotoId: String, actionLink: String): String
+    suspend fun actionClicked(albumId: Int, albumPhotoId: String, actionLink: String): String
 
     /**
      * openedWidget Analytics
@@ -96,7 +96,7 @@ interface KtxAnalyticsDataSource {
      * @param widgetType: PXLWidgetType enum class
      * @return String: plain response text
      */
-    suspend fun openedWidget(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: PXLWidgetType): String
+    suspend fun openedWidget(albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: PXLWidgetType): String
 
     /**
      * openedWidget Analytics
@@ -107,7 +107,7 @@ interface KtxAnalyticsDataSource {
      * @param widgetType: String
      * @return String: plain response text
      */
-    suspend fun openedWidget(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String): String
+    suspend fun openedWidget(albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String): String
 
     /**
      * widgetVisible Analytics
@@ -118,7 +118,7 @@ interface KtxAnalyticsDataSource {
      * @param widgetType: PXLWidgetType enum class
      * @return String: plain response text
      */
-    suspend fun widgetVisible(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: PXLWidgetType): String
+    suspend fun widgetVisible(albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: PXLWidgetType): String
 
     /**
      * widgetVisible Analytics
@@ -129,7 +129,7 @@ interface KtxAnalyticsDataSource {
      * @param widgetType: String
      * @return String: plain response text
      */
-    suspend fun widgetVisible(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String): String
+    suspend fun widgetVisible(albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String): String
 
     /**
      * loadMore Analytics
@@ -139,7 +139,7 @@ interface KtxAnalyticsDataSource {
      * @param page: current page count
      * @return String: plain response text
      */
-    suspend fun loadMore(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int): String
+    suspend fun loadMore(albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int): String
 }
 
 /**
@@ -188,18 +188,18 @@ class KtxAnalyticsRepository(var api: KtxAnalyticsAPI) : KtxAnalyticsDataSource 
         })
     }
 
-    override suspend fun openedLightbox(albumId: String, albumPhotoId: String): String {
+    override suspend fun openedLightbox(albumId: Int, albumPhotoId: String): String {
         return makeAnalyticsCall("events/openedLightbox", JSONObject().apply {
             put("album_id", albumId.toInt())
             put("album_photo_id", albumPhotoId.toInt())
         })
     }
 
-    override suspend fun openedLightbox(albumId: String, pxlPhoto: PXLPhoto): String {
-        return openedLightbox(pxlPhoto.id, pxlPhoto.albumPhotoId)
+    override suspend fun openedLightbox(albumId: Int, pxlPhoto: PXLPhoto): String {
+        return openedLightbox(albumId, pxlPhoto.albumPhotoId)
     }
 
-    override suspend fun actionClicked(albumId: String, albumPhotoId: String, actionLink: String): String {
+    override suspend fun actionClicked(albumId: Int, albumPhotoId: String, actionLink: String): String {
         return makeAnalyticsCall("events/actionClicked", JSONObject().apply {
             put("album_id", albumId.toInt())
             put("album_photo_id", albumPhotoId.toInt())
@@ -207,27 +207,27 @@ class KtxAnalyticsRepository(var api: KtxAnalyticsAPI) : KtxAnalyticsDataSource 
         })
     }
 
-    override suspend fun actionClicked(albumId: String, pxlPhoto: PXLPhoto, actionLink: String): String {
-        return actionClicked(pxlPhoto.id, pxlPhoto.albumPhotoId, actionLink)
+    override suspend fun actionClicked(albumId: Int, pxlPhoto: PXLPhoto, actionLink: String): String {
+        return actionClicked(albumId, pxlPhoto.albumPhotoId, actionLink)
     }
 
-    override suspend fun openedWidget(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: PXLWidgetType): String {
+    override suspend fun openedWidget(albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: PXLWidgetType): String {
         return openedWidget(albumId, pxlPhotos, perPage, page, pxlWidgetType.type)
     }
 
-    override suspend fun openedWidget(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String): String {
+    override suspend fun openedWidget(albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String): String {
         return widgetAPI("events/openedWidget", albumId, pxlPhotos, perPage, page, pxlWidgetType)
     }
 
-    override suspend fun widgetVisible(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: PXLWidgetType): String {
+    override suspend fun widgetVisible(albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: PXLWidgetType): String {
         return widgetVisible(albumId, pxlPhotos, perPage, page, pxlWidgetType.type)
     }
 
-    override suspend fun widgetVisible(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String): String {
+    override suspend fun widgetVisible(albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String): String {
         return widgetAPI("events/widgetVisible", albumId, pxlPhotos, perPage, page, pxlWidgetType)
     }
 
-    override suspend fun loadMore(albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int): String {
+    override suspend fun loadMore(albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int): String {
         if (page < 2) {
             Log.w(PXLBaseAlbum.TAG, "first load detected")
             throw IllegalArgumentException("first load detected")
@@ -235,7 +235,7 @@ class KtxAnalyticsRepository(var api: KtxAnalyticsAPI) : KtxAnalyticsDataSource 
         return widgetAPI("events/loadMore", albumId, pxlPhotos, perPage, page)
     }
 
-    suspend fun widgetAPI(requestPath: String, albumId: String, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String? = null): String {
+    suspend fun widgetAPI(requestPath: String, albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String? = null): String {
         return makeAnalyticsCall(requestPath, JSONObject().apply {
             val stringBuilder = StringBuilder();
             pxlPhotos.forEach {
@@ -249,7 +249,7 @@ class KtxAnalyticsRepository(var api: KtxAnalyticsAPI) : KtxAnalyticsDataSource 
                 if (pxlWidgetType != null) {
                     put("widget", pxlWidgetType)
                 }
-                put("album_id", Integer.parseInt(albumId))
+                put("album_id", albumId)
                 put("per_page", perPage)
                 put("page", page)
                 put("photos", stringBuilder.toString())

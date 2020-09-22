@@ -2,21 +2,13 @@ package com.pixlee.pixleesdk.data.repository
 
 import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.data.*
-import com.pixlee.pixleesdk.data.api.BasicAPI
 import com.pixlee.pixleesdk.data.api.KtxBasicAPI
-import com.pixlee.pixleesdk.network.HMAC
 import com.pixlee.pixleesdk.network.multiparts.MultipartUtil
 import com.pixlee.pixleesdk.util.toHMAC
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
-import retrofit2.Call
 import java.io.File
-import java.security.InvalidKeyException
-import java.security.NoSuchAlgorithmException
 import java.util.*
 
 /**
@@ -43,8 +35,8 @@ interface KtxBasicDataSource {
     ): PhotoResult
 
     suspend fun getMedia(album_photo_id: String): PXLPhoto
-    suspend fun postMedia(json: JSONObject): MediaResult
-    suspend fun uploadImage(json: JSONObject, filePath: String): MediaResult
+    suspend fun postMediaWithURI(json: JSONObject): MediaResult
+    suspend fun postMediaWithFile(json: JSONObject, filePath: String): MediaResult
 }
 
 /**
@@ -63,16 +55,16 @@ class KtxBasicRepository(var api: KtxBasicAPI) : KtxBasicDataSource {
         return api.getMedia(album_photo_id, PXLClient.apiKey)
     }
 
-    override suspend fun postMedia(json: JSONObject): MediaResult {
+    override suspend fun postMediaWithURI(json: JSONObject): MediaResult {
         requireNotNull(PXLClient.secretKey) { "no secretKey, please set secretKey before start" }
-        return api.postMedia(json.toHMAC(), PXLClient.apiKey, json.toString().toRequestBody(PXLClient.mediaType))
+        return api.postMediaWithURI(json.toHMAC(), PXLClient.apiKey, json.toString().toRequestBody(PXLClient.mediaType))
     }
 
-    override suspend fun uploadImage(json: JSONObject, filePath: String): MediaResult {
+    override suspend fun postMediaWithFile(json: JSONObject, filePath: String): MediaResult {
         val bodyList: MutableList<MultipartBody.Part> = ArrayList()
         val photo = File(filePath)
         bodyList.add(MultipartUtil().getMultipartBody("file", photo))
         bodyList.add(MultipartBody.Part.createFormData("json", json.toString()))
-        return api.uploadImage(json.toHMAC(), PXLClient.apiKey, bodyList)
+        return api.postMediaWithFile(json.toHMAC(), PXLClient.apiKey, bodyList)
     }
 }

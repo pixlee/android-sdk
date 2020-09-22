@@ -4,21 +4,14 @@ import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.data.MediaResult
 import com.pixlee.pixleesdk.data.PhotoResult
-import com.pixlee.pixleesdk.data.api.AnalyticsAPI
 import com.pixlee.pixleesdk.data.api.BasicAPI
-import com.pixlee.pixleesdk.network.HMAC
 import com.pixlee.pixleesdk.network.multiparts.MultipartUtil
 import com.pixlee.pixleesdk.util.toHMAC
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import retrofit2.Call
 import java.io.File
-import java.security.InvalidKeyException
-import java.security.NoSuchAlgorithmException
 import java.util.*
 
 /**
@@ -47,8 +40,8 @@ interface BasicDataSource {
     ): Call<PhotoResult>
 
     fun getMedia(album_photo_id: String, api_key: String): Call<PXLPhoto>
-    fun postMedia(json: JSONObject): Call<MediaResult>
-    fun uploadImage(json: JSONObject, filePath: String): Call<MediaResult>
+    fun postMediaWithURI(json: JSONObject): Call<MediaResult>
+    fun postMediaWithURI(json: JSONObject, filePath: String): Call<MediaResult>
 }
 
 /**
@@ -67,15 +60,15 @@ class BasicRepository(var api: BasicAPI) : BasicDataSource {
         return api.getMedia(album_photo_id, api_key)
     }
 
-    override fun postMedia(json: JSONObject): Call<MediaResult> {
-        return api.postMedia(json.toHMAC(), PXLClient.apiKey, json.toString().toRequestBody(PXLClient.mediaType))
+    override fun postMediaWithURI(json: JSONObject): Call<MediaResult> {
+        return api.postMediaWithURI(json.toHMAC(), PXLClient.apiKey, json.toString().toRequestBody(PXLClient.mediaType))
     }
 
-    override fun uploadImage(json: JSONObject, filePath: String): Call<MediaResult> {
+    override fun postMediaWithURI(json: JSONObject, filePath: String): Call<MediaResult> {
         val bodyList: MutableList<MultipartBody.Part> = ArrayList()
         val photo = File(filePath)
         bodyList.add(MultipartUtil().getMultipartBody("file", photo))
         bodyList.add(MultipartBody.Part.createFormData("json", json.toString()))
-        return api.uploadImage(json.toHMAC(), PXLClient.apiKey, bodyList)
+        return api.postMediaWithFile(json.toHMAC(), PXLClient.apiKey, bodyList)
     }
 }
