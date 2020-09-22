@@ -4,8 +4,8 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
 # Table of Content
 - [Get Started with Demo App](#Get-Started-with-Demo-App)
 - [Development Guide](#Development-Guide)
-    - [Java]((doc/JAVA.md)
-    - [Kotlin](cod/KOTLIN.md)
+    - [Java](doc/JAVA.md)
+    - [Kotlin](doc/KOTLIN.md)
 
 # Get Started with Demo App
 - The demo app included with this SDK are meant to be used in Android Studio to create a typical Android app.
