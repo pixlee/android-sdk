@@ -15,16 +15,19 @@ import java.util.HashMap
  */
 class PXLKtxAlbum : PXLKtxBaseAlbum {
     /***
-     * Gets the PXLClient instance or creates it if it doesn't exist.
+     * This gets the PXLClient instance or creates it if it doesn't exist.
      * @param context - used for generating data sources of album and analytics.
-     * @return
      */
     constructor(context: Context) : super(context)
 
     /***
+     * @param client - used for generating data sources of album and analytics.
+     */
+    constructor(client: PXLClient) : super(client)
+
+    /***
      * @param ktxBasicDataSource: KtxBasicDataSource - used for firing album related APIs
      * @param ktxAnalyticsDataSource: KtxAnalyticsDataSource - used for firing analytics related APIs
-     * @return
      */
     constructor(ktxBasicDataSource: KtxBasicDataSource, ktxAnalyticsDataSource: KtxAnalyticsDataSource) : super(ktxBasicDataSource, ktxAnalyticsDataSource)
 

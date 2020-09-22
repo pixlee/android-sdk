@@ -13,7 +13,7 @@
 # Initialize SDK
 ### You must do this before using this SDK!!
 #### Register Pixlee credentials
-- Before accessing any Pixlee API, you must initialize the `PXLClient`. To set the API key, call the static method initialize:
+- Before accessing any Pixlee API, you must initialize the `PXLClient`. To set the API key, call the static method initialize. The simplest way for this is you put this code in your Application class:
     ```
     // If you need only to use @Get APIs
     #!kotlin
@@ -27,32 +27,65 @@
     
     PXLClient.initialize(<PIXLEE API KEY>, <PIXLEE SECRET KEY>)
     ```
-#### Get PXLClient
+#### Get PXLKtxAlbum
 - You can then use the singleton instance to make calls against the Pixlee API:
     ```
     #!kotlin
-    
-    PXLClient client = PXLClient.getInstance(context);
+    val pxlAlbum = PXLKtxAlbum(context)
+    ```
+    Or:
+    ```
+    #!kotlin
+    val client = PXLClient.getInstance(context);
+    val pxlAlbum = PXLKtxAlbum(client)
+    ```
+    Or:
+    ```
+    #!kotlin
+    val client = PXLClient.getInstance(context);
+    val ktxBasicDataSource = client.ktxBasicRepo
+    val ktxAnalyticsDataSource = client.ktxAnalyticsRepo
+    val pxlAlbum = PXLKtxAlbum(ktxBasicDataSource, ktxAnalyticsDataSource)
     ```
 ## Album Features
 ### Initiate Album or Product
 #### Option 1: Get Album photos
-To load the photos in an album, you'll need the codes below
-        
+To prepare to load the photos in an album, you'll need the codes below
 ```
 #!kotlin
-val albumId = <your album id>
-val ktxBasicDataSource: KtxBasicDataSource = client.ktxBasicRepo
-var searchSetting: SearchSetting? = null
+val pxlAlbum = PXLKtxAlbum(context)
+
+// when getting Album photos with an album id
+val searchId = PXLKtxBaseAlbum.SearchId.Album("<your ALBUM ID>")
+
+// when getting Product photos with a sku
+// val searchId = PXLKtxBaseAlbum.SearchId.Product("<your Product's SKU>")
+
+pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
+     searchId = searchId,
+     perPage = readPerPage(),
+     filterOptions = readFilterOptionsFromUI(),
+     sortOptions = readSortOptionsFromUI()
+)
+```
+Get the first page
+```
+pxlAlbum.loadFirstPage()
+```
+Get the next pages
+```
+pxlAlbum.loadFirstPage()
+```
+
+```
 var perPage = 30
 var filterOptions: PXLAlbumFilterOptions? = null
 var sortOptions: PXLAlbumSortOptions? = null
-var lastPageLoaded: Int = 0
 
 // this is a suspend method. please run it within
 //      - viewModelScope.launch(handler) { /* here */ }
 //      - viewLifecycleOwner.lifecycleScope.launch { /* here */  }
-lastPageLoaded = 1
+
 val result = ktxBasicDataSource.getPhotosWithID(albumId, filterOptions, sortOptions, perPage, lastPageLoaded)
 ```
 - Get More photos: Be sure that you have the same (roductSKU, filterOptions, sortOptions, perPage) to get the right responses.

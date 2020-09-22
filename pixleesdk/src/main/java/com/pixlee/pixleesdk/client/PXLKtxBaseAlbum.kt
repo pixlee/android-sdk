@@ -20,6 +20,11 @@ open class PXLKtxBaseAlbum {
         ktxAnalyticsDataSource = client.ktxAnalyticsRepo
     }
 
+    constructor(client: PXLClient) {
+        ktxBasicDataSource = client.ktxBasicRepo
+        ktxAnalyticsDataSource = client.ktxAnalyticsRepo
+    }
+
     constructor(ktxBasicDataSource: KtxBasicDataSource,
                 ktxAnalyticsDataSource: KtxAnalyticsDataSource) {
         this.ktxBasicDataSource = ktxBasicDataSource
