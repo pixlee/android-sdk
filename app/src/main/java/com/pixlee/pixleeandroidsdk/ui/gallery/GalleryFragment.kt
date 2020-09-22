@@ -52,6 +52,8 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         // set filter buttons
+        radioGroupContentTypeVideo.isChecked = false
+
         fabFilter.setOnClickListener { drawerLayout.openDrawer(GravityCompat.END) }
         btnCloseFilter.setOnClickListener { drawerLayout.closeDrawer(GravityCompat.END) }
         btnApply.setOnClickListener {

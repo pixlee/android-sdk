@@ -16,7 +16,7 @@ An example of the proper usage of an opened lightbox event is also included in t
 - <img src="doc/img/demo_3_uploader.jpg" width="24%"> <img src="doc/img/demo_4_analytics.jpg" width="24%"> <img src="doc/img/demo_5_analytics.jpg" width="24%">
 
 1. Add it in your root build.gradle at the end of repositories:
-    ```
+    ```gradle
     allprojects {
         repositories {
             ...
@@ -26,7 +26,7 @@ An example of the proper usage of an opened lightbox event is also included in t
     ```
 
 2. Add the dependency
-    ```
+    ```gradle
     dependencies {
             implementation 'com.github.pixlee:android-sdk:1.4.0-alpha05'
     }
@@ -38,14 +38,14 @@ An example of the proper usage of an opened lightbox event is also included in t
 5. Fill the file with the example below and edit it with your own credentials, albumId and SKU.
 pixleeAPIKey and pixleeSecretKey are in here (https://app.pixlee.com/app#settings/pixlee_api)
 AlbumId and SKU available from the Pixlee dashboard).
-    ```
+    ```properties
     pixleeAPIKey=yours
     pixleeSecretKey=yours
     pixleeAlbumId=yours
     pixleeSKU=yours
     ```
     Example
-    ```
+    ```properties
     pixleeAPIKey=ccWQFNExi4gQjyNYpOEf
     pixleeSecretKey=b3b38f4322877060b2e4f390fd
     pixleeAlbumId=5984962

@@ -27,13 +27,13 @@
 ### You must do this before using this SDK!!
 #### Register Pixlee credentials
 - Before accessing any Pixlee API, you must initialize the `PXLClient`. To set the API key, call the static method initialize:
-    ```
+    ```java
     // If you need only to use @Get APIs
     #!java
     
     PXLClient.initialize(<PIXLEE API KEY>);
     ```
-    Or:
+    Or:java
     ```
     // If you need to use both @Get and @Post APIs
     #!java
@@ -42,7 +42,7 @@
     ```
 #### Get PXLClient
 - You can then use the singleton instance to make calls against the Pixlee API:
-    ```
+    ```java
     #!java
     
     PXLClient client = PXLClient.getInstance(context);
@@ -52,13 +52,13 @@
 - #### Option 1: Album
     To load the photos in an album, you'll want to use the `PXLAlbum` class. Instantiate one with your album ID and client:
         
-    ```
+    ```java
     #!java
 
     PXLBaseAlbum album = new PXLAlbum(<ALBUM ID>, client);
     ```
     Or:
-    ```
+    ```java
     #!java
     
     PXLBaseAlbum album = new PXLAlbum(<ALBUM ID>, client.getBasicRepo(), client.getAnalyticsRepo());
@@ -66,20 +66,20 @@
 - #### Option 2: Product    
     To load the photos in an Product album, you'll want to use the `PXLPdpAlbum` class. Instantiate one with your desired sku and client:
         
-    ```
+    ```java
     #!java
     
     PXLBaseAlbum album = new PXLPdpAlbum(<SKU>, client);
     ```
     Or:
-    ```
+    ```java
     #!java
     
     PXLBaseAlbum album = new PXLPdpAlbum(<SKU>, client.getBasicRepo(), client.getAnalyticsRepo());
     ```
 #### Get more Photos
 - You can then set sort and filter options if desired and use `loadNextPageOfPhotos` to kick off the async request.   
-    ```
+    ```java
     #!java
     
     PXLAlbumFilterOptions filterOptions = new PXLAlbumFilterOptions();
@@ -102,7 +102,7 @@
     - prepare PXLBaseAlbum and declare a variable as 'album' 
 - Option 1: Upload an image url
     
-    ```
+    ```java
     #!java
     album.uploadImage(
                 "<title>",
@@ -123,7 +123,7 @@
                 });
     ```
 - Option 2: Upload an image file
-    ```
+    ```java
     album.uploadLocalImage(
                 "<title>",
                 "<email>",
@@ -145,7 +145,7 @@
 
 ## How to get image urls
 Some imageURL fields can be empty or null depending on its data's status. In order to get appropriate images, you can use this method.
-```
+```java
 #!java
 photo.getUrlForSize(PXLPhotoSize.ORIGINAL)
 photo.getUrlForSize(PXLPhotoSize.BIG)
@@ -167,7 +167,7 @@ There is an order of firing these two APIs.
     - To fire this event, simply call the `openedWidget` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from the first call of the `loadNextPageOfPhotos` method, and an "Opened Widget" event will be fired containing all of the necessary analytics information.
     See the onComplete function in GalleryFragment.java for an example.
     
-        ```
+        ```java
         #!java
         
         album.openedWidget(PXLWidgetType.photowall);
@@ -178,7 +178,7 @@ There is an order of firing these two APIs.
 - #### Widget Visible
     - To fire this event, simply call the `widgetVisible` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from the first call of the `loadNextPageOfPhotos` method, and an "Widget Visible" event will be fired containing all of the necessary analytics information.
 
-        ```
+        ```java
         #!java
         
         album.widgetVisible(PXLWidgetType.photowall);
@@ -190,7 +190,7 @@ There is an order of firing these two APIs.
 - To fire a load more event, simply call the `loadMore` method of the PXLAlbum or PXLPdpAlbum AFTER data has been returned from calls via the 'loadNextPageOfPhotos' method, a "Load More" analytics event will be fired containing all of the necessary analytics information.
 See the onComplete function in GalleryFragment.java for an example.
 - On calls to loadNextPageOfPhotos (except the first), a "Load More" analytics event will be fired automatically
-    ```
+    ```java
     #!java
     
     album.loadMore();
@@ -199,7 +199,7 @@ See the onComplete function in GalleryFragment.java for an example.
 #### Opened Lightbox
 - To fire an opened ligtbox event, simply call the `openedLightbox` method of the PXLBaseAlbum that is being opened, and an "Opened Lightbox" event will be fired containing all of the necessary analytics information.
 
-    ```
+    ```java
     #!java
     
     album.openedLightbox(photo.albumPhotoId)
@@ -209,7 +209,7 @@ See the onComplete function in GalleryFragment.java for an example.
 #### Action Clicked
 - To fire an action clicked event, simply call the `actionClicked` method of the PXLBaseAlbum that the action click is being driven from and pass in the URL of the link that the user is being redirected to.  An "Action Clicked" event will be fired containing all of the necessary analytics information.
 
-    ```
+    ```java
     #!java
     
     album.actionClicked(photo.albumPhotoId, "https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html");
@@ -218,13 +218,13 @@ See the onComplete function in GalleryFragment.java for an example.
     ```
 ## Ecommerce Analytics
 - initialize:
-    ```
+    ```java
     #!java
     
     PXLAnalytics analytics = new PXLAnalytics(client);
     ```
     Or:
-    ```
+    ```java
     #!java
     
     PXLAnalytics analytics = new PXLAnalytics(client.getAnalyticsRepo());
@@ -238,7 +238,7 @@ The parameters for this method are:
     - [Required] quantity (Integer)
     - [Optional] currency (String)
 
-    ```
+    ```java
     #!java
     analytics.addToCart("sku123", "123", 4);
     ```
@@ -252,7 +252,7 @@ The parameters for this method are:
     - [Optional] orderId (String)
     - [Optional] currency (String)
     
-    ```
+    ```java
     #!java
     
     ArrayList<HashMap<String, Object>> cartContents = new ArrayList();
@@ -269,7 +269,9 @@ The parameters for this method are:
 #### Image and Video Viewer with PXLPhoto
 - after receiving PXLPhoto list via PXLBaseAlbum.loadNextPageOfPhotos(...), you can launch watch the content using PXLPhotoViewerActivity. Depending on its content_type, PXLPhotoViewerActivity will play a video or display a photo.
 - you can use the activity using the code here
-    ```
+    ```java
+    #!java
+    
     PXLPhotoViewerActivity.launch(getContext(), pxlPhoto, "photo name");
     PXLPhotoViewerActivity.launch(getContext(), pxlPhoto);
     ```
