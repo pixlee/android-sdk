@@ -31,17 +31,20 @@
 - You can then use the singleton instance to make calls against the Pixlee API:
     ```kotlin
     #!kotlin
+    
     val pxlAlbum = PXLKtxAlbum(context)
     ```
     Or:
     ```kotlin
     #!kotlin
+    
     val client = PXLClient.getInstance(context);
     val pxlAlbum = PXLKtxAlbum(client)
     ```
     Or:
     ```kotlin
     #!kotlin
+    
     val client = PXLClient.getInstance(context);
     val ktxBasicDataSource = client.ktxBasicRepo
     val ktxAnalyticsDataSource = client.ktxAnalyticsRepo
@@ -53,6 +56,7 @@ To prepare to load the photos, you'll need the codes below
 #### Option 1: for Album photos
 ```kotlin
 #!kotlin
+
 val pxlAlbum = PXLKtxAlbum(context)
 val searchId = PXLKtxBaseAlbum.SearchId.Album("<your ALBUM ID>")
 pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
@@ -62,6 +66,7 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
 #### Option 2: for Product photos
 ```kotlin
 #!kotlin
+
 val pxlAlbum = PXLKtxAlbum(context)
 val searchId = PXLKtxBaseAlbum.SearchId.Product("<your Product's SKU>")
 pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
@@ -72,17 +77,20 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
 Get the first page
 ```kotlin
 #!kotlin
+\
 pxlAlbum.getFirstPage()
 ```
 
 Get the next pages
 ```kotlin
 #!kotlin
+
 pxlAlbum.getNextPage()
 ```
 ### Advanced Search options
 ```kotlin
 #!kotlin
+
 pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
     searchId = searchId,
     perPage = 30,
@@ -101,6 +109,7 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
 Some imageURL fields can be empty or null depending on its data's status. In order to get appropriate images, you can use this method.
 ```kotlin
 #!kotlin
+
 val result = ktxBasicDataSource.getPhotosWithID(albumId, filterOptions, sortOptions, perPage, lastPageLoaded)
 result.forEach { pxlPhoto ->
     // here: your business logic
