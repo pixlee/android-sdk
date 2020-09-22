@@ -193,6 +193,10 @@ class KtxGalleryFragment : BaseFragment() {
                         filterOptions = readFilterOptionsFromUI(),
                         sortOptions = readSortOptionsFromUI()
                 ))
+                PXLAlbumSortOptions().apply {
+                    sortType = PXLAlbumSortType.RECENCY
+                    descending = true
+                }
 
                 // retrieve the first page
                 viewModel.getFirstPage()

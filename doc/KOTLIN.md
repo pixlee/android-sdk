@@ -49,7 +49,6 @@
     ```
 ## Album Features
 ### Initiate Album or Product
-#### Option 1: Get Album photos
 To prepare to load the photos in an album, you'll need the codes below
 ```
 #!kotlin
@@ -62,63 +61,34 @@ val searchId = PXLKtxBaseAlbum.SearchId.Album("<your ALBUM ID>")
 // val searchId = PXLKtxBaseAlbum.SearchId.Product("<your Product's SKU>")
 
 pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
-     searchId = searchId,
-     perPage = readPerPage(),
-     filterOptions = readFilterOptionsFromUI(),
-     sortOptions = readSortOptionsFromUI()
+     searchId = searchId
 )
 ```
 Get the first page
 ```
-pxlAlbum.loadFirstPage()
+pxlAlbum.getFirstPage()
 ```
+
 Get the next pages
 ```
-pxlAlbum.loadFirstPage()
+pxlAlbum.getNextPage()
 ```
-
+Advanced Search options
 ```
-var perPage = 30
-var filterOptions: PXLAlbumFilterOptions? = null
-var sortOptions: PXLAlbumSortOptions? = null
-
-// this is a suspend method. please run it within
-//      - viewModelScope.launch(handler) { /* here */ }
-//      - viewLifecycleOwner.lifecycleScope.launch { /* here */  }
-
-val result = ktxBasicDataSource.getPhotosWithID(albumId, filterOptions, sortOptions, perPage, lastPageLoaded)
+pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
+    searchId = searchId,
+    perPage = 30,
+    filterOptions = PXLAlbumFilterOptions().apply {
+        hasPermission = true
+        hasProduct = true
+        // ... there's more
+    },
+    sortOptions = PXLAlbumSortOptions().apply {
+        sortType = PXLAlbumSortType.RECENCY
+        descending = true
+    }
+)
 ```
-- Get More photos: Be sure that you have the same (roductSKU, filterOptions, sortOptions, perPage) to get the right responses.
-    ```
-    #!kotlin
-    ++lastPageLoaded
-    val result = ktxBasicDataSource.getPhotosWithID(albumId, filterOptions, sortOptions, perPage, lastPageLoaded)
-    ```
-#### Option 2: Get Product photos
-To load the photos in an Product album, you'll need the codes below
-
-```
-#!kotlin
-val productSKU = <your product's sku>
-val ktxBasicDataSource: KtxBasicDataSource = client.ktxBasicRepo
-var searchSetting: SearchSetting? = null
-var perPage = 30
-var filterOptions: PXLAlbumFilterOptions? = null
-var sortOptions: PXLAlbumSortOptions? = null
-var lastPageLoaded: Int = 0
-
-// this is a suspend method. please run it within
-//      - viewModelScope.launch(handler) { /* here */ }
-//      - viewLifecycleOwner.lifecycleScope.launch { /* here */  }
-lastPageLoaded = 1
-val result = ktxBasicDataSource.getPhotosWithSKU(productSKU, filterOptions, sortOptions, perPage, lastPageLoaded)
-```
-- Get More photos: Be sure that you have the same (roductSKU, filterOptions, sortOptions, perPage) to get the right responses.
-    ```
-    #!kotlin
-    ++lastPageLoaded
-    val result = ktxBasicDataSource.getPhotosWithSKU(productSKU, filterOptions, sortOptions, perPage, lastPageLoaded)
-    ```
 ## How to get image urls
 Some imageURL fields can be empty or null depending on its data's status. In order to get appropriate images, you can use this method.
 ```
