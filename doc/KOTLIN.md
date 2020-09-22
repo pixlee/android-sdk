@@ -119,18 +119,27 @@ result.forEach { pxlPhoto ->
     pxlPhoto.getUrlForSize(PXLPhotoSize.THUMBNAIL)
 }
 ```
-    
+- [Album Analytics](#Album-Analytics)
+    - [Opened Widget](#Opened-Widget)
+    - [Widget Visible](#Widget-Visible)
+    - [Load More](#Load-More)
+    - [Opened Lightbox](#Opened-Lightbox)
+    - [Action Clicked](#Action-Clicked)
+- [Ecommerce Analytics](#Ecommerce-Analytics)
+    - [Add To Cart](#Add-To-Cart)
+    - [Conversion](#Conversion)
+
 ## Album Analytics
 You can see the example codes for analytics in the demo app.
 
-#### Opened Widget & Widget Visible
+### Opened Widget & Widget Visible
 Be aware of the difference between **Opened Widget** and **Widget Visible**. (Need a sample code. Check the demo app in the project)
 
 There is an order of firing these two APIs.
 1. **Opened Widget**: You should fire this when firing the api is done and loading the photo data into your own view for the widget is complete.
 2. **Widget Visible**: **Opened Widget** should be fired first. Then, you can fire this when your own view for the widget started to be visible on the screen.
 
-- ##### Opened Widget
+- #### Opened Widget
     - To fire this event, simply call the `openedWidget` method of the PXLKtxAlbum AFTER data has been returned from the first call of `pxlKtxAlbum.getFirstPage()` or `pxlKtxAlbum.getNextPage()` method, and an "Opened Widget" event will be fired containing all of the necessary analytics information.
 
         ```kotlin
@@ -152,7 +161,7 @@ There is an order of firing these two APIs.
         pxlKtxAlbum.widgetVisible("<Customized name>");
         ```
 
-#### Load More
+### Load More
 - To fire a load more event, simply call the `loadMore` method of the PXLKtxAlbum AFTER `pxlKtxAlbum.getNextPage()` method with [pxlKtxAlbum.lastPageLoaded >= 2] is successfully called, a "Load More" analytics event will be fired containing all of the necessary analytics information.
 See the onComplete function in GalleryFragment.java for an example.
 - On calls to pxlKtxAlbum.getNextPage() (except the first), a "Load More" analytics event will be fired automatically
@@ -163,7 +172,7 @@ See the onComplete function in GalleryFragment.java for an example.
     ```
 - if you want to manually fire pxlKtxAlbum.loadMore(), first you must successfully call this pxlKtxAlbum.getNextPage(callLoadMoreAnalytics = true) to get photos which does not fire loadMore(), then you manually fire pxlKtxAlbum.loadMore() in your app.
 
-#### Opened Lightbox
+### Opened Lightbox
 - To fire an opened ligtbox event, simply call the `openedLightbox` method of PXLKtxAlbum, and an "Opened Lightbox" event will be fired containing all of the necessary analytics information.
 
     ```kotlin
@@ -173,7 +182,7 @@ See the onComplete function in GalleryFragment.java for an example.
     pxlKtxAlbum.openedLightbox(photo)
     ```
 
-#### Action Clicked
+### Action Clicked
 - To fire an action clicked event, simply call the `actionClicked` method of PXLKtxAlbum that the action click is being driven from and pass in the URL of the link that the user is being redirected to.  An "Action Clicked" event will be fired containing all of the necessary analytics information.
 
     ```kotlin
@@ -187,18 +196,18 @@ See the onComplete function in GalleryFragment.java for an example.
 - Option 1: Use PXLKtxAlbum
     ```kotlin
     #!kotlin
-    
+
     val pxlAlbum = PXLKtxAlbum(context)
     ```
 - Option 2: Use KtxAnalyticsDataSource
     ```kotlin
     #!kotlin
-    
+
     val client = PXLClient.getInstance(context);
     val ktxAnalyticsDataSource = client.ktxAnalyticsDataSource
     ```
 
-#### Add To Cart
+### Add To Cart
 - To fire an Add To Cart event, simply call the `addToCart` method in PXLKtxAlbum or KtxAnalyticsDataSource with the necessary parameters, and an "Add To Cart" event will be fired containing all of the necessary analytics information.
 The parameters for this method are:
     - [Required] sku  (String)
@@ -208,7 +217,7 @@ The parameters for this method are:
 
     ```kotlin
     #!kotlin
-    
+
     pxlAlbum.addToCart("sku123", "123", 4);
     ```
     Or:
@@ -217,7 +226,7 @@ The parameters for this method are:
     ktxAnalyticsDataSource.addToCart("sku123", "123", 4);
     ```
 
-#### Conversion
+### Conversion
 - To fire a Conversion event, simply call the `conversion` method in PXLKtxAlbum or KtxAnalyticsDataSource with the necessary parameters, and a "Conversion" event will be fired containing all of the necessary analytics information.
 The parameters for this method are:
     - [Required] cartContents  (ArrayList<HashMap<String, Object>>)
@@ -235,16 +244,15 @@ The parameters for this method are:
     cart1["product_sku"] = BuildConfig.PIXLEE_SKU
     cart1["quantity"] = "4"
     cartContents.add(cart1)
-    // you can add more to cartContents if needed 
-    
-    
+    // you can add more to cartContents if needed
+
+
     pxlAlbum.conversion(cartContents = cartContents, cartTotal = "123", cartTotalQuantity = 4)
     ```
     OR:
     ```kotlin
     #!kotlin
-    
+
     ktxAnalyticsDataSource.conversion(cartContents = cartContents, cartTotal = "123", cartTotalQuantity = 4)
     ```
-    
-    
+
