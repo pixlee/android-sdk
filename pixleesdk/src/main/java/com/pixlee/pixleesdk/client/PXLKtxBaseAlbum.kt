@@ -38,7 +38,7 @@ open class PXLKtxBaseAlbum {
     internal var currentAlbumId: Int? = null
 
     // managed by this SDK internally for pagination
-    internal var lastPageLoaded: Int = 1
+    internal var lastPageLoaded: Int = 0
 
     // managed by this SDK internally for pagination
     internal  var hasMore: Boolean = true

@@ -34,6 +34,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 //import org.jetbrains.annotations.NotNull;
 
@@ -98,7 +99,8 @@ public class NetworkModule {
     public static Retrofit provideRetrofit(String url, OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(url)
-                .addConverterFactory(MoshiConverterFactory.create(provideMoshi()).asLenient())
+                .addConverterFactory(ScalarsConverterFactory.create()) // this is to receive string response
+                .addConverterFactory(MoshiConverterFactory.create(provideMoshi()).asLenient()) // this is to convert json into classes
                 .client(okHttpClient)
                 .build();
     }

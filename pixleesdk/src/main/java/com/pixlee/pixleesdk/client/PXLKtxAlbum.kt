@@ -7,8 +7,7 @@ import com.pixlee.pixleesdk.data.PhotoResult
 import com.pixlee.pixleesdk.data.repository.KtxAnalyticsDataSource
 import com.pixlee.pixleesdk.data.repository.KtxBasicDataSource
 import com.pixlee.pixleesdk.enums.PXLWidgetType
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.util.ArrayList
 import java.util.HashMap
@@ -39,7 +38,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      */
     fun resetState() {
         allPXLPhotos.clear()
-        lastPageLoaded = 1
+        lastPageLoaded = 0
         hasMore = true
     }
 
@@ -78,11 +77,13 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
 
                 Log.e("KTXAlbum", "before load ui, albumId: $albumId")
                 if (!isFirstPage && callLoadMoreAnalytics) {
-                    supervisorScope {
+                    GlobalScope.launch {
                         try {
+                            delay(1000)
                             Log.e("KTXAlbum", "before load supervisorScope , albumId: $albumId")
                             loadMore()
                             Log.e("KTXAlbum", "after load supervisorScope , albumId: $albumId")
+
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
