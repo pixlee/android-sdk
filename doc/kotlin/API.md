@@ -1,34 +1,28 @@
-# Kotlin
+# API
 
-# Table of Content
-- [Initialize SDK](#Initialize-SDK)
-    - [Register Pixlee credentials](#Register-Pixlee-credentials)
+- [API: Getting Album/PDP photos & Analytics] [doc/kotlin/API.md]
     - [Get PXLClient](#Get-PXLClient)
-- [Album Features](#Album-Features)
-    - [Initiate Album or Product](#Initiate-Album-or-Product)
-    - Option 1: [Get Album photos](#Get-Album-photos)
-    - Option 2: [Get Product photos](#Get-Product-photos)
-- [How to get image urls](#How-to-get-image-urls)
+- [Album and Product Features](#Album-and-Product-Features)
+    - [Initialization](#Initialization)
+        - Option 1: [to get Album photos](#to-get-Album-photos)
+        - Option 2: [to get Product photos](#to-get-Product-photos)
+    - [Get Photos](#Get-Photos)
+    - [Advanced Search options](#Advanced-Search-options)
+    - [How to get image urls](#How-to-get-image-urls)
+- Analytics
+    - [Album Analytics](#Album-Analytics)
+        - [Opened Widget](#Opened-Widget)
+        - [Widget Visible](#Widget-Visible)
+        - [Load More](#Load-More)
+        - [Opened Lightbox](#Opened-Lightbox)
+        - [Action Clicked](#Action-Clicked)
+    - [Ecommerce Analytics](#Ecommerce-Analytics)
+        - [Add To Cart](#Add-To-Cart)
+        - [Conversion](#Conversion)
 
-# Initialize SDK
-### You must do this before using this SDK!!
-#### Register Pixlee credentials
-- Before accessing any Pixlee API, you must initialize the `PXLClient`. To set the API key, call the static method initialize. The simplest way for this is you put this code in your Application class:
-    ```kotlin
-    // If you need only to use @Get APIs
-    #!kotlin
-    
-    PXLClient.initialize(<PIXLEE API KEY>)
-    ```
-    Or:
-    ```kotlin
-    // If you need to use both @Get and @Post APIs
-    #!kotlin
-    
-    PXLClient.initialize(<PIXLEE API KEY>, <PIXLEE SECRET KEY>)
-    ```
-#### Get PXLKtxAlbum
-- You can then use the singleton instance to make calls against the Pixlee API:
+## Album and Product Features
+To prepare to load the photos, you'll need the codes below
+### Initialization
     ```kotlin
     #!kotlin
 
@@ -50,10 +44,7 @@
     val ktxAnalyticsDataSource = client.ktxAnalyticsDataSource
     val pxlAlbum = PXLKtxAlbum(ktxBasicDataSource, ktxAnalyticsDataSource)
     ```
-## Album & Product Features
-To prepare to load the photos, you'll need the codes below
-### initiation
-#### Option 1: for Album photos
+#### Option 1: to get Album photos
 ```kotlin
 #!kotlin
 
@@ -63,7 +54,7 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
      searchId = searchId
 )
 ```
-#### Option 2: for Product photos
+#### Option 2: to get Product photos
 ```kotlin
 #!kotlin
 
@@ -119,15 +110,6 @@ result.forEach { pxlPhoto ->
     pxlPhoto.getUrlForSize(PXLPhotoSize.THUMBNAIL)
 }
 ```
-- [Album Analytics](#Album-Analytics)
-    - [Opened Widget](#Opened-Widget)
-    - [Widget Visible](#Widget-Visible)
-    - [Load More](#Load-More)
-    - [Opened Lightbox](#Opened-Lightbox)
-    - [Action Clicked](#Action-Clicked)
-- [Ecommerce Analytics](#Ecommerce-Analytics)
-    - [Add To Cart](#Add-To-Cart)
-    - [Conversion](#Conversion)
 
 ## Album Analytics
 You can see the example codes for analytics in the demo app.
@@ -255,4 +237,22 @@ The parameters for this method are:
 
     ktxAnalyticsDataSource.conversion(cartContents = cartContents, cartTotal = "123", cartTotalQuantity = 4)
     ```
+## UI components
+### Show a fullscreen PXLPhoto with its PXLProduct list
+- There is an example in ViewerActivity.kt
+XML
+```xml
+<com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
+    android:id="@+id/pxlPhotoProductView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
+```
+Kotlin
 
+PXLPhotoProductView: photo with products in a fullscreen view
+PXLPhotoRecyclerView: recyclerview with PXLPhotoView in its ViewHolder. infinite scroll is available. play video one at a time
+PXLPhotoView
+
+ProductViewHolder
+PXLPhotoAdapter
+PXLPhotoViewHolder
