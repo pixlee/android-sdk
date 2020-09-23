@@ -3,7 +3,7 @@
 # Table of Content
 - [Initialize SDK](#Initialize-SDK)
     - [Register Pixlee credentials](#Register-Pixlee-credentials)
-- [API: Getting Album/PDP photos & Analytics] [API.md]
+- [API: Getting Album/PDP photos & Analytics](API.md)
 
 
 # Initialize SDK
