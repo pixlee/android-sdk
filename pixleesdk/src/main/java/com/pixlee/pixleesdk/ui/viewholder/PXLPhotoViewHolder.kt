@@ -1,6 +1,7 @@
 package com.pixlee.pixleesdk.ui.viewholder
 
 import android.graphics.Rect
+import android.opengl.Visibility
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,12 +29,13 @@ class PXLPhotoViewHolder(override val containerView: View) :
         RecyclerView.ViewHolder(containerView),
         LayoutContainer {
 
-    fun bind(data: PhotoWithImageScaleType, configuration: PXLPhotoView.Configuration? = null) {
+    fun bind(data: PhotoWithImageScaleType, configuration: PXLPhotoView.Configuration? = null, showingDebugView: Boolean = false) {
         pxlPhotoView.layoutParams.height = data.heightInPixel
         if (configuration != null) {
             pxlPhotoView.setConfiguration(configuration)
         }
         pxlPhotoView.setPhoto(data.pxlPhoto, data.imageScaleType)
+        tv.visibility = if(showingDebugView) View.VISIBLE else View.GONE
         tv.text = "ScaleType: ${data.imageScaleType.name}\nwidth: ${pxlPhotoView.layoutParams.width}, height: ${pxlPhotoView.layoutParams.height}\nid: ${data.pxlPhoto.id}"
     }
 

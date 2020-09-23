@@ -54,10 +54,12 @@ class PXLPhotoRecyclerView : RecyclerView {
     }
 
     fun initiate(infiniteScroll: Boolean = false,
+                 showingDebugView: Boolean= false,
                  configuration: PXLPhotoView.Configuration? = null,
                  onButtonClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null,
                  onPhotoClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null) {
         pxlPhotoAdapter.infiniteScroll = infiniteScroll
+        pxlPhotoAdapter.showingDebugView = showingDebugView
         pxlPhotoAdapter.photoViewConfiguration = configuration
         pxlPhotoAdapter.onButtonClickedListener = onButtonClickedListener
         pxlPhotoAdapter.onPhotoClickedListener = onPhotoClickedListener

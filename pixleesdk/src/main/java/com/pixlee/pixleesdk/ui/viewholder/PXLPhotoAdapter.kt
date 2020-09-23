@@ -14,7 +14,8 @@ class PXLPhotoAdapter(
         var onButtonClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null,
         var onPhotoClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null,
         var photoViewConfiguration: PXLPhotoView.Configuration? = null,
-        var infiniteScroll: Boolean = false
+        var infiniteScroll: Boolean = false,
+        var showingDebugView: Boolean = false,
 ) : RecyclerView.Adapter<PXLPhotoViewHolder>() {
     val list: ArrayList<PhotoWithImageScaleType> = ArrayList()
 
@@ -24,7 +25,7 @@ class PXLPhotoAdapter(
 
     override fun onBindViewHolder(holder: PXLPhotoViewHolder, position: Int) {
         val item = list[getRealPosition(position)]
-        holder.bind(item, photoViewConfiguration)
+        holder.bind(item, photoViewConfiguration, showingDebugView)
         holder.itemView.setOnClickListener {
             onPhotoClickedListener?.also {
                 it(holder.itemView, item.pxlPhoto)
