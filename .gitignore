@@ -58,4 +58,8 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
-fastlane/readme.md  ₩
+fastlane/readme.md
+
+video-player-visibility-utils/
+video-player-manager/
+

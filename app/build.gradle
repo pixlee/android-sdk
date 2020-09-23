@@ -90,7 +90,5 @@ dependencies {
 
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
-//    implementation "com.github.pixlee:android-video-player:$videoPlayerManager"
-    implementation project(':video-player-manager')
-    implementation project(':video-player-visibility-utils')
+    implementation "com.github.pixlee:android-video-player:$videoPlayerManager"
 }

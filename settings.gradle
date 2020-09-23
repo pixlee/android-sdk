@@ -1,3 +1,1 @@
-include ':video-player-visibility-utils'
-include ':video-player-manager'
 include ':app', ':pixleesdk'

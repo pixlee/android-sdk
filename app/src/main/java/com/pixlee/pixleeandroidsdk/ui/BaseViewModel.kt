@@ -67,7 +67,7 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
                 if (it.photos.isNotEmpty()) {
                     val newList = ArrayList<PhotoWithImageScaleType>()
                     it.photos.forEach {
-                        newList.add(PhotoWithImageScaleType(it, PXLPhotoView.ImageScaleType.CENTER_CROP, cellHeightInPixel))
+                        newList.add(PhotoWithImageScaleType(it, PXLPhotoView.ImageScaleType.FIT_CENTER, cellHeightInPixel))
                     }
                     allPXLPhotos.addAll(it.photos)
                     _resultEvent.value = Event(Command.Data(newList, it.page==1))

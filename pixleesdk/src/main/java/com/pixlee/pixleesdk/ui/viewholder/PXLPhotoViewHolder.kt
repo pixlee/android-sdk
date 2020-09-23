@@ -15,6 +15,7 @@ import com.volokh.danylo.video_player_manager.manager.VideoItem
 import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager
 import com.volokh.danylo.video_player_manager.meta.CurrentItemMetaData
 import com.volokh.danylo.video_player_manager.meta.MetaData
+import com.volokh.danylo.video_player_manager.ui.ScalableTextureView
 import com.volokh.danylo.video_player_manager.ui.VideoPlayerView
 import com.volokh.danylo.visibility_utils.items.ListItem
 import kotlinx.android.extensions.LayoutContainer

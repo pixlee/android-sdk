@@ -65,8 +65,8 @@ class KtxGalleryFragment : BaseFragment() {
                     if (pxlPhotoRecyclerView == null)
                         return
 
-                    val cellHeightInPixel = pxlPhotoRecyclerView.measuredHeight / 2
-                    viewModel.cellHeightInPixel = cellHeightInPixel
+                    val cellHeightInPixel = pxlPhotoRecyclerView.measuredHeight / 1.5f
+                    viewModel.cellHeightInPixel = cellHeightInPixel.toInt()
                     loadAlbum()
                     pxlPhotoRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
