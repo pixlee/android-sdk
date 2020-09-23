@@ -15,7 +15,7 @@ class PXLPhotoAdapter(
         var onPhotoClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null,
         var photoViewConfiguration: PXLPhotoView.Configuration? = null,
         var infiniteScroll: Boolean = false,
-        var showingDebugView: Boolean = false,
+        var showingDebugView: Boolean = false
 ) : RecyclerView.Adapter<PXLPhotoViewHolder>() {
     val list: ArrayList<PhotoWithImageScaleType> = ArrayList()
 
