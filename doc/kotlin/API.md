@@ -5,8 +5,8 @@
     - [Prepare parameters](#Prepare-parameters)
         - Option 1: [to get Album photos](#to-get-Album-photos)
         - Option 2: [to get Product photos](#to-get-Product-photos)
+        - [Advanced parameter options](#Advanced-parameter-options)
     - [Get Photos](#Get-Photos)
-    - [Advanced Search options](#Advanced-Search-options)
     - [How to get image urls](#How-to-get-image-urls)
 - Analytics
     - [Album Analytics](#Album-Analytics)
@@ -64,21 +64,7 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
      searchId = searchId
 )
 ```
-### Get Photos
-Get the first page
-```kotlin
-#!kotlin
-
-pxlAlbum.getFirstPage()
-```
-
-Get the next pages
-```kotlin
-#!kotlin
-
-pxlAlbum.getNextPage()
-```
-### Advanced Search options
+- #### Advanced parameter options
 ```kotlin
 #!kotlin
 
@@ -96,6 +82,21 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
     }
 )
 ```
+### Get Photos
+Get the first page
+```kotlin
+#!kotlin
+
+pxlAlbum.getFirstPage()
+```
+
+Get the next pages
+```kotlin
+#!kotlin
+
+pxlAlbum.getNextPage()
+```
+
 ## How to get image urls
 Some imageURL fields can be empty or null depending on its data's status. In order to get appropriate images, you can use this method.
 ```kotlin
