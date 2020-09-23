@@ -92,6 +92,8 @@ override fun onCreate(savedInstanceState: Bundle?) {
     // you can customize color, size if you need
     pxlPhotoRecyclerView.initiate(infiniteScroll = true, // or false
             configuration = PXLPhotoView.Configuration().apply {
+                // Customize image size
+                pxlPhotoSize = PXLPhotoSize.ORIGINAL
                 // Customize Main TextView
                 mainTextViewStyle = TextViewStyle().apply {
                     text = "Main Text"
@@ -209,6 +211,50 @@ override fun onCreate(savedInstanceState: Bundle?) {
     setContentView(...)
     ...
     ...
+    val configuration = PXLPhotoView.Configuration().apply {
+        // Customize image size
+        pxlPhotoSize = PXLPhotoSize.ORIGINAL
+        // Customize Main TextView
+        mainTextViewStyle = TextViewStyle().apply {
+            text = "Main Text"
+            size = 30.px
+            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+            typeface = null
+        }
+        // Customize Sub TextView
+        subTextViewStyle = TextViewStyle().apply {
+            text = "Sub Text"
+            size = 18.px
+            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+            typeface = null
+        }
+        // Customize Button
+        buttonStyle = PXLPhotoView.ButtonStyle().apply {
+            isButtonVisible = true
+            text = "Action Button"
+            size = 20.px
+            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+            typeface = null
+            buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
+            stroke = PXLPhotoView.Stroke().apply {
+                width = 2.px.toInt()
+                color = Color.WHITE
+                radiusInPixel = 25.px
+                stroke = PXLPhotoView.Stroke().apply {
+                    width = 2.px.toInt()
+                    color = Color.WHITE
+                    radiusInPixel = 25.px
+                }
+                padding = PXLPhotoView.Padding().apply {
+                    left = 20.px.toInt()
+                    centerRight = 40.px.toInt()
+                    topBottom = 10.px.toInt()
+                }
+            }
+        }
+
+    }
+    pxlPhotoView.setConfiguration(configuration)
     pxlPhotoView.setPhoto(it, PXLPhotoView.ImageScaleType.CENTER_CROP)
     pxlPhotoView.playVideo(videoPlayerManger = mVideoPlayerManager, isLooping = true, muted = true)
 

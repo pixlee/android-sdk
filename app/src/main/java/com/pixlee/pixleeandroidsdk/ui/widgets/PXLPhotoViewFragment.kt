@@ -1,6 +1,8 @@
 package com.pixlee.pixleeandroidsdk.ui.widgets
 
+import android.graphics.Color
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,8 +10,11 @@ import androidx.fragment.app.Fragment
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleesdk.data.PXLPhoto
+import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.ui.widgets.playVideo
+import com.pixlee.pixleesdk.util.px
 import com.volokh.danylo.video_player_manager.manager.SingleVideoPlayerManager
 import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager
 import com.volokh.danylo.video_player_manager.meta.MetaData
@@ -33,6 +38,53 @@ class PXLPhotoViewFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         val pxlPhoto: PXLPhoto? = arguments?.getParcelable("pxlPhoto")
         pxlPhoto?.also {
+            val configuration = PXLPhotoView.Configuration().apply {
+                // Customize image size
+                pxlPhotoSize = PXLPhotoSize.ORIGINAL
+                // Customize Main TextView
+                mainTextViewStyle = TextViewStyle().apply {
+                    text = "Welcome"
+                    size = 30.px
+                    sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                    typeface = null
+                }
+                // Customize Sub TextView
+                subTextViewStyle = TextViewStyle().apply {
+                    text = "This is Pixlee SDK"
+                    size = 18.px
+                    sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                    typeface = null
+                }
+                // Customize Button
+                buttonStyle = PXLPhotoView.ButtonStyle().apply {
+                    isButtonVisible = true
+                    text = "Click here"
+                    size = 20.px
+                    sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                    typeface = null
+                    buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
+                    stroke = PXLPhotoView.Stroke().apply {
+                        width = 2.px.toInt()
+                        color = Color.WHITE
+                        radiusInPixel = 25.px
+                        stroke = PXLPhotoView.Stroke().apply {
+                            width = 2.px.toInt()
+                            color = Color.WHITE
+                            radiusInPixel = 25.px
+                        }
+                        padding = PXLPhotoView.Padding().apply {
+                            left = 20.px.toInt()
+                            centerRight = 40.px.toInt()
+                            topBottom = 10.px.toInt()
+                        }
+                    }
+                }
+
+            }
+            pxlPhotoViewFitWrapLandscape.setConfiguration(configuration)
+            pxlPhotoViewFitPortrait.setConfiguration(configuration)
+            pxlPhotoViewCrop.setConfiguration(configuration)
+
             pxlPhotoViewFitWrapLandscape.setPhoto(it, PXLPhotoView.ImageScaleType.FIT_CENTER)
             pxlPhotoViewFitPortrait.setPhoto(it, PXLPhotoView.ImageScaleType.FIT_CENTER)
             pxlPhotoViewCrop.setPhoto(it, PXLPhotoView.ImageScaleType.CENTER_CROP)

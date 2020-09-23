@@ -48,16 +48,18 @@ class PXLPhotoView : RelativeLayout {
         CENTER_CROP(ImageView.ScaleType.CENTER_CROP);
     }
 
-    class Configuration(var mainTextViewStyle: TextViewStyle = TextViewStyle().apply {
-        text = "Text 1"
-        size = 30.px
-    }, var subTextViewStyle: TextViewStyle = TextViewStyle().apply {
-        text = "Text 2"
-        size = 18.px
-    }, var buttonStyle: ButtonStyle = ButtonStyle().apply {
-        text = "Button"
-        size = 20.px
-    })
+    class Configuration(
+            var pxlPhotoSize: PXLPhotoSize = PXLPhotoSize.ORIGINAL, // PXLPhotoSize [THUMBNAIL, MEDIUM, BIG, ORIGINAL]
+            var mainTextViewStyle: TextViewStyle = TextViewStyle().apply {
+                text = "Text 1"
+                size = 30.px
+            }, var subTextViewStyle: TextViewStyle = TextViewStyle().apply {
+                text = "Text 2"
+                size = 18.px
+            }, var buttonStyle: ButtonStyle = ButtonStyle().apply {
+                text = "Button"
+                size = 20.px
+            })
 
     class ButtonStyle(
             var isButtonVisible: Boolean = true,
@@ -137,7 +139,9 @@ class PXLPhotoView : RelativeLayout {
         }
     }
 
+    var currentConfiguration: Configuration? = null
     fun setConfiguration(configuration: Configuration) {
+        currentConfiguration = configuration
         configuration.buttonStyle.let { style ->
             button.visibility = if (style.isButtonVisible) VISIBLE else GONE
             button.setTextViewStyle(style)
@@ -284,7 +288,7 @@ class PXLPhotoView : RelativeLayout {
         imageView.visibility = VISIBLE
         imageView.scaleType = imageScaleType.type
         pxlPhoto?.also {
-            val imageUrl = it.getUrlForSize(PXLPhotoSize.BIG).toString()
+            val imageUrl = it.getUrlForSize(currentConfiguration?.pxlPhotoSize ?: PXLPhotoSize.ORIGINAL).toString()
             Log.d("pxlphoto", "pxlphoto.url: $imageUrl")
             // load a main image into an ImageView
 
@@ -391,10 +395,10 @@ class PXLPhotoView : RelativeLayout {
     }
 }
 
-fun PXLPhotoView.playVideo(videoPlayerManger: VideoPlayerManager<MetaData>, isLooping:Boolean = false, muted:Boolean = false){
-    if(pxlPhoto?.isVideo ?: false){
+fun PXLPhotoView.playVideo(videoPlayerManger: VideoPlayerManager<MetaData>, isLooping: Boolean = false, muted: Boolean = false) {
+    if (pxlPhoto?.isVideo ?: false) {
         videoView.setLooping(isLooping)
-        if(muted) videoView.muteVideo()
+        if (muted) videoView.muteVideo()
         else videoView.unMuteVideo()
         videoPlayerManger.playNewVideo(null, this.videoView, pxlPhoto?.videoUrl)
     }

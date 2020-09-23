@@ -27,6 +27,7 @@ import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLAlbumSortType
 import com.pixlee.pixleesdk.enums.PXLContentSource
 import com.pixlee.pixleesdk.enums.PXLContentType
+import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.util.px
@@ -65,7 +66,8 @@ class KtxGalleryFragment : BaseFragment() {
                     if (pxlPhotoRecyclerView == null)
                         return
 
-                    val cellHeightInPixel = pxlPhotoRecyclerView.measuredHeight / 1.5f
+                    //val cellHeightInPixel = pxlPhotoRecyclerView.measuredHeight * 0.8f
+                    val cellHeightInPixel = pxlPhotoRecyclerView.measuredHeight * 0.2f
                     viewModel.cellHeightInPixel = cellHeightInPixel.toInt()
                     loadAlbum()
                     pxlPhotoRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -116,6 +118,8 @@ class KtxGalleryFragment : BaseFragment() {
         // you can customize color, size if you need
         pxlPhotoRecyclerView.initiate(infiniteScroll = false,
                 configuration = PXLPhotoView.Configuration().apply {
+                    // Customize image size, not a video
+                    pxlPhotoSize = PXLPhotoSize.ORIGINAL
                     // Customize Main TextView
                     mainTextViewStyle = TextViewStyle().apply {
                         text = "Main Text"
