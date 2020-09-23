@@ -79,22 +79,23 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
     sortOptions = PXLAlbumSortOptions().apply {
         sortType = PXLAlbumSortType.RECENCY
         descending = true
+        // ... there's more.
     }
 )
 ```
 ### Get Photos
 Get the first page
 ```kotlin
-#!kotlin
+#!Kotlin.coroutines
 
-pxlAlbum.getFirstPage()
+val result = pxlAlbum.getFirstPage()
 ```
 
 Get the next pages
 ```kotlin
-#!kotlin
+#!Kotlin.coroutines
 
-pxlAlbum.getNextPage()
+val result = pxlAlbum.getNextPage()
 ```
 
 ## How to get image urls
@@ -102,7 +103,6 @@ Some imageURL fields can be empty or null depending on its data's status. In ord
 ```kotlin
 #!kotlin
 
-val result = ktxBasicDataSource.getPhotosWithID(albumId, filterOptions, sortOptions, perPage, lastPageLoaded)
 result.forEach { pxlPhoto ->
     // here: your business logic
     pxlPhoto.getUrlForSize(PXLPhotoSize.ORIGINAL)
@@ -126,7 +126,7 @@ There is an order of firing these two APIs.
     - To fire this event, simply call the `openedWidget` method of the PXLKtxAlbum AFTER data has been returned from the first call of `pxlKtxAlbum.getFirstPage()` or `pxlKtxAlbum.getNextPage()` method, and an "Opened Widget" event will be fired containing all of the necessary analytics information.
 
         ```kotlin
-        #!kotlin
+        #!Kotlin.coroutines
 
         pxlKtxAlbum.openedWidget(PXLWidgetType.photowall);
         pxlKtxAlbum.openedWidget(PXLWidgetType.horizontal);
@@ -137,7 +137,7 @@ There is an order of firing these two APIs.
     - To fire this event, simply call the `widgetVisible` method of the PXLKtxAlbum AFTER data has been returned from the first call of `pxlKtxAlbum.getFirstPage()` or `pxlKtxAlbum.getNextPage()` method, and an "Widget Visible" event will be fired containing all of the necessary analytics information.
 
         ```kotlin
-        #!kotlin
+        #!Kotlin.coroutines
 
         pxlKtxAlbum.widgetVisible(PXLWidgetType.photowall);
         pxlKtxAlbum.widgetVisible(PXLWidgetType.horizontal);
@@ -149,7 +149,7 @@ There is an order of firing these two APIs.
 See the onComplete function in GalleryFragment.java for an example.
 - On calls to pxlKtxAlbum.getNextPage() (except the first), a "Load More" analytics event will be fired automatically
     ```kotlin
-    #!kotlin
+    #!Kotlin.coroutines
 
     pxlKtxAlbum.loadMore();
     ```
@@ -159,7 +159,7 @@ See the onComplete function in GalleryFragment.java for an example.
 - To fire an opened ligtbox event, simply call the `openedLightbox` method of PXLKtxAlbum, and an "Opened Lightbox" event will be fired containing all of the necessary analytics information.
 
     ```kotlin
-    #!kotlin
+    #!Kotlin.coroutines
 
     pxlKtxAlbum.openedLightbox(photo.albumPhotoId)
     pxlKtxAlbum.openedLightbox(photo)
@@ -169,7 +169,7 @@ See the onComplete function in GalleryFragment.java for an example.
 - To fire an action clicked event, simply call the `actionClicked` method of PXLKtxAlbum that the action click is being driven from and pass in the URL of the link that the user is being redirected to.  An "Action Clicked" event will be fired containing all of the necessary analytics information.
 
     ```kotlin
-    #!kotlin
+    #!Kotlin.coroutines
 
     pxlKtxAlbum.actionClicked(photo.albumPhotoId, "https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html");
     pxlKtxAlbum.actionClicked(photo, "https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html");
@@ -199,13 +199,13 @@ The parameters for this method are:
     - [Optional] currency (String)
 
     ```kotlin
-    #!kotlin
+    #!Kotlin.coroutines
 
     pxlAlbum.addToCart("sku123", "123", 4);
     ```
     Or:
     ```
-    #!kotlin
+    #!Kotlin.coroutines
     ktxAnalyticsDataSource.addToCart("sku123", "123", 4);
     ```
 
@@ -219,7 +219,7 @@ The parameters for this method are:
     - [Optional] currency (String)
 
     ```kotlin
-    #!kotlin
+    #!Kotlin.coroutines
 
     val cartContents: ArrayList<HashMap<String, Any>> = ArrayList()
     val cart1: HashMap<String, Any> = HashMap()
@@ -234,7 +234,7 @@ The parameters for this method are:
     ```
     OR:
     ```kotlin
-    #!kotlin
+    #!Kotlin.coroutines
 
     ktxAnalyticsDataSource.conversion(cartContents = cartContents, cartTotal = "123", cartTotalQuantity = 4)
     ```
