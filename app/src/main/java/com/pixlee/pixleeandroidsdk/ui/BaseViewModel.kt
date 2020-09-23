@@ -39,7 +39,7 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
     /**
      * This is to set essential request parameters
      */
-    fun init(params:PXLKtxBaseAlbum.Params) {
+    fun init(params: PXLKtxBaseAlbum.Params) {
         pxlKtxAlbum.params = params
     }
 
@@ -48,8 +48,8 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
      */
     fun getFirstPage() {
         allPXLPhotos.clear()
-         pxlKtxAlbum.resetState()
-         getNextPage()
+        pxlKtxAlbum.resetState()
+        getNextPage()
 
         // alternative
         // viewModelScope.launch(..) { pxlKtxAlbum.getFirstPage() }
@@ -67,10 +67,14 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
                 if (it.photos.isNotEmpty()) {
                     val newList = ArrayList<PhotoWithImageScaleType>()
                     it.photos.forEach {
-                        newList.add(PhotoWithImageScaleType(it, PXLPhotoView.ImageScaleType.FIT_CENTER, cellHeightInPixel))
+                        newList.add(PhotoWithImageScaleType(pxlPhoto = it,
+                                imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP,
+                                heightInPixel = cellHeightInPixel,
+                                isLoopingVideo = true,
+                                soundMuted = true))
                     }
                     allPXLPhotos.addAll(it.photos)
-                    _resultEvent.value = Event(Command.Data(newList, it.page==1))
+                    _resultEvent.value = Event(Command.Data(newList, it.page == 1))
                 }
 
                 canLoadMore = it.next

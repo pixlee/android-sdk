@@ -165,15 +165,31 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
     fun startList(cellSize: Int) {
         // write codes to get photos first. Read API doc.
+        // you should convert List<PXLPhoto> into List<PhotoWithImageScaleType>
         val photos: List<PXLPhoto> = ....
 
         // turn the list into List<PhotoWithImageScaleType> to set ImageScaleType[CENTER_CROP, FIT_CENTER], and the cells' height size
         val list = ArrayList<PhotoWithImageScaleType>()
-        list.add(PhotoWithImageScaleType(pxlPhoto, PXLPhotoView.ImageScaleType.CENTER_CROP, cellSize))
-        list.add(PhotoWithImageScaleType(pxlPhoto, PXLPhotoView.ImageScaleType.FIT_CENTER, cellSize))
+        photos.forEach { pxlPhoto ->
+            list.add(PhotoWithImageScaleType(pxlPhoto = pxlPhoto,
+                                            imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP,
+                                            heightInPixel = cellSize,
+                                            isLoopingVideo = true,
+                                            soundMuted = true))
+            list.add(PhotoWithImageScaleType(pxlPhoto = pxlPhoto,
+                                            imageScaleType = PXLPhotoView.ImageScaleType.FIT_CENTER,
+                                            heightInPixel = cellSize,
+                                            isLoopingVideo = true,
+                                            soundMuted = true))
+        }
+
 
         // start the list UI by passing these arguments
-        pxlPhotoRecyclerView.replaceList(it.toList(), PXLPhotoView.ImageScaleType.CENTER_CROP, cellSize)
+        pxlPhotoRecyclerView.replaceList(list)
+
+        // if you just want to use List<PXLPhoto>, you can do that by following these steps
+        // alternative step 1: val photos: List<PXLPhoto> = ....
+        // alternative step 2: pxlPhotoRecyclerView.replaceList(photos.toList(), PXLPhotoView.ImageScaleType.CENTER_CROP, cellSize)
     }
 
     // play video

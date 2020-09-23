@@ -52,6 +52,6 @@ ext {
     gson = "2.8.5"
     glide = "4.11.0"
     orhanobutLogger = "2.2.0"
-    videoPlayerManager="1.0.0"
+    videoPlayerManager="1.0.1"
     lottie = "3.4.1"
 }

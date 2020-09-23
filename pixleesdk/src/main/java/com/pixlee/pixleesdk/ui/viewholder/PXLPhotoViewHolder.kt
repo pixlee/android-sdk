@@ -35,8 +35,8 @@ class PXLPhotoViewHolder(override val containerView: View) :
             pxlPhotoView.setConfiguration(configuration)
         }
         pxlPhotoView.setPhoto(data.pxlPhoto, data.imageScaleType)
-        tv.visibility = if(showingDebugView) View.VISIBLE else View.GONE
-        tvPercent.visibility = if(showingDebugView) View.VISIBLE else View.GONE
+        tv.visibility = if (showingDebugView) View.VISIBLE else View.GONE
+        tvPercent.visibility = if (showingDebugView) View.VISIBLE else View.GONE
         tv.text = "ScaleType: ${data.imageScaleType.name}\nwidth: ${pxlPhotoView.layoutParams.width}, height: ${pxlPhotoView.layoutParams.height}\nid: ${data.pxlPhoto.id}"
     }
 
@@ -50,7 +50,11 @@ class PXLPhotoViewHolder(override val containerView: View) :
     }
 }
 
-class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto, val imageScaleType: PXLPhotoView.ImageScaleType, val heightInPixel: Int = 400.px.toInt()) : ListItem, VideoItem {
+class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto,
+                              val imageScaleType: PXLPhotoView.ImageScaleType,
+                              val heightInPixel: Int = 400.px.toInt(),
+                              val isLoopingVideo: Boolean = true,
+                              val soundMuted: Boolean = false) : ListItem, VideoItem {
     lateinit var videoPlayerManager: VideoPlayerManager<MetaData>
     private val mCurrentViewRect = Rect()
 
@@ -114,8 +118,8 @@ class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto, val imageScaleType: PXLPho
     // a part of VideoItem
     override fun playNewVideo(currentItemMetaData: MetaData, player: VideoPlayerView, videoPlayerManager: VideoPlayerManager<MetaData>) {
         if (pxlPhoto.isVideo) {
-            player.setLooping(true)
-            player.muteVideo()
+            player.setLooping(isLoopingVideo)
+            if(soundMuted) player.muteVideo() else player.unMuteVideo()
             videoPlayerManager.playNewVideo(currentItemMetaData, player, pxlPhoto.videoUrl)
         }
     }

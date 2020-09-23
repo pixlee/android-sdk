@@ -67,7 +67,6 @@ class KtxGalleryFragment : BaseFragment() {
                         return
 
                     val cellHeightInPixel = pxlPhotoRecyclerView.measuredHeight * 0.6f
-//                    val cellHeightInPixel = pxlPhotoRecyclerView.measuredHeight * 0.2f
                     viewModel.cellHeightInPixel = cellHeightInPixel.toInt()
                     loadAlbum()
                     pxlPhotoRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -116,7 +115,7 @@ class KtxGalleryFragment : BaseFragment() {
 
     fun addClickListeners() {
         // you can customize color, size if you need
-        pxlPhotoRecyclerView.initiate(infiniteScroll = false,
+        pxlPhotoRecyclerView.initiate(infiniteScroll = true,
                 configuration = PXLPhotoView.Configuration().apply {
                     // Customize image size, not a video
                     pxlPhotoSize = PXLPhotoSize.ORIGINAL
