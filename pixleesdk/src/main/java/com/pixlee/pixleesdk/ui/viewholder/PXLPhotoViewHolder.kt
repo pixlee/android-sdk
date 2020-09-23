@@ -36,6 +36,7 @@ class PXLPhotoViewHolder(override val containerView: View) :
         }
         pxlPhotoView.setPhoto(data.pxlPhoto, data.imageScaleType)
         tv.visibility = if(showingDebugView) View.VISIBLE else View.GONE
+        tvPercent.visibility = if(showingDebugView) View.VISIBLE else View.GONE
         tv.text = "ScaleType: ${data.imageScaleType.name}\nwidth: ${pxlPhotoView.layoutParams.width}, height: ${pxlPhotoView.layoutParams.height}\nid: ${data.pxlPhoto.id}"
     }
 
