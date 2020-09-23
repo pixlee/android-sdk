@@ -238,22 +238,3 @@ The parameters for this method are:
 
     ktxAnalyticsDataSource.conversion(cartContents = cartContents, cartTotal = "123", cartTotalQuantity = 4)
     ```
-## UI components
-### Show a fullscreen PXLPhoto with its PXLProduct list
-- There is an example in ViewerActivity.kt
-XML
-```xml
-<com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
-    android:id="@+id/pxlPhotoProductView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
-```
-Kotlin
-
-PXLPhotoProductView: photo with products in a fullscreen view
-PXLPhotoRecyclerView: recyclerview with PXLPhotoView in its ViewHolder. infinite scroll is available. play video one at a time
-PXLPhotoView
-
-ProductViewHolder
-PXLPhotoAdapter
-PXLPhotoViewHolder

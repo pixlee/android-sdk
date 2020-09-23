@@ -70,7 +70,7 @@ class ViewerActivity : AppCompatActivity() {
         val bookmarkMap = HashMap<String, Boolean>()
         if (pxlPhoto.products != null) {
             for (product in pxlPhoto.products) {
-                bookmarkMap.put(product.id, Random().nextBoolean())
+                bookmarkMap[product.id] = Random().nextBoolean()
             }
         }
         return bookmarkMap
