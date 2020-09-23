@@ -1,12 +1,12 @@
 # UI components
 You can use these UI components after you retrive PXLPhoto data via our API [API doc](API.md)
 
+##### Notice: Due to the limitations of hardware specs on some android devices, this SDK only for now don't play 2 movies concurrently to make the SDK stable. But, playing multiple videos simultaneously will be availble soon.
+
 ## Index
 - [PXLPhotoProductView](#PXLPhotoProductView) : A fullscreen view displaying PXLPhoto with a list of PXLPhoto
 - [PXLPhotoRecyclerView](#PXLPhotoRecyclerView) : A RecyclerView displaying a list of PXLPhoto
 - [PXLPhotoView](#PXLPhotoView) : A view to display PXLPhoto
-
-##### Notice: Due to the limitations of hardware specs on some android devices, this SDK only for now don't play 2 movies concurrently to make the SDK stable. But, playing multiple videos simultaneously will be availble soon.
 
 ### PXLPhotoProductView
 This shows a fullscreen PXLPhoto with its PXLProduct list. There is an example in ViewerActivity.kt
