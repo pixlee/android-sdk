@@ -1,10 +1,17 @@
 # UI components
+You can use these UI components after you retrive PXLPhoto data via our API [API doc](API.md)
 
+## Index
+- A fullscreen view displaying PXLPhoto with a list of PXLPhoto: [PXLPhotoProductView](#PXLPhotoProductView)
+- A RecyclerView displaying a list of PXLPhoto [PXLPhotoRecyclerView](#PXLPhotoRecyclerView)
+- A view to display PXLPhoto [PXLPhotoView](#PXLPhotoView)
+
+##### Notice: Due to the limitations of hardware specs on some android devices, this SDK only for now don't play 2 movies concurrently to make the SDK stable. But, playing multiple videos simultaneously will be availble soon.
 
 ### PXLPhotoProductView
 This shows a fullscreen PXLPhoto with its PXLProduct list. There is an example in ViewerActivity.kt
 
-Add this do your xml
+Add this to your xml
 ```xml
 #!XML
 <com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
@@ -12,9 +19,8 @@ Add this do your xml
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>
 ```
-Kotlin
-```kotlin
 Add this to your Activity or Fragment
+```kotlin
 #!kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -60,10 +66,152 @@ fun readBookmarks(pxlPhoto: PXLPhoto): HashMap<String, Boolean> {
 }
 
 ```
-PXLPhotoProductView: photo with products in a fullscreen view
-PXLPhotoRecyclerView: recyclerview with PXLPhotoView in its ViewHolder. infinite scroll is available. play video one at a time
-PXLPhotoView
+## PXLPhotoRecyclerView
+this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhotoView and PXLPhotoViewHolder.
+- you can customize most of ui elements if needed
+- infinite scroll is available.
+- playing a video
 
-ProductViewHolder
-PXLPhotoAdapter
-PXLPhotoViewHolder
+Add this to your xml
+```xml
+#!xml
+<com.pixlee.pixleesdk.ui.widgets.PXLPhotoRecyclerView
+    android:id="@+id/pxlPhotoRecyclerView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
+```
+
+Add this to your Activity or Fragment
+```kotlin
+#!kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(...)
+    ...
+    ...
+    // you can customize color, size if you need
+    pxlPhotoRecyclerView.initiate(infiniteScroll = true, // or false
+            configuration = PXLPhotoView.Configuration().apply {
+                // Customize Main TextView
+                mainTextViewStyle = TextViewStyle().apply {
+                    text = "Main Text"
+                    size = 30.px
+                    sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                    typeface = null
+                }
+                // Customize Sub TextView
+                subTextViewStyle = TextViewStyle().apply {
+                    text = "Sub Text"
+                    size = 18.px
+                    sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                    typeface = null
+                }
+                // Customize Button
+                buttonStyle = PXLPhotoView.ButtonStyle().apply {
+                    isButtonVisible = true
+                    text = "Action Button"
+                    size = 20.px
+                    sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                    typeface = null
+                    buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
+                    stroke = PXLPhotoView.Stroke().apply {
+                        width = 2.px.toInt()
+                        color = Color.WHITE
+                        radiusInPixel = 25.px
+                        stroke = PXLPhotoView.Stroke().apply {
+                            width = 2.px.toInt()
+                            color = Color.WHITE
+                            radiusInPixel = 25.px
+                        }
+                        padding = PXLPhotoView.Padding().apply {
+                            left = 20.px.toInt()
+                            centerRight = 40.px.toInt()
+                            topBottom = 10.px.toInt()
+                        }
+                    }
+                }
+
+            }, onButtonClickedListener = { view, pxlPhoto ->
+        context?.also { ctx ->
+            // you can add your business logic here
+            Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
+            moveToViewer(pxlPhoto)
+        }
+    }, onPhotoClickedListener = { view, pxlPhoto ->
+        context?.also { ctx ->
+            // you can add your business logic here
+            Toast.makeText(ctx, "onItemClickedListener", Toast.LENGTH_SHORT).show()
+        }
+    })
+
+    pxlPhotoRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+            try {
+                if (pxlPhotoRecyclerView == null)
+                    return
+
+                // this is to diplay two items at a time on the screen
+                val cellSize = pxlPhotoRecyclerView.measuredHeight / 2
+                startList(cellSize)
+                pxlPhotoRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+    })
+
+    fun startList(cellSize: Int) {
+        // write codes to get photos first. Read API doc.
+        val photos: List<PXLPhoto> = ....
+
+        // turn the list into List<PhotoWithImageScaleType> to set ImageScaleType[CENTER_CROP, FIT_CENTER], and the cells' height size
+        val list = ArrayList<PhotoWithImageScaleType>()
+        list.add(PhotoWithImageScaleType(pxlPhoto, PXLPhotoView.ImageScaleType.CENTER_CROP, cellSize))
+        list.add(PhotoWithImageScaleType(pxlPhoto, PXLPhotoView.ImageScaleType.FIT_CENTER, cellSize))
+
+        // start the list UI by passing these arguments
+        pxlPhotoRecyclerView.replaceList(it.toList(), PXLPhotoView.ImageScaleType.CENTER_CROP, cellSize)
+    }
+
+    // play video
+    override fun onResume() {
+        super.onResume()
+        pxlPhotoRecyclerView.onResume()
+    }
+
+    // stop video
+    override fun onStop() {
+        super.onStop()
+        pxlPhotoRecyclerView.onStop()
+    }
+}
+```
+## PXLPhotoView
+If you want to display your a PXLPhoto without a list of PXLProduct in your layout, you can use this codes.
+
+Add this to your xml
+```xml
+#!xml
+<com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+    android:id="@+id/pxlPhotoView"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"  /* You can change the height to what you need. This is just an example. */
+/>
+```
+
+Add this to your Activity or Fragment
+```kotlin
+#!kotlin
+private val mVideoPlayerManager: VideoPlayerManager<MetaData> = SingleVideoPlayerManager { }
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(...)
+    ...
+    ...
+    pxlPhotoView.setPhoto(it, PXLPhotoView.ImageScaleType.CENTER_CROP)
+    pxlPhotoView.playVideo(videoPlayerManger = mVideoPlayerManager, isLooping = true, muted = true)
+
+    // alternative: pxlPhotoView.playVideo(videoPlayerManger = mVideoPlayerManager, isLooping = false, muted = false)
+    // alternative: pxlPhotoView.setPhoto(it, PXLPhotoView.ImageScaleType.FIT_CENTER)
+}

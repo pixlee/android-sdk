@@ -53,11 +53,10 @@ class PXLPhotoRecyclerView : RecyclerView {
         this.adapter = pxlPhotoAdapter
     }
 
-    fun initiate(/*infiniteScroll: Boolean = false,*/
+    fun initiate(infiniteScroll: Boolean = false,
                  configuration: PXLPhotoView.Configuration? = null,
                  onButtonClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null,
                  onPhotoClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null) {
-        val infiniteScroll = false
         pxlPhotoAdapter.infiniteScroll = infiniteScroll
         pxlPhotoAdapter.photoViewConfiguration = configuration
         pxlPhotoAdapter.onButtonClickedListener = onButtonClickedListener
@@ -91,13 +90,14 @@ class PXLPhotoRecyclerView : RecyclerView {
 
     fun addList(list: List<PhotoWithImageScaleType>) {
         if (list.isNotEmpty()) {
+            val needToMoveScroll = pxlPhotoAdapter.list.isEmpty()
             list.forEach {
                 pxlPhotoAdapter.list.add(it.apply {
                     videoPlayerManager = singleVideoPlayerManager
                 })
             }
-            //pxlPhotoAdapter.notifyItemRangeInserted(0, pxlPhotoAdapter.list.size)
             pxlPhotoAdapter.notifyDataSetChanged()
+            if (needToMoveScroll) moveScrollToInitialPosition()
         }
     }
 
@@ -109,9 +109,8 @@ class PXLPhotoRecyclerView : RecyclerView {
                     videoPlayerManager = singleVideoPlayerManager
                 })
             }
-            //pxlPhotoAdapter.notifyItemRangeInserted(0, pxlPhotoAdapter.list.size)
             pxlPhotoAdapter.notifyDataSetChanged()
-            //scrollToPosition(Integer.MAX_VALUE / 2)
+            moveScrollToInitialPosition()
         }
     }
 
@@ -123,22 +122,25 @@ class PXLPhotoRecyclerView : RecyclerView {
                     videoPlayerManager = singleVideoPlayerManager
                 })
             }
-            //pxlPhotoAdapter.notifyItemRangeInserted(0, pxlPhotoAdapter.list.size)
             pxlPhotoAdapter.notifyDataSetChanged()
-            //scrollToPosition(Integer.MAX_VALUE / 2)
+            moveScrollToInitialPosition()
         }
 
+    }
+
+    private fun moveScrollToInitialPosition() {
+        if (pxlPhotoAdapter.infiniteScroll) {
+            scrollToPosition(Integer.MAX_VALUE / 2)
+        }
     }
 
     private fun clearOldList() {
         if (pxlPhotoAdapter.list.isNotEmpty()) {
             val count = pxlPhotoAdapter.list.size
             pxlPhotoAdapter.list.clear()
-            //pxlPhotoAdapter.notifyItemRangeRemoved(0, count)
             pxlPhotoAdapter.notifyDataSetChanged()
         }
     }
-
 
     fun onResume() {
         postDelayed(Runnable {

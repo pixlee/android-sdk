@@ -29,7 +29,7 @@ class PXLPhotoViewInRecyclerViewFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        pxlPhotoRecyclerView.initiate(/*infiniteScroll = false,*/
+        pxlPhotoRecyclerView.initiate(infiniteScroll = false,
                 configuration = PXLPhotoView.Configuration(),
                 onButtonClickedListener = { view, pxlPhoto ->
                     context?.also { ctx ->
@@ -58,6 +58,7 @@ class PXLPhotoViewInRecyclerViewFragment : BaseFragment() {
             }
         })
     }
+
 
     fun startList(cellSize: Int) {
         val pxlPhoto: PXLPhoto? = arguments?.getParcelable("pxlPhoto")

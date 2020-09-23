@@ -1,6 +1,7 @@
 package com.pixlee.pixleesdk.ui.viewholder
 
 import android.graphics.Rect
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+import com.pixlee.pixleesdk.ui.widgets.playVideo
 import com.pixlee.pixleesdk.util.px
 import com.volokh.danylo.video_player_manager.manager.VideoItem
 import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager
@@ -31,7 +33,7 @@ class PXLPhotoViewHolder(override val containerView: View) :
             pxlPhotoView.setConfiguration(configuration)
         }
         pxlPhotoView.setPhoto(data.pxlPhoto, data.imageScaleType)
-        tv.text = "ScaleType: ${data.imageScaleType.name}\nwidth: ${pxlPhotoView.layoutParams.width}, height: ${pxlPhotoView.layoutParams.height}"
+        tv.text = "ScaleType: ${data.imageScaleType.name}\nwidth: ${pxlPhotoView.layoutParams.width}, height: ${pxlPhotoView.layoutParams.height}\nid: ${data.pxlPhoto.id}"
     }
 
     companion object {
@@ -63,17 +65,6 @@ class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto, val imageScaleType: PXLPho
                 } else if (viewIsPartiallyHiddenBottom(height)) {
                     percents = mCurrentViewRect.bottom * 100 / height
                 }
-
-
-//                currentView.tag?.also {
-//                    val videoViewHolder: PXLPhotoViewHolder = it as PXLPhotoViewHolder
-//                    if (percents == 100) {
-//                        videoViewHolder.pxlPhotoView.videoView.alpha = 1f
-//                    } else {
-//                        videoViewHolder.pxlPhotoView.videoView.alpha = 0f
-//                    }
-//
-//                }
 
                 setVisibilityPercentsText(currentView, percents)
             }
@@ -119,8 +110,9 @@ class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto, val imageScaleType: PXLPho
     // a part of VideoItem
     override fun playNewVideo(currentItemMetaData: MetaData, player: VideoPlayerView, videoPlayerManager: VideoPlayerManager<MetaData>) {
         if (pxlPhoto.isVideo) {
-            videoPlayerManager.playNewVideo(currentItemMetaData, player, pxlPhoto.videoUrl)
             player.setLooping(true)
+            player.muteVideo()
+            videoPlayerManager.playNewVideo(currentItemMetaData, player, pxlPhoto.videoUrl)
         }
     }
 

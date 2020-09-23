@@ -31,6 +31,8 @@ import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.fragment_ktx_gallery.*
+import kotlinx.android.synthetic.main.fragment_ktx_gallery.pxlPhotoRecyclerView
+import kotlinx.android.synthetic.main.fragment_pxlphotoview_in_recyclerview.*
 import kotlinx.android.synthetic.main.module_search.*
 
 /**
@@ -52,7 +54,7 @@ class KtxGalleryFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        radioGroupContentTypeVideo.isChecked = false
+        radioGroupContentTypeVideo.isChecked = true
         addViewModelListeners()
         addClickListeners()
         configureViews()
@@ -75,6 +77,11 @@ class KtxGalleryFragment : BaseFragment() {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        pxlPhotoRecyclerView.onResume()
+    }
+
     override fun onStop() {
         super.onStop()
         pxlPhotoRecyclerView.onStop()
@@ -90,7 +97,7 @@ class KtxGalleryFragment : BaseFragment() {
                 is BaseViewModel.Command.Data -> {
                     if (it.isFirstPage) {
                         pxlPhotoRecyclerView.replaceList(it.list)
-                        //pxlPhotoRecyclerView.onResume()
+                        pxlPhotoRecyclerView.onResume()
                         if(it.list.isNotEmpty()){
                             it.list.firstOrNull()?.pxlPhoto?.also {
                                 viewModel.getPhotoWithId(it)
@@ -106,7 +113,8 @@ class KtxGalleryFragment : BaseFragment() {
     }
 
     fun addClickListeners() {
-        pxlPhotoRecyclerView.initiate(/*infiniteScroll = false,*/
+        // you can customize color, size if you need
+        pxlPhotoRecyclerView.initiate(infiniteScroll = false,
                 configuration = PXLPhotoView.Configuration().apply {
                     // Customize Main TextView
                     mainTextViewStyle = TextViewStyle().apply {
@@ -149,11 +157,13 @@ class KtxGalleryFragment : BaseFragment() {
 
                 }, onButtonClickedListener = { view, pxlPhoto ->
             context?.also { ctx ->
+                // you can add your business logic here
                 Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
                 moveToViewer(pxlPhoto)
             }
         }, onPhotoClickedListener = { view, pxlPhoto ->
             context?.also { ctx ->
+                // you can add your business logic here
                 Toast.makeText(ctx, "onItemClickedListener", Toast.LENGTH_SHORT).show()
             }
         })
