@@ -1,10 +1,11 @@
 # UI components
 
 
-### Show a fullscreen PXLPhoto with its PXLProduct list
-- There is an example in ViewerActivity.kt
-XML
+### PXLPhotoProductView
+This shows a fullscreen PXLPhoto with its PXLProduct list. There is an example in ViewerActivity.kt
+
 ```xml
+#!XML
 <com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
     android:id="@+id/pxlPhotoProductView"
     android:layout_width="match_parent"
@@ -12,6 +13,7 @@ XML
 ```
 Kotlin
 ```kotlin
+#!kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(...)
