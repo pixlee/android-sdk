@@ -59,11 +59,8 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
         tvMain.text = product.title
         configuration.mainTextStyle?.also { tvMain.setTextStyle(it) }
 
-
-        // todo: uncomment these two lines
-        //tvSub.visibility = if (product.description != null && product.description.isNotEmpty()) View.VISIBLE else View.GONE
-        //tvSub.text = product.description
-        tvSub.text = "product.description"
+        tvSub.visibility = if (product.description != null && product.description.isNotEmpty()) View.VISIBLE else View.GONE
+        tvSub.text = product.description
 
         configuration.subTextStyle?.also { tvMain.setTextStyle(it) }
 
