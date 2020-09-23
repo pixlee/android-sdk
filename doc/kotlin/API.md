@@ -2,6 +2,7 @@
 
 - [Album and Product Features](#Album-and-Product-Features)
     - [Initialization](#Initialization)
+    - [Prepare parameters](#Prepare-parameters)
         - Option 1: [to get Album photos](#to-get-Album-photos)
         - Option 2: [to get Product photos](#to-get-Product-photos)
     - [Get Photos](#Get-Photos)
@@ -42,7 +43,8 @@ val ktxBasicDataSource = client.ktxBasicDataSource
 val ktxAnalyticsDataSource = client.ktxAnalyticsDataSource
 val pxlAlbum = PXLKtxAlbum(ktxBasicDataSource, ktxAnalyticsDataSource)
 ```
-#### Option 1: to get Album photos
+### Prepare parameters
+- #### Option 1: to get Album photos
 ```kotlin
 #!kotlin
 
@@ -52,7 +54,7 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
      searchId = searchId
 )
 ```
-#### Option 2: to get Product photos
+- #### Option 2: to get Product photos
 ```kotlin
 #!kotlin
 
