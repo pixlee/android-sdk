@@ -4,7 +4,8 @@
 - [Initialize SDK](#Initialize-SDK)
     - [Register Pixlee credentials](#Register-Pixlee-credentials)
 - [API: Getting Album/PDP photos & Analytics](API.md)
-
+- [API: Analytics](API.md)
+- [UI Components](UI.md)
 
 # Initialize SDK
 ### You must do this before using this SDK!!

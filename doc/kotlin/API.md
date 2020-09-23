@@ -1,7 +1,5 @@
 # API
 
-- [API: Getting Album/PDP photos & Analytics] [doc/kotlin/API.md]
-    - [Get PXLClient](#Get-PXLClient)
 - [Album and Product Features](#Album-and-Product-Features)
     - [Initialization](#Initialization)
         - Option 1: [to get Album photos](#to-get-Album-photos)
@@ -23,27 +21,27 @@
 ## Album and Product Features
 To prepare to load the photos, you'll need the codes below
 ### Initialization
-    ```kotlin
-    #!kotlin
+```kotlin
+#!kotlin
 
-    val pxlAlbum = PXLKtxAlbum(context)
-    ```
-    Or:
-    ```kotlin
-    #!kotlin
+val pxlAlbum = PXLKtxAlbum(context)
+```
+Or:
+```kotlin
+#!kotlin
 
-    val client = PXLClient.getInstance(context);
-    val pxlAlbum = PXLKtxAlbum(client)
-    ```
-    Or:
-    ```kotlin
-    #!kotlin
+val client = PXLClient.getInstance(context);
+val pxlAlbum = PXLKtxAlbum(client)
+```
+Or:
+```kotlin
+#!kotlin
 
-    val client = PXLClient.getInstance(context);
-    val ktxBasicDataSource = client.ktxBasicDataSource
-    val ktxAnalyticsDataSource = client.ktxAnalyticsDataSource
-    val pxlAlbum = PXLKtxAlbum(ktxBasicDataSource, ktxAnalyticsDataSource)
-    ```
+val client = PXLClient.getInstance(context);
+val ktxBasicDataSource = client.ktxBasicDataSource
+val ktxAnalyticsDataSource = client.ktxAnalyticsDataSource
+val pxlAlbum = PXLKtxAlbum(ktxBasicDataSource, ktxAnalyticsDataSource)
+```
 #### Option 1: to get Album photos
 ```kotlin
 #!kotlin
@@ -68,7 +66,7 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
 Get the first page
 ```kotlin
 #!kotlin
-\
+
 pxlAlbum.getFirstPage()
 ```
 
