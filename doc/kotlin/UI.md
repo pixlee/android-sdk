@@ -152,9 +152,9 @@ override fun onCreate(savedInstanceState: Bundle?) {
                 if (pxlPhotoRecyclerView == null)
                     return
 
-                // this is to diplay two items at a time on the screen
-                val cellSize = pxlPhotoRecyclerView.measuredHeight / 2
-                startList(cellSize)
+                // this is to display two items at a time on the screen
+                val cellHeightInPixel = pxlPhotoRecyclerView.measuredHeight * 0.6f
+                startList(cellHeightInPixel)
                 pxlPhotoRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
             } catch (e: Exception) {
                 e.printStackTrace()
