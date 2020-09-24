@@ -54,18 +54,30 @@ class PXLClient(val context: Context) {
         android_id = Secure.getString(context.applicationContext.contentResolver, Secure.ANDROID_ID)
     }
 
+    /**
+     * Album APIs supporting Kotlin.coroutines
+     */
     val ktxBasicDataSource : KtxBasicDataSource by lazy {
         NetworkModule.generateKtxBasicRepository()
     }
 
+    /**
+     * Analytics APIs supporting Kotlin.coroutines
+     */
     val ktxAnalyticsDataSource: KtxAnalyticsDataSource by lazy{
         NetworkModule.getKtxAnalyticsRepository()
     }
 
+    /**
+     * Album APIs supporting Java interfaces
+     */
     val basicDataSource : BasicDataSource by lazy {
         NetworkModule.generateBasicRepository()
     }
 
+    /**
+     * Analytics APIs supporting Java interfaces
+     */
     val analyticsDataSource: AnalyticsDataSource by lazy{
         NetworkModule.getAnalyticsRepository()
     }
