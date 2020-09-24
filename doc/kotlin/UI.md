@@ -40,6 +40,21 @@ override fun onCreate(savedInstanceState: Bundle?) {
                 iconColor = <set color:int, if you want to change icon's color>
                 backgroundColor = <circle background color>
             }
+            mainTextStyle = TextStyle().apply {
+                size = 14.px
+                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                typeface = null
+            }
+            subTextStyle = TextStyle().apply {
+                size = 12.px
+                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                typeface = null
+            }
+            priceTextStyle = TextStyle().apply {
+                size = 24.px
+                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                typeface = null
+            }
         },
         bookmarkMap = readBookmarks(pxlPhoto),
         onBookmarkClicked = { productId, isBookmarkChecked ->

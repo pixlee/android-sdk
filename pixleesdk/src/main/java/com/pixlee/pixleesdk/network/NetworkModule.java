@@ -99,8 +99,8 @@ public class NetworkModule {
     public static Retrofit provideRetrofit(String url, OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(url)
-                .addConverterFactory(ScalarsConverterFactory.create()) // this is to receive string response
-                .addConverterFactory(MoshiConverterFactory.create(provideMoshi()).asLenient()) // this is to convert json into classes
+                .addConverterFactory(ScalarsConverterFactory.create()) // this converts the response to string if declared in the APIs
+                .addConverterFactory(MoshiConverterFactory.create(provideMoshi()).asLenient()) // this converts json into classes if declared in the APIs
                 .client(okHttpClient)
                 .build();
     }

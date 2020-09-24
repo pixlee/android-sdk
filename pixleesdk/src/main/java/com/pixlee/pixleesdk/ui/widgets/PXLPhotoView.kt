@@ -34,16 +34,19 @@ import jp.wasabeef.glide.transformations.BlurTransformation
  */
 class PXLPhotoView : RelativeLayout {
     /**
-     * This class is to let PXLPhotoView support a limited number of ImageView.ScaleType
+     * This class is to let PXLPhotoView support ImageView.ScaleType
      */
     enum class ImageScaleType(val type: ImageView.ScaleType) {
         /**
-         * ImageScaleType.FIT_CENTER: we keep the ratio of the video, so there must be empty areas. To cover it, Pixlee’s SDK will show a full-screen-size blurry image background. All parts of the video will be visible on the screen.
+         * ImageScaleType.FIT_CENTER: we keep the ratio of the video, so there must be empty areas.
+         * To cover it, Pixlee’s SDK will show a full-screen-size blurry image background.
+         * All parts of the video will be visible on the screen.
          */
         FIT_CENTER(ImageView.ScaleType.FIT_CENTER),
 
         /**
-         * ImageScaleType.CENTER_CROP: there is no empty area. Some parts of the video going outside of the screen will not be visible on the screen
+         * ImageScaleType.CENTER_CROP: there is no empty area.
+         * Some parts of the video going outside of the screen will not be visible on the screen.
          */
         CENTER_CROP(ImageView.ScaleType.CENTER_CROP);
     }
@@ -306,32 +309,17 @@ class PXLPhotoView : RelativeLayout {
         }
     }
 
-    fun initVideoPlayer() {
+    private fun initVideoPlayer() {
         Log.d("pxlphoto", "pxlphoto.videoUrl: ${pxlPhoto?.videoUrl}")
         when (imageScaleType) {
             ImageScaleType.FIT_CENTER -> videoView.setScaleType(ScalableTextureView.ScaleType.FIT_CENTER)
             ImageScaleType.CENTER_CROP -> videoView.setScaleType(ScalableTextureView.ScaleType.CENTER_CROP)
         }
-
-        addMediaPlayerListener(object : MediaPlayerWrapper.MainThreadMediaPlayerListener {
-            override fun onVideoSizeChangedMainThread(width: Int, height: Int) {}
-            override fun onVideoPreparedMainThread() {
-                // When video is prepared it's about to start playback. So we hide the cover
-                //imageView.visibility = View.INVISIBLE
-                //videoView.alpha = 1f
-            }
-
-            override fun onVideoCompletionMainThread() {}
-            override fun onErrorMainThread(what: Int, extra: Int) {}
-            override fun onBufferingUpdateMainThread(percent: Int) {}
-            override fun onVideoStoppedMainThread() {
-                // Show the cover when video stopped
-                //imageView.visibility = View.VISIBLE
-                //videoView.alpha = 0f
-            }
-        })
     }
 
+    /**
+     * if you need to take actions when the video's status changes
+     */
     fun addMediaPlayerListener(listener: MediaPlayerWrapper.MainThreadMediaPlayerListener) {
         videoView.addMediaPlayerListener(listener)
     }
@@ -395,6 +383,9 @@ class PXLPhotoView : RelativeLayout {
     }
 }
 
+/**
+ * a Kotlin extension for PXLPhotoView to play a video to make codes simpler.
+ */
 fun PXLPhotoView.playVideo(videoPlayerManger: VideoPlayerManager<MetaData>, isLooping: Boolean = false, muted: Boolean = false) {
     if (pxlPhoto?.isVideo ?: false) {
         videoView.setLooping(isLooping)

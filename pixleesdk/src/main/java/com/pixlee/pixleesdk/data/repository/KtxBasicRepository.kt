@@ -18,6 +18,14 @@ import java.util.*
  * The entry point for accessing basic data.
  */
 interface KtxBasicDataSource {
+    /**
+     * @param sku: product's sku
+     * @param filter: filtering options
+     * @param sort: sort options
+     * @param per_page: how many PXLPhotos you want to receive in a response
+     * @param page: this is for pagination, range [(]1 - N], example: first page is 1, the next page is 2, 3, 4, ...
+     * @return PhotoResult
+     */
     suspend fun getPhotosWithSKU(
             sku: String,
             filters: PXLAlbumFilterOptions?,
@@ -26,6 +34,14 @@ interface KtxBasicDataSource {
             page: Int
     ): PhotoResult
 
+    /**
+     * @param album_id: album id
+     * @param filter: filtering options
+     * @param sort: sort options
+     * @param per_page: how many PXLPhotos you want to receive in a response
+     * @param page: this is for pagination, range [(]1 - N], example: first page is 1, the next page is 2, 3, 4, ...
+     * * @return PhotoResult
+     */
     suspend fun getPhotosWithID(
             album_id: String,
             filters: PXLAlbumFilterOptions?,
@@ -34,8 +50,36 @@ interface KtxBasicDataSource {
             page: Int
     ): PhotoResult
 
+    /**
+     * @param album_photo_id: This is returns PXLPhoto with album_photo_id which can be discovered in PXLPhoto.albumPhotoId
+     * @return PXLPhoto
+     */
     suspend fun getMedia(album_photo_id: String): PXLPhoto
+
+    /**
+     * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
+     * sort order, and filter options before calling.
+     *
+     * @param json: this should have these elements
+     *              - title: title or caption of the photo being uploaded
+     *              - email: email address of the submitting user
+     *              - username: username of the submitting user
+     *              - approved: boolean specifying whether the photo should be marked as approved on upload
+     *              - photoURI: the URI of the photo/video being submitted (must be a public URI)
+     */
     suspend fun postMediaWithURI(json: JSONObject): MediaResult
+
+    /**
+     * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
+     * sort order, and filter options before calling.
+     *
+     * @param json: this has these values
+     *              - title: title or caption of the photo being uploaded
+     *              - email: email address of the submitting user
+     *              - username: username of the submitting user
+     *              - approved: boolean specifying whether the photo should be marked as approved on upload
+     *              - localMediaPath: a local path of the media(photo or video)
+     */
     suspend fun postMediaWithFile(json: JSONObject, filePath: String): MediaResult
 }
 

@@ -3,8 +3,10 @@ package com.pixlee.pixleeandroidsdk.ui.widgets
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +14,9 @@ import androidx.core.content.ContextCompat
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
+import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.util.PXLViewUtil
+import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.activity_viewer.*
 import java.util.*
 
@@ -53,6 +57,21 @@ class ViewerActivity : AppCompatActivity() {
                         iconColor = Color.DKGRAY
                         backgroundColor = ContextCompat.getColor(this@ViewerActivity, R.color.yellow_800)
                     }
+                    mainTextStyle = TextStyle().apply {
+                        size = 14.px
+                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                        typeface = null
+                    }
+                    subTextStyle = TextStyle().apply {
+                        size = 12.px
+                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                        typeface = null
+                    }
+                    priceTextStyle = TextStyle().apply {
+                        size = 24.px
+                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                        typeface = null
+                    }
                 },
                 bookmarkMap = readBookmarks(pxlPhoto),
                 onBookmarkClicked = { productId, isBookmarkChecked ->
@@ -65,6 +84,9 @@ class ViewerActivity : AppCompatActivity() {
                 })
     }
 
+    /**
+     * You should custom this method to pass your products' bookmark information
+     */
     fun readBookmarks(pxlPhoto: PXLPhoto): HashMap<String, Boolean> {
         // this code should be replaced by your own bookmarks
         val bookmarkMap = HashMap<String, Boolean>()
