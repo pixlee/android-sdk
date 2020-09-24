@@ -12,6 +12,11 @@ import java.io.InputStream;
  * Created by sungjun on 6/1/20.
  */
 public class PXLViewUtil {
+    /**
+     * support for LottieAnimationView
+     * @param context
+     * @return
+     */
     public static String getLottieLoadingJson(Context context) {
         return getText(context, "lottie/pixlee_loading.json");
     }
