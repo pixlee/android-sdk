@@ -8,7 +8,7 @@ import com.airbnb.lottie.LottieDrawable;
 import com.pixlee.pixleesdk.util.PXLViewUtil;
 
 /**
- * Created by sungjun on 8/24/20.
+ * This is an loading widget similar to Progress
  */
 public class PXLLoading extends LottieAnimationView {
     public PXLLoading(Context context) {

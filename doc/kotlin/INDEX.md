@@ -3,8 +3,9 @@
 # Table of Content
 - [Initialize SDK](#Initialize-SDK)
     - [Register Pixlee credentials](#Register-Pixlee-credentials)
-- [API: Getting Album/PDP photos & Analytics](API.md)
-- [API: Analytics](API.md)
+- [API: Getting Album/PDP photos](API.md)
+- [API: Analytics for album/product](API.md#album-analytics)
+- [API: Analytics for Ecommerce](API.md#ecommerce-analytics)
 - [UI Components](UI.md)
 
 # Initialize SDK

@@ -7,7 +7,7 @@ import android.widget.AbsListView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pixlee.pixleesdk.data.PXLPhoto
-import com.pixlee.pixleesdk.ui.viewholder.PXLPhotoAdapter
+import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.util.px
 import com.volokh.danylo.video_player_manager.manager.SingleVideoPlayerManager
@@ -54,7 +54,7 @@ class PXLPhotoRecyclerView : RecyclerView {
     }
 
     fun initiate(infiniteScroll: Boolean = false,
-                 showingDebugView: Boolean= false,
+                 showingDebugView: Boolean = false,
                  configuration: PXLPhotoView.Configuration? = null,
                  onButtonClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null,
                  onPhotoClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null) {
@@ -90,48 +90,74 @@ class PXLPhotoRecyclerView : RecyclerView {
         pxlPhotoAdapter.notifyDataSetChanged()
     }
 
+    /**
+     * Add a list: List<PhotoWithImageScaleType> to an existing list
+     */
     fun addList(list: List<PhotoWithImageScaleType>) {
-        if (list.isNotEmpty()) {
-            val needToMoveScroll = pxlPhotoAdapter.list.isEmpty()
-            list.forEach {
-                pxlPhotoAdapter.list.add(it.apply {
-                    videoPlayerManager = singleVideoPlayerManager
-                })
-            }
-            pxlPhotoAdapter.notifyDataSetChanged()
-            if (needToMoveScroll) moveScrollToInitialPosition()
-        }
+        setList(ListAddType.ADD, list)
     }
 
+    /**
+     * Add a list: List<PhotoWithImageScaleType> to an existing list
+     */
+    fun addList(list: List<PXLPhoto>, imageScaleType: PXLPhotoView.ImageScaleType, heightInPixel: Int = 400.px.toInt()) {
+        setList(ListAddType.ADD, list, imageScaleType, heightInPixel)
+    }
+
+    /**
+     * Replace a list: List<PhotoWithImageScaleType> with an existing list
+     */
     fun replaceList(list: List<PhotoWithImageScaleType>) {
-        clearOldList()
-        if (list.isNotEmpty()) {
-            list.forEach {
-                pxlPhotoAdapter.list.add(it.apply {
-                    videoPlayerManager = singleVideoPlayerManager
-                })
-            }
-            pxlPhotoAdapter.notifyDataSetChanged()
-            moveScrollToInitialPosition()
-        }
+        setList(ListAddType.REPLACE, list)
     }
 
+    /**
+     * Replace a list: List<PXLPhoto> with an existing list
+     */
     fun replaceList(list: List<PXLPhoto>, imageScaleType: PXLPhotoView.ImageScaleType, heightInPixel: Int = 400.px.toInt()) {
-        clearOldList()
+        setList(ListAddType.REPLACE, list, imageScaleType, heightInPixel)
+    }
+
+    private fun setList(type: ListAddType, list: List<PXLPhoto>, imageScaleType: PXLPhotoView.ImageScaleType, heightInPixel: Int = 400.px.toInt()) {
+        when (type) {
+            ListAddType.REPLACE -> clearOldList()
+            ListAddType.ADD -> { /* do nothing */
+            }
+        }
+
         if (list.isNotEmpty()) {
+            val needToMoveScroll = type == ListAddType.ADD && pxlPhotoAdapter.list.isEmpty()
             list.forEach {
                 pxlPhotoAdapter.list.add(PhotoWithImageScaleType(it, imageScaleType, heightInPixel).apply {
                     videoPlayerManager = singleVideoPlayerManager
                 })
             }
             pxlPhotoAdapter.notifyDataSetChanged()
-            moveScrollToInitialPosition()
+            moveScrollToInitialPosition(needToMoveScroll)
         }
-
     }
 
-    private fun moveScrollToInitialPosition() {
-        if (pxlPhotoAdapter.infiniteScroll) {
+    private fun setList(type: ListAddType, list: List<PhotoWithImageScaleType>) {
+        when (type) {
+            ListAddType.REPLACE -> clearOldList()
+            ListAddType.ADD -> { /* do nothing */
+            }
+        }
+
+        if (list.isNotEmpty()) {
+            val needToMoveScroll = type == ListAddType.ADD && pxlPhotoAdapter.list.isEmpty()
+            list.forEach {
+                pxlPhotoAdapter.list.add(it.apply {
+                    videoPlayerManager = singleVideoPlayerManager
+                })
+            }
+            pxlPhotoAdapter.notifyDataSetChanged()
+            moveScrollToInitialPosition(needToMoveScroll)
+        }
+    }
+
+    private fun moveScrollToInitialPosition(needToMoveScroll: Boolean) {
+        if (needToMoveScroll && pxlPhotoAdapter.infiniteScroll) {
             scrollToPosition(Integer.MAX_VALUE / 2)
         }
     }
@@ -146,7 +172,7 @@ class PXLPhotoRecyclerView : RecyclerView {
 
     fun onResume() {
         postDelayed(Runnable {
-            if (pxlPhotoAdapter.list.isNotEmpty()) {
+            if (pxlPhotoAdapter!=null && pxlPhotoAdapter.list.isNotEmpty()) {
                 mVideoVisibilityCalculator?.onScrollStateIdle(
                         mItemsPositionGetter,
                         linearLayoutManager.findFirstVisibleItemPosition(),
@@ -158,5 +184,10 @@ class PXLPhotoRecyclerView : RecyclerView {
     fun onStop() {
         // we have to stop any playback in onStop
         singleVideoPlayerManager.resetMediaPlayer()
+    }
+
+
+    internal enum class ListAddType {
+        ADD, REPLACE
     }
 }

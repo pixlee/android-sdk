@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.item_product.*
 import java.util.*
 
 /**
- * Created by sungjun on 9/11/20.
+ * This is to be used in PXLPhotoRecyclerView which extends RecyclerView
  */
 class ProductAdapter(
         val configuration: ProductViewHolder.Configuration,

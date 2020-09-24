@@ -33,7 +33,8 @@ import kotlinx.android.synthetic.main.widget_viewer.view.*
 import java.util.*
 
 /**
- * Created by sungjun on 9/11/20.
+ * this view is supposed to be used in a fullscreen.
+ * This view take PXLPhoto to show its content(photo/video), a product list with product's bookmark
  */
 class PXLPhotoProductView : FrameLayout {
     private var pxlPhoto: PXLPhoto? = null

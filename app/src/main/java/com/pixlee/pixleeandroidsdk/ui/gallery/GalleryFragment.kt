@@ -13,6 +13,7 @@ import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewInRecyclerViewFragment
+import com.pixlee.pixleeandroidsdk.ui.widgets.ViewerActivity
 import com.pixlee.pixleesdk.client.PXLAlbum
 import com.pixlee.pixleesdk.client.PXLBaseAlbum
 import com.pixlee.pixleesdk.client.PXLBaseAlbum.RequestHandlers
@@ -24,7 +25,6 @@ import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLAlbumSortType
 import com.pixlee.pixleesdk.enums.PXLContentSource
 import com.pixlee.pixleesdk.enums.PXLContentType
-import com.pixlee.pixleesdk.ui.activity.PXLPhotoViewerActivity
 import kotlinx.android.synthetic.main.fragment_gallery.*
 import kotlinx.android.synthetic.main.module_search.*
 
@@ -329,7 +329,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
 //                }
 
             } else {
-                PXLPhotoViewerActivity.launch(context!!, photo)
+                ViewerActivity.launch(context!!, photo)
             }
         }
     }

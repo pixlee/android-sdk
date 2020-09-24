@@ -21,7 +21,7 @@ import java.text.DecimalFormat
 import kotlinx.android.synthetic.main.item_product.*
 
 /**
- * Created by sungjun on 9/11/20.
+ * This is to display PXLProduct as a RecyclerView.ViewHolder
  */
 class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
     class Configuration(

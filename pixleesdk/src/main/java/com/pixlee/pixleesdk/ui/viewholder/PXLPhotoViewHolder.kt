@@ -23,7 +23,8 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_pxlphoto.*
 
 /**
- * Created by sungjun on 9/14/20.
+ * This is to display PhotoWithImageScaleType having PXLPhoto as a RecyclerView.ViewHolder.
+ * This shows its content(photo/video). Via PXLPhotoView.Configuration, you can custom TextViews and a Button.
  */
 class PXLPhotoViewHolder(override val containerView: View) :
         RecyclerView.ViewHolder(containerView),
@@ -50,6 +51,11 @@ class PXLPhotoViewHolder(override val containerView: View) :
     }
 }
 
+/**
+ * This class contains PXLPhoto and UI information so that
+ * Via bind() method, PXLPhotoViewHolder receives this class as an argument and change the UI and manipulate VideoPlayerView.
+ * You can pass PhotoWithImageScaleType when declaring PXLPhotoAdapter
+ */
 class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto,
                               val imageScaleType: PXLPhotoView.ImageScaleType,
                               val heightInPixel: Int = 400.px.toInt(),

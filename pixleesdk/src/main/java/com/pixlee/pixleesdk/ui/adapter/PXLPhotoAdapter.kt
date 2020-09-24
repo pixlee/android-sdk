@@ -1,14 +1,16 @@
-package com.pixlee.pixleesdk.ui.viewholder
+package com.pixlee.pixleesdk.ui.adapter
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pixlee.pixleesdk.data.PXLPhoto
+import com.pixlee.pixleesdk.ui.viewholder.PXLPhotoViewHolder
+import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import kotlinx.android.synthetic.main.item_pxlphoto.*
 
 /**
- * Created by sungjun on 9/11/20.
+ * This is to display PhotoWithImageScaleType having PXLPhoto in a RecyclerView.
  */
 class PXLPhotoAdapter(
         var onButtonClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null,
