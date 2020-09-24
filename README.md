@@ -37,7 +37,7 @@ An example of the proper usage of an opened lightbox event is also included in t
             implementation "com.github.pixlee:android-video-player:$videoPlayerManager"
 
             // (Optional) if you need to use PXLLoading, add this.
-            implementation "com.airbnb.android:lottie:$lottie"
+            implementation "com.airbnb.android:lottie:3.4.1"
     }
     ```
 
