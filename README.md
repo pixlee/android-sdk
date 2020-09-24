@@ -27,8 +27,8 @@ An example of the proper usage of an opened lightbox event is also included in t
     ```
 
 2. Add the dependency
-    - $pixleeSDK is [![](https://jitpack.io/v/pixlee/android-sdk.svg)](https://jitpack.io/#pixlee/android-sdk)
-    - $videoPlayerManager is [![](https://jitpack.io/v/pixlee/android-video-player.svg)](https://jitpack.io/#pixlee/android-video-player)
+    - The latest $pixleeSDK is [![](https://jitpack.io/v/pixlee/android-sdk.svg)](https://jitpack.io/#pixlee/android-sdk)
+    - The latest $videoPlayerManager is [![](https://jitpack.io/v/pixlee/android-video-player.svg)](https://jitpack.io/#pixlee/android-video-player)
     ```gradle
     dependencies {
             implementation 'com.github.pixlee:android-sdk:$pixleeSDK'
