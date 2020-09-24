@@ -64,7 +64,6 @@ AlbumId and SKU available from the Pixlee dashboard).
     ```
 1. Run the project on an Android device
 
-
 # Development Guide
 ### [Java](doc/JAVA.md)
 ### [Kotlin](doc/kotlin/INDEX.md)
