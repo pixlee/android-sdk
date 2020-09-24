@@ -8,7 +8,8 @@ import com.pixlee.pixleesdk.data.repository.KtxAnalyticsDataSource
 import com.pixlee.pixleesdk.data.repository.KtxBasicDataSource
 
 /**
- * Created by sungjun on 9/22/20.
+ * this class is to hide variables that
+ * PXLKtxAlbum, extending this class, doesn't need to know keeping PXLKtxAlbum's codes simple.
  */
 open class PXLKtxBaseAlbum {
     val ktxBasicDataSource: KtxBasicDataSource
@@ -44,12 +45,14 @@ open class PXLKtxBaseAlbum {
     internal  var hasMore: Boolean = true
 
 
-    // force the client to choose between Album and Product
+    // this is to force the client to choose between Album and Product.
+    // Because of this sealed class, we can use only one class in Kotlin while the java version uses PXLAlbum and PXLPdpAlbum.
     sealed class SearchId {
         class Album(val id: String) : SearchId()
         class Product(val sku: String) : SearchId()
     }
 
+    // request parameters
     class Params(val searchId: SearchId,
                  var perPage: Int = 30,
                  var filterOptions: PXLAlbumFilterOptions? = null,
@@ -57,6 +60,8 @@ open class PXLKtxBaseAlbum {
 
     var params: Params? = null
         set(value) {
+            // when param variable is set a new value, we clear all variables.
+            // This is because the meaning of changing the 'params' says the API search starts from the scratch.
             field = value
             currentAlbumId = null
             lastPageLoaded = 0

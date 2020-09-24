@@ -55,7 +55,7 @@ class PXLClient(val context: Context) {
     }
 
     /**
-     * Album APIs supporting Kotlin.coroutines
+     * Album and Analytics APIs supporting Kotlin.coroutines
      */
     val ktxBasicDataSource : KtxBasicDataSource by lazy {
         NetworkModule.generateKtxBasicRepository()
@@ -69,7 +69,7 @@ class PXLClient(val context: Context) {
     }
 
     /**
-     * Album APIs supporting Java interfaces
+     * Album and AnalyticsAPIs supporting Java interfaces
      */
     val basicDataSource : BasicDataSource by lazy {
         NetworkModule.generateBasicRepository()

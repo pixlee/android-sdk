@@ -13,7 +13,7 @@ import java.util.ArrayList
 import java.util.HashMap
 
 /**
- * Created by sungjun on 9/22/20.
+ * Album and Analytics APIs supporting Kotlin.coroutines
  */
 class PXLKtxAlbum : PXLKtxBaseAlbum {
     /***
