@@ -164,7 +164,6 @@ class PXLPhotoRecyclerView : RecyclerView {
 
     private fun clearOldList() {
         if (pxlPhotoAdapter.list.isNotEmpty()) {
-            val count = pxlPhotoAdapter.list.size
             pxlPhotoAdapter.list.clear()
             pxlPhotoAdapter.notifyDataSetChanged()
         }
