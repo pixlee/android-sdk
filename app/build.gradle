@@ -74,13 +74,13 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation "com.squareup.retrofit2:converter-gson:$retrofit2"
 
-    /**
-     * Pixlee Video Player: if you need to use PXLPhotoView or PXLPhotoRecyclerView, add this to your project
-     */
-    implementation "com.github.pixlee:android-video-player:$videoPlayerManager"
     implementation project(':pixleesdk')
 //    implementation 'com.github.pixlee:android-sdk:2db7051a67'
 
+    // (Optional) if you use UI components of the SDK, add this.
+    implementation "com.github.pixlee:android-video-player:$videoPlayerManager"
+
+    // (Optional) if you need to use PXLLoading, add this.
     implementation "com.airbnb.android:lottie:$lottie"
 
 }

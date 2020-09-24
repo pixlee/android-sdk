@@ -30,6 +30,12 @@ An example of the proper usage of an opened lightbox event is also included in t
     ```gradle
     dependencies {
             implementation 'com.github.pixlee:android-sdk:1.4.0-alpha05'
+
+            // (Optional) if you use UI components of the SDK, add this.
+            implementation "com.github.pixlee:android-video-player:$videoPlayerManager"
+
+            // (Optional) if you need to use PXLLoading, add this.
+            implementation "com.airbnb.android:lottie:$lottie"
     }
     ```
 
