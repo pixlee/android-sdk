@@ -106,6 +106,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
     ...
     // you can customize color, size if you need
     pxlPhotoRecyclerView.initiate(infiniteScroll = true, // or false
+            showingDebugView = false, //false: for production, true: development only when you want to see the debug info 
             configuration = PXLPhotoView.Configuration().apply {
                 // Customize image size
                 pxlPhotoSize = PXLPhotoSize.ORIGINAL
