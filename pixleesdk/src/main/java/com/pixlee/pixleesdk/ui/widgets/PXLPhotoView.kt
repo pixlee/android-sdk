@@ -15,6 +15,8 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.view.ViewCompat
+import cn.jzvd.Jzvd
+import cn.jzvd.JzvdStd
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
@@ -53,6 +55,7 @@ class PXLPhotoView : RelativeLayout {
 
     class Configuration(
             var pxlPhotoSize: PXLPhotoSize = PXLPhotoSize.ORIGINAL, // PXLPhotoSize [THUMBNAIL, MEDIUM, BIG, ORIGINAL]
+            val imageScaleType: ImageScaleType = ImageScaleType.FIT_CENTER,
             var mainTextViewStyle: TextViewStyle = TextViewStyle().apply {
                 text = "Text 1"
                 size = 30.px
@@ -105,8 +108,9 @@ class PXLPhotoView : RelativeLayout {
         }
     }
 
-    val videoView: VideoPlayerView by lazy {
-        VideoPlayerView(context).apply {
+    val videoView: JzvdStd by lazy {
+        JzvdStd(context).apply {
+            alpha = 0.5f
             id = ViewCompat.generateViewId()
         }
     }
@@ -311,17 +315,14 @@ class PXLPhotoView : RelativeLayout {
 
     private fun initVideoPlayer() {
         Log.d("pxlphoto", "pxlphoto.videoUrl: ${pxlPhoto?.videoUrl}")
-        when (imageScaleType) {
-            ImageScaleType.FIT_CENTER -> videoView.setScaleType(ScalableTextureView.ScaleType.FIT_CENTER)
-            ImageScaleType.CENTER_CROP -> videoView.setScaleType(ScalableTextureView.ScaleType.CENTER_CROP)
-        }
+        videoView.setUp(pxlPhoto?.videoUrl,null, Jzvd.SCREEN_NORMAL)
     }
 
     /**
      * if you need to take actions when the video's status changes
      */
     fun addMediaPlayerListener(listener: MediaPlayerWrapper.MainThreadMediaPlayerListener) {
-        videoView.addMediaPlayerListener(listener)
+        //videoView.addMediaPlayerListener(listener)
     }
 
     /**
@@ -388,9 +389,9 @@ class PXLPhotoView : RelativeLayout {
  */
 fun PXLPhotoView.playVideo(videoPlayerManger: VideoPlayerManager<MetaData>, isLooping: Boolean = false, muted: Boolean = false) {
     if (pxlPhoto?.isVideo ?: false) {
-        videoView.setLooping(isLooping)
-        if (muted) videoView.muteVideo()
-        else videoView.unMuteVideo()
-        videoPlayerManger.playNewVideo(null, this.videoView, pxlPhoto?.videoUrl)
+        //videoView.setLooping(isLooping)
+        //if (muted) videoView.muteVideo()
+        //else videoView.unMuteVideo()
+        //videoPlayerManger.playNewVideo(null, this.videoView, pxlPhoto?.videoUrl)
     }
 }

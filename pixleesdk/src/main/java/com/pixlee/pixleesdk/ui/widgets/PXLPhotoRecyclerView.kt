@@ -2,22 +2,17 @@ package com.pixlee.pixleesdk.ui.widgets
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
-import android.widget.AbsListView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.jzvd.Jzvd
+import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
+import com.pixlee.pixleesdk.util.AutoPlayUtils
 import com.pixlee.pixleesdk.util.px
-import com.volokh.danylo.video_player_manager.manager.SingleVideoPlayerManager
-import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager
-import com.volokh.danylo.video_player_manager.meta.MetaData
-import com.volokh.danylo.visibility_utils.calculator.DefaultSingleItemCalculatorCallback
-import com.volokh.danylo.visibility_utils.calculator.ListItemsVisibilityCalculator
-import com.volokh.danylo.visibility_utils.calculator.SingleListViewItemActiveCalculator
-import com.volokh.danylo.visibility_utils.scroll_utils.ItemsPositionGetter
-import com.volokh.danylo.visibility_utils.scroll_utils.RecyclerViewItemPositionGetter
 
 /**
  * Created by sungjun on 9/17/20.
@@ -35,14 +30,6 @@ class PXLPhotoRecyclerView : RecyclerView {
         PXLPhotoAdapter()
     }
 
-    private var mScrollState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE
-    var mItemsPositionGetter: ItemsPositionGetter? = null
-    var mVideoVisibilityCalculator: ListItemsVisibilityCalculator? = null
-
-    val singleVideoPlayerManager: VideoPlayerManager<MetaData> = SingleVideoPlayerManager {
-
-    }
-
     val linearLayoutManager: LinearLayoutManager by lazy {
         LinearLayoutManager(context)
     }
@@ -58,36 +45,59 @@ class PXLPhotoRecyclerView : RecyclerView {
                  configuration: PXLPhotoView.Configuration? = null,
                  onButtonClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null,
                  onPhotoClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null) {
+        //Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_ADAPTER)
+        Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_FILL_SCROP)
         pxlPhotoAdapter.infiniteScroll = infiniteScroll
         pxlPhotoAdapter.showingDebugView = showingDebugView
         pxlPhotoAdapter.photoViewConfiguration = configuration
         pxlPhotoAdapter.onButtonClickedListener = onButtonClickedListener
         pxlPhotoAdapter.onPhotoClickedListener = onPhotoClickedListener
-        mVideoVisibilityCalculator = SingleListViewItemActiveCalculator(DefaultSingleItemCalculatorCallback(), pxlPhotoAdapter.list, infiniteScroll)
-        mItemsPositionGetter = RecyclerViewItemPositionGetter(linearLayoutManager, this)
+
+        addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
+            override fun onChildViewAttachedToWindow(view: View) {
+            }
+
+            override fun onChildViewDetachedFromWindow(view: View) {
+                val pxlPhotoView = view.findViewById<PXLPhotoView>(R.id.pxlPhotoView)
+                Log.e("PhotoRecycler", "pxlPhotoView: $pxlPhotoView")
+                Log.e("PhotoRecycler", "pxlPhotoView.videoView: ${pxlPhotoView.videoView}")
+                Log.e("PhotoRecycler", "pxlPhotoView.videoView.id: ${pxlPhotoView.videoView.id}")
+                val jzvd: Jzvd = pxlPhotoView.videoView
+                if (jzvd != null && Jzvd.CURRENT_JZVD != null &&
+                        jzvd.jzDataSource.containsTheUrl(Jzvd.CURRENT_JZVD.jzDataSource.currentUrl)) {
+                    if (Jzvd.CURRENT_JZVD != null && Jzvd.CURRENT_JZVD.screen != Jzvd.SCREEN_FULLSCREEN) {
+                        Jzvd.releaseAllVideos()
+                    }
+                }
+            }
+        })
 
         addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, scrollState: Int) {
-                mScrollState = scrollState
-                if (scrollState == RecyclerView.SCROLL_STATE_IDLE && linearLayoutManager != null && mItemsPositionGetter != null && mScrollState != null && pxlPhotoAdapter != null && pxlPhotoAdapter.list.isNotEmpty()) {
-                    mVideoVisibilityCalculator?.onScrollStateIdle(
-                            mItemsPositionGetter,
-                            linearLayoutManager.findFirstVisibleItemPosition(),
-                            linearLayoutManager.findLastVisibleItemPosition())
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    setVideoCrop(pxlPhotoAdapter.list[linearLayoutManager.findFirstCompletelyVisibleItemPosition()].imageScaleType)
+
+                    Log.d("AuthPlayUtils", "position FirstCompletelyVisible: ${linearLayoutManager.findFirstCompletelyVisibleItemPosition()}")
+                    AutoPlayUtils.onScrollPlayVideo(recyclerView, R.id.pxlPhotoView, linearLayoutManager.findFirstVisibleItemPosition(), linearLayoutManager.findLastVisibleItemPosition())
                 }
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (linearLayoutManager != null && mItemsPositionGetter != null && mScrollState != null && pxlPhotoAdapter != null && pxlPhotoAdapter.list.isNotEmpty()) {
-                    mVideoVisibilityCalculator?.onScroll(
-                            mItemsPositionGetter,
-                            linearLayoutManager.findFirstVisibleItemPosition(),
-                            linearLayoutManager.findLastVisibleItemPosition() - linearLayoutManager.findFirstVisibleItemPosition() + 1,
-                            mScrollState)
+                if (dy != 0) {
+                    AutoPlayUtils.onScrollReleaseAllVideos(linearLayoutManager.findFirstVisibleItemPosition(), linearLayoutManager.findLastVisibleItemPosition(), 20)
                 }
             }
         })
+
         pxlPhotoAdapter.notifyDataSetChanged()
+    }
+
+    fun setVideoCrop(imageScaleType: PXLPhotoView.ImageScaleType){
+        when (imageScaleType) {
+            PXLPhotoView.ImageScaleType.FIT_CENTER -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_ADAPTER)
+            PXLPhotoView.ImageScaleType.CENTER_CROP -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_FILL_SCROP)
+        }
     }
 
     /**
@@ -128,9 +138,7 @@ class PXLPhotoRecyclerView : RecyclerView {
         if (list.isNotEmpty()) {
             val needToMoveScroll = type == ListAddType.ADD && pxlPhotoAdapter.list.isEmpty()
             list.forEach {
-                pxlPhotoAdapter.list.add(PhotoWithImageScaleType(it, imageScaleType, heightInPixel).apply {
-                    videoPlayerManager = singleVideoPlayerManager
-                })
+                pxlPhotoAdapter.list.add(PhotoWithImageScaleType(it, imageScaleType, heightInPixel))
             }
             pxlPhotoAdapter.notifyDataSetChanged()
             moveScrollToInitialPosition(needToMoveScroll)
@@ -147,9 +155,7 @@ class PXLPhotoRecyclerView : RecyclerView {
         if (list.isNotEmpty()) {
             val needToMoveScroll = type == ListAddType.ADD && pxlPhotoAdapter.list.isEmpty()
             list.forEach {
-                pxlPhotoAdapter.list.add(it.apply {
-                    videoPlayerManager = singleVideoPlayerManager
-                })
+                pxlPhotoAdapter.list.add(it)
             }
             pxlPhotoAdapter.notifyDataSetChanged()
             moveScrollToInitialPosition(needToMoveScroll)
@@ -170,19 +176,11 @@ class PXLPhotoRecyclerView : RecyclerView {
     }
 
     fun onResume() {
-        postDelayed(Runnable {
-            if (pxlPhotoAdapter!=null && pxlPhotoAdapter.list.isNotEmpty()) {
-                mVideoVisibilityCalculator?.onScrollStateIdle(
-                        mItemsPositionGetter,
-                        linearLayoutManager.findFirstVisibleItemPosition(),
-                        linearLayoutManager.findLastVisibleItemPosition())
-            }
-        }, 500)
+
     }
 
-    fun onStop() {
-        // we have to stop any playback in onStop
-        singleVideoPlayerManager.resetMediaPlayer()
+    fun onPause() {
+        Jzvd.releaseAllVideos()
     }
 
 

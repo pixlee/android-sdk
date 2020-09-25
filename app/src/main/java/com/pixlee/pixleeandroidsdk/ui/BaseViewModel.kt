@@ -68,7 +68,7 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
                     val newList = ArrayList<PhotoWithImageScaleType>()
                     it.photos.forEach {
                         newList.add(PhotoWithImageScaleType(pxlPhoto = it,
-                                imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP,
+                                imageScaleType = PXLPhotoView.ImageScaleType.FIT_CENTER,
                                 heightInPixel = cellHeightInPixel,
                                 isLoopingVideo = true,
                                 soundMuted = true))
