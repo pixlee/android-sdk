@@ -111,7 +111,7 @@ class PXLPhotoViewInRecyclerViewFragment : BaseFragment() {
 
     override fun onStop() {
         super.onStop()
-        pxlPhotoRecyclerView.onStop()
+        pxlPhotoRecyclerView.onPause()
     }
 
     companion object {

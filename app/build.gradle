@@ -75,12 +75,13 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit2"
 
     implementation project(':pixleesdk')
-//    implementation 'com.github.pixlee:android-sdk:2db7051a67'
-
-    // (Optional) if you use UI components of the SDK, add this.
-    implementation "com.github.pixlee:android-video-player:$videoPlayerManager"
+    //implementation 'com.github.pixlee:android-sdk:1.4.0-alpha07'
 
     // (Optional) if you need to use PXLLoading, add this.
     implementation "com.airbnb.android:lottie:$lottie"
 
+    // (Optional) if you use UI components of the SDK, add this.
+//    implementation "com.github.pixlee:android-video-player:$videoPlayerManager"
+    implementation project(':video-player-visibility-utils')
+    implementation project(':video-player-manager')
 }

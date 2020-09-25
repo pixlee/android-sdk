@@ -33,7 +33,6 @@ import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.fragment_ktx_gallery.*
 import kotlinx.android.synthetic.main.fragment_ktx_gallery.pxlPhotoRecyclerView
-import kotlinx.android.synthetic.main.fragment_pxlphotoview_in_recyclerview.*
 import kotlinx.android.synthetic.main.module_search.*
 
 /**
@@ -66,7 +65,7 @@ class KtxGalleryFragment : BaseFragment() {
                     if (pxlPhotoRecyclerView == null)
                         return
 
-                    val cellHeightInPixel = pxlPhotoRecyclerView.measuredHeight * 0.6f
+                    val cellHeightInPixel = pxlPhotoRecyclerView.measuredHeight * 0.4f
                     viewModel.cellHeightInPixel = cellHeightInPixel.toInt()
                     loadAlbum()
                     pxlPhotoRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -85,7 +84,7 @@ class KtxGalleryFragment : BaseFragment() {
 
     override fun onStop() {
         super.onStop()
-        pxlPhotoRecyclerView.onStop()
+        pxlPhotoRecyclerView.onPause()
     }
 
     fun addViewModelListeners() {
@@ -115,7 +114,8 @@ class KtxGalleryFragment : BaseFragment() {
 
     fun addClickListeners() {
         // you can customize color, size if you need
-        pxlPhotoRecyclerView.initiate(infiniteScroll = true,
+        pxlPhotoRecyclerView.initiate(infiniteScroll = false,
+                showingDebugView = true,
                 configuration = PXLPhotoView.Configuration().apply {
                     // Customize image size, not a video
                     pxlPhotoSize = PXLPhotoSize.ORIGINAL
