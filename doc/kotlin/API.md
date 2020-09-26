@@ -25,14 +25,14 @@ To prepare to load the photos, you'll need the codes below
 ```kotlin
 #!kotlin
 
-val pxlAlbum = PXLKtxAlbum(context)
+val pxlKtxAlbum = PXLKtxAlbum(context)
 ```
 Or:
 ```kotlin
 #!kotlin
 
 val client = PXLClient.getInstance(context);
-val pxlAlbum = PXLKtxAlbum(client)
+val pxlKtxAlbum = PXLKtxAlbum(client)
 ```
 Or:
 ```kotlin
@@ -41,14 +41,14 @@ Or:
 val client = PXLClient.getInstance(context);
 val ktxBasicDataSource = client.ktxBasicDataSource
 val ktxAnalyticsDataSource = client.ktxAnalyticsDataSource
-val pxlAlbum = PXLKtxAlbum(ktxBasicDataSource, ktxAnalyticsDataSource)
+val pxlKtxAlbum = PXLKtxAlbum(ktxBasicDataSource, ktxAnalyticsDataSource)
 ```
 ### Prepare parameters
 - #### Option 1: to get Album photos
 ```kotlin
 #!kotlin
 
-val pxlAlbum = PXLKtxAlbum(context)
+val pxlKtxAlbum = PXLKtxAlbum(context)
 val searchId = PXLKtxBaseAlbum.SearchId.Album("<your ALBUM ID>")
 pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
      searchId = searchId
@@ -58,7 +58,7 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
 ```kotlin
 #!kotlin
 
-val pxlAlbum = PXLKtxAlbum(context)
+val pxlKtxAlbum = PXLKtxAlbum(context)
 val searchId = PXLKtxBaseAlbum.SearchId.Product("<your Product's SKU>")
 pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
      searchId = searchId
@@ -88,14 +88,14 @@ Get the first page
 ```kotlin
 #!Kotlin.coroutines
 
-val result = pxlAlbum.getFirstPage()
+val result = pxlKtxAlbum.getFirstPage()
 ```
 
 Get the next pages
 ```kotlin
 #!Kotlin.coroutines
 
-val result = pxlAlbum.getNextPage()
+val result = pxlKtxAlbum.getNextPage()
 ```
 
 ## How to get image urls
@@ -180,7 +180,7 @@ See the onComplete function in GalleryFragment.java for an example.
     ```kotlin
     #!kotlin
 
-    val pxlAlbum = PXLKtxAlbum(context)
+    val pxlKtxAlbum = PXLKtxAlbum(context)
     ```
 - Option 2: Use KtxAnalyticsDataSource
     ```kotlin
@@ -201,7 +201,7 @@ The parameters for this method are:
     ```kotlin
     #!Kotlin.coroutines
 
-    pxlAlbum.addToCart("sku123", "123", 4);
+    pxlKtxAlbum.addToCart("sku123", "123", 4);
     ```
     Or:
     ```
@@ -230,7 +230,7 @@ The parameters for this method are:
     // you can add more to cartContents if needed
 
 
-    pxlAlbum.conversion(cartContents = cartContents, cartTotal = "123", cartTotalQuantity = 4)
+    pxlKtxAlbum.conversion(cartContents = cartContents, cartTotal = "123", cartTotalQuantity = 4)
     ```
     OR:
     ```kotlin
