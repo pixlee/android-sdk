@@ -42,7 +42,6 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
 - video: https://www.loom.com/share/37fb674d3cb348d48c3479b67a9bc2aa
 - <img src="doc/img/demo_1_main.jpg" width="24%"> <img src="doc/img/demo_2_album.jpg" width="24%"> <img src="doc/img/demo_2_album_filter.jpg" width="24%"> <img src="doc/img/demo_2_image_viewer.jpg" width="24%">
 - <img src="doc/img/demo_3_uploader.jpg" width="24%"> <img src="doc/img/demo_4_analytics.jpg" width="24%"> <img src="doc/img/demo_5_analytics.jpg" width="24%">
-1. First, [Add gradle dependencies](#Add-gradle-dependencies)
 1. Open .gitignore at the root of the project folder and Add 'pixleekey.properties' to the file
 1. Generate **pixleekey.properties** at the root of the project folder
     - <img src="doc/img/pixleekey.png" width="40%">
