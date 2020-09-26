@@ -150,17 +150,17 @@ override fun onCreate(savedInstanceState: Bundle?) {
                 }
 
             }, onButtonClickedListener = { view, pxlPhoto ->
-        context?.also { ctx ->
-            // you can add your business logic here
-            Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
-            moveToViewer(pxlPhoto)
-        }
-    }, onPhotoClickedListener = { view, pxlPhoto ->
-        context?.also { ctx ->
-            // you can add your business logic here
-            Toast.makeText(ctx, "onItemClickedListener", Toast.LENGTH_SHORT).show()
-        }
-    })
+                context?.also { ctx ->
+                    // you can add your business logic here
+                    Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
+                    moveToViewer(pxlPhoto)
+                }
+            }, onPhotoClickedListener = { view, pxlPhoto ->
+                context?.also { ctx ->
+                    // you can add your business logic here
+                    Toast.makeText(ctx, "onItemClickedListener", Toast.LENGTH_SHORT).show()
+                }
+            })
 
     pxlPhotoRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {
