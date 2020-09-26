@@ -204,7 +204,7 @@ The parameters for this method are:
     pxlKtxAlbum.addToCart("sku123", "123", 4);
     ```
     Or:
-    ```
+    ```kotlin
     #!Kotlin.coroutines
     ktxAnalyticsDataSource.addToCart("sku123", "123", 4);
     ```
