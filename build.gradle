@@ -1,13 +1,13 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
+    ext.kotlin_version = '1.3.72'
+    ext.coroutines = "1.3.1"
     repositories {
         jcenter()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.1'
-
+        classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -27,7 +27,9 @@ task clean(type: Delete) {
 
 def keystorePropertiesFile = rootProject.file("pixleekey.properties")
 def keystoreProperties = new Properties()
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
 
 ext {
     PIXLEE_API_KEY = keystoreProperties['pixleeAPIKey']
@@ -35,15 +37,15 @@ ext {
     PIXLEE_ALBUM_ID = keystoreProperties['pixleeAlbumId']
     PIXLEE_SKU = keystoreProperties['pixleeSKU']
 
-    androidxAppcompat = "1.1.0"
-    androidxCardView = "1.2.0"
-    androidxConstraint = "1.1.3"
+    androidxAppcompat = "1.2.0"
+    androidxConstraint = "2.0.1"
+    material = "1.2.1"
 
     lifecycle = "2.2.0"
-    /*retrofit2 = "2.6.2"
-    okhttp3 = "4.2.0"*/
-    retrofit2 = "2.5.0" // Supports for kitket
-    okhttp3 = "3.12.0"  // Supports for kitket
+    //retrofit2 = "2.6.2"
+    //okhttp3 = "3.12.0"  // Supports for kitket
+    retrofit2 = "2.9.0"
+    okhttp3 = "4.8.0"
     moshi = "1.9.2"
     rxJava = "2.2.8"
     rxAndroid = "2.1.1"
@@ -51,4 +53,5 @@ ext {
     glide = "4.11.0"
     orhanobutLogger = "2.2.0"
     lottie = "3.4.1"
+    androidJZVideo="1.0.3"
 }

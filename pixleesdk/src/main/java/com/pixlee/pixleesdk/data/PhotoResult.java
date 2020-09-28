@@ -1,6 +1,5 @@
 package com.pixlee.pixleesdk.data;
 
-import com.pixlee.pixleesdk.PXLPhoto;
 import com.pixlee.pixleesdk.network.annotation.NullableBoolean;
 import com.pixlee.pixleesdk.network.annotation.NullableInt;
 import com.squareup.moshi.Json;

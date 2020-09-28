@@ -12,6 +12,11 @@ import java.io.InputStream;
  * Created by sungjun on 6/1/20.
  */
 public class PXLViewUtil {
+    /**
+     * support for LottieAnimationView
+     * @param context
+     * @return
+     */
     public static String getLottieLoadingJson(Context context) {
         return getText(context, "lottie/pixlee_loading.json");
     }
@@ -36,6 +41,11 @@ public class PXLViewUtil {
 
     }
 
+    /**
+     *
+     * @param activity
+     * @return the height StatusBar size in pixel
+     */
     public static int getStatusBarHeight(Activity activity) {
         int resourceId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
@@ -45,6 +55,10 @@ public class PXLViewUtil {
         }
     }
 
+    /**
+     * This makes your activity's StatusBar's color transparent and expand your app area to fullscreen placing underneath StatusBar
+     * @param activity
+     */
     public static void expandContentAreaOverStatusBar(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);

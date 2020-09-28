@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.pixlee.pixleeandroidsdk.data.Config;
+import com.pixlee.pixleeandroidsdk.data.LocalRepository;
 import com.pixlee.pixleeandroidsdk.databinding.ActivityMainBinding;
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleeandroidsdk.ui.IndexFragment;
@@ -22,7 +25,7 @@ public class MainActivity extends BaseActivity {
     ActivityMainBinding binding;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -36,8 +39,7 @@ public class MainActivity extends BaseActivity {
             );
         }
 
-        setSystemBarColor(R.color.grey_5);
-        setSystemBarLight();
+        setConfig(LocalRepository.Companion.getInstance(this).getConfig());
 
         FragmentManager fm = getSupportFragmentManager();
         fm.addOnBackStackChangedListener(onBackStackChangedListener);
@@ -46,15 +48,25 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    public void setConfig(Config config){
+        if(config!=null && config.isDarkMode()){
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }else{
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            setSystemBarColor(R.color.grey_5);
+            setSystemBarLight();
+        }
+    }
+
     FragmentManager.OnBackStackChangedListener onBackStackChangedListener = new FragmentManager.OnBackStackChangedListener() {
 
         @Override
         public void onBackStackChanged() {
             FragmentManager fm = getSupportFragmentManager();
-            int fragmentCount = fm.getBackStackEntryCount();
+            int fragmentCount = fm.getFragments().size();
             String title;
             if (fragmentCount > 0) {
-                BaseFragment fragment = (BaseFragment) fm.getFragments().get(fm.getFragments().size() - 1);
+                BaseFragment fragment = (BaseFragment) fm.getFragments().get(fragmentCount - 1);
                 if (fragment.getCustomTitle() != null) {
                     title = fragment.getCustomTitle();
                 } else {

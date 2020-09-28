@@ -1,11 +1,18 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+androidExtensions {
+    experimental = true
+}
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 28
+        minSdkVersion 16
+        targetSdkVersion 29
         versionCode 1
         versionName "1.2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -23,6 +30,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
     testOptions {
             unitTests.returnDefaultValues = true
     }
@@ -30,17 +40,25 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
+
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines"
+
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20160810'
 
     implementation "androidx.appcompat:appcompat:$androidxAppcompat"
-    implementation "com.google.android.material:material:$androidxCardView"
+    implementation "com.google.android.material:material:$material"
     /**
      * Network
      */
     implementation "com.squareup.retrofit2:retrofit:$retrofit2"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit2"
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofit2"
     implementation 'com.serjltt.moshi:moshi-lazy-adapters:2.2'
 
     implementation "com.squareup.okhttp3:okhttp:$okhttp3"
@@ -57,7 +75,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide"
     implementation "com.github.bumptech.glide:annotations:$glide"
     implementation "com.github.bumptech.glide:okhttp3-integration:$glide"
-    annotationProcessor "com.github.bumptech.glide:compiler:$glide"
+    kapt "com.github.bumptech.glide:compiler:$glide"
 
     /**
      * Glide Transformation
@@ -68,4 +86,8 @@ dependencies {
      * Lottie for animation
      */
     implementation "com.airbnb.android:lottie:$lottie"
+
+    implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"
+
+    implementation "com.github.pixlee:AndroidJZVideo:$androidJZVideo"
 }

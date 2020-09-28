@@ -24,10 +24,10 @@ import com.pixlee.pixleeandroidsdk.BuildConfig;
 import com.pixlee.pixleeandroidsdk.R;
 import com.pixlee.pixleeandroidsdk.databinding.FragmentImageUploaderBinding;
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
-import com.pixlee.pixleesdk.PXLAlbum;
-import com.pixlee.pixleesdk.PXLBaseAlbum;
-import com.pixlee.pixleesdk.PXLClient;
-import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.client.PXLAlbum;
+import com.pixlee.pixleesdk.client.PXLBaseAlbum;
+import com.pixlee.pixleesdk.client.PXLClient;
+import com.pixlee.pixleesdk.data.PXLPhoto;
 import com.pixlee.pixleesdk.data.MediaResult;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ import static android.view.View.GONE;
 public class ImageUploaderFragment extends BaseFragment {
     @Override
     public int getTitleResource() {
-        return R.string.title_upload_image;
+        return R.string.title_java_upload;
     }
 
     FragmentImageUploaderBinding binding;
@@ -78,11 +78,11 @@ public class ImageUploaderFragment extends BaseFragment {
     }
 
     public void setPixleeCredentials() {
-        PXLClient.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY);
+        PXLClient.Companion.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY);
     }
 
     private void initPixleeAlbum() {
-        PXLClient client = PXLClient.getInstance(getContext());
+        PXLClient client = PXLClient.Companion.getInstance(getContext());
         album = new PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client);
     }
 
@@ -104,7 +104,7 @@ public class ImageUploaderFragment extends BaseFragment {
     // Sample 1: Upload an image using a link
     private void uploadLink() {
         setUploadingUI(true);
-        album.uploadImage(
+        album.postMediaWithURI(
                 "uploaded from SDK-" + System.currentTimeMillis() + " using a image link",
                 "sungjun@pixleeteam.com",
                 "android sdk user",

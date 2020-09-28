@@ -1,11 +1,15 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+androidExtensions {
+    experimental = true
+}
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.pixlee.pixleeandroidsdk"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -41,27 +45,22 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation "androidx.appcompat:appcompat:$androidxAppcompat"
-    implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"
-    implementation "com.google.android.material:material:$androidxCardView"
-    implementation 'androidx.cardview:cardview:1.0.0'
-    implementation project(':pixleesdk')
     testImplementation 'junit:junit:4.12'
 
-    /**
-     * Testing: Network
-     */
-    testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp3"
-    testImplementation "com.squareup.retrofit2:retrofit:$retrofit2"
-    testImplementation "com.squareup.retrofit2:converter-moshi:$retrofit2"
-    testImplementation 'com.serjltt.moshi:moshi-lazy-adapters:2.2'
-    testImplementation "com.squareup.okhttp3:okhttp:$okhttp3"
+    implementation "androidx.appcompat:appcompat:$androidxAppcompat"
+    implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"
+    implementation "com.google.android.material:material:$material"
+    implementation 'androidx.cardview:cardview:1.0.0'
+
 
     /**
      * Architecture Component
      */
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
 
     /**
@@ -72,10 +71,12 @@ dependencies {
     implementation "com.github.bumptech.glide:okhttp3-integration:$glide"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide"
 
-    annotationProcessor 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit2"
 
-    /**
-     * Lottie for animation
-     */
+    implementation project(':pixleesdk')
+//    implementation 'com.github.pixlee:android-sdk:1.4.0-beta03'
+
+    // (Optional) if you need to use PXLLoading, add this.
     implementation "com.airbnb.android:lottie:$lottie"
 }

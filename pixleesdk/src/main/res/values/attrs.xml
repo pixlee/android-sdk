@@ -1,0 +1,9 @@
+<resources>
+    <declare-styleable name="PXLPhotoView">
+        <attr name="mainTextColor" format="reference" />
+        <attr name="mainTextSize" format="dimension" />
+
+        <attr name="subTextColor" format="reference" />
+        <attr name="subTextSize" format="dimension" />
+    </declare-styleable>
+</resources>

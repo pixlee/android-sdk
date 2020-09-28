@@ -2,7 +2,7 @@ package com.pixlee.pixleeandroidsdk.ui.gallery;
 
 import android.view.View;
 
-import com.pixlee.pixleesdk.PXLPhoto;
+import com.pixlee.pixleesdk.data.PXLPhoto;
 
 /**
  * Click Listener for Gallery

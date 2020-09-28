@@ -7,10 +7,16 @@ import com.orhanobut.logger.Logger;
 import com.pixlee.pixleesdk.BuildConfig;
 import com.pixlee.pixleesdk.data.api.AnalyticsAPI;
 import com.pixlee.pixleesdk.data.api.BasicAPI;
+import com.pixlee.pixleesdk.data.api.KtxAnalyticsAPI;
+import com.pixlee.pixleesdk.data.api.KtxBasicAPI;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 import com.pixlee.pixleesdk.data.repository.AnalyticsRepository;
 import com.pixlee.pixleesdk.data.repository.BasicDataSource;
 import com.pixlee.pixleesdk.data.repository.BasicRepository;
+import com.pixlee.pixleesdk.data.repository.KtxAnalyticsDataSource;
+import com.pixlee.pixleesdk.data.repository.KtxAnalyticsRepository;
+import com.pixlee.pixleesdk.data.repository.KtxBasicDataSource;
+import com.pixlee.pixleesdk.data.repository.KtxBasicRepository;
 import com.pixlee.pixleesdk.network.adaptor.BigDecimalAdapter;
 import com.pixlee.pixleesdk.network.adaptor.DateAdapter;
 import com.pixlee.pixleesdk.network.adaptor.PrimitiveAdapter;
@@ -28,6 +34,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 //import org.jetbrains.annotations.NotNull;
 
@@ -54,6 +61,24 @@ public class NetworkModule {
         );
     }
 
+    public static KtxBasicDataSource generateKtxBasicRepository() {
+        return new KtxBasicRepository(
+                provideRetrofit(
+                        NetworkModule.url,
+                        provideOkHttpClient()
+                ).create(KtxBasicAPI.class)
+        );
+    }
+
+    public static KtxAnalyticsDataSource getKtxAnalyticsRepository() {
+        return new KtxAnalyticsRepository(
+                provideRetrofit(
+                        NetworkModule.analyticsUrl,
+                        provideOkHttpClient()
+                ).create(KtxAnalyticsAPI.class)
+        );
+    }
+
     public static final String url = "https://distillery.pixlee.com/api/v2/";
     public static final String analyticsUrl = "https://inbound-analytics.pixlee.com/";
 
@@ -74,7 +99,8 @@ public class NetworkModule {
     public static Retrofit provideRetrofit(String url, OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(url)
-                .addConverterFactory(MoshiConverterFactory.create(provideMoshi()).asLenient())
+                .addConverterFactory(ScalarsConverterFactory.create()) // this converts the response to string if declared in the APIs
+                .addConverterFactory(MoshiConverterFactory.create(provideMoshi()).asLenient()) // this converts json into classes if declared in the APIs
                 .client(okHttpClient)
                 .build();
     }

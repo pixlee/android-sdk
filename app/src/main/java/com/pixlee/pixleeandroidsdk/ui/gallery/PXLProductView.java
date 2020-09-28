@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.pixlee.pixleeandroidsdk.R;
-import com.pixlee.pixleesdk.PXLProduct;
+import com.pixlee.pixleesdk.data.PXLProduct;
 
 public class PXLProductView extends LinearLayout {
     private ImageView productImage;

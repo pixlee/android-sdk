@@ -1,14 +1,26 @@
 <resources>
-    <string name="app_name">Pixlee Android SDK Demo</string>
+    <string name="app_name">Pixlee SDK Demo</string>
     <string name="action_settings">Settings</string>
 
     <!-- Title -->
     <string name="title_index">Index</string>
-    <string name="title_album">Album List</string>
-    <string name="title_upload_image">Upload Image/Video</string>
-    <string name="title_analytics">Analytics</string>
+    <string name="title_java_album">Album List (Java)</string>
+    <string name="title_ktx_album">Album List (Kotlin.coroutines)</string>
+    <string name="title_java_upload">Upload Image/Video (Java)</string>
+    <string name="title_java_analytics">Call Analytics (Java)</string>
+    <string name="title_ktx_analytics">Call Analytics (Kotlin.coroutines)</string>
     <string name="title_image_viewer">Image Viewer</string>
     <string name="title_video_viewer">Video Viewer</string>
+    <string name="title_pxlphoto_activity">PXLPhoto in Activity</string>
+    <string name="title_pxlphotoview">PXLPhotoView</string>
+    <string name="title_pxlphotoview_in_recyclerview">PXLPhotoView in RecyclerView</string>
+
+    <string name="title_widgets">Widgets</string>
+    <string name="title_photo_on_list">PXLPhoto on RecyclerView</string>
+
+    <string name="index_java_apis">How to use Java APIs</string>
+    <string name="index_ktx_apis">How to use Ktx.coroutines APIs</string>
+    <string name="index_components">How to use UI components</string>
 
     <!-- Album -->
     <string name="album_loading_ing">Album loading..</string>
@@ -45,4 +57,10 @@
 
     <string name="radio_album">Album</string>
     <string name="radio_pdp">PDP</string>
+
+    <string name="darkMode">Dark Mode</string>
+    <string name="darkModeTip">This demonstrates how Pixlee\'s widgets look when local DarkMode is turned ON or OFF</string>
+
+    <string name="galleryPhotoLauncherMessage">To open PXLPhoto, which viewer would like to launch?</string>
+    <string name="next">Next</string>
 </resources>
