@@ -45,8 +45,6 @@ class PXLPhotoRecyclerView : RecyclerView {
                  configuration: PXLPhotoView.Configuration? = null,
                  onButtonClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null,
                  onPhotoClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null) {
-        //Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_ADAPTER)
-        Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_FILL_SCROP)
         pxlPhotoAdapter.infiniteScroll = infiniteScroll
         pxlPhotoAdapter.showingDebugView = showingDebugView
         pxlPhotoAdapter.photoViewConfiguration = configuration
@@ -76,9 +74,8 @@ class PXLPhotoRecyclerView : RecyclerView {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    setVideoCrop(pxlPhotoAdapter.list[linearLayoutManager.findFirstCompletelyVisibleItemPosition()].imageScaleType)
-
                     Log.d("AuthPlayUtils", "position FirstCompletelyVisible: ${linearLayoutManager.findFirstCompletelyVisibleItemPosition()}")
+
                     AutoPlayUtils.onScrollPlayVideo(recyclerView, R.id.pxlPhotoView, linearLayoutManager.findFirstVisibleItemPosition(), linearLayoutManager.findLastVisibleItemPosition())
                 }
             }
@@ -91,13 +88,6 @@ class PXLPhotoRecyclerView : RecyclerView {
         })
 
         pxlPhotoAdapter.notifyDataSetChanged()
-    }
-
-    fun setVideoCrop(imageScaleType: PXLPhotoView.ImageScaleType){
-        when (imageScaleType) {
-            PXLPhotoView.ImageScaleType.FIT_CENTER -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_ADAPTER)
-            PXLPhotoView.ImageScaleType.CENTER_CROP -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_FILL_SCROP)
-        }
     }
 
     /**
@@ -176,7 +166,11 @@ class PXLPhotoRecyclerView : RecyclerView {
     }
 
     fun onResume() {
-
+        post {
+            if(linearLayoutManager!=null && pxlPhotoAdapter!=null && pxlPhotoAdapter.list.isNotEmpty()){
+                AutoPlayUtils.onScrollPlayVideo(this, R.id.pxlPhotoView, linearLayoutManager.findFirstVisibleItemPosition(), linearLayoutManager.findLastVisibleItemPosition())
+            }
+        }
     }
 
     fun onPause() {

@@ -1,11 +1,14 @@
 package com.pixlee.pixleeandroidsdk.ui.widgets
 
 import android.graphics.Color
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
@@ -13,11 +16,7 @@ import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
-import com.pixlee.pixleesdk.ui.widgets.playVideo
 import com.pixlee.pixleesdk.util.px
-import com.volokh.danylo.video_player_manager.manager.SingleVideoPlayerManager
-import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager
-import com.volokh.danylo.video_player_manager.meta.MetaData
 import kotlinx.android.synthetic.main.fragment_pxlphoto_view.*
 
 /**
@@ -31,8 +30,6 @@ class PXLPhotoViewFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_pxlphoto_view, container, false)
     }
-
-    private val mVideoPlayerManager: VideoPlayerManager<MetaData> = SingleVideoPlayerManager { }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -81,16 +78,65 @@ class PXLPhotoViewFragment : BaseFragment() {
                 }
 
             }
-            pxlPhotoViewFitWrapLandscape.setConfiguration(configuration)
-            pxlPhotoViewFitPortrait.setConfiguration(configuration)
-            pxlPhotoViewCrop.setConfiguration(configuration)
+            pxlPhotoViewFitWrapLandscape.setConfiguration(configuration.copy())
+            pxlPhotoViewFitPortrait.setConfiguration(configuration.copy())
+            pxlPhotoViewCrop.setConfiguration(configuration.copy())
 
             pxlPhotoViewFitWrapLandscape.setPhoto(it, PXLPhotoView.ImageScaleType.FIT_CENTER)
             pxlPhotoViewFitPortrait.setPhoto(it, PXLPhotoView.ImageScaleType.FIT_CENTER)
             pxlPhotoViewCrop.setPhoto(it, PXLPhotoView.ImageScaleType.CENTER_CROP)
 
-            pxlPhotoViewFitPortrait.playVideo(videoPlayerManger = mVideoPlayerManager, isLooping = true, muted = true)
-            pxlPhotoViewFitWrapLandscape.playVideo(videoPlayerManger = mVideoPlayerManager, isLooping = true, muted = true)
+
+
+            scrollView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    try {
+                        if (scrollView == null)
+                            return
+
+                        startScrollListener()
+                        scrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+
+                }
+            })
+        }
+    }
+
+    fun startScrollListener(){
+        pxlPhotoViewFitWrapLandscape
+                .setVolume(1f)
+                .setLooping(true)
+                .playVideo()
+
+        val scrollBounds = Rect()
+        scrollView.getHitRect(scrollBounds)
+        scrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+            if (pxlPhotoViewFitWrapLandscape.getLocalVisibleRect(scrollBounds)) {
+                pxlPhotoViewFitWrapLandscape
+                        .setVolume(1f)
+                        .setLooping(true)
+                        .playVideo()
+                return@setOnScrollChangeListener
+            }
+
+            if (pxlPhotoViewCrop.getLocalVisibleRect(scrollBounds)) {
+                pxlPhotoViewCrop
+                        .setVolume(1f)
+                        .setLooping(true)
+                        .playVideo()
+                return@setOnScrollChangeListener
+            }
+
+            if (pxlPhotoViewFitPortrait.getLocalVisibleRect(scrollBounds)) {
+                pxlPhotoViewFitPortrait
+                        .setVolume(1f)
+                        .setLooping(true)
+                        .playVideo()
+                return@setOnScrollChangeListener
+            }
 
         }
     }

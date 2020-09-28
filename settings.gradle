@@ -1,6 +1,2 @@
-include ':JZVideo'
 include ':app'
 include ':pixleesdk'
-include ':video-player-visibility-utils'
-include ':video-player-manager'
-include ':JZVideo'

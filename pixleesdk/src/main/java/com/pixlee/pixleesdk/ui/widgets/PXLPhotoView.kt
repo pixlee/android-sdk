@@ -16,19 +16,13 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.view.ViewCompat
 import cn.jzvd.Jzvd
-import cn.jzvd.JzvdStd
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
+import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
-import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.util.px
-import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager
-import com.volokh.danylo.video_player_manager.meta.MetaData
-import com.volokh.danylo.video_player_manager.ui.MediaPlayerWrapper
-import com.volokh.danylo.video_player_manager.ui.ScalableTextureView
-import com.volokh.danylo.video_player_manager.ui.VideoPlayerView
 import jp.wasabeef.glide.transformations.BlurTransformation
 
 /**
@@ -53,9 +47,9 @@ class PXLPhotoView : RelativeLayout {
         CENTER_CROP(ImageView.ScaleType.CENTER_CROP);
     }
 
-    class Configuration(
+    data class Configuration(
             var pxlPhotoSize: PXLPhotoSize = PXLPhotoSize.ORIGINAL, // PXLPhotoSize [THUMBNAIL, MEDIUM, BIG, ORIGINAL]
-            val imageScaleType: ImageScaleType = ImageScaleType.FIT_CENTER,
+            var imageScaleType: ImageScaleType = ImageScaleType.FIT_CENTER,
             var mainTextViewStyle: TextViewStyle = TextViewStyle().apply {
                 text = "Text 1"
                 size = 30.px
@@ -85,7 +79,6 @@ class PXLPhotoView : RelativeLayout {
 
 
     val defaultScaleType = ImageScaleType.FIT_CENTER
-    var imageScaleType: ImageScaleType = defaultScaleType
     var pxlPhoto: PXLPhoto? = null
 
 
@@ -108,9 +101,9 @@ class PXLPhotoView : RelativeLayout {
         }
     }
 
-    val videoView: JzvdStd by lazy {
-        JzvdStd(context).apply {
-            alpha = 0.5f
+    val videoView: JzvdVolumeControl by lazy {
+        JzvdVolumeControl(context).apply {
+            //alpha = 0.5f
             id = ViewCompat.generateViewId()
         }
     }
@@ -146,7 +139,7 @@ class PXLPhotoView : RelativeLayout {
         }
     }
 
-    var currentConfiguration: Configuration? = null
+    var currentConfiguration: Configuration = Configuration()
     fun setConfiguration(configuration: Configuration) {
         currentConfiguration = configuration
         configuration.buttonStyle.let { style ->
@@ -185,6 +178,36 @@ class PXLPhotoView : RelativeLayout {
         configuration.subTextViewStyle.let { style ->
             subTextView.setTextViewStyle(style)
         }
+    }
+
+    var volume = 1f
+    fun setVolume(volume: Float): PXLPhotoView {
+        this.volume = volume
+        videoView.volume = volume
+        return this
+    }
+
+    var looping = false
+    fun setLooping(looping:Boolean):PXLPhotoView{
+        this.looping = looping
+        videoView.setLooping(looping)
+        return this
+    }
+
+
+    fun isPlaying(): Boolean{
+        return videoView.isPlaying
+    }
+
+    /**
+     * if the content is video, a video will be played
+     */
+    fun playVideo(){
+        when (currentConfiguration.imageScaleType) {
+            ImageScaleType.FIT_CENTER -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_ADAPTER)
+            ImageScaleType.CENTER_CROP -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_FILL_SCROP)
+        }
+        videoView.play()
     }
 
     fun setButtonClickListener(buttonClickListener: OnClickListener? = null) {
@@ -272,7 +295,7 @@ class PXLPhotoView : RelativeLayout {
      */
     fun setPhoto(pxlPhoto: PXLPhoto, imageScaleType: ImageScaleType = defaultScaleType) {
         this.pxlPhoto = pxlPhoto
-        this.imageScaleType = imageScaleType
+        currentConfiguration.imageScaleType = imageScaleType
         startBlurBG()
         startPhoto()
         if (pxlPhoto.isVideo) {
@@ -293,18 +316,19 @@ class PXLPhotoView : RelativeLayout {
 
     private fun startPhoto() {
         imageView.visibility = VISIBLE
-        imageView.scaleType = imageScaleType.type
+        imageView.scaleType = currentConfiguration.imageScaleType.type
         pxlPhoto?.also {
-            val imageUrl = it.getUrlForSize(currentConfiguration?.pxlPhotoSize ?: PXLPhotoSize.ORIGINAL).toString()
+            val imageUrl = it.getUrlForSize(currentConfiguration.pxlPhotoSize
+                    ?: PXLPhotoSize.ORIGINAL).toString()
             Log.d("pxlphoto", "pxlphoto.url: $imageUrl")
             // load a main image into an ImageView
 
 
             var builder = Glide.with(this).asBitmap().load(imageUrl)
-            builder = builder.signature(ObjectKey(imageUrl + imageScaleType.type))
+            builder = builder.signature(ObjectKey(imageUrl + currentConfiguration.imageScaleType.type))
 //            builder = builder.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             builder = builder.skipMemoryCache(true)
-            builder = when (imageScaleType) {
+            builder = when (currentConfiguration.imageScaleType) {
                 ImageScaleType.FIT_CENTER -> builder.fitCenter()
                 ImageScaleType.CENTER_CROP -> builder.centerCrop()
             }
@@ -315,14 +339,7 @@ class PXLPhotoView : RelativeLayout {
 
     private fun initVideoPlayer() {
         Log.d("pxlphoto", "pxlphoto.videoUrl: ${pxlPhoto?.videoUrl}")
-        videoView.setUp(pxlPhoto?.videoUrl,null, Jzvd.SCREEN_NORMAL)
-    }
-
-    /**
-     * if you need to take actions when the video's status changes
-     */
-    fun addMediaPlayerListener(listener: MediaPlayerWrapper.MainThreadMediaPlayerListener) {
-        //videoView.addMediaPlayerListener(listener)
+        videoView.setUp(pxlPhoto?.videoUrl, null, Jzvd.SCREEN_NORMAL)
     }
 
     /**
@@ -381,17 +398,5 @@ class PXLPhotoView : RelativeLayout {
      */
     fun setSubTitleTypeface(typeface: Typeface) {
         subTextView.typeface = typeface
-    }
-}
-
-/**
- * a Kotlin extension for PXLPhotoView to play a video to make codes simpler.
- */
-fun PXLPhotoView.playVideo(videoPlayerManger: VideoPlayerManager<MetaData>, isLooping: Boolean = false, muted: Boolean = false) {
-    if (pxlPhoto?.isVideo ?: false) {
-        //videoView.setLooping(isLooping)
-        //if (muted) videoView.muteVideo()
-        //else videoView.unMuteVideo()
-        //videoPlayerManger.playNewVideo(null, this.videoView, pxlPhoto?.videoUrl)
     }
 }

@@ -89,7 +89,5 @@ dependencies {
 
     implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"
 
-    implementation "com.github.pixlee:android-video-player:$videoPlayerManager"
-
-    implementation project(":JZVideo")
+    implementation "com.github.pixlee:AndroidJZVideo:$androidJZVideo"
 }

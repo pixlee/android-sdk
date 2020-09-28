@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import cn.jzvd.Jzvd
+import com.pixlee.pixleesdk.ui.widgets.JzvdVolumeControl
+import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 
 /**
  * 列表自动播放工具类
@@ -23,20 +25,15 @@ object AutoPlayUtils {
         Log.d("AuthPlayUtils", "position first: $firstVisiblePosition, lastVisiblePosition: $lastVisiblePosition")
         for (i in 0..lastVisiblePosition - firstVisiblePosition) {
             val child = recyclerView.getChildAt(i)
-            val viewGroup = child.findViewById<ViewGroup>(jzvdId)
-            for (k in 0 until viewGroup.childCount) {
-                val view = viewGroup.getChildAt(k)
-                if (view != null && view is Jzvd) {
-                    val player = view
-                    if (getViewVisiblePercent(player) == 100) {
-                        if (positionInList != i + firstVisiblePosition) {
-                            Log.e("AuthPlayUtils", "-- detected player performClick() position: " + (firstVisiblePosition + i))
-                            player.startButton.performClick()
-                        }
-                        return
-                    }
-                    continue
+            val pxlPhotoView = child.findViewById<PXLPhotoView>(jzvdId)
+            if (getViewVisiblePercent(pxlPhotoView) == 100) {
+                if (positionInList != i + firstVisiblePosition) {
+                    Log.e("AuthPlayUtils", "-- detected player performClick() position: " + (firstVisiblePosition + i))
+                    pxlPhotoView.setVolume(0f)
+                            .setLooping(true)
+                            .playVideo()
                 }
+                return
             }
         }
     }

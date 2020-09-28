@@ -9,6 +9,7 @@ import com.pixlee.pixleeandroidsdk.Event
 import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLPhoto
+import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.px
@@ -69,6 +70,8 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
                     if (it.photos.isNotEmpty()) {
                         val newList = ArrayList<PhotoWithImageScaleType>()
                         it.photos.forEach {
+                            Log.e("pxlvideo", "pxlvideo.url: ${it.videoUrl.toString()}")
+                            Log.e("pxlvideo", "pxlvideo.big: ${it.getUrlForSize(PXLPhotoSize.BIG)}")
                             newList.add(PhotoWithImageScaleType(pxlPhoto = it,
                                     imageScaleType = PXLPhotoView.ImageScaleType.FIT_CENTER,
                                     heightInPixel = cellHeightInPixel,

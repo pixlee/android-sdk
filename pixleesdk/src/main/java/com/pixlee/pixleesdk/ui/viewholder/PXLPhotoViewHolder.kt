@@ -1,24 +1,13 @@
 package com.pixlee.pixleesdk.ui.viewholder
 
-import android.graphics.Rect
-import android.opengl.Visibility
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.R
+import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
-import com.pixlee.pixleesdk.ui.widgets.playVideo
 import com.pixlee.pixleesdk.util.px
-import com.volokh.danylo.video_player_manager.manager.VideoItem
-import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager
-import com.volokh.danylo.video_player_manager.meta.CurrentItemMetaData
-import com.volokh.danylo.video_player_manager.meta.MetaData
-import com.volokh.danylo.video_player_manager.ui.ScalableTextureView
-import com.volokh.danylo.video_player_manager.ui.VideoPlayerView
-import com.volokh.danylo.visibility_utils.items.ListItem
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_pxlphoto.*
 
