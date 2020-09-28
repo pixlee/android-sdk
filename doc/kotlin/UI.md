@@ -43,16 +43,19 @@ override fun onCreate(savedInstanceState: Bundle?) {
             mainTextStyle = TextStyle().apply {
                 size = 14.px
                 sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                color = Color.WHITE
                 typeface = null
             }
             subTextStyle = TextStyle().apply {
                 size = 12.px
                 sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                color = Color.WHITE
                 typeface = null
             }
             priceTextStyle = TextStyle().apply {
                 size = 24.px
                 sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                color = Color.WHITE
                 typeface = null
             }
         },
@@ -294,9 +297,9 @@ override fun onResume() {
     super.onResume()
     // play video, you can also use this code onCreate or when getting data from the API
     pxlPhotoView
-        .setVolume(1f)
-        .setLooping(true)
-        .playVideo()
+        .setVolume(1f) // 0f: mute the sound, ~ 1f: unmute the sound, 1f is the max volume 
+        .setLooping(true) // false: play the video only once, true: loop the video
+        .playVideo() // play the video
 }
 
 

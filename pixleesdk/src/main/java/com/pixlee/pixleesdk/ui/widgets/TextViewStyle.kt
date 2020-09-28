@@ -1,8 +1,10 @@
 package com.pixlee.pixleesdk.ui.widgets
 
+import android.graphics.Color
 import android.graphics.Typeface
 import android.util.TypedValue
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import com.pixlee.pixleesdk.util.px
 
 /**
@@ -15,6 +17,7 @@ open class TextViewStyle(var text: String = "") : TextStyle()
  */
 open class TextStyle(var size: Float = 18.px,
                      var sizeUnit: Int = TypedValue.COMPLEX_UNIT_PX,
+                     @ColorInt var color:Int = Color.WHITE,
                      var typeface: Typeface? = null)
 
 /**
@@ -23,6 +26,7 @@ open class TextStyle(var size: Float = 18.px,
 fun TextView.setTextViewStyle(style: TextViewStyle) {
     text = style.text
     setTextSize(style.sizeUnit, style.size)
+    setTextColor(style.color)
     typeface = style.typeface
 }
 

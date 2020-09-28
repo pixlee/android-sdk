@@ -119,18 +119,12 @@ class PXLPhotoView : RelativeLayout {
 
     val mainTextView: TextView by lazy {
         TextView(context).apply {
-            text = "Main"
-            setTextColor(Color.WHITE)
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, 30.px)
             id = ViewCompat.generateViewId()
         }
     }
 
     val subTextView: TextView by lazy {
         TextView(context).apply {
-            text = "Sub"
-            setTextColor(Color.WHITE)
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, 18.px)
             id = ViewCompat.generateViewId()
         }
     }
@@ -141,9 +135,6 @@ class PXLPhotoView : RelativeLayout {
 
     val button: TextView by lazy {
         TextView(context).apply {
-            setTextColor(Color.WHITE)
-            text = ""
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, 20.px)
             id = ViewCompat.generateViewId()
         }
     }
@@ -190,6 +181,11 @@ class PXLPhotoView : RelativeLayout {
     }
 
     var volume = 1f
+
+    /**
+     * @param 0f: mute the sound, ~ 1f: unmute the sound, 1f is the max volume
+     * @return PXLPhotoView, builder pattern
+     */
     fun setVolume(volume: Float): PXLPhotoView {
         this.volume = volume
         videoView.volume = volume
@@ -197,6 +193,11 @@ class PXLPhotoView : RelativeLayout {
     }
 
     var looping = false
+
+    /**
+     * @param looping false: play the video only once, true: loop the video
+     * @return PXLPhotoView, builder pattern
+     */
     fun setLooping(looping: Boolean): PXLPhotoView {
         this.looping = looping
         videoView.setLooping(looping)
@@ -209,7 +210,7 @@ class PXLPhotoView : RelativeLayout {
     }
 
     /**
-     * if the content is video, a video will be played
+     * if the content is video, this plays the
      */
     fun playVideo() {
         when (currentConfiguration.imageScaleType) {
