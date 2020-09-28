@@ -24,10 +24,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
         - The latest $videoPlayerManager is [![](https://jitpack.io/v/pixlee/android-video-player.svg)](https://jitpack.io/#pixlee/android-video-player)
         ```gradle
         dependencies {
-                implementation 'com.github.pixlee:android-sdk:$pixleeSDK'
-
-                // (Optional) if you use UI components of the SDK, add this.
-                implementation "com.github.pixlee:android-video-player:$videoPlayerManager"
+                implementation 'com.github.pixlee:android-sdk:$pixleeSDK
 
                 // (Optional) if you need to use PXLLoading, add this.
                 implementation "com.airbnb.android:lottie:3.4.1"
