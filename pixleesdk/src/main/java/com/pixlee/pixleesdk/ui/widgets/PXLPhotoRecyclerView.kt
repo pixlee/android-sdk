@@ -57,14 +57,11 @@ class PXLPhotoRecyclerView : RecyclerView {
 
             override fun onChildViewDetachedFromWindow(view: View) {
                 val pxlPhotoView = view.findViewById<PXLPhotoView>(R.id.pxlPhotoView)
-                Log.e("PhotoRecycler", "pxlPhotoView: $pxlPhotoView")
-                Log.e("PhotoRecycler", "pxlPhotoView.videoView: ${pxlPhotoView.videoView}")
-                Log.e("PhotoRecycler", "pxlPhotoView.videoView.id: ${pxlPhotoView.videoView.id}")
                 val jzvd: Jzvd = pxlPhotoView.videoView
                 if (jzvd != null && Jzvd.CURRENT_JZVD != null &&
                         jzvd.jzDataSource.containsTheUrl(Jzvd.CURRENT_JZVD.jzDataSource.currentUrl)) {
                     if (Jzvd.CURRENT_JZVD != null && Jzvd.CURRENT_JZVD.screen != Jzvd.SCREEN_FULLSCREEN) {
-                        Jzvd.releaseAllVideos()
+                        PXLPhotoView.releaseAllVideos()
                     }
                 }
             }
@@ -73,9 +70,7 @@ class PXLPhotoRecyclerView : RecyclerView {
         addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    Log.d("AuthPlayUtils", "position FirstCompletelyVisible: ${linearLayoutManager.findFirstCompletelyVisibleItemPosition()}")
-
+                if (linearLayoutManager!=null && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     AutoPlayUtils.onScrollPlayVideo(recyclerView, R.id.pxlPhotoView, linearLayoutManager.findFirstVisibleItemPosition(), linearLayoutManager.findLastVisibleItemPosition())
                 }
             }
@@ -174,7 +169,7 @@ class PXLPhotoRecyclerView : RecyclerView {
     }
 
     fun onPause() {
-        Jzvd.releaseAllVideos()
+        PXLPhotoView.releaseAllVideos()
     }
 
 

@@ -29,6 +29,16 @@ import jp.wasabeef.glide.transformations.BlurTransformation
  * This view is to show a photo of PXLPhoto inside a RecyclerView or a ViewGroup
  */
 class PXLPhotoView : RelativeLayout {
+    companion object {
+        /**
+         * this is to release video player
+         */
+        fun releaseAllVideos() {
+            Jzvd.releaseAllVideos()
+        }
+
+    }
+
     /**
      * This class is to let PXLPhotoView support ImageView.ScaleType
      */
@@ -101,9 +111,8 @@ class PXLPhotoView : RelativeLayout {
         }
     }
 
-    val videoView: JzvdVolumeControl by lazy {
-        JzvdVolumeControl(context).apply {
-            //alpha = 0.5f
+    val videoView: VideoWidget by lazy {
+        VideoWidget(context).apply {
             id = ViewCompat.generateViewId()
         }
     }
@@ -188,21 +197,21 @@ class PXLPhotoView : RelativeLayout {
     }
 
     var looping = false
-    fun setLooping(looping:Boolean):PXLPhotoView{
+    fun setLooping(looping: Boolean): PXLPhotoView {
         this.looping = looping
         videoView.setLooping(looping)
         return this
     }
 
 
-    fun isPlaying(): Boolean{
+    fun isPlaying(): Boolean {
         return videoView.isPlaying
     }
 
     /**
      * if the content is video, a video will be played
      */
-    fun playVideo(){
+    fun playVideo() {
         when (currentConfiguration.imageScaleType) {
             ImageScaleType.FIT_CENTER -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_ADAPTER)
             ImageScaleType.CENTER_CROP -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_FILL_SCROP)

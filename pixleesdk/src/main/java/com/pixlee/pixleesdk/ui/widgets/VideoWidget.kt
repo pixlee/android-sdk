@@ -4,12 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import cn.jzvd.JzvdStd
 
-class JzvdVolumeControl : JzvdStd {
+class VideoWidget : JzvdStd {
     constructor(context: Context?) : super(context) {}
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
 
     var volume = 1f
-    fun setVolume(volume: Float):JzvdVolumeControl{
+    fun setVolume(volume: Float):VideoWidget{
         this.volume = volume
         return this
     }

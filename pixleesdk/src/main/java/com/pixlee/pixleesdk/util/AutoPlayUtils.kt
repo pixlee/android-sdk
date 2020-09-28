@@ -3,10 +3,8 @@ package com.pixlee.pixleesdk.util
 import android.graphics.Rect
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import cn.jzvd.Jzvd
-import com.pixlee.pixleesdk.ui.widgets.JzvdVolumeControl
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 
 /**
@@ -29,9 +27,7 @@ object AutoPlayUtils {
             if (getViewVisiblePercent(pxlPhotoView) == 100) {
                 if (positionInList != i + firstVisiblePosition) {
                     Log.e("AuthPlayUtils", "-- detected player performClick() position: " + (firstVisiblePosition + i))
-                    pxlPhotoView.setVolume(0f)
-                            .setLooping(true)
-                            .playVideo()
+                    pxlPhotoView.playVideo()
                 }
                 return
             }
@@ -48,7 +44,7 @@ object AutoPlayUtils {
         if (positionInList >= 0) {
             if (positionInList <= firstVisiblePosition || positionInList >= lastVisiblePosition - 1) {
                 if (getViewVisiblePercent(Jzvd.CURRENT_JZVD) < percent) {
-                    Jzvd.releaseAllVideos()
+                    PXLPhotoView.releaseAllVideos()
                 }
             }
         }

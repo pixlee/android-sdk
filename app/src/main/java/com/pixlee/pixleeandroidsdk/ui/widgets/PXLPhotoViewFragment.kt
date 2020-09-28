@@ -105,7 +105,7 @@ class PXLPhotoViewFragment : BaseFragment() {
         }
     }
 
-    fun startScrollListener(){
+    fun startScrollListener() {
         pxlPhotoViewFitWrapLandscape
                 .setVolume(1f)
                 .setLooping(true)
@@ -114,31 +114,52 @@ class PXLPhotoViewFragment : BaseFragment() {
         val scrollBounds = Rect()
         scrollView.getHitRect(scrollBounds)
         scrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
-            if (pxlPhotoViewFitWrapLandscape.getLocalVisibleRect(scrollBounds)) {
-                pxlPhotoViewFitWrapLandscape
-                        .setVolume(1f)
-                        .setLooping(true)
-                        .playVideo()
-                return@setOnScrollChangeListener
-            }
-
-            if (pxlPhotoViewCrop.getLocalVisibleRect(scrollBounds)) {
-                pxlPhotoViewCrop
-                        .setVolume(1f)
-                        .setLooping(true)
-                        .playVideo()
-                return@setOnScrollChangeListener
-            }
-
-            if (pxlPhotoViewFitPortrait.getLocalVisibleRect(scrollBounds)) {
-                pxlPhotoViewFitPortrait
-                        .setVolume(1f)
-                        .setLooping(true)
-                        .playVideo()
-                return@setOnScrollChangeListener
-            }
-
+            playRelevantVideo(scrollBounds)
         }
+    }
+
+    var currentView: Int = 0
+    fun playRelevantVideo(scrollBounds: Rect) {
+        if (pxlPhotoViewFitWrapLandscape.getLocalVisibleRect(scrollBounds)) {
+            currentView = 1
+            pxlPhotoViewFitWrapLandscape
+                    .setVolume(1f)
+                    .setLooping(true)
+                    .playVideo()
+            return
+        }
+
+        if (pxlPhotoViewCrop.getLocalVisibleRect(scrollBounds)) {
+            currentView = 2
+            pxlPhotoViewCrop
+                    .setVolume(1f)
+                    .setLooping(true)
+                    .playVideo()
+            return
+        }
+
+        if (pxlPhotoViewFitPortrait.getLocalVisibleRect(scrollBounds)) {
+            currentView = 3
+            pxlPhotoViewFitPortrait
+                    .setVolume(1f)
+                    .setLooping(true)
+                    .playVideo()
+            return
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (currentView > 0) {
+            val scrollBounds = Rect()
+            scrollView.getHitRect(scrollBounds)
+            playRelevantVideo(scrollBounds)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        PXLPhotoView.releaseAllVideos()
     }
 
     companion object {

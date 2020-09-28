@@ -215,9 +215,9 @@ override fun onCreate(savedInstanceState: Bundle?) {
     }
 
     // stop video
-    override fun onStop() {
-        super.onStop()
-        pxlPhotoRecyclerView.onStop()
+    override fun onPause() {
+        super.onPause()
+        pxlPhotoRecyclerView.onPause()
     }
 }
 ```
@@ -287,9 +287,22 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
     }
     pxlPhotoView.setConfiguration(configuration)
-    pxlPhotoView.setPhoto(it, PXLPhotoView.ImageScaleType.CENTER_CROP)
-    pxlPhotoView.playVideo(videoPlayerManger = mVideoPlayerManager, isLooping = true, muted = true)
-
-    // alternative: pxlPhotoView.playVideo(videoPlayerManger = mVideoPlayerManager, isLooping = false, muted = false)
-    // alternative: pxlPhotoView.setPhoto(it, PXLPhotoView.ImageScaleType.FIT_CENTER)
+    pxlPhotoView.setPhoto(it, PXLPhotoView.ImageScaleType.CENTER_CROP)   
 }
+
+override fun onResume() {
+    super.onResume()
+    // play video, you can also use this code onCreate or when getting data from the API
+    pxlPhotoView
+        .setVolume(1f)
+        .setLooping(true)
+        .playVideo()
+}
+
+
+override fun onPause() {
+    super.onPause()
+    // stop any video
+    PXLPhotoView.releaseAllVideos()
+}
+```
