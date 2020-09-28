@@ -75,7 +75,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit2"
 
     implementation project(':pixleesdk')
-    //implementation 'com.github.pixlee:android-sdk:1.4.0-alpha07'
+//    implementation 'com.github.pixlee:android-sdk:1.4.0-beta03'
 
     // (Optional) if you need to use PXLLoading, add this.
     implementation "com.airbnb.android:lottie:$lottie"
