@@ -33,7 +33,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
 # Run the Demo App
 - The demo app included with this SDK are meant to be used in Android Studio to create a typical Android app.
 - To help you get up and running quickly, we've built this demo featuring a RecyclerView with LinearLayoutManager and GridLayoutManager and a few UI components.
-- UI components demonstrated in the demo can be customize by adding arguments to the views simple.
+- UI components demonstrated in the demo can be customize by adding arguments to the views.
 - API calls being fired via Kotlin.coroutines are in the demo. 
 - video: https://www.loom.com/share/37fb674d3cb348d48c3479b67a9bc2aa
 - <img src="doc/img/demo_1_main.jpg" width="24%"> <img src="doc/img/demo_2_album.jpg" width="24%"> <img src="doc/img/demo_2_album_filter.jpg" width="24%"> <img src="doc/img/demo_2_image_viewer.jpg" width="24%">
