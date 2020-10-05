@@ -13,8 +13,8 @@ import kotlinx.android.synthetic.main.item_pxlphoto.*
  * This is to display PhotoWithImageScaleType having PXLPhoto in a RecyclerView.
  */
 class PXLPhotoAdapter(
-        var onButtonClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null,
-        var onPhotoClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null,
+        var onButtonClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null,
+        var onPhotoClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null,
         var photoViewConfiguration: PXLPhotoView.Configuration? = null,
         var infiniteScroll: Boolean = false,
         var showingDebugView: Boolean = false
@@ -30,7 +30,7 @@ class PXLPhotoAdapter(
         holder.bind(item, photoViewConfiguration, showingDebugView)
         holder.itemView.setOnClickListener {
             onPhotoClickedListener?.also {
-                it(holder.itemView, item.pxlPhoto)
+                it(holder.itemView, item)
             }
         }
 
@@ -39,7 +39,7 @@ class PXLPhotoAdapter(
         } else {
             holder.pxlPhotoView.setButtonClickListener(View.OnClickListener {
                 onButtonClickedListener?.also {
-                    it(holder.itemView, item.pxlPhoto)
+                    it(holder.itemView, item)
                 }
             })
         }

@@ -1,5 +1,6 @@
 package com.pixlee.pixleesdk.ui.viewholder
 
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.item_pxlphoto.*
 
 /**
@@ -24,7 +26,7 @@ class PXLPhotoViewHolder(override val containerView: View) :
         pxlPhotoView.setConfiguration(configuration = configuration ?: PXLPhotoView.Configuration())
         pxlPhotoView.setPhoto(data.pxlPhoto, data.imageScaleType)
         pxlPhotoView.setLooping(data.isLoopingVideo)
-        pxlPhotoView.setVolume(if(data.soundMuted) 0f else 1f)
+        pxlPhotoView.setVolume(if(data.videoVolume) 0f else 1f)
 
         tv.visibility = if (showingDebugView) View.VISIBLE else View.GONE
         tvPercent.visibility = if (showingDebugView) View.VISIBLE else View.GONE
@@ -46,8 +48,15 @@ class PXLPhotoViewHolder(override val containerView: View) :
  * Via bind() method, PXLPhotoViewHolder receives this class as an argument and change the UI and manipulate VideoPlayerView.
  * You can pass PhotoWithImageScaleType when declaring PXLPhotoAdapter
  */
-class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto,
-                              val imageScaleType: PXLPhotoView.ImageScaleType,
+@Parcelize
+class PhotoWithImageScaleType(override val pxlPhoto: PXLPhoto,
+                              override val imageScaleType: PXLPhotoView.ImageScaleType,
                               val heightInPixel: Int = 400.px.toInt(),
-                              val isLoopingVideo: Boolean = true,
-                              val soundMuted: Boolean = false)
+                              override val isLoopingVideo: Boolean = true,
+                              override val videoVolume: Boolean = false):PhotoWithVideoInfo(pxlPhoto, imageScaleType,isLoopingVideo, videoVolume), Parcelable
+
+@Parcelize
+open class PhotoWithVideoInfo(open val pxlPhoto: PXLPhoto,
+                              open val imageScaleType: PXLPhotoView.ImageScaleType,
+                              open val isLoopingVideo: Boolean = true,
+                              open val videoVolume: Boolean = false): Parcelable

@@ -19,18 +19,20 @@ object AutoPlayUtils {
      * @param firstVisiblePosition 首个可见item位置
      * @param lastVisiblePosition  最后一个可见item位置
      */
-    fun onScrollPlayVideo(recyclerView: RecyclerView, jzvdId: Int, firstVisiblePosition: Int, lastVisiblePosition: Int) {
+    fun onScrollPlayVideo(recyclerView: RecyclerView, jzvdId: Int, firstVisiblePosition: Int, lastVisiblePosition: Int, alphaForStoppedVideos: Float) {
         Log.d("AuthPlayUtils", "position first: $firstVisiblePosition, lastVisiblePosition: $lastVisiblePosition")
+        var playingIdx = -1
         for (i in 0..lastVisiblePosition - firstVisiblePosition) {
             val child = recyclerView.getChildAt(i)
             val pxlPhotoView = child.findViewById<PXLPhotoView>(jzvdId)
-            if (getViewVisiblePercent(pxlPhotoView) == 100) {
+            if (playingIdx == -1 && getViewVisiblePercent(pxlPhotoView) == 100) {
                 if (positionInList != i + firstVisiblePosition) {
                     Log.e("AuthPlayUtils", "-- detected player performClick() position: " + (firstVisiblePosition + i))
+                    playingIdx = i
                     pxlPhotoView.playVideo()
                 }
-                return
             }
+            child.alpha = if (playingIdx == i) 1f else alphaForStoppedVideos
         }
     }
 

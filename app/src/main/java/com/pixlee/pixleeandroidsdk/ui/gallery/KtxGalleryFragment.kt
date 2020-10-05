@@ -2,6 +2,7 @@ package com.pixlee.pixleeandroidsdk.ui.gallery
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,7 @@ import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.core.view.GravityCompat
-import androidx.lifecycle.Observer
+import androidx.lifecycle.*
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleeandroidsdk.EventObserver
@@ -23,11 +24,11 @@ import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
 import com.pixlee.pixleesdk.data.PXLAlbumSortOptions
-import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLAlbumSortType
 import com.pixlee.pixleesdk.enums.PXLContentSource
 import com.pixlee.pixleesdk.enums.PXLContentType
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
+import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.util.px
@@ -38,7 +39,7 @@ import kotlinx.android.synthetic.main.module_search.*
 /**
  * This shows how you can load photos of Pixlee using PXLAlbum.java
  */
-class KtxGalleryFragment : BaseFragment() {
+class KtxGalleryFragment : BaseFragment(),LifecycleObserver {
     override fun getTitleResource(): Int {
         return R.string.title_ktx_album
     }
@@ -59,6 +60,9 @@ class KtxGalleryFragment : BaseFragment() {
         addClickListeners()
         configureViews()
 
+        // this will play the video on onResume and stop the video on onPause
+        pxlPhotoRecyclerView.useLifecycleObserver(lifecycle)
+
         pxlPhotoRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 try {
@@ -77,16 +81,6 @@ class KtxGalleryFragment : BaseFragment() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        pxlPhotoRecyclerView.onResume()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        pxlPhotoRecyclerView.onPause()
-    }
-
     fun addViewModelListeners() {
         viewModel.loading.observe(this, Observer {
             lottieView.visibility = if (it) View.VISIBLE else View.GONE
@@ -97,7 +91,7 @@ class KtxGalleryFragment : BaseFragment() {
                 is BaseViewModel.Command.Data -> {
                     if (it.isFirstPage) {
                         pxlPhotoRecyclerView.replaceList(it.list)
-                        pxlPhotoRecyclerView.onResume()
+                        pxlPhotoRecyclerView.playVideo()
                         if(it.list.isNotEmpty()){
                             it.list.firstOrNull()?.pxlPhoto?.also {
                                 viewModel.getPhotoWithId(it)
@@ -114,8 +108,9 @@ class KtxGalleryFragment : BaseFragment() {
 
     fun addClickListeners() {
         // you can customize color, size if you need
-        pxlPhotoRecyclerView.initiate(infiniteScroll = false,
-                showingDebugView = true,
+        pxlPhotoRecyclerView.initiate(infiniteScroll = true,
+                showingDebugView = false,
+                alphaForStoppedVideos = 0.5f,
                 configuration = PXLPhotoView.Configuration().apply {
                     // Customize image size, not a video
                     pxlPhotoSize = PXLPhotoSize.ORIGINAL
@@ -135,7 +130,6 @@ class KtxGalleryFragment : BaseFragment() {
                     }
                     // Customize Button
                     buttonStyle = PXLPhotoView.ButtonStyle().apply {
-                        isButtonVisible = true
                         text = "Action Button"
                         size = 20.px
                         sizeUnit = TypedValue.COMPLEX_UNIT_PX
@@ -158,13 +152,13 @@ class KtxGalleryFragment : BaseFragment() {
                         }
                     }
 
-                }, onButtonClickedListener = { view, pxlPhoto ->
+                }, onButtonClickedListener = { view, photoWithImageScaleType ->
             context?.also { ctx ->
                 // you can add your business logic here
                 Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
-                moveToViewer(pxlPhoto)
+                moveToViewer(photoWithImageScaleType)
             }
-        }, onPhotoClickedListener = { view, pxlPhoto ->
+        }, onPhotoClickedListener = { view, photoWithImageScaleType ->
             context?.also { ctx ->
                 // you can add your business logic here
                 Toast.makeText(ctx, "onItemClickedListener", Toast.LENGTH_SHORT).show()
@@ -375,7 +369,7 @@ class KtxGalleryFragment : BaseFragment() {
      *
      * @param photo
      */
-    fun moveToViewer(photo: PXLPhoto) {
+    fun moveToViewer(photo: PhotoWithImageScaleType) {
         val list = listOf(PhotoLauncher.ViewerActivity, PhotoLauncher.PXLPhotoView/*, PhotoLauncher.PXLPhotoViewInRecyclerView*/)
 
         val listTexts = arrayOfNulls<String>(list.size)

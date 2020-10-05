@@ -4,6 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.jzvd.Jzvd
@@ -18,7 +22,7 @@ import com.pixlee.pixleesdk.util.px
  * Created by sungjun on 9/17/20.
  */
 
-class PXLPhotoRecyclerView : RecyclerView {
+class PXLPhotoRecyclerView : RecyclerView, LifecycleObserver {
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
@@ -40,13 +44,16 @@ class PXLPhotoRecyclerView : RecyclerView {
         this.adapter = pxlPhotoAdapter
     }
 
+    var alphaForStoppedVideos:Float = 1f
     fun initiate(infiniteScroll: Boolean = false,
                  showingDebugView: Boolean = false,
+                 alphaForStoppedVideos:Float = 1f,
                  configuration: PXLPhotoView.Configuration? = null,
-                 onButtonClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null,
-                 onPhotoClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null) {
+                 onButtonClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null,
+                 onPhotoClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null) {
         pxlPhotoAdapter.infiniteScroll = infiniteScroll
         pxlPhotoAdapter.showingDebugView = showingDebugView
+        this.alphaForStoppedVideos = alphaForStoppedVideos
         pxlPhotoAdapter.photoViewConfiguration = configuration
         pxlPhotoAdapter.onButtonClickedListener = onButtonClickedListener
         pxlPhotoAdapter.onPhotoClickedListener = onPhotoClickedListener
@@ -70,8 +77,8 @@ class PXLPhotoRecyclerView : RecyclerView {
         addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (linearLayoutManager!=null && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    AutoPlayUtils.onScrollPlayVideo(recyclerView, R.id.pxlPhotoView, linearLayoutManager.findFirstVisibleItemPosition(), linearLayoutManager.findLastVisibleItemPosition())
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    playVideoIfneeded(recyclerView)
                 }
             }
 
@@ -160,15 +167,35 @@ class PXLPhotoRecyclerView : RecyclerView {
         }
     }
 
-    fun onResume() {
-        post {
-            if(linearLayoutManager!=null && pxlPhotoAdapter!=null && pxlPhotoAdapter.list.isNotEmpty()){
-                AutoPlayUtils.onScrollPlayVideo(this, R.id.pxlPhotoView, linearLayoutManager.findFirstVisibleItemPosition(), linearLayoutManager.findLastVisibleItemPosition())
-            }
+    internal fun playVideoIfneeded(recyclerView: RecyclerView){
+        if(linearLayoutManager!=null && pxlPhotoAdapter!=null && pxlPhotoAdapter.list.isNotEmpty()){
+            AutoPlayUtils.onScrollPlayVideo(recyclerView,
+                    R.id.pxlPhotoView,
+                    linearLayoutManager.findFirstVisibleItemPosition(),
+                    linearLayoutManager.findLastVisibleItemPosition(),
+                    alphaForStoppedVideos)
         }
     }
 
-    fun onPause() {
+    /**
+     * This will play the video on onResume and stop the video on onPause.
+     *   - when ON_RESUME, this will call playVideo()
+     *   - when ON_PAUSE, this will call stopVideo()
+     * If you want to manually play and stop the video, don't use this and do use playVideo() and stopVideo() when you want
+     */
+    fun useLifecycleObserver(lifecycle:Lifecycle){
+        lifecycle.addObserver(this)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun playVideo() {
+        post {
+            playVideoIfneeded(this)
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun stopVideo() {
         PXLPhotoView.releaseAllVideos()
     }
 

@@ -25,6 +25,8 @@ import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLAlbumSortType
 import com.pixlee.pixleesdk.enums.PXLContentSource
 import com.pixlee.pixleesdk.enums.PXLContentType
+import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
+import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import kotlinx.android.synthetic.main.fragment_gallery.*
 import kotlinx.android.synthetic.main.module_search.*
 
@@ -329,7 +331,11 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
 //                }
 
             } else {
-                ViewerActivity.launch(context!!, photo)
+                val info = PhotoWithVideoInfo(pxlPhoto = photo,
+                        imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP,
+                        isLoopingVideo = true,
+                        videoVolume = true)
+                ViewerActivity.launch(context!!, info)
             }
         }
     }

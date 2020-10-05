@@ -47,6 +47,17 @@ public class MainActivity extends BaseActivity {
         replaceFragmentInActivity(frameLayoutId, new IndexFragment(), null);
 
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("videoLifecycle", "MainActivity.onResume()");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e("videoLifecycle", "MainActivity.onPause()");
+    }
 
     public void setConfig(Config config){
         if(config!=null && config.isDarkMode()){

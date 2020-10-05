@@ -60,19 +60,11 @@ class PXLPhotoView : RelativeLayout {
     data class Configuration(
             var pxlPhotoSize: PXLPhotoSize = PXLPhotoSize.ORIGINAL, // PXLPhotoSize [THUMBNAIL, MEDIUM, BIG, ORIGINAL]
             var imageScaleType: ImageScaleType = ImageScaleType.FIT_CENTER,
-            var mainTextViewStyle: TextViewStyle = TextViewStyle().apply {
-                text = "Text 1"
-                size = 30.px
-            }, var subTextViewStyle: TextViewStyle = TextViewStyle().apply {
-                text = "Text 2"
-                size = 18.px
-            }, var buttonStyle: ButtonStyle = ButtonStyle().apply {
-                text = "Button"
-                size = 20.px
-            })
+            var mainTextViewStyle: TextViewStyle? = null,
+            var subTextViewStyle: TextViewStyle? = null,
+            var buttonStyle: ButtonStyle? = null)
 
     class ButtonStyle(
-            var isButtonVisible: Boolean = true,
             var buttonIcon: Int? = R.drawable.baseline_play_arrow_white_24,
             var stroke: Stroke = Stroke(),
             var padding: Padding = Padding()) : TextViewStyle()
@@ -142,8 +134,9 @@ class PXLPhotoView : RelativeLayout {
     var currentConfiguration: Configuration = Configuration()
     fun setConfiguration(configuration: Configuration) {
         currentConfiguration = configuration
-        configuration.buttonStyle.let { style ->
-            button.visibility = if (style.isButtonVisible) VISIBLE else GONE
+        button.visibility = if (configuration.buttonStyle != null) VISIBLE else GONE
+        configuration.buttonStyle?.let { style ->
+
             button.setTextViewStyle(style)
             button.apply {
                 // padding of the parent view
@@ -171,11 +164,13 @@ class PXLPhotoView : RelativeLayout {
             }
         }
 
-        configuration.mainTextViewStyle.let { style ->
+        mainTextView.visibility = if (configuration.mainTextViewStyle != null) VISIBLE else GONE
+        configuration.mainTextViewStyle?.let { style ->
             mainTextView.setTextViewStyle(style)
         }
 
-        configuration.subTextViewStyle.let { style ->
+        subTextView.visibility = if (configuration.subTextViewStyle != null) VISIBLE else GONE
+        configuration.subTextViewStyle?.let { style ->
             subTextView.setTextViewStyle(style)
         }
     }
@@ -213,11 +208,13 @@ class PXLPhotoView : RelativeLayout {
      * if the content is video, this plays the
      */
     fun playVideo() {
-        when (currentConfiguration.imageScaleType) {
-            ImageScaleType.FIT_CENTER -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_ADAPTER)
-            ImageScaleType.CENTER_CROP -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_FILL_SCROP)
+        if(pxlPhoto?.isVideo ?: false){
+            when (currentConfiguration.imageScaleType) {
+                ImageScaleType.FIT_CENTER -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_ADAPTER)
+                ImageScaleType.CENTER_CROP -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_FILL_SCROP)
+            }
+            videoView.play()
         }
-        videoView.play()
     }
 
     fun setButtonClickListener(buttonClickListener: OnClickListener? = null) {

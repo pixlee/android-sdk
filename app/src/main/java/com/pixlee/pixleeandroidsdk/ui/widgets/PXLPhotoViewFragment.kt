@@ -12,8 +12,8 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
-import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
+import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.util.px
@@ -33,8 +33,8 @@ class PXLPhotoViewFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val pxlPhoto: PXLPhoto? = arguments?.getParcelable("pxlPhoto")
-        pxlPhoto?.also {
+        val item: PhotoWithImageScaleType? = arguments?.getParcelable("photoWithImageScaleType")
+        item?.also {
             val configuration = PXLPhotoView.Configuration().apply {
                 // Customize image size
                 pxlPhotoSize = PXLPhotoSize.ORIGINAL
@@ -54,7 +54,6 @@ class PXLPhotoViewFragment : BaseFragment() {
                 }
                 // Customize Button
                 buttonStyle = PXLPhotoView.ButtonStyle().apply {
-                    isButtonVisible = true
                     text = "Click here"
                     size = 20.px
                     sizeUnit = TypedValue.COMPLEX_UNIT_PX
@@ -78,15 +77,10 @@ class PXLPhotoViewFragment : BaseFragment() {
                 }
 
             }
-            pxlPhotoViewFitWrapLandscape.setConfiguration(configuration.copy())
-            pxlPhotoViewFitPortrait.setConfiguration(configuration.copy())
-            pxlPhotoViewCrop.setConfiguration(configuration.copy())
 
-            pxlPhotoViewFitWrapLandscape.setPhoto(it, PXLPhotoView.ImageScaleType.FIT_CENTER)
-            pxlPhotoViewFitPortrait.setPhoto(it, PXLPhotoView.ImageScaleType.FIT_CENTER)
-            pxlPhotoViewCrop.setPhoto(it, PXLPhotoView.ImageScaleType.CENTER_CROP)
-
-
+            initPXLPhotoView(pxlPhotoViewFitWrapLandscape, configuration.copy(), it, PXLPhotoView.ImageScaleType.FIT_CENTER)
+            initPXLPhotoView(pxlPhotoViewFitPortrait, configuration.copy(), it, PXLPhotoView.ImageScaleType.FIT_CENTER)
+            initPXLPhotoView(pxlPhotoViewCrop, configuration.copy(), it, PXLPhotoView.ImageScaleType.CENTER_CROP)
 
             scrollView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
@@ -105,11 +99,15 @@ class PXLPhotoViewFragment : BaseFragment() {
         }
     }
 
+    fun initPXLPhotoView(pxlPhotoView: PXLPhotoView, configuration: PXLPhotoView.Configuration, data:PhotoWithImageScaleType, imageScaleType: PXLPhotoView.ImageScaleType){
+        pxlPhotoView.setConfiguration(configuration = configuration)
+        pxlPhotoView.setPhoto(data.pxlPhoto, imageScaleType)
+        pxlPhotoView.setLooping(data.isLoopingVideo)
+        pxlPhotoView.setVolume(if(data.videoVolume) 0f else 1f)
+    }
+
     fun startScrollListener() {
-        pxlPhotoViewFitWrapLandscape
-                .setVolume(1f)
-                .setLooping(true)
-                .playVideo()
+        pxlPhotoViewFitWrapLandscape.playVideo()
 
         val scrollBounds = Rect()
         scrollView.getHitRect(scrollBounds)
@@ -122,28 +120,19 @@ class PXLPhotoViewFragment : BaseFragment() {
     fun playRelevantVideo(scrollBounds: Rect) {
         if (pxlPhotoViewFitWrapLandscape.getLocalVisibleRect(scrollBounds)) {
             currentView = 1
-            pxlPhotoViewFitWrapLandscape
-                    .setVolume(1f)
-                    .setLooping(true)
-                    .playVideo()
+            pxlPhotoViewFitWrapLandscape.playVideo()
             return
         }
 
         if (pxlPhotoViewCrop.getLocalVisibleRect(scrollBounds)) {
             currentView = 2
-            pxlPhotoViewCrop
-                    .setVolume(1f)
-                    .setLooping(true)
-                    .playVideo()
+            pxlPhotoViewCrop.playVideo()
             return
         }
 
         if (pxlPhotoViewFitPortrait.getLocalVisibleRect(scrollBounds)) {
             currentView = 3
-            pxlPhotoViewFitPortrait
-                    .setVolume(1f)
-                    .setLooping(true)
-                    .playVideo()
+            pxlPhotoViewFitPortrait.playVideo()
             return
         }
     }
@@ -163,10 +152,10 @@ class PXLPhotoViewFragment : BaseFragment() {
     }
 
     companion object {
-        fun getInstance(pxlPhoto: PXLPhoto): Fragment {
+        fun getInstance(pxlPhoto: PhotoWithImageScaleType): Fragment {
             val f = PXLPhotoViewFragment()
             val bundle = Bundle()
-            bundle.putParcelable("pxlPhoto", pxlPhoto)
+            bundle.putParcelable("photoWithImageScaleType", pxlPhoto)
             f.arguments = bundle
             return f
         }

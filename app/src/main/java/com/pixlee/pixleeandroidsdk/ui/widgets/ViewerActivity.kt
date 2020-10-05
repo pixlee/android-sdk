@@ -3,9 +3,9 @@ package com.pixlee.pixleeandroidsdk.ui.widgets
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
+import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.util.PXLViewUtil
@@ -44,13 +45,19 @@ class ViewerActivity : AppCompatActivity() {
             finish()
             return
         }
-        val pxlPhoto: PXLPhoto? = i.getParcelableExtra("pxlPhoto")
+        val item: PhotoWithVideoInfo? = i.getParcelableExtra("photoWithVideoInfo")
         // if the photo is null, close this image view
-        if (pxlPhoto == null) {
+        if (item == null) {
             finish()
             return
         }
-        pxlPhotoProductView.setPhoto(pxlPhoto = pxlPhoto,
+
+        init(item)
+    }
+
+    fun init(item: PhotoWithVideoInfo){
+        pxlPhotoProductView.useLifecycleObserver(lifecycle)
+        pxlPhotoProductView.setPhoto(photoInfo = item,
                 configuration = ProductViewHolder.Configuration().apply {
                     circleIcon = ProductViewHolder.CircleIcon().apply {
                         icon = R.drawable.outline_shopping_bag_black_24
@@ -73,7 +80,7 @@ class ViewerActivity : AppCompatActivity() {
                         typeface = null
                     }
                 },
-                bookmarkMap = readBookmarks(pxlPhoto),
+                bookmarkMap = readBookmarks(item.pxlPhoto),
                 onBookmarkClicked = { productId, isBookmarkChecked ->
                     Toast.makeText(this, "productId: $productId\nisBookmarkChecked: $isBookmarkChecked", Toast.LENGTH_SHORT).show()
                 },
@@ -82,6 +89,19 @@ class ViewerActivity : AppCompatActivity() {
                     val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it.link.toString()))
                     startActivity(browserIntent)
                 })
+        pxlPhotoProductView.playVideo()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        pxlPhotoProductView.playVideo()
+        Log.e("videoLifecycle", "ViewerActivity.onResume()")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pxlPhotoProductView.stopVideo()
+        Log.e("videoLifecycle", "ViewerActivity.onPause()")
     }
 
     /**
@@ -100,9 +120,9 @@ class ViewerActivity : AppCompatActivity() {
 
     companion object {
         // start video view with a photo data
-        fun launch(context: Context, pxlPhoto: PXLPhoto?) {
+        fun launch(context: Context, pxlPhoto: PhotoWithVideoInfo?) {
             val i = Intent(context, ViewerActivity::class.java)
-            i.putExtra("pxlPhoto", pxlPhoto)
+            i.putExtra("photoWithVideoInfo", pxlPhoto)
             context.startActivity(i)
         }
     }

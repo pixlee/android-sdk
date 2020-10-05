@@ -59,15 +59,9 @@ class PXLPhotoViewInRecyclerViewFragment : BaseFragment() {
         })
     }
 
-
     fun startList(cellSize: Int) {
         val pxlPhoto: PXLPhoto? = arguments?.getParcelable("pxlPhoto")
         if (pxlPhoto != null) {
-            PhotoWithImageScaleType(pxlPhoto = pxlPhoto,
-                    imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP,
-                    heightInPixel = cellSize,
-                    isLoopingVideo = true,
-                    soundMuted = true)
             val list = ArrayList<PhotoWithImageScaleType>()
             for (i in 1..5) {
                 list.add(PhotoWithImageScaleType(pxlPhoto, PXLPhotoView.ImageScaleType.CENTER_CROP, cellSize))
@@ -106,12 +100,12 @@ class PXLPhotoViewInRecyclerViewFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        pxlPhotoRecyclerView.onResume()
+        pxlPhotoRecyclerView.playVideo()
     }
 
     override fun onStop() {
         super.onStop()
-        pxlPhotoRecyclerView.onPause()
+        pxlPhotoRecyclerView.stopVideo()
     }
 
     companion object {
