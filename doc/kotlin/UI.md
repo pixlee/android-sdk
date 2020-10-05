@@ -58,6 +58,22 @@ override fun onCreate(savedInstanceState: Bundle?) {
                 selectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_black_36
                 unselectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_border_black_36
             }
+            priceTextStyle = CurrencyTextStyle().apply {
+                defaultCurrency = "EUR" // or null
+                leftText = TextStyle().apply {
+                    color = Color.BLACK
+                    size = 24.px
+                    sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                    typeface = null
+                }
+
+                rightText = TextStyle().apply {
+                    color = Color.BLACK
+                    size = 14.px
+                    sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                    typeface = null
+                }
+            }
             priceTextStyle = TextStyle().apply {
                 size = 24.px
                 sizeUnit = TypedValue.COMPLEX_UNIT_PX
@@ -98,7 +114,7 @@ bookmarkDrawable = ProductViewHolder.Bookmark().apply {
     unselectedIcon = R.drawable.<your unselectedIcon>
 }
 ```
-If you want to change the bookmark with ColorFilter
+If you want to change the bookmark with ColorFilter, add the code to ProductViewHolder.Configuration()
 ```kotlin
 #!kotlin
 bookmarkDrawable = ProductViewHolder.Bookmark().apply {
@@ -109,6 +125,26 @@ bookmarkDrawable = ProductViewHolder.Bookmark().apply {
 }
 ```
 
+If you want to custom the look of price and currency symbol, add the code to ProductViewHolder.Configuration()
+```kotlin
+#!kotlin
+priceTextStyle = CurrencyTextStyle().apply {
+    defaultCurrency = "EUR" // or null
+    leftText = TextStyle().apply {
+        color = Color.BLACK
+        size = 24.px
+        sizeUnit = TypedValue.COMPLEX_UNIT_PX
+        typeface = null
+    }
+
+    rightText = TextStyle().apply {
+        color = Color.BLACK
+        size = 14.px
+        sizeUnit = TypedValue.COMPLEX_UNIT_PX
+        typeface = null
+    }
+}
+```
 Play and stop the video
 - Option 1: Automatic using androidx.lifecycle.Lifecycle(Jetpack)
   - Prerequisite: add the dependencies in the doc (https://developer.android.com/jetpack/androidx/releases/lifecycle) to your app gradle. You can also see the sample on app/build.gradle in the demo app.   
@@ -292,7 +328,7 @@ Play and stop the video
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             ...
-            pxlPhotoProductView.useLifecycleObserver(lifecycle)
+            pxlPhotoRecyclerView.useLifecycleObserver(lifecycle)
         }
     }
     ```   
