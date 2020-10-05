@@ -10,6 +10,9 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
@@ -22,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_pxlphoto_view.*
 /**
  * This is to display a photo with texts of PXLPhoto
  */
-class PXLPhotoViewFragment : BaseFragment() {
+class PXLPhotoViewFragment : BaseFragment(), LifecycleObserver {
     override fun getTitleResource(): Int {
         return R.string.title_pxlphotoview
     }
@@ -33,6 +36,7 @@ class PXLPhotoViewFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        lifecycle.addObserver(this)
         val item: PhotoWithImageScaleType? = arguments?.getParcelable("photoWithImageScaleType")
         item?.also {
             val configuration = PXLPhotoView.Configuration().apply {
@@ -103,7 +107,7 @@ class PXLPhotoViewFragment : BaseFragment() {
         pxlPhotoView.setConfiguration(configuration = configuration)
         pxlPhotoView.setPhoto(data.pxlPhoto, imageScaleType)
         pxlPhotoView.setLooping(data.isLoopingVideo)
-        pxlPhotoView.setVolume(if(data.videoVolume) 0f else 1f)
+        pxlPhotoView.setVolume(if(data.soundMuted) 0f else 1f)
     }
 
     fun startScrollListener() {
@@ -137,8 +141,8 @@ class PXLPhotoViewFragment : BaseFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun playVideo() {
         if (currentView > 0) {
             val scrollBounds = Rect()
             scrollView.getHitRect(scrollBounds)
@@ -146,8 +150,8 @@ class PXLPhotoViewFragment : BaseFragment() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun stopVideo() {
         PXLPhotoView.releaseAllVideos()
     }
 

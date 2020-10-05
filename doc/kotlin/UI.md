@@ -27,18 +27,19 @@ override fun onCreate(savedInstanceState: Bundle?) {
     setContentView(...)
     ...
     ...
-    val pxlPhoto: PXLPhoto? = i.getParcelableExtra("pxlPhoto")
+    val item: PhotoWithVideoInfo? = i.getParcelableExtra("photoWithVideoInfo")
     // if the photo is null, close this image view
-    if (pxlPhoto == null) {
+    if (item == null) {
         finish()
         return
     }
-    pxlPhotoProductView.setPhoto(pxlPhoto = pxlPhoto,
+    pxlPhotoProductView.setPhoto(photoInfo = item,
         configuration = ProductViewHolder.Configuration().apply {
             circleIcon = ProductViewHolder.CircleIcon().apply {
                 icon = R.drawable.<your drawable>
                 iconColor = <set color:int, if you want to change icon's color>
                 backgroundColor = <circle background color>
+                padding = <padding size in pixel>
             }
             mainTextStyle = TextStyle().apply {
                 size = 14.px
@@ -51,6 +52,11 @@ override fun onCreate(savedInstanceState: Bundle?) {
                 sizeUnit = TypedValue.COMPLEX_UNIT_PX
                 color = Color.WHITE
                 typeface = null
+            }
+            bookmarkDrawable = ProductViewHolder.Bookmark().apply {
+                isVisible = true
+                selectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_black_36
+                unselectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_border_black_36
             }
             priceTextStyle = TextStyle().apply {
                 size = 24.px
@@ -83,7 +89,58 @@ fun readBookmarks(pxlPhoto: PXLPhoto): HashMap<String, Boolean> {
 
 }
 
+If you want to change the bookmark
+```kotlin
+#!kotlin
+bookmarkDrawable = ProductViewHolder.Bookmark().apply {
+    isVisible = true
+    selectedIcon = R.drawable.<your selectedIcon> 
+    unselectedIcon = R.drawable.<your unselectedIcon>
+}
 ```
+If you want to change the bookmark with ColorFilter
+```kotlin
+#!kotlin
+bookmarkDrawable = ProductViewHolder.Bookmark().apply {
+    isVisible = true
+    selectedIcon = R.drawable.<your selectedIcon> 
+        unselectedIcon = R.drawable.<your unselectedIcon>
+    filterColor = ProductViewHolder.Bookmark.FilterColor(<your selectedColor>, <your unselectedColor>)
+}
+```
+
+Play and stop the video
+- Option 1: Automatic using androidx.lifecycle.Lifecycle(Jetpack)
+  - Prerequisite: add the dependencies in the doc (https://developer.android.com/jetpack/androidx/releases/lifecycle) to your app gradle. You can also see the sample on app/build.gradle in the demo app.   
+  - Add the codes 
+    ```kotlin
+    #!kotlin
+    class YourActivity : AppCompatActivity() {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            ...
+            pxlPhotoProductView.useLifecycleObserver(lifecycle)
+        }
+    }
+    ```   
+- Option 2: Manual (do this if you want to play and stop the video when you need)
+```kotlin
+#!kotlin
+class YourActivity : AppCompatActivity() {
+    // play video
+    override fun onResume() {
+        super.onResume()
+        pxlPhotoProductView.playVideo()
+    }
+    
+    // stop video
+    override fun onPause() {
+        super.onPause()
+        pxlPhotoProductView.stopVideo()
+    }
+}
+```
+
 ## PXLPhotoRecyclerView
 this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhotoView and PXLPhotoViewHolder.
 - you can customize most of ui elements if needed
@@ -99,6 +156,17 @@ Add this to your xml
     android:layout_height="match_parent"/>
 ```
 
+Control the video with
+```kotlin
+#!kotlin
+PhotoWithImageScaleType(pxlPhoto = pxlPhoto,  //data
+    imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP, // [CENTER_CROP, FIT_CENTER]
+    heightInPixel = cellSize, // the height cell size in RecyclerView
+    isLoopingVideo = true,    // true: loop the video, false; play it once and stop it
+    soundMuted = true        // true: muted, false: unmuted
+)
+```
+
 Add this to your Activity or Fragment
 ```kotlin
 #!kotlin
@@ -109,7 +177,8 @@ override fun onCreate(savedInstanceState: Bundle?) {
     ...
     // you can customize color, size if you need
     pxlPhotoRecyclerView.initiate(infiniteScroll = true, // or false
-            showingDebugView = false, //false: for production, true: development only when you want to see the debug info 
+            showingDebugView = false, // false: for production, true: development only when you want to see the debug info
+            alphaForStoppedVideos = 0.5f, // this is the alpha(opacity) of visible items in recyclerview except the first fully visible view(always 1f) 
             configuration = PXLPhotoView.Configuration().apply {
                 // Customize image size
                 pxlPhotoSize = PXLPhotoSize.ORIGINAL
@@ -210,20 +279,41 @@ override fun onCreate(savedInstanceState: Bundle?) {
         // alternative step 1: val photos: List<PXLPhoto> = ....
         // alternative step 2: pxlPhotoRecyclerView.replaceList(photos.toList(), PXLPhotoView.ImageScaleType.CENTER_CROP, cellSize)
     }
+}
+```
 
+Play and stop the video
+- Option 1: Automatic using androidx.lifecycle.Lifecycle(Jetpack)
+  - Prerequisite: add the dependencies in the doc (https://developer.android.com/jetpack/androidx/releases/lifecycle) to your app gradle. You can also see the sample on app/build.gradle in the demo app.   
+  - Add the codes 
+    ```kotlin
+    #!kotlin
+    class YourActivity : AppCompatActivity() {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            ...
+            pxlPhotoProductView.useLifecycleObserver(lifecycle)
+        }
+    }
+    ```   
+- Option 2: Manual (do this if you want to play and stop the video when you need)
+```kotlin
+#!kotlin
+class YourActivity : AppCompatActivity() {
     // play video
     override fun onResume() {
         super.onResume()
-        pxlPhotoRecyclerView.onResume()
+        pxlPhotoRecyclerView.playVideo()
     }
-
+    
     // stop video
     override fun onPause() {
         super.onPause()
-        pxlPhotoRecyclerView.onPause()
+        pxlPhotoRecyclerView.stopVideo()
     }
 }
 ```
+
 ## PXLPhotoView
 If you want to display your a PXLPhoto without a list of PXLProduct in your layout, you can use this codes.
 
@@ -240,72 +330,72 @@ Add this to your xml
 Add this to your Activity or Fragment
 ```kotlin
 #!kotlin
-private val mVideoPlayerManager: VideoPlayerManager<MetaData> = SingleVideoPlayerManager { }
-override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(...)
-    ...
-    ...
-    val configuration = PXLPhotoView.Configuration().apply {
-        // Customize image size
-        pxlPhotoSize = PXLPhotoSize.ORIGINAL
-        // Customize Main TextView
-        mainTextViewStyle = TextViewStyle().apply {
-            text = "Main Text"
-            size = 30.px
-            sizeUnit = TypedValue.COMPLEX_UNIT_PX
-            typeface = null
-        }
-        // Customize Sub TextView
-        subTextViewStyle = TextViewStyle().apply {
-            text = "Sub Text"
-            size = 18.px
-            sizeUnit = TypedValue.COMPLEX_UNIT_PX
-            typeface = null
-        }
-        // Customize Button
-        buttonStyle = PXLPhotoView.ButtonStyle().apply {
-            isButtonVisible = true
-            text = "Action Button"
-            size = 20.px
-            sizeUnit = TypedValue.COMPLEX_UNIT_PX
-            typeface = null
-            buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
-            stroke = PXLPhotoView.Stroke().apply {
-                width = 2.px.toInt()
-                color = Color.WHITE
-                radiusInPixel = 25.px
+class YourActivity: AppCompatActivity, LifecycleObserver {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(...)
+        ...
+        ...
+        lifecycle.addObserver(this)
+        val configuration = PXLPhotoView.Configuration().apply {
+            // Customize image size
+            pxlPhotoSize = PXLPhotoSize.ORIGINAL
+            // Customize Main TextView
+            mainTextViewStyle = TextViewStyle().apply {
+                text = "Main Text"
+                size = 30.px
+                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                typeface = null
+            }
+            // Customize Sub TextView
+            subTextViewStyle = TextViewStyle().apply {
+                text = "Sub Text"
+                size = 18.px
+                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                typeface = null
+            }
+            // Customize Button
+            buttonStyle = PXLPhotoView.ButtonStyle().apply {
+                isButtonVisible = true
+                text = "Action Button"
+                size = 20.px
+                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                typeface = null
+                buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
                 stroke = PXLPhotoView.Stroke().apply {
                     width = 2.px.toInt()
                     color = Color.WHITE
                     radiusInPixel = 25.px
-                }
-                padding = PXLPhotoView.Padding().apply {
-                    left = 20.px.toInt()
-                    centerRight = 40.px.toInt()
-                    topBottom = 10.px.toInt()
+                    stroke = PXLPhotoView.Stroke().apply {
+                        width = 2.px.toInt()
+                        color = Color.WHITE
+                        radiusInPixel = 25.px
+                    }
+                    padding = PXLPhotoView.Padding().apply {
+                        left = 20.px.toInt()
+                        centerRight = 40.px.toInt()
+                        topBottom = 10.px.toInt()
+                    }
                 }
             }
+    
         }
-
+        pxlPhotoView.setConfiguration(configuration)
+        pxlPhotoView.setPhoto(it, PXLPhotoView.ImageScaleType.CENTER_CROP)   
     }
-    pxlPhotoView.setConfiguration(configuration)
-    pxlPhotoView.setPhoto(it, PXLPhotoView.ImageScaleType.CENTER_CROP)   
+    
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun playVideo() {
+        // play video, you can also use this code onCreate or when getting data from the API
+        pxlPhotoView.playVideo() // play the video
+    }
+    
+    
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun stopVideo() {
+        // stop any video
+        PXLPhotoView.releaseAllVideos()
+    }
 }
 
-override fun onResume() {
-    super.onResume()
-    // play video, you can also use this code onCreate or when getting data from the API
-    pxlPhotoView
-        .setVolume(1f) // 0f: mute the sound, ~ 1f: unmute the sound, 1f is the max volume 
-        .setLooping(true) // false: play the video only once, true: loop the video
-        .playVideo() // play the video
-}
-
-
-override fun onPause() {
-    super.onPause()
-    // stop any video
-    PXLPhotoView.releaseAllVideos()
-}
 ```

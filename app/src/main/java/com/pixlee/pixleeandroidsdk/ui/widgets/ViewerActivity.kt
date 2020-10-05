@@ -9,6 +9,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.pixlee.pixleeandroidsdk.R
@@ -63,6 +64,7 @@ class ViewerActivity : AppCompatActivity() {
                         icon = R.drawable.outline_shopping_bag_black_24
                         iconColor = Color.DKGRAY
                         backgroundColor = ContextCompat.getColor(this@ViewerActivity, R.color.yellow_800)
+                        padding = 5.px.toInt()
                     }
                     mainTextStyle = TextStyle().apply {
                         size = 14.px
@@ -73,6 +75,11 @@ class ViewerActivity : AppCompatActivity() {
                         size = 12.px
                         sizeUnit = TypedValue.COMPLEX_UNIT_PX
                         typeface = null
+                    }
+                    bookmarkDrawable = ProductViewHolder.Bookmark().apply {
+                        isVisible = true
+                        selectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_black_36
+                        unselectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_border_black_36
                     }
                     priceTextStyle = TextStyle().apply {
                         size = 24.px
@@ -90,18 +97,6 @@ class ViewerActivity : AppCompatActivity() {
                     startActivity(browserIntent)
                 })
         pxlPhotoProductView.playVideo()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        pxlPhotoProductView.playVideo()
-        Log.e("videoLifecycle", "ViewerActivity.onResume()")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        pxlPhotoProductView.stopVideo()
-        Log.e("videoLifecycle", "ViewerActivity.onPause()")
     }
 
     /**

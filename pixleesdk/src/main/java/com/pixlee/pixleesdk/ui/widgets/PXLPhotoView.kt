@@ -60,9 +60,10 @@ class PXLPhotoView : RelativeLayout {
     data class Configuration(
             var pxlPhotoSize: PXLPhotoSize = PXLPhotoSize.ORIGINAL, // PXLPhotoSize [THUMBNAIL, MEDIUM, BIG, ORIGINAL]
             var imageScaleType: ImageScaleType = ImageScaleType.FIT_CENTER,
-            var mainTextViewStyle: TextViewStyle? = null,
-            var subTextViewStyle: TextViewStyle? = null,
-            var buttonStyle: ButtonStyle? = null)
+            var mainTextViewStyle: TextViewStyle? = null, // if null, the view is gone
+            var subTextViewStyle: TextViewStyle? = null, // if null, the view is gone
+            var buttonStyle: ButtonStyle? = null  // if null, the view is gone
+    )
 
     class ButtonStyle(
             var buttonIcon: Int? = R.drawable.baseline_play_arrow_white_24,

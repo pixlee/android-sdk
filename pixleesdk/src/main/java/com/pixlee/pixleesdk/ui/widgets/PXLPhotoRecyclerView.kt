@@ -44,10 +44,10 @@ class PXLPhotoRecyclerView : RecyclerView, LifecycleObserver {
         this.adapter = pxlPhotoAdapter
     }
 
-    var alphaForStoppedVideos:Float = 1f
-    fun initiate(infiniteScroll: Boolean = false,
-                 showingDebugView: Boolean = false,
-                 alphaForStoppedVideos:Float = 1f,
+    internal var alphaForStoppedVideos:Float = 1f
+    fun initiate(infiniteScroll: Boolean = false,     // or false
+                 showingDebugView: Boolean = false,   // false: for production, true: development only when you want to see the debug info
+                 alphaForStoppedVideos:Float = 1f,    // this is the alpha(opacity) of visible items in recyclerview except the first fully visible view(always 1f)
                  configuration: PXLPhotoView.Configuration? = null,
                  onButtonClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null,
                  onPhotoClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null) {

@@ -334,7 +334,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
                 val info = PhotoWithVideoInfo(pxlPhoto = photo,
                         imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP,
                         isLoopingVideo = true,
-                        videoVolume = true)
+                        soundMuted = true)
                 ViewerActivity.launch(context!!, info)
             }
         }

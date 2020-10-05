@@ -26,7 +26,7 @@ class PXLPhotoViewHolder(override val containerView: View) :
         pxlPhotoView.setConfiguration(configuration = configuration ?: PXLPhotoView.Configuration())
         pxlPhotoView.setPhoto(data.pxlPhoto, data.imageScaleType)
         pxlPhotoView.setLooping(data.isLoopingVideo)
-        pxlPhotoView.setVolume(if(data.videoVolume) 0f else 1f)
+        pxlPhotoView.setVolume(if(data.soundMuted) 0f else 1f)
 
         tv.visibility = if (showingDebugView) View.VISIBLE else View.GONE
         tvPercent.visibility = if (showingDebugView) View.VISIBLE else View.GONE
@@ -53,10 +53,10 @@ class PhotoWithImageScaleType(override val pxlPhoto: PXLPhoto,
                               override val imageScaleType: PXLPhotoView.ImageScaleType,
                               val heightInPixel: Int = 400.px.toInt(),
                               override val isLoopingVideo: Boolean = true,
-                              override val videoVolume: Boolean = false):PhotoWithVideoInfo(pxlPhoto, imageScaleType,isLoopingVideo, videoVolume), Parcelable
+                              override val soundMuted: Boolean = false):PhotoWithVideoInfo(pxlPhoto, imageScaleType,isLoopingVideo, soundMuted), Parcelable
 
 @Parcelize
 open class PhotoWithVideoInfo(open val pxlPhoto: PXLPhoto,
                               open val imageScaleType: PXLPhotoView.ImageScaleType,
                               open val isLoopingVideo: Boolean = true,
-                              open val videoVolume: Boolean = false): Parcelable
+                              open val soundMuted: Boolean = false): Parcelable

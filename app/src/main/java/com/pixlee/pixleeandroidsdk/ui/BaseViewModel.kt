@@ -73,10 +73,10 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
                             Log.e("pxlvideo", "pxlvideo.url: ${it.videoUrl.toString()}")
                             Log.e("pxlvideo", "pxlvideo.big: ${it.getUrlForSize(PXLPhotoSize.BIG)}")
                             newList.add(PhotoWithImageScaleType(pxlPhoto = it,
-                                    imageScaleType = PXLPhotoView.ImageScaleType.FIT_CENTER,
+                                    imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP,
                                     heightInPixel = cellHeightInPixel,
                                     isLoopingVideo = true,
-                                    videoVolume = false))
+                                    soundMuted = false))
                         }
                         allPXLPhotos.addAll(it.photos)
                         _resultEvent.value = Event(Command.Data(newList, it.page == 1))
