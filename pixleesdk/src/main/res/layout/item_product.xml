@@ -5,6 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:foreground="?android:attr/selectableItemBackground"
+    app:cardCornerRadius="5dp"
     android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp">
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,18 +18,20 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:background="#efefef"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/tvMain"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_weight="1"
             />
 
         <TextView
             android:id="@+id/tvMain"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:paddingTop="5dp"
             android:paddingLeft="@dimen/product_center"
             android:paddingRight="@dimen/product_left"
             android:maxLines="2"
@@ -62,6 +65,7 @@
             android:paddingTop="10dp"
             android:paddingLeft="@dimen/product_center"
             android:paddingRight="@dimen/product_left"
+            android:paddingBottom="5dp"
             app:layout_constraintLeft_toRightOf="@+id/imageView"
             app:layout_constraintTop_toBottomOf="@+id/tvSub"
             app:layout_constraintBottom_toBottomOf="parent">
@@ -97,20 +101,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:src="@drawable/baseline_bookmark_border_black_24"
+            android:layout_marginTop="5dp"
             app:layout_constraintLeft_toRightOf="@+id/barrier"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvMain"
             app:layout_constraintBottom_toTopOf="@+id/iconBox"
+            app:layout_constraintVertical_chainStyle="spread_inside"
             />
 
         <RelativeLayout
             android:id="@+id/iconBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
             app:layout_constraintLeft_toRightOf="@+id/barrier"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bookmark">
+            app:layout_constraintTop_toBottomOf="@+id/bookmark"
+            app:layout_constraintVertical_chainStyle="spread_inside">
             <ImageView
                 android:id="@+id/ivIcon"
                 android:layout_width="wrap_content"

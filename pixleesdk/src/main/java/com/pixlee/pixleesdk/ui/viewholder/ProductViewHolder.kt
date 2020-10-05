@@ -57,7 +57,7 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
     fun bind(product: PXLProduct, isBookmarked: Boolean?, configuration: Configuration) {
         Glide.with(imageView.context)
                 .load(product.imageThumb)
-                .centerCrop()
+                .fitCenter()
                 .into(imageView)
 
         configuration.mainTextStyle?.also { tvMain.setTextStyle(it) }
