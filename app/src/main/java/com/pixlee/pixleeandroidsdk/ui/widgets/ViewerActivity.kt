@@ -16,6 +16,7 @@ import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
+import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
 import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import com.pixlee.pixleesdk.util.px
@@ -81,7 +82,8 @@ class ViewerActivity : AppCompatActivity() {
                         selectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_black_36
                         unselectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_border_black_36
                     }
-                    priceTextStyle = TextStyle().apply {
+                    priceTextStyle = CurrencyTextStyle().apply {
+                        defaultCurrency = "EUR" // or null
                         size = 24.px
                         sizeUnit = TypedValue.COMPLEX_UNIT_PX
                         typeface = null

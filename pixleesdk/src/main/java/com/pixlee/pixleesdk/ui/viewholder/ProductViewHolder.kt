@@ -9,16 +9,18 @@ import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.pixlee.pixleesdk.data.PXLProduct
 import com.pixlee.pixleesdk.R
+import com.pixlee.pixleesdk.data.PXLProduct
+import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
 import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.ui.widgets.setTextStyle
+import com.pixlee.pixleesdk.util.getCurrencySymbol
 import com.pixlee.pixleesdk.util.px
 import com.pixlee.pixleesdk.util.setCompatColorFilter
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.item_product.*
 import java.text.DecimalFormat
 
-import kotlinx.android.synthetic.main.item_product.*
 
 /**
  * This is to display PXLProduct as a RecyclerView.ViewHolder
@@ -27,7 +29,7 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
     class Configuration(
             var mainTextStyle: TextStyle? = null,
             var subTextStyle: TextStyle? = null,
-            var priceTextStyle: TextStyle? = null,
+            var priceTextStyle: CurrencyTextStyle? = null,
             var bookmarkDrawable: Bookmark = Bookmark(),
             var circleIcon: CircleIcon = CircleIcon()
     )
@@ -42,7 +44,7 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
     }
 
     class CircleIcon(
-            var isVisible:Boolean = true,
+            var isVisible: Boolean = true,
             @DrawableRes var icon: Int = R.drawable.baseline_bookmark_black_36,
             @ColorInt var iconColor: Int = Color.WHITE,
             @ColorInt var backgroundColor: Int = Color.YELLOW,
@@ -67,10 +69,13 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
         configuration.priceTextStyle?.also { tvPrice.setTextStyle(it) }
         tvPrice.text = if (product.price == null) {
             ""
-        } else if (product.currency != null && product.currency.isNotEmpty()) {
-            product.currency + " " + formatter.format(product.price)
         } else {
-            formatter.format(product.price)
+            val symbol = product.getCurrencySymbol(configuration.priceTextStyle?.defaultCurrency)
+            if (symbol != null) {
+                formatter.format(product.price) + " " + symbol
+            } else {
+                formatter.format(product.price)
+            }
         }
 
         bookmark.visibility = if (configuration.bookmarkDrawable.isVisible) View.VISIBLE else View.GONE

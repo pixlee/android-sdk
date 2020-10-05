@@ -13,12 +13,20 @@ import com.pixlee.pixleesdk.util.px
 open class TextViewStyle(var text: String = "") : TextStyle()
 
 /**
+ * this is for a view with price and currency
+ */
+open class CurrencyTextStyle(var defaultCurrency: String? = null): TextStyle()
+
+/**
  * This lets the app customize TextView
  */
 open class TextStyle(var size: Float = 18.px,
                      var sizeUnit: Int = TypedValue.COMPLEX_UNIT_PX,
                      @ColorInt var color:Int = Color.WHITE,
                      var typeface: Typeface? = null)
+
+
+
 
 /**
  * This is to change TextView's UI using TextViewStyle passed by the SDK user
