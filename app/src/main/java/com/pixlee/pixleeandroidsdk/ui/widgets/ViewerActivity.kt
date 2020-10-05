@@ -68,11 +68,13 @@ class ViewerActivity : AppCompatActivity() {
                         padding = 5.px.toInt()
                     }
                     mainTextStyle = TextStyle().apply {
+                        color = Color.BLACK
                         size = 14.px
                         sizeUnit = TypedValue.COMPLEX_UNIT_PX
                         typeface = null
                     }
                     subTextStyle = TextStyle().apply {
+                        color = Color.BLACK
                         size = 12.px
                         sizeUnit = TypedValue.COMPLEX_UNIT_PX
                         typeface = null
@@ -84,9 +86,19 @@ class ViewerActivity : AppCompatActivity() {
                     }
                     priceTextStyle = CurrencyTextStyle().apply {
                         defaultCurrency = "EUR" // or null
-                        size = 24.px
-                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                        typeface = null
+                        leftText = TextStyle().apply {
+                            color = Color.BLACK
+                            size = 24.px
+                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                            typeface = null
+                        }
+
+                        rightText = TextStyle().apply {
+                            color = Color.BLACK
+                            size = 14.px
+                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                            typeface = null
+                        }
                     }
                 },
                 bookmarkMap = readBookmarks(item.pxlPhoto),

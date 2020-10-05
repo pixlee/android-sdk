@@ -2,6 +2,7 @@ package com.pixlee.pixleesdk.ui.viewholder
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.icu.math.BigDecimal
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
 import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.ui.widgets.setTextStyle
 import com.pixlee.pixleesdk.util.getCurrencySymbol
+import com.pixlee.pixleesdk.util.getFractionalPart
 import com.pixlee.pixleesdk.util.px
 import com.pixlee.pixleesdk.util.setCompatColorFilter
 import kotlinx.android.extensions.LayoutContainer
@@ -58,23 +60,26 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
                 .centerCrop()
                 .into(imageView)
 
-        tvMain.text = product.title
         configuration.mainTextStyle?.also { tvMain.setTextStyle(it) }
+        tvMain.text = product.title
 
+        configuration.subTextStyle?.also { tvMain.setTextStyle(it) }
         tvSub.visibility = if (product.description != null && product.description.isNotEmpty()) View.VISIBLE else View.GONE
         tvSub.text = product.description
 
-        configuration.subTextStyle?.also { tvMain.setTextStyle(it) }
 
-        configuration.priceTextStyle?.also { tvPrice.setTextStyle(it) }
-        tvPrice.text = if (product.price == null) {
+        configuration.priceTextStyle?.leftText?.also { tvPriceLeft.setTextStyle(it) }
+        configuration.priceTextStyle?.rightText?.also { tvPriceRight.setTextStyle(it) }
+        val price = product.price ?: 0.toBigDecimal()
+        tvPriceLeft.text = formatter.format(price.setScale(0, BigDecimal.ROUND_FLOOR))
+        tvPriceRight.text = if (price == null) {
             ""
         } else {
             val symbol = product.getCurrencySymbol(configuration.priceTextStyle?.defaultCurrency)
             if (symbol != null) {
-                formatter.format(product.price) + " " + symbol
+                price.getFractionalPart() + " " + symbol
             } else {
-                formatter.format(product.price)
+                price.getFractionalPart()
             }
         }
 

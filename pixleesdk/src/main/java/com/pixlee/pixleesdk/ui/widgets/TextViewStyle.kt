@@ -15,17 +15,17 @@ open class TextViewStyle(var text: String = "") : TextStyle()
 /**
  * this is for a view with price and currency
  */
-open class CurrencyTextStyle(var defaultCurrency: String? = null): TextStyle()
+open class CurrencyTextStyle(var defaultCurrency: String? = null,
+                             var leftText: TextStyle = TextStyle(),
+                             var rightText: TextStyle = TextStyle())
 
 /**
  * This lets the app customize TextView
  */
 open class TextStyle(var size: Float = 18.px,
                      var sizeUnit: Int = TypedValue.COMPLEX_UNIT_PX,
-                     @ColorInt var color:Int = Color.WHITE,
+                     @ColorInt var color: Int = Color.WHITE,
                      var typeface: Typeface? = null)
-
-
 
 
 /**
@@ -33,9 +33,7 @@ open class TextStyle(var size: Float = 18.px,
  */
 fun TextView.setTextViewStyle(style: TextViewStyle) {
     text = style.text
-    setTextSize(style.sizeUnit, style.size)
-    setTextColor(style.color)
-    typeface = style.typeface
+    setTextStyle(style)
 }
 
 /**
@@ -43,5 +41,8 @@ fun TextView.setTextViewStyle(style: TextViewStyle) {
  */
 fun TextView.setTextStyle(style: TextStyle) {
     setTextSize(style.sizeUnit, style.size)
-    typeface = style.typeface
+    setTextColor(style.color)
+    style.typeface?.also {
+        typeface = it
+    }
 }
