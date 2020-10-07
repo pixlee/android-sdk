@@ -24,7 +24,7 @@ class PXLPhotoViewHolder(override val containerView: View) :
     fun bind(data: PhotoWithImageScaleType, configuration: PXLPhotoView.Configuration? = null, showingDebugView: Boolean = false) {
         pxlPhotoView.layoutParams.height = data.heightInPixel
         pxlPhotoView.setConfiguration(configuration = configuration ?: PXLPhotoView.Configuration())
-        pxlPhotoView.setPhoto(data.pxlPhoto, data.imageScaleType)
+        pxlPhotoView.setContent(data.pxlPhoto, data.imageScaleType)
         pxlPhotoView.setLooping(data.isLoopingVideo)
         pxlPhotoView.setVolume(if(data.soundMuted) 0f else 1f)
 

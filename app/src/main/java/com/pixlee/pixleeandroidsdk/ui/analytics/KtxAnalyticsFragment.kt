@@ -71,7 +71,7 @@ class KtxAnalyticsFragment : BaseFragment() {
             when (it) {
                 is BaseViewModel.Command.Data -> {
                     it.list.firstOrNull()?.also {
-                        pxlPhotoView.setPhoto(it.pxlPhoto, PXLPhotoView.ImageScaleType.FIT_CENTER)
+                        pxlPhotoView.setContent(it.pxlPhoto, PXLPhotoView.ImageScaleType.FIT_CENTER)
                     }
                     tvStatus.setText(R.string.album_loading_complete)
                     tvStatus.text = if(it.isFirstPage) "First Load" else "Loaded More..."

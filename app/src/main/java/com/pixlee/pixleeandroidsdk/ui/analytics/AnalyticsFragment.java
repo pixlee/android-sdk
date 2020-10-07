@@ -93,7 +93,7 @@ public class AnalyticsFragment extends BaseFragment {
             public void onComplete(ArrayList<PXLPhoto> result) {
                 photos.addAll(result);
                 if(result.size()>0){
-                    binding.pxlPhotoView.setPhoto(result.get(0), PXLPhotoView.ImageScaleType.FIT_CENTER);
+                    binding.pxlPhotoView.setContent(result.get(0), PXLPhotoView.ImageScaleType.FIT_CENTER);
                 }
 
                 binding.tvStatus.setText(R.string.album_loading_complete);

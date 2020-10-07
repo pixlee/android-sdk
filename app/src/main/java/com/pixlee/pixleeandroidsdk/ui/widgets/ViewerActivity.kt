@@ -5,11 +5,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.pixlee.pixleeandroidsdk.R
@@ -59,7 +57,7 @@ class ViewerActivity : AppCompatActivity() {
 
     fun init(item: PhotoWithVideoInfo){
         pxlPhotoProductView.useLifecycleObserver(lifecycle)
-        pxlPhotoProductView.setPhoto(photoInfo = item,
+        pxlPhotoProductView.setContent(photoInfo = item,
                 configuration = ProductViewHolder.Configuration().apply {
                     circleIcon = ProductViewHolder.CircleIcon().apply {
                         icon = R.drawable.outline_shopping_bag_black_24

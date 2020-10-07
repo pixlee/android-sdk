@@ -301,7 +301,7 @@ class PXLPhotoView : RelativeLayout {
      * @param pxlPhoto
      * @param imageScaleType
      */
-    fun setPhoto(pxlPhoto: PXLPhoto, imageScaleType: ImageScaleType = defaultScaleType) {
+    fun setContent(pxlPhoto: PXLPhoto, imageScaleType: ImageScaleType = defaultScaleType) {
         this.pxlPhoto = pxlPhoto
         currentConfiguration.imageScaleType = imageScaleType
         startBlurBG()

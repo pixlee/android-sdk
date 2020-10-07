@@ -28,12 +28,12 @@ override fun onCreate(savedInstanceState: Bundle?) {
     ...
     ...
     val item: PhotoWithVideoInfo? = i.getParcelableExtra("photoWithVideoInfo")
-    // if the photo is null, close this image view
+    // if item is null, close this image view
     if (item == null) {
         finish()
         return
     }
-    pxlPhotoProductView.setPhoto(photoInfo = item,
+    pxlPhotoProductView.loadContent(photoInfo = item,
         configuration = ProductViewHolder.Configuration().apply {
             circleIcon = ProductViewHolder.CircleIcon().apply {
                 icon = R.drawable.<your drawable>
@@ -290,11 +290,11 @@ override fun onCreate(savedInstanceState: Bundle?) {
     fun startList(cellSize: Int) {
         // write codes to get photos first. Read API doc.
         // you should convert List<PXLPhoto> into List<PhotoWithImageScaleType>
-        val photos: List<PXLPhoto> = ....
+        val pxlPhotos: List<PXLPhoto> = ....
 
         // turn the list into List<PhotoWithImageScaleType> to set ImageScaleType[CENTER_CROP, FIT_CENTER], and the cells' height size
         val list = ArrayList<PhotoWithImageScaleType>()
-        photos.forEach { pxlPhoto ->
+        pxlPhotos.forEach { pxlPhoto ->
             list.add(PhotoWithImageScaleType(pxlPhoto = pxlPhoto,
                                             imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP,
                                             heightInPixel = cellSize,
@@ -417,7 +417,7 @@ class YourActivity: AppCompatActivity, LifecycleObserver {
     
         }
         pxlPhotoView.setConfiguration(configuration)
-        pxlPhotoView.setPhoto(it, PXLPhotoView.ImageScaleType.CENTER_CROP)   
+        pxlPhotoView.loadContent(it, PXLPhotoView.ImageScaleType.CENTER_CROP)   
     }
     
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)

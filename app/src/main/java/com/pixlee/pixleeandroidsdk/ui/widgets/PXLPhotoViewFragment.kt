@@ -105,7 +105,7 @@ class PXLPhotoViewFragment : BaseFragment(), LifecycleObserver {
 
     fun initPXLPhotoView(pxlPhotoView: PXLPhotoView, configuration: PXLPhotoView.Configuration, data:PhotoWithImageScaleType, imageScaleType: PXLPhotoView.ImageScaleType){
         pxlPhotoView.setConfiguration(configuration = configuration)
-        pxlPhotoView.setPhoto(data.pxlPhoto, imageScaleType)
+        pxlPhotoView.setContent(data.pxlPhoto, imageScaleType)
         pxlPhotoView.setLooping(data.isLoopingVideo)
         pxlPhotoView.setVolume(if(data.soundMuted) 0f else 1f)
     }

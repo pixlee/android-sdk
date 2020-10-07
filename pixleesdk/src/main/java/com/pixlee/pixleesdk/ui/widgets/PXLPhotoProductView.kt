@@ -48,11 +48,11 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
      *                      if not null, show bookmark toggle
      * @param onBookmarkClicked {productId: String, isBookmarkChecked: Boolean -> ... }
      */
-    fun setPhoto(photoInfo: PhotoWithVideoInfo,
-                 configuration: ProductViewHolder.Configuration = ProductViewHolder.Configuration(),
-                 bookmarkMap: HashMap<String, Boolean>? = null,
-                 onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null,
-                 onProductClicked: ((pxlProduct: PXLProduct) -> Unit)? = null) {
+    fun setContent(photoInfo: PhotoWithVideoInfo,
+                   configuration: ProductViewHolder.Configuration = ProductViewHolder.Configuration(),
+                   bookmarkMap: HashMap<String, Boolean>? = null,
+                   onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null,
+                   onProductClicked: ((pxlProduct: PXLProduct) -> Unit)? = null) {
         this.photoInfo = photoInfo
         this.bookmarkMap = bookmarkMap
         this.onBookmarkClicked = onBookmarkClicked
@@ -61,7 +61,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         loadProducts(configuration)
 
         pxlPhotoView.setConfiguration(configuration = PXLPhotoView.Configuration())
-        pxlPhotoView.setPhoto(photoInfo.pxlPhoto, photoInfo.imageScaleType)
+        pxlPhotoView.setContent(photoInfo.pxlPhoto, photoInfo.imageScaleType)
         pxlPhotoView.setLooping(photoInfo.isLoopingVideo)
         pxlPhotoView.setVolume(if(photoInfo.soundMuted) 0f else 1f)
     }
