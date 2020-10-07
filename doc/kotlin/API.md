@@ -98,6 +98,14 @@ Get the next pages
 val result = pxlKtxAlbum.getNextPage()
 ```
 
+### Get a Photo with an albumPhotoId of PXLPhoto
+```kotlin
+#!Kotlin.coroutines
+
+val albumPhotoId:String = <one of your album photo ids>
+val result:PXLPhoto = pxlKtxAlbum.getPhotoWithId(albumPhotoId)
+```
+
 ## How to get image urls
 Some imageURL fields can be empty or null depending on its data's status. In order to get appropriate images, you can use this method.
 ```kotlin
