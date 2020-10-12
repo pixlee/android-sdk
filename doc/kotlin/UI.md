@@ -564,7 +564,9 @@ class YourActivity: AppCompatActivity, LifecycleObserver {
     
         }
         pxlPhotoView.setConfiguration(configuration)
-        pxlPhotoView.loadContent(it, PXLPhotoView.ImageScaleType.CENTER_CROP)   
+
+        val item: PhotoWithImageScaleType? = arguments?.getParcelable("photoWithImageScaleType") // read PhotoWithImageScaleType
+        pxlPhotoView.loadContent(item, PXLPhotoView.ImageScaleType.CENTER_CROP)   
     }
     
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
