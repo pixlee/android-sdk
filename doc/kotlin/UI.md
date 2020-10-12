@@ -5,7 +5,8 @@ You can use these UI components after you retrive PXLPhoto data via our API [API
 
 ## Index
 - [PXLPhotoProductView](#PXLPhotoProductView) : A fullscreen view displaying PXLPhoto with a list of PXLPhoto
-- [PXLPhotoRecyclerView](#PXLPhotoRecyclerView) : A RecyclerView displaying a list of PXLPhoto
+- [PXLPhotoRecyclerView](#PXLPhotoRecyclerView) : A RecyclerView displaying a list of PXLPhoto (auto video playing, an infinite scroll) 
+- [PXLPhotoRecyclerViewInGrid](#PXLPhotoRecyclerViewInGrid) : A RecyclerView displaying a list of PXLPhoto (grid list, no auto video playing, no infinite scroll)
 - [PXLPhotoView](#PXLPhotoView) : A view to display PXLPhoto
 
 ### PXLPhotoProductView
@@ -342,6 +343,157 @@ class YourActivity : AppCompatActivity() {
         super.onPause()
         pxlPhotoRecyclerView.stopVideo()
     }
+}
+```
+
+## PXLPhotoRecyclerViewInGrid
+this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhotoView and PXLPhotoViewHolder.
+- you can customize most of ui elements if needed.
+- infinite scroll is not available here.
+- auto video playing is not available
+
+Add this to your xml
+```xml
+#!xml
+<com.pixlee.pixleesdk.ui.widgets.list.PXLPhotoRecyclerViewInGrid
+    android:id="@+id/pxlPhotoRecyclerViewInGrid"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
+```
+
+isLoopingVideo and soundMuted will be ignored in PXLPhotoRecyclerViewInGrid because PXLPhotoRecyclerViewInGrid does not support playing videos in the list 
+```kotlin
+#!kotlin
+PhotoWithImageScaleType(pxlPhoto = pxlPhoto,  //data
+    imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP, // [CENTER_CROP, FIT_CENTER]
+    heightInPixel = cellSize, // the height cell size in RecyclerView
+    isLoopingVideo = true,    // true: loop the video, false; play it once and stop it
+    soundMuted = true        // true: muted, false: unmuted
+)
+```
+
+Add this to your Activity or Fragment
+```kotlin
+#!kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(...)
+    ...
+    ...
+    // you can customize color, size if you need
+    pxlPhotoRecyclerViewInGrid.initiate(gridSpan = 2, // the number of cells in a row in the grid list
+                    lineSpace = Space().apply {
+                        lineWidthInPixel = 4.px.toInt() // space in pixel between cells
+                        includingEdge = false           // true: if you want to have the space out side of the list, false: no space out side of the list  
+                    },
+                    title = getTitleSpannable(), // you can custom your spannable getTitleSpannable() is one example of how you can implement your spannable  
+                    showingDebugView = false,
+                    configuration = PXLPhotoView.Configuration().apply {
+                        // Customize image size, not a video
+                        pxlPhotoSize = PXLPhotoSize.ORIGINAL
+                        // Customize Main TextView
+                        mainTextViewStyle = TextViewStyle().apply {
+                            text = "Spring\nColors"
+                            size = 30.px
+                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                            typeface = null
+                            textPadding = TextPadding(bottom = 30.px.toInt())
+                        }
+                        // Customize Sub TextView
+                        subTextViewStyle = null // you can hide this view by giving it null
+                        // Customize Button
+                        buttonStyle = PXLPhotoView.ButtonStyle().apply {
+                            text = "VER AHORA"
+                            size = 12.px
+                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                            typeface = null
+                            buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
+                            stroke = PXLPhotoView.Stroke().apply {
+                                width = 1.px.toInt()
+                                color = Color.WHITE
+                                radiusInPixel = 25.px
+                                padding = PXLPhotoView.Padding().apply {
+                                    left = 10.px.toInt()
+                                    centerRight = 20.px.toInt()
+                                    topBottom = 10.px.toInt()
+                                }
+                            }
+                        }
+    
+                    }, onButtonClickedListener = { view, photoWithImageScaleType ->
+                context?.also { ctx ->
+                    // you can add your business logic here
+                    Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
+                    moveToViewer(photoWithImageScaleType)
+                }
+            }, onPhotoClickedListener = { view, photoWithImageScaleType ->
+                context?.also { ctx ->
+                    // you can add your business logic here
+                    Toast.makeText(ctx, "onItemClickedListener", Toast.LENGTH_SHORT).show()
+                }
+            })
+
+    pxlPhotoRecyclerViewInGrid.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+            try {
+                if (pxlPhotoRecyclerViewInGrid == null)
+                    return
+
+                // this is to display two items at a time on the screen
+                val cellHeightInPixel = pxlPhotoRecyclerViewInGrid.measuredHeight * 0.6f
+                startList(cellHeightInPixel)
+                pxlPhotoRecyclerViewInGrid.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+})
+
+fun startList(cellSize: Int) {
+    // write codes to get photos first. Read API doc.
+    // you should convert List<PXLPhoto> into List<PhotoWithImageScaleType>
+    val pxlPhotos: List<PXLPhoto> = ....
+
+    // turn the list into List<PhotoWithImageScaleType> to set ImageScaleType[CENTER_CROP, FIT_CENTER], and the cells' height size
+    val list = ArrayList<PhotoWithImageScaleType>()
+    pxlPhotos.forEach { pxlPhoto ->
+        list.add(PhotoWithImageScaleType(pxlPhoto = pxlPhoto,
+                                        imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP,
+                                        heightInPixel = cellSize,
+                                        isLoopingVideo = true,
+                                        soundMuted = true))
+        list.add(PhotoWithImageScaleType(pxlPhoto = pxlPhoto,
+                                        imageScaleType = PXLPhotoView.ImageScaleType.FIT_CENTER,
+                                        heightInPixel = cellSize,
+                                        isLoopingVideo = true,
+                                        soundMuted = true))
+    }
+
+
+    // start the list UI by passing these arguments
+    pxlPhotoRecyclerView.replaceList(list)
+
+    // if you just want to use List<PXLPhoto>, you can do that by following these steps
+    // alternative step 1: val photos: List<PXLPhoto> = ....
+    // alternative step 2: pxlPhotoRecyclerView.replaceList(photos.toList(), PXLPhotoView.ImageScaleType.CENTER_CROP, cellSize)
+}
+
+fun getTitleSpannable(): SpannableString{
+    val top = "PXLEE\nSHOPPERS"
+    val tv = "\nTV"
+    val total = top + tv
+    val spannable = SpannableString(total)
+
+    spannable.setSpan(AbsoluteSizeSpan(40.px.toInt()), 0, top.length, 0); // set size
+    spannable.setSpan(ForegroundColorSpan(Color.BLACK), 0, top.length, 0);// set color
+
+    total.indexOf(tv).let { tvLocatedAt ->
+        spannable.setSpan(AbsoluteSizeSpan(20.px.toInt()), tvLocatedAt, tvLocatedAt + tv.length, 0); // set size
+        spannable.setSpan(ForegroundColorSpan(Color.BLACK), tvLocatedAt, tvLocatedAt + tv.length, 0);// set color
+    }
+
+    return spannable
 }
 ```
 

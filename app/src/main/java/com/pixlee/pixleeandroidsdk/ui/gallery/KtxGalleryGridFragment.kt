@@ -130,9 +130,12 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
 
     fun initGrid() {
         // you can customize color, size if you need
-        pxlPhotoRecyclerViewInGrid.initiate(gridSpan = 2,
-                lineSpace = Space(),
-                title = getTitleSpannable(),
+        pxlPhotoRecyclerViewInGrid.initiate(gridSpan = 2, // the number of cells in a row in the grid list
+                lineSpace = Space().apply {
+                    lineWidthInPixel = 4.px.toInt() // space in pixel between cells
+                    includingEdge = false           // true: if you want to have the space out side of the list, false: no space out side of the list
+                },
+                title = getTitleSpannable(), // you can custom your spannable getTitleSpannable() is one example of how you can implement your spannable
                 showingDebugView = false,
                 configuration = PXLPhotoView.Configuration().apply {
                     // Customize image size, not a video
@@ -146,7 +149,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
                         textPadding = TextPadding(bottom = 30.px.toInt())
                     }
                     // Customize Sub TextView
-                    subTextViewStyle = null
+                    subTextViewStyle = null // you can hide this view by giving it null
                     // Customize Button
                     buttonStyle = PXLPhotoView.ButtonStyle().apply {
                         text = "VER AHORA"
