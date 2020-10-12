@@ -347,10 +347,13 @@ class YourActivity : AppCompatActivity() {
 ```
 
 ## PXLPhotoRecyclerViewInGrid
-this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhotoView and PXLPhotoViewHolder.
+this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhotoView and PXLPhotoViewHolder. Please check KtxGalleryGridFragment.kt for example codes in the demo app.
 - you can customize most of ui elements if needed.
+- you can add a header text to the list.
+- you set a header to the grid list.
+- you customize the height of items.
 - infinite scroll is not available here.
-- auto video playing is not available
+- auto video playing is not available.
 
 Add this to your xml
 ```xml
@@ -386,7 +389,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
                         lineWidthInPixel = 4.px.toInt() // space in pixel between cells
                         includingEdge = false           // true: if you want to have the space out side of the list, false: no space out side of the list  
                     },
-                    title = getTitleSpannable(), // you can custom your spannable getTitleSpannable() is one example of how you can implement your spannable  
+                    listHeaderText = getTitleSpannable(), // you can add and custom a header text of the list with your spannable, and getTitleSpannable() is one example of how you can implement your spannable  
                     showingDebugView = false,
                     configuration = PXLPhotoView.Configuration().apply {
                         // Customize image size, not a video

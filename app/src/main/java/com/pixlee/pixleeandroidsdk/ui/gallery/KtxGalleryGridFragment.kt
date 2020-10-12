@@ -135,7 +135,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
                     lineWidthInPixel = 4.px.toInt() // space in pixel between cells
                     includingEdge = false           // true: if you want to have the space out side of the list, false: no space out side of the list
                 },
-                title = getTitleSpannable(), // you can custom your spannable getTitleSpannable() is one example of how you can implement your spannable
+                listHeaderText = getTitleSpannable(), // you can custom your spannable getTitleSpannable() is one example of how you can implement your spannable
                 showingDebugView = false,
                 configuration = PXLPhotoView.Configuration().apply {
                     // Customize image size, not a video
