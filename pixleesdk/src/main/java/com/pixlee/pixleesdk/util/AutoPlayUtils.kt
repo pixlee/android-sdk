@@ -24,15 +24,17 @@ object AutoPlayUtils {
         var playingIdx = -1
         for (i in 0..lastVisiblePosition - firstVisiblePosition) {
             val child = recyclerView.getChildAt(i)
-            val pxlPhotoView = child.findViewById<PXLPhotoView>(jzvdId)
-            if (playingIdx == -1 && getViewVisiblePercent(pxlPhotoView) == 100) {
-                if (positionInList != i + firstVisiblePosition) {
-                    Log.e("AuthPlayUtils", "-- detected player performClick() position: " + (firstVisiblePosition + i))
-                    playingIdx = i
-                    pxlPhotoView.playVideo()
+            if(child!=null){
+                val pxlPhotoView = child.findViewById<PXLPhotoView>(jzvdId)
+                if (playingIdx == -1 && getViewVisiblePercent(pxlPhotoView) == 100) {
+                    if (positionInList != i + firstVisiblePosition) {
+                        Log.e("AuthPlayUtils", "-- detected player performClick() position: " + (firstVisiblePosition + i))
+                        playingIdx = i
+                        pxlPhotoView.playVideo()
+                    }
                 }
+                child.alpha = if (playingIdx == i) 1f else alphaForStoppedVideos
             }
-            child.alpha = if (playingIdx == i) 1f else alphaForStoppedVideos
         }
     }
 

@@ -10,7 +10,9 @@ import com.pixlee.pixleesdk.util.px
 /**
  * This lets the app customize TextView with text:String
  */
-open class TextViewStyle(var text: String = "") : TextStyle()
+open class TextViewStyle(var text: String = "", var textPadding:TextPadding = TextPadding(bottom = 14.px.toInt())) : TextStyle()
+
+open class TextPadding(var left: Int = 0, var top: Int = 0, var right: Int = 0, var bottom: Int = 0)
 
 /**
  * this is for a view with price and currency
@@ -33,6 +35,10 @@ open class TextStyle(var size: Float = 18.px,
  */
 fun TextView.setTextViewStyle(style: TextViewStyle) {
     text = style.text
+    style.textPadding.also {
+        setPadding(it.left, it.top, it.right, it.bottom)
+    }
+
     setTextStyle(style)
 }
 

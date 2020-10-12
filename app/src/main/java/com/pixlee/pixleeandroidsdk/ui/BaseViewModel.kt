@@ -76,7 +76,7 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
                                     imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP,
                                     heightInPixel = cellHeightInPixel,
                                     isLoopingVideo = true,
-                                    soundMuted = false))
+                                    soundMuted = true))
                         }
                         allPXLPhotos.addAll(it.photos)
                         _resultEvent.value = Event(Command.Data(newList, it.page == 1))

@@ -68,7 +68,7 @@ class PXLPhotoView : RelativeLayout {
     class ButtonStyle(
             var buttonIcon: Int? = R.drawable.baseline_play_arrow_white_24,
             var stroke: Stroke = Stroke(),
-            var padding: Padding = Padding()) : TextViewStyle()
+            var padding: Padding = Padding()) : TextViewStyle(textPadding = TextPadding())
 
     class Stroke(var width: Int = 2.px.toInt(),
                  var color: Int = Color.WHITE,
@@ -140,6 +140,7 @@ class PXLPhotoView : RelativeLayout {
 
             button.setTextViewStyle(style)
             button.apply {
+                gravity = Gravity.CENTER
                 // padding of the parent view
                 style.padding.let {
                     val left = it.left
@@ -257,13 +258,11 @@ class PXLPhotoView : RelativeLayout {
             addView(linearLayout)
 
             LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                bottomMargin = 14.px.toInt()
                 subTextView.layoutParams = this
                 linearLayout.addView(subTextView)
             }
 
             LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                bottomMargin = 14.px.toInt()
                 mainTextView.layoutParams = this
                 linearLayout.addView(mainTextView)
             }

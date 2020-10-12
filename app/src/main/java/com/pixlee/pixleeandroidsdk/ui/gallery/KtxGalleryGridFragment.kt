@@ -2,7 +2,6 @@ package com.pixlee.pixleeandroidsdk.ui.gallery
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,9 @@ import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.core.view.GravityCompat
-import androidx.lifecycle.*
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.Observer
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleeandroidsdk.EventObserver
@@ -30,18 +31,20 @@ import com.pixlee.pixleesdk.enums.PXLContentType
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+import com.pixlee.pixleesdk.ui.widgets.TextPadding
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
+import com.pixlee.pixleesdk.ui.widgets.list.BaseRecyclerView
+import com.pixlee.pixleesdk.ui.widgets.list.PXLPhotoRecyclerView
 import com.pixlee.pixleesdk.util.px
-import kotlinx.android.synthetic.main.fragment_ktx_gallery.*
-import kotlinx.android.synthetic.main.fragment_ktx_gallery.pxlPhotoRecyclerView
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.*
 import kotlinx.android.synthetic.main.module_search.*
 
 /**
  * This shows how you can load photos of Pixlee using PXLAlbum.java
  */
-class KtxGalleryFragment : BaseFragment(),LifecycleObserver {
+class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
     override fun getTitleResource(): Int {
-        return R.string.title_ktx_album
+        return R.string.title_ktx_album_grid
     }
 
     val viewModel: KtxGalleryViewModel by lazy {
@@ -50,29 +53,26 @@ class KtxGalleryFragment : BaseFragment(),LifecycleObserver {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_ktx_gallery, container, false)
+        return inflater.inflate(R.layout.fragment_ktx_gallery_grid, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         radioGroupContentTypeVideo.isChecked = true
+        initRecyclerView()
         addViewModelListeners()
-        addClickListeners()
-        configureViews()
+        initFilterClickListeners()
 
-        // this will play the video on onResume and stop the video on onPause
-        pxlPhotoRecyclerView.useLifecycleObserver(lifecycle)
-
-        pxlPhotoRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        v_body.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 try {
-                    if (pxlPhotoRecyclerView == null)
+                    if (v_body == null)
                         return
 
-                    val cellHeightInPixel = pxlPhotoRecyclerView.measuredHeight * 0.5f
+                    val cellHeightInPixel = v_body.measuredHeight * 0.5f
                     viewModel.cellHeightInPixel = cellHeightInPixel.toInt()
                     loadAlbum()
-                    pxlPhotoRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    v_body.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -90,15 +90,14 @@ class KtxGalleryFragment : BaseFragment(),LifecycleObserver {
             when (it) {
                 is BaseViewModel.Command.Data -> {
                     if (it.isFirstPage) {
-                        pxlPhotoRecyclerView.replaceList(it.list)
-                        pxlPhotoRecyclerView.playVideo()
-                        if(it.list.isNotEmpty()){
+                        pxlPhotoRecyclerViewInGrid.replaceList(it.list)
+                        if (it.list.isNotEmpty()) {
                             it.list.firstOrNull()?.pxlPhoto?.also {
                                 viewModel.getPhotoWithId(it)
                             }
                         }
                     } else {
-                        pxlPhotoRecyclerView.addList(it.list)
+                        pxlPhotoRecyclerViewInGrid.addList(it.list)
                     }
 
                 }
@@ -106,47 +105,41 @@ class KtxGalleryFragment : BaseFragment(),LifecycleObserver {
         })
     }
 
-    fun addClickListeners() {
+    fun initRecyclerView() {
+        initGrid()
+    }
+
+    fun initGrid() {
         // you can customize color, size if you need
-        pxlPhotoRecyclerView.initiate(infiniteScroll = true,
+        pxlPhotoRecyclerViewInGrid.initiate(gridSpan = 2,
                 showingDebugView = false,
-                alphaForStoppedVideos = 0.5f,
                 configuration = PXLPhotoView.Configuration().apply {
                     // Customize image size, not a video
                     pxlPhotoSize = PXLPhotoSize.ORIGINAL
                     // Customize Main TextView
                     mainTextViewStyle = TextViewStyle().apply {
-                        text = "Main Text"
+                        text = "Spring\nColors"
                         size = 30.px
                         sizeUnit = TypedValue.COMPLEX_UNIT_PX
                         typeface = null
+                        textPadding = TextPadding(bottom = 30.px.toInt())
                     }
                     // Customize Sub TextView
-                    subTextViewStyle = TextViewStyle().apply {
-                        text = "Sub Text"
-                        size = 18.px
-                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                        typeface = null
-                    }
+                    subTextViewStyle = null
                     // Customize Button
                     buttonStyle = PXLPhotoView.ButtonStyle().apply {
-                        text = "Action Button"
-                        size = 20.px
+                        text = "VER AHORA"
+                        size = 12.px
                         sizeUnit = TypedValue.COMPLEX_UNIT_PX
                         typeface = null
                         buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
                         stroke = PXLPhotoView.Stroke().apply {
-                            width = 2.px.toInt()
+                            width = 1.px.toInt()
                             color = Color.WHITE
                             radiusInPixel = 25.px
-                            stroke = PXLPhotoView.Stroke().apply {
-                                width = 2.px.toInt()
-                                color = Color.WHITE
-                                radiusInPixel = 25.px
-                            }
                             padding = PXLPhotoView.Padding().apply {
-                                left = 20.px.toInt()
-                                centerRight = 40.px.toInt()
+                                left = 10.px.toInt()
+                                centerRight = 20.px.toInt()
                                 topBottom = 10.px.toInt()
                             }
                         }
@@ -164,7 +157,9 @@ class KtxGalleryFragment : BaseFragment(),LifecycleObserver {
                 Toast.makeText(ctx, "onItemClickedListener", Toast.LENGTH_SHORT).show()
             }
         })
+    }
 
+    fun initFilterClickListeners() {
         // set filter buttons
         fabFilter.setOnClickListener { drawerLayout.openDrawer(GravityCompat.END) }
         btnCloseFilter.setOnClickListener { drawerLayout.closeDrawer(GravityCompat.END) }
@@ -215,24 +210,6 @@ class KtxGalleryFragment : BaseFragment(),LifecycleObserver {
                 viewModel.getFirstPage()
             }
         }
-    }
-
-    private fun configureViews() {
-        pxlPhotoRecyclerView.linearLayoutManager
-        pxlPhotoRecyclerView.addOnScrollListener(object :
-                androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-            override fun onScrolled(
-                    recyclerView: androidx.recyclerview.widget.RecyclerView,
-                    dx: Int,
-                    dy: Int
-            ) {
-                super.onScrolled(recyclerView, dx, dy)
-                pxlPhotoRecyclerView.linearLayoutManager.apply {
-                    viewModel.listScrolled(childCount, findLastVisibleItemPosition(), itemCount)
-                }
-
-            }
-        })
     }
 
     fun readPerPage(): Int {
@@ -396,5 +373,27 @@ class KtxGalleryFragment : BaseFragment(),LifecycleObserver {
                     .show()
         }
         //PXLPhotoViewerActivity.launch(context!!, photo)
+    }
+
+    fun isGrid(): Boolean {
+        return arguments?.getBoolean("isGrid") ?: false
+    }
+
+    companion object {
+        fun getGridInstance(): Fragment {
+            val f: Fragment = KtxGalleryGridFragment()
+            val bundle = Bundle()
+            bundle.putBoolean("isGrid", true)
+            f.arguments = bundle
+            return f
+        }
+
+        fun getListInstance(): Fragment {
+            val f: Fragment = KtxGalleryGridFragment()
+            val bundle = Bundle()
+            bundle.putBoolean("isGrid", false)
+            f.arguments = bundle
+            return f
+        }
     }
 }

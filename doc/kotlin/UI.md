@@ -244,11 +244,6 @@ override fun onCreate(savedInstanceState: Bundle?) {
                         width = 2.px.toInt()
                         color = Color.WHITE
                         radiusInPixel = 25.px
-                        stroke = PXLPhotoView.Stroke().apply {
-                            width = 2.px.toInt()
-                            color = Color.WHITE
-                            radiusInPixel = 25.px
-                        }
                         padding = PXLPhotoView.Padding().apply {
                             left = 20.px.toInt()
                             centerRight = 40.px.toInt()

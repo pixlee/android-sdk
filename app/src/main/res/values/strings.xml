@@ -5,7 +5,8 @@
     <!-- Title -->
     <string name="title_index">Index</string>
     <string name="title_java_album">Album List (Java)</string>
-    <string name="title_ktx_album">Album List (Kotlin.coroutines)</string>
+    <string name="title_ktx_album_list">Album List (Kotlin.coroutines)</string>
+    <string name="title_ktx_album_grid">Album Grid (Kotlin.coroutines)</string>
     <string name="title_java_upload">Upload Image/Video (Java)</string>
     <string name="title_java_analytics">Call Analytics (Java)</string>
     <string name="title_ktx_analytics">Call Analytics (Kotlin.coroutines)</string>
