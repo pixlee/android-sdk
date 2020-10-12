@@ -1,13 +1,16 @@
 package com.pixlee.pixleesdk.ui.adapter
 
 import android.text.Spannable
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.pixlee.pixleesdk.ui.viewholder.PXLPhotoViewHolder
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.viewholder.TextHeaderViewHolder
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+import com.pixlee.pixleesdk.ui.widgets.TextPadding
 import kotlinx.android.synthetic.main.item_pxlphoto.*
 
 /**
@@ -21,8 +24,8 @@ class PXLPhotoAdapter(
         var showingDebugView: Boolean = false
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     sealed class Item {
-        class Header(val text: Spannable): Item()
-        class Content(val data: PhotoWithImageScaleType): Item()
+        class Header(val text: Spannable, val padding: TextPadding = TextPadding()) : Item()
+        class Content(val data: PhotoWithImageScaleType) : Item()
     }
 
     val list: ArrayList<Item> = ArrayList()
@@ -30,14 +33,14 @@ class PXLPhotoAdapter(
     val TYPE_HEADER = 1
     val TYPE_ITEM = 2
     override fun getItemViewType(position: Int): Int {
-        return when(list[getRealPosition(position)]){
+        return when (list[getRealPosition(position)]) {
             is Item.Header -> TYPE_HEADER
             is Item.Content -> TYPE_ITEM
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when(viewType){
+        return when (viewType) {
             TYPE_HEADER -> TextHeaderViewHolder.create(parent)
             else -> PXLPhotoViewHolder.create(parent)
         }
@@ -45,27 +48,33 @@ class PXLPhotoAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = list[getRealPosition(position)]
-        when(item){
-            is Item.Header -> {
-                val vh = (holder as TextHeaderViewHolder)
-                vh.bind(item.text)
-                vh.itemView.setOnClickListener(null)
+        when (holder) {
+            is TextHeaderViewHolder -> {
+                val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+                layoutParams.isFullSpan = true
+
+                val data = item as Item.Header
+                holder.bind(data.text, data.padding)
+                holder.itemView.setOnClickListener(null)
             }
-            is Item.Content -> {
-                val vh = (holder as PXLPhotoViewHolder)
-                vh.bind(item.data, photoViewConfiguration, showingDebugView)
-                vh.itemView.setOnClickListener {
+            is PXLPhotoViewHolder -> {
+                val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+                layoutParams.isFullSpan = false
+
+                val data = item as Item.Content
+                holder.bind(data.data, photoViewConfiguration, showingDebugView)
+                holder.itemView.setOnClickListener {
                     onPhotoClickedListener?.also {
-                        it(vh.itemView, item.data)
+                        it(holder.itemView, data.data)
                     }
                 }
 
                 if (onButtonClickedListener == null) {
-                    vh.pxlPhotoView.setButtonClickListener(null)
+                    holder.pxlPhotoView.setButtonClickListener(null)
                 } else {
-                    vh.pxlPhotoView.setButtonClickListener(View.OnClickListener {
+                    holder.pxlPhotoView.setButtonClickListener(View.OnClickListener {
                         onButtonClickedListener?.also {
-                            it(vh.itemView, item.data)
+                            it(holder.itemView, data.data)
                         }
                     })
                 }

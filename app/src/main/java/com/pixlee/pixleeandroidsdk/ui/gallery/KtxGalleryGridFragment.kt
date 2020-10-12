@@ -2,6 +2,9 @@ package com.pixlee.pixleeandroidsdk.ui.gallery
 
 import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -33,8 +36,7 @@ import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextPadding
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
-import com.pixlee.pixleesdk.ui.widgets.list.BaseRecyclerView
-import com.pixlee.pixleesdk.ui.widgets.list.PXLPhotoRecyclerView
+import com.pixlee.pixleesdk.ui.widgets.list.Space
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.*
 import kotlinx.android.synthetic.main.module_search.*
@@ -109,9 +111,28 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         initGrid()
     }
 
+    fun getTitleSpannable(): SpannableString{
+        val top = "PXLEE\nSHOPPERS"
+        val tv = "\nTV"
+        val total = top + tv
+        val spannable = SpannableString(total)
+
+        spannable.setSpan(AbsoluteSizeSpan(40.px.toInt()), 0, top.length, 0); // set size
+        spannable.setSpan(ForegroundColorSpan(Color.BLACK), 0, top.length, 0);// set color
+
+        total.indexOf(tv).let { tvLocatedAt ->
+            spannable.setSpan(AbsoluteSizeSpan(20.px.toInt()), tvLocatedAt, tvLocatedAt + tv.length, 0); // set size
+            spannable.setSpan(ForegroundColorSpan(Color.BLACK), tvLocatedAt, tvLocatedAt + tv.length, 0);// set color
+        }
+
+        return spannable
+    }
+
     fun initGrid() {
         // you can customize color, size if you need
         pxlPhotoRecyclerViewInGrid.initiate(gridSpan = 2,
+                lineSpace = Space(),
+                title = getTitleSpannable(),
                 showingDebugView = false,
                 configuration = PXLPhotoView.Configuration().apply {
                     // Customize image size, not a video
