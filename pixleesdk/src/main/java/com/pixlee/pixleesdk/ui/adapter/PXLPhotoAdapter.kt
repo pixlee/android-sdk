@@ -50,16 +50,19 @@ class PXLPhotoAdapter(
         val item = list[getRealPosition(position)]
         when (holder) {
             is TextHeaderViewHolder -> {
-                val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-                layoutParams.isFullSpan = true
+                if(holder.itemView.layoutParams is StaggeredGridLayoutManager.LayoutParams){
+                    val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+                    layoutParams.isFullSpan = true
+                }
 
                 val data = item as Item.Header
                 holder.bind(data.text, data.padding)
                 holder.itemView.setOnClickListener(null)
             }
             is PXLPhotoViewHolder -> {
-                val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-                layoutParams.isFullSpan = false
+                if(holder.itemView.layoutParams is StaggeredGridLayoutManager.LayoutParams){
+
+                }
 
                 val data = item as Item.Content
                 holder.bind(data.data, photoViewConfiguration, showingDebugView)
