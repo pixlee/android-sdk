@@ -11,6 +11,7 @@ import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
+import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.fragment_pxlphotoview_in_recyclerview.*
@@ -64,21 +65,21 @@ class PXLPhotoViewInRecyclerViewFragment : BaseFragment() {
         if (pxlPhoto != null) {
             val list = ArrayList<PhotoWithImageScaleType>()
             for (i in 1..5) {
-                list.add(PhotoWithImageScaleType(pxlPhoto, PXLPhotoView.ImageScaleType.CENTER_CROP, cellSize))
+                list.add(PhotoWithImageScaleType(pxlPhoto, ImageScaleType.CENTER_CROP, cellSize))
             }
 
-            list.add(PhotoWithImageScaleType(pxlPhoto, PXLPhotoView.ImageScaleType.CENTER_CROP, cellSize))
+            list.add(PhotoWithImageScaleType(pxlPhoto, ImageScaleType.CENTER_CROP, cellSize))
 
             for (i in 6..10) {
                 //list.add("$i")
-                list.add(PhotoWithImageScaleType(pxlPhoto, PXLPhotoView.ImageScaleType.FIT_CENTER, cellSize))
+                list.add(PhotoWithImageScaleType(pxlPhoto, ImageScaleType.FIT_CENTER, cellSize))
             }
 
-            list.add(PhotoWithImageScaleType(pxlPhoto, PXLPhotoView.ImageScaleType.FIT_CENTER, 600.px.toInt()))
+            list.add(PhotoWithImageScaleType(pxlPhoto, ImageScaleType.FIT_CENTER, 600.px.toInt()))
 
             for (i in 11..20) {
                 //list.add("$i")
-                list.add(PhotoWithImageScaleType(pxlPhoto, PXLPhotoView.ImageScaleType.FIT_CENTER, 600.px.toInt()))
+                list.add(PhotoWithImageScaleType(pxlPhoto, ImageScaleType.FIT_CENTER, 600.px.toInt()))
             }
 
             pxlPhotoRecyclerView.replaceList(list)
@@ -86,13 +87,13 @@ class PXLPhotoViewInRecyclerViewFragment : BaseFragment() {
             val pxlPhotos = arguments?.getParcelableArrayList<PXLPhoto>("pxlPhotos")
             pxlPhotos?.also {
                 // two items in the viewport
-                //pxlPhotoRecyclerView.replaceList(it.toList(), PXLPhotoView.ImageScaleType.FIT_CENTER, cellSize)
+                //pxlPhotoRecyclerView.replaceList(it.toList(), ImageScaleType.FIT_CENTER, cellSize)
 
                 // crop mode
-                pxlPhotoRecyclerView.replaceList(it.toList(), PXLPhotoView.ImageScaleType.CENTER_CROP, cellSize)
+                pxlPhotoRecyclerView.replaceList(it.toList(), ImageScaleType.CENTER_CROP, cellSize)
 
                 // customize the cell height
-                // pxlPhotoRecyclerView.replaceList(it.toList(), PXLPhotoView.ImageScaleType.FIT_CENTER, 600.px.toInt())
+                // pxlPhotoRecyclerView.replaceList(it.toList(), ImageScaleType.FIT_CENTER, 600.px.toInt())
             }
 
         }

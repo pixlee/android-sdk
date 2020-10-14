@@ -1,7 +1,5 @@
 package com.pixlee.pixleesdk.ui.adapter
 
-import android.text.Spannable
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +8,7 @@ import com.pixlee.pixleesdk.ui.viewholder.PXLPhotoViewHolder
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.viewholder.TextHeaderViewHolder
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
-import com.pixlee.pixleesdk.ui.widgets.TextPadding
+import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
 import kotlinx.android.synthetic.main.item_pxlphoto.*
 
 /**
@@ -24,7 +22,7 @@ class PXLPhotoAdapter(
         var showingDebugView: Boolean = false
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     sealed class Item {
-        class Header(val text: Spannable, val padding: TextPadding = TextPadding()) : Item()
+        class Header(val listHeader: ListHeader) : Item()
         class Content(val data: PhotoWithImageScaleType) : Item()
     }
 
@@ -56,7 +54,7 @@ class PXLPhotoAdapter(
                 }
 
                 val data = item as Item.Header
-                holder.bind(data.text, data.padding)
+                holder.bind(data.listHeader)
                 holder.itemView.setOnClickListener(null)
             }
             is PXLPhotoViewHolder -> {

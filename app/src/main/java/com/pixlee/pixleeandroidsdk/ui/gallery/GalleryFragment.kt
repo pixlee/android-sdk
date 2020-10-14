@@ -26,6 +26,7 @@ import com.pixlee.pixleesdk.enums.PXLAlbumSortType
 import com.pixlee.pixleesdk.enums.PXLContentSource
 import com.pixlee.pixleesdk.enums.PXLContentType
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
+import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import kotlinx.android.synthetic.main.fragment_gallery.*
 import kotlinx.android.synthetic.main.module_search.*
@@ -332,7 +333,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
 
             } else {
                 val info = PhotoWithVideoInfo(pxlPhoto = photo,
-                        imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP,
+                        imageScaleType = ImageScaleType.CENTER_CROP,
                         isLoopingVideo = true,
                         soundMuted = true)
                 ViewerActivity.launch(context!!, info)

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
+import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.px
 
@@ -33,7 +34,7 @@ open class BaseRecyclerView : RecyclerView {
     /**
      * Add a list: List<PhotoWithImageScaleType> to an existing list
      */
-    fun addList(list: List<PXLPhoto>, imageScaleType: PXLPhotoView.ImageScaleType, heightInPixel: Int = 400.px.toInt()) {
+    fun addList(list: List<PXLPhoto>, imageScaleType: ImageScaleType, heightInPixel: Int = 400.px.toInt()) {
         setList(ListAddType.ADD, list, imageScaleType, heightInPixel)
     }
 
@@ -47,11 +48,11 @@ open class BaseRecyclerView : RecyclerView {
     /**
      * Replace a list: List<PXLPhoto> with an existing list
      */
-    fun replaceList(list: List<PXLPhoto>, imageScaleType: PXLPhotoView.ImageScaleType, heightInPixel: Int = 400.px.toInt()) {
+    fun replaceList(list: List<PXLPhoto>, imageScaleType: ImageScaleType, heightInPixel: Int = 400.px.toInt()) {
         setList(ListAddType.REPLACE, list, imageScaleType, heightInPixel)
     }
 
-    internal open fun setList(type: ListAddType, list: List<PXLPhoto>, imageScaleType: PXLPhotoView.ImageScaleType, heightInPixel: Int = 400.px.toInt()) {
+    internal open fun setList(type: ListAddType, list: List<PXLPhoto>, imageScaleType: ImageScaleType, heightInPixel: Int = 400.px.toInt()) {
         clearOldList(type)
         if (list.isNotEmpty()) {
             list.forEach {

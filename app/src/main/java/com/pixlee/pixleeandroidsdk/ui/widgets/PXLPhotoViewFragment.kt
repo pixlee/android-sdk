@@ -17,6 +17,7 @@ import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
+import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.util.px
@@ -82,9 +83,9 @@ class PXLPhotoViewFragment : BaseFragment(), LifecycleObserver {
 
             }
 
-            initPXLPhotoView(pxlPhotoViewFitWrapLandscape, configuration.copy(), it, PXLPhotoView.ImageScaleType.FIT_CENTER)
-            initPXLPhotoView(pxlPhotoViewFitPortrait, configuration.copy(), it, PXLPhotoView.ImageScaleType.FIT_CENTER)
-            initPXLPhotoView(pxlPhotoViewCrop, configuration.copy(), it, PXLPhotoView.ImageScaleType.CENTER_CROP)
+            initPXLPhotoView(pxlPhotoViewFitWrapLandscape, configuration.copy(), it, ImageScaleType.FIT_CENTER)
+            initPXLPhotoView(pxlPhotoViewFitPortrait, configuration.copy(), it, ImageScaleType.FIT_CENTER)
+            initPXLPhotoView(pxlPhotoViewCrop, configuration.copy(), it, ImageScaleType.CENTER_CROP)
 
             scrollView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
@@ -103,7 +104,7 @@ class PXLPhotoViewFragment : BaseFragment(), LifecycleObserver {
         }
     }
 
-    fun initPXLPhotoView(pxlPhotoView: PXLPhotoView, configuration: PXLPhotoView.Configuration, data:PhotoWithImageScaleType, imageScaleType: PXLPhotoView.ImageScaleType){
+    fun initPXLPhotoView(pxlPhotoView: PXLPhotoView, configuration: PXLPhotoView.Configuration, data:PhotoWithImageScaleType, imageScaleType: ImageScaleType){
         pxlPhotoView.setConfiguration(configuration = configuration)
         pxlPhotoView.setContent(data.pxlPhoto, imageScaleType)
         pxlPhotoView.setLooping(data.isLoopingVideo)

@@ -12,6 +12,7 @@ import cn.jzvd.Jzvd
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
+import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.AutoPlayUtils
 
@@ -85,7 +86,7 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver {
         pxlPhotoAdapter.notifyDataSetChanged()
     }
 
-    override fun setList(type: ListAddType, list: List<PXLPhoto>, imageScaleType: PXLPhotoView.ImageScaleType, heightInPixel: Int) {
+    override fun setList(type: ListAddType, list: List<PXLPhoto>, imageScaleType: ImageScaleType, heightInPixel: Int) {
         var needToMoveScroll = false
         if (list.isNotEmpty()) {
             needToMoveScroll = pxlPhotoAdapter.list.isEmpty()

@@ -11,6 +11,7 @@ import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
+import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.px
 import kotlinx.coroutines.launch
@@ -73,7 +74,7 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
                             Log.e("pxlvideo", "pxlvideo.url: ${it.videoUrl.toString()}")
                             Log.e("pxlvideo", "pxlvideo.big: ${it.getUrlForSize(PXLPhotoSize.BIG)}")
                             newList.add(PhotoWithImageScaleType(pxlPhoto = it,
-                                    imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP,
+                                    imageScaleType = ImageScaleType.CENTER_CROP,
                                     heightInPixel = cellHeightInPixel,
                                     isLoopingVideo = true,
                                     soundMuted = true))

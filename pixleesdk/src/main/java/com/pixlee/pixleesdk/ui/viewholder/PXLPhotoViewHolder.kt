@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
+import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.extensions.LayoutContainer
@@ -50,13 +51,13 @@ class PXLPhotoViewHolder(override val containerView: View) :
  */
 @Parcelize
 class PhotoWithImageScaleType(override val pxlPhoto: PXLPhoto,
-                              override val imageScaleType: PXLPhotoView.ImageScaleType,
+                              override val imageScaleType: ImageScaleType,
                               val heightInPixel: Int = 400.px.toInt(),
                               override val isLoopingVideo: Boolean = true,
                               override val soundMuted: Boolean = false):PhotoWithVideoInfo(pxlPhoto, imageScaleType,isLoopingVideo, soundMuted), Parcelable
 
 @Parcelize
 open class PhotoWithVideoInfo(open val pxlPhoto: PXLPhoto,
-                              open val imageScaleType: PXLPhotoView.ImageScaleType,
+                              open val imageScaleType: ImageScaleType,
                               open val isLoopingVideo: Boolean = true,
                               open val soundMuted: Boolean = false): Parcelable

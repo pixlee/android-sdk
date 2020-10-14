@@ -389,7 +389,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
                         lineWidthInPixel = 4.px.toInt() // space in pixel between cells
                         includingEdge = false           // true: if you want to have the space out side of the list, false: no space out side of the list  
                     },
-                    listHeaderText = getTitleSpannable(), // you can add and custom a header text of the list with your spannable, and getTitleSpannable() is one example of how you can implement your spannable  
+                    listHeader = getTitleGif(), // you can custom your spannable either using getTitleSpannable() or getTitleGif(), examples of how you can implement your spannable  
                     showingDebugView = false,
                     configuration = PXLPhotoView.Configuration().apply {
                         // Customize image size, not a video
@@ -482,7 +482,7 @@ fun startList(cellSize: Int) {
     // alternative step 2: pxlPhotoRecyclerView.replaceList(photos.toList(), PXLPhotoView.ImageScaleType.CENTER_CROP, cellSize)
 }
 
-fun getTitleSpannable(): SpannableString{
+fun getTitleSpannable(): ListHeader{
     val top = "PXLEE\nSHOPPERS"
     val tv = "\nTV"
     val total = top + tv
@@ -496,7 +496,13 @@ fun getTitleSpannable(): SpannableString{
         spannable.setSpan(ForegroundColorSpan(Color.BLACK), tvLocatedAt, tvLocatedAt + tv.length, 0);// set color
     }
 
-    return spannable
+    val padding = 20.px.toInt()
+    return ListHeader.SpannableText(spannable = spannable,
+            padding = TextPadding(left = padding, top = padding, right = padding, bottom = padding))
+}
+
+fun getTitleGif(): ListHeader{
+    return ListHeader.Gif(url = "https://media.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif", heightInPixel = 200.px.toInt(), imageScaleType = ImageScaleType.FIT_CENTER)
 }
 ```
 
