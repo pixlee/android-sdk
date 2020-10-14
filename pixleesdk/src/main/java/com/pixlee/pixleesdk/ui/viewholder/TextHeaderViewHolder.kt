@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.pixlee.pixleesdk.R
+import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_header.*
@@ -24,10 +25,14 @@ class TextHeaderViewHolder(override val containerView: View) :
         when(listHeader){
             is ListHeader.Gif -> {
                 ivHeader.layoutParams.height = listHeader.heightInPixel
-                Glide.with(ivHeader)
+
+                var builder = Glide.with(ivHeader)
                         .load(listHeader.url)
-                        .fitCenter()
-                        .into(ivHeader)
+                builder = when(listHeader.imageScaleType){
+                    ImageScaleType.FIT_CENTER -> builder.fitCenter()
+                    ImageScaleType.CENTER_CROP -> builder.centerCrop()
+                }
+                builder.into(ivHeader)
             }
             is ListHeader.SpannableText -> {
                 tvHeader.text = listHeader.spannable

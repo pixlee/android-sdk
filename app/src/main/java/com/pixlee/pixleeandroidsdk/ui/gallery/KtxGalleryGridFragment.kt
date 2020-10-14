@@ -133,7 +133,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
     }
 
     fun getTitleGif(): ListHeader{
-        return ListHeader.Gif(url = "https://media.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif", heightInPixel = 200.px.toInt(), imageScaleType = ImageScaleType.FIT_CENTER)
+        return ListHeader.Gif(url = "https://media.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif", heightInPixel = 200.px.toInt(), imageScaleType = ImageScaleType.CENTER_CROP)
     }
 
     fun initGrid() {
@@ -143,7 +143,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
                     lineWidthInPixel = 4.px.toInt() // space in pixel between cells
                     includingEdge = false           // true: if you want to have the space out side of the list, false: no space out side of the list
                 },
-                listHeader = getTitleSpannable(), // you can custom your spannable either using getTitleSpannable() or getTitleGif(), examples of how you can implement your spannable
+                listHeader = getTitleGif(), // you can custom your spannable either using getTitleSpannable() or getTitleGif(), examples of how you can implement your spannable
                 showingDebugView = false,
                 configuration = PXLPhotoView.Configuration().apply {
                     // Customize image size, not a video
