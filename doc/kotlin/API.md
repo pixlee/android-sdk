@@ -3,10 +3,10 @@
 - [Album and Product Features](#Album-and-Product-Features)
     - [Initialization](#Initialization)
     - [Prepare parameters](#Prepare-parameters)
-        - Option 1: [to get Album contents](#to-get-Album-contents)
-        - Option 2: [to get Product contents](#to-get-Product-contents)
+        - Option 1: [to get Album content](#to-get-Album-content)
+        - Option 2: [to get Product content](#to-get-Product-content)
         - [Advanced parameter options](#Advanced-parameter-options)
-    - [Get contents](#Get-contents)
+    - [Get content](#Get-content)
     - [Get a PXLPhoto with an album photo id](API.md#get-pxlphoto-with-an-albumphotoid)
     - [How to get image urls](#How-to-get-image-urls)
 - Analytics
@@ -21,7 +21,7 @@
         - [Conversion](#Conversion)
 
 ## Album and Product Features
-To prepare to load the contents, you'll need the codes below
+To prepare to load the content, you'll need the codes below
 ### Initialization
 ```kotlin
 #!kotlin
@@ -45,7 +45,7 @@ val ktxAnalyticsDataSource = client.ktxAnalyticsDataSource
 val pxlKtxAlbum = PXLKtxAlbum(ktxBasicDataSource, ktxAnalyticsDataSource)
 ```
 ### Prepare parameters
-- #### Option 1: to get Album contents
+- #### Option 1: to get Album content
 ```kotlin
 #!kotlin
 
@@ -55,7 +55,7 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
      searchId = searchId
 )
 ```
-- #### Option 2: to get Product contents
+- #### Option 2: to get Product content
 ```kotlin
 #!kotlin
 
@@ -84,7 +84,7 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
     }
 )
 ```
-### Get contents (a list of PXLPhoto)
+### Get content (a list of PXLPhoto)
 Get the first page
 ```kotlin
 #!Kotlin.coroutines
@@ -162,7 +162,7 @@ See the onComplete function in GalleryFragment.java for an example.
 
     pxlKtxAlbum.loadMore();
     ```
-- if you want to manually fire pxlKtxAlbum.loadMore(), first you must successfully call this pxlKtxAlbum.getNextPage(callLoadMoreAnalytics = true) to get contents which does not fire loadMore(), then you manually fire pxlKtxAlbum.loadMore() in your app.
+- if you want to manually fire pxlKtxAlbum.loadMore(), first you must successfully call this pxlKtxAlbum.getNextPage(callLoadMoreAnalytics = true) to get content which does not fire loadMore(), then you manually fire pxlKtxAlbum.loadMore() in your app.
 
 ### Opened Lightbox
 - To fire an opened ligtbox event, simply call the `openedLightbox` method of PXLKtxAlbum, and an "Opened Lightbox" event will be fired containing all of the necessary analytics information.
