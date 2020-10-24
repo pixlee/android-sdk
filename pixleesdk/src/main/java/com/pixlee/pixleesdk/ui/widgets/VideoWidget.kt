@@ -9,14 +9,15 @@ class VideoWidget : JzvdStd {
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
 
     var volume = 1f
-    fun setVolume(volume: Float):VideoWidget{
+    fun changeVolume(volume: Float):VideoWidget{
         this.volume = volume
+        if(mediaInterface!=null) mediaInterface.setVolume(volume, volume)
         return this
     }
 
     override fun onPrepared() {
         super.onPrepared()
-        mediaInterface.setVolume(volume, volume)
+        if(mediaInterface!=null) mediaInterface.setVolume(volume, volume)
     }
 
 

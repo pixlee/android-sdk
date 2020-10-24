@@ -163,9 +163,9 @@ class PXLPhotoView : RelativeLayout {
      * @param 0f: mute the sound, ~ 1f: unmute the sound, 1f is the max volume
      * @return PXLPhotoView, builder pattern
      */
-    fun setVolume(volume: Float): PXLPhotoView {
+    fun changeVolume(volume: Float): PXLPhotoView {
         this.volume = volume
-        videoView.volume = volume
+        videoView.changeVolume(volume)
         return this
     }
 

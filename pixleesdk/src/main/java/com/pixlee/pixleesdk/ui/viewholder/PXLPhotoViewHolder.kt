@@ -27,7 +27,7 @@ class PXLPhotoViewHolder(override val containerView: View) :
         pxlPhotoView.setConfiguration(configuration = configuration ?: PXLPhotoView.Configuration())
         pxlPhotoView.setContent(data.pxlPhoto, data.imageScaleType)
         pxlPhotoView.setLooping(data.isLoopingVideo)
-        pxlPhotoView.setVolume(if(data.soundMuted) 0f else 1f)
+        pxlPhotoView.changeVolume(if(data.soundMuted) 0f else 1f)
 
         tv.visibility = if (showingDebugView) View.VISIBLE else View.GONE
         tvPercent.visibility = if (showingDebugView) View.VISIBLE else View.GONE

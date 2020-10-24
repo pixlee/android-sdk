@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -101,4 +100,18 @@
                 android:layout_marginRight="@dimen/margin"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchSound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="#66000000"
+        android:textColor="@color/white_50"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:switchPadding="16dp"
+        android:text="Sound"
+        android:textAllCaps="false"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Button"
+        />
 </RelativeLayout>

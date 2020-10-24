@@ -37,6 +37,12 @@ class PXLPhotoViewFragment : BaseFragment(), LifecycleObserver {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        switchSound.setOnClickListener {
+            pxlPhotoViewFitWrapLandscape.changeVolume(if(!switchSound.isChecked) 0f else 1f)
+            pxlPhotoViewFitPortrait.changeVolume(if(!switchSound.isChecked) 0f else 1f)
+            pxlPhotoViewCrop.changeVolume(if(!switchSound.isChecked) 0f else 1f)
+        }
+
         lifecycle.addObserver(this)
         val item: PhotoWithImageScaleType? = arguments?.getParcelable("photoWithImageScaleType")
         item?.also {
@@ -108,7 +114,7 @@ class PXLPhotoViewFragment : BaseFragment(), LifecycleObserver {
         pxlPhotoView.setConfiguration(configuration = configuration)
         pxlPhotoView.setContent(data.pxlPhoto, imageScaleType)
         pxlPhotoView.setLooping(data.isLoopingVideo)
-        pxlPhotoView.setVolume(if(data.soundMuted) 0f else 1f)
+        pxlPhotoView.changeVolume(if(data.soundMuted) 0f else 1f)
     }
 
     fun startScrollListener() {
