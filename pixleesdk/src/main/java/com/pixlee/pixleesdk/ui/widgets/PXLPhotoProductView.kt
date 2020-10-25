@@ -90,10 +90,16 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         }
     }
 
+    /**
+     * mute the sound
+     */
     fun mute() {
         pxlPhotoView.changeVolume(0f)
     }
 
+    /**
+     * unmute the sound
+     */
     fun unmute() {
         pxlPhotoView.changeVolume(1f)
     }

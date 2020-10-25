@@ -178,6 +178,18 @@ class YourActivity : AppCompatActivity() {
 }
 ```
 
+Mute the video
+```kotlin
+#!kotlin
+pxlPhotoProductView.mute()
+```
+
+Unmute the Video
+```kotlin
+#!kotlin
+pxlPhotoProductView.unmute()
+``` 
+
 ## PXLPhotoRecyclerView
 this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhotoView and PXLPhotoViewHolder.
 - you can customize most of ui elements if needed
