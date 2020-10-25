@@ -63,7 +63,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         pxlPhotoView.setConfiguration(configuration = PXLPhotoView.Configuration())
         pxlPhotoView.setContent(photoInfo.pxlPhoto, photoInfo.imageScaleType)
         pxlPhotoView.setLooping(photoInfo.isLoopingVideo)
-        pxlPhotoView.changeVolume(if(photoInfo.soundMuted) 0f else 1f)
+        pxlPhotoView.changeVolume(if (photoInfo.soundMuted) 0f else 1f)
     }
 
     private fun loadProducts(configuration: ProductViewHolder.Configuration) {
@@ -90,13 +90,21 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         }
     }
 
+    fun mute() {
+        pxlPhotoView.changeVolume(0f)
+    }
+
+    fun unmute() {
+        pxlPhotoView.changeVolume(1f)
+    }
+
     /**
      * This will play the video on onResume and stop the video on onPause.
      *   - when ON_RESUME, this will call playVideo()
      *   - when ON_PAUSE, this will call stopVideo()
      * If you want to manually play and stop the video, don't use this and do use playVideo() and stopVideo() when you want
      */
-    fun useLifecycleObserver(lifecycle: Lifecycle){
+    fun useLifecycleObserver(lifecycle: Lifecycle) {
         lifecycle.addObserver(this)
     }
 

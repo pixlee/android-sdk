@@ -53,6 +53,14 @@ class ViewerActivity : AppCompatActivity() {
         }
 
         init(item)
+
+        switchSound.isChecked = !item.soundMuted
+        switchSound.setOnClickListener {
+            if(switchSound.isChecked)
+                pxlPhotoProductView.unmute()
+            else
+                pxlPhotoProductView.mute()
+        }
     }
 
     fun init(item: PhotoWithVideoInfo){
