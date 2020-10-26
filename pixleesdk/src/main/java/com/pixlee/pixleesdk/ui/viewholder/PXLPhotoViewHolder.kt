@@ -54,7 +54,7 @@ class PhotoWithImageScaleType(override val pxlPhoto: PXLPhoto,
                               override val imageScaleType: ImageScaleType,
                               val heightInPixel: Int = 400.px.toInt(),
                               override val isLoopingVideo: Boolean = true,
-                              override val soundMuted: Boolean = false):PhotoWithVideoInfo(pxlPhoto, imageScaleType,isLoopingVideo, soundMuted), Parcelable
+                              override var soundMuted: Boolean = false):PhotoWithVideoInfo(pxlPhoto, imageScaleType,isLoopingVideo, soundMuted), Parcelable
 
 @Parcelize
 open class PhotoWithVideoInfo(open val pxlPhoto: PXLPhoto,

@@ -38,9 +38,17 @@ class PXLPhotoViewFragment : BaseFragment(), LifecycleObserver {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         switchSound.setOnClickListener {
-            pxlPhotoViewFitWrapLandscape.changeVolume(if(!switchSound.isChecked) 0f else 1f)
-            pxlPhotoViewFitPortrait.changeVolume(if(!switchSound.isChecked) 0f else 1f)
-            pxlPhotoViewCrop.changeVolume(if(!switchSound.isChecked) 0f else 1f)
+            pxlPhotoViewFitWrapLandscape.apply {
+                if(switchSound.isChecked) unmute() else mute()
+            }
+
+            pxlPhotoViewFitPortrait.apply {
+                if(switchSound.isChecked) unmute() else mute()
+            }
+
+            pxlPhotoViewCrop.apply {
+                if(switchSound.isChecked) unmute() else mute()
+            }
         }
 
         lifecycle.addObserver(this)

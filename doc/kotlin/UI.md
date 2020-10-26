@@ -358,6 +358,18 @@ class YourActivity : AppCompatActivity() {
 }
 ```
 
+#### Mute the video
+```kotlin
+#!kotlin
+pxlPhotoRecyclerView.mute()
+```
+
+#### Unmute the Video
+```kotlin
+#!kotlin
+pxlPhotoRecyclerView.unmute()
+```
+
 ## PXLPhotoRecyclerViewInGrid
 this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhotoView and PXLPhotoViewHolder. Please check KtxGalleryGridFragment.kt for example codes in the demo app.
 - you can customize most of ui elements if needed.
@@ -604,4 +616,16 @@ class YourActivity: AppCompatActivity, LifecycleObserver {
     }
 }
 
+```
+
+#### Mute the video
+```kotlin
+#!kotlin
+pxlPhotoView.mute()
+```
+
+#### Unmute the Video
+```kotlin
+#!kotlin
+pxlPhotoView.unmute()
 ```

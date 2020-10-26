@@ -11,20 +11,28 @@ import androidx.recyclerview.widget.RecyclerView
 import cn.jzvd.Jzvd
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
+import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.AutoPlayUtils
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by sungjun on 9/17/20.
  */
 
-class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver {
+class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope {
+    lateinit var job: Job
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        job = Job()
         initView()
     }
 
@@ -37,10 +45,10 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver {
         this.adapter = pxlPhotoAdapter
     }
 
-    internal var alphaForStoppedVideos:Float = 1f
+    internal var alphaForStoppedVideos: Float = 1f
     fun initiate(infiniteScroll: Boolean = false,     // or false
                  showingDebugView: Boolean = false,   // false: for production, true: development only when you want to see the debug info
-                 alphaForStoppedVideos:Float = 1f,    // this is the alpha(opacity) of visible items in recyclerview except the first fully visible view(always 1f)
+                 alphaForStoppedVideos: Float = 1f,    // this is the alpha(opacity) of visible items in recyclerview except the first fully visible view(always 1f)
                  configuration: PXLPhotoView.Configuration? = null,
                  onButtonClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null,
                  onPhotoClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null) {
@@ -110,8 +118,8 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver {
         }
     }
 
-    internal fun playVideoIfneeded(recyclerView: RecyclerView){
-        if(linearLayoutManager!=null && pxlPhotoAdapter!=null && pxlPhotoAdapter.list.isNotEmpty()){
+    internal fun playVideoIfneeded(recyclerView: RecyclerView) {
+        if (linearLayoutManager != null && pxlPhotoAdapter != null && pxlPhotoAdapter.list.isNotEmpty()) {
             AutoPlayUtils.onScrollPlayVideo(recyclerView,
                     R.id.pxlPhotoView,
                     linearLayoutManager.findFirstVisibleItemPosition(),
@@ -126,19 +134,55 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver {
      *   - when ON_PAUSE, this will call stopVideo()
      * If you want to manually play and stop the video, don't use this and do use playVideo() and stopVideo() when you want
      */
-    fun useLifecycleObserver(lifecycle:Lifecycle){
+    fun useLifecycleObserver(lifecycle: Lifecycle) {
         lifecycle.addObserver(this)
     }
+
+    private var playingVideo = false
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun playVideo() {
         post {
+            playingVideo = true
             playVideoIfneeded(this)
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun stopVideo() {
+        playingVideo = false
         PXLPhotoView.releaseAllVideos()
+    }
+
+    /**
+     * mute the sound
+     */
+    fun mute() {
+        changeSound(true)
+    }
+
+    /**
+     * unmute the sound
+     */
+    fun unmute() {
+        changeSound(false)
+    }
+
+    private fun changeSound(muted: Boolean) {
+        launch {
+            if (pxlPhotoAdapter.list.isNotEmpty()) {
+                pxlPhotoAdapter.list.forEach {
+                    when (it) {
+                        is PXLPhotoAdapter.Item.Content -> {
+                            it.data.soundMuted = muted
+                        }
+                    }
+                }
+                pxlPhotoAdapter.notifyDataSetChanged()
+                if (playingVideo) {
+                    playVideo()
+                }
+            }
+        }
     }
 }

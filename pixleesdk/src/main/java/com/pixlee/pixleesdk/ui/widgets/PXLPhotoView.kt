@@ -169,6 +169,14 @@ class PXLPhotoView : RelativeLayout {
         return this
     }
 
+    fun mute(){
+        changeVolume(0f)
+    }
+
+    fun unmute(){
+        changeVolume(1f)
+    }
+
     var looping = false
 
     /**

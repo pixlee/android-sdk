@@ -56,6 +56,15 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         radioGroupContentTypeVideo.isChecked = true
+
+        switchSound.isChecked = false
+        switchSound.setOnClickListener {
+            if(switchSound.isChecked)
+                pxlPhotoRecyclerView.unmute()
+            else
+                pxlPhotoRecyclerView.mute()
+        }
+
         initRecyclerView()
         addViewModelListeners()
         initFilterClickListeners()
@@ -80,6 +89,7 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
     }
 
     fun addViewModelListeners() {
+
         viewModel.loading.observe(this, Observer {
             lottieView.visibility = if (it) View.VISIBLE else View.GONE
         })
