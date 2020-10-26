@@ -50,8 +50,9 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
                  showingDebugView: Boolean = false,   // false: for production, true: development only when you want to see the debug info
                  alphaForStoppedVideos: Float = 1f,    // this is the alpha(opacity) of visible items in recyclerview except the first fully visible view(always 1f)
                  configuration: PXLPhotoView.Configuration? = null,
-                 onButtonClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null,
-                 onPhotoClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null) {
+                 onButtonClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null, // called when a button is clicked
+                 onPhotoClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null  // called when a whole view is clicked
+    ) {
         setHasFixedSize(true)
         pxlPhotoAdapter.infiniteScroll = infiniteScroll
         pxlPhotoAdapter.showingDebugView = showingDebugView
@@ -168,20 +169,26 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
         changeSound(false)
     }
 
+    var changingSoundJob:Job? = null
     private fun changeSound(muted: Boolean) {
-        launch {
-            if (pxlPhotoAdapter.list.isNotEmpty()) {
-                pxlPhotoAdapter.list.forEach {
-                    when (it) {
-                        is PXLPhotoAdapter.Item.Content -> {
-                            it.data.soundMuted = muted
+        changingSoundJob?.cancel()
+        changingSoundJob = launch {
+            withContext(Dispatchers.IO){
+                if (pxlPhotoAdapter.list.isNotEmpty()) {
+                    pxlPhotoAdapter.list.forEach {
+                        when (it) {
+                            is PXLPhotoAdapter.Item.Content -> {
+                                it.data.soundMuted = muted
+                            }
                         }
                     }
+
                 }
-                pxlPhotoAdapter.notifyDataSetChanged()
-                if (playingVideo) {
-                    playVideo()
-                }
+            }
+
+            pxlPhotoAdapter.notifyDataSetChanged()
+            if (playingVideo) {
+                playVideo()
             }
         }
     }
