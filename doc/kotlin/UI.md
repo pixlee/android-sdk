@@ -12,7 +12,7 @@ You can use these UI components after you retrive PXLPhoto data via our API [API
 ### PXLPhotoProductView
 This shows a fullscreen PXLPhoto with its PXLProduct list. There is an example in ViewerActivity.kt
 
-Add this to your xml
+#### Add this to your xml
 ```xml
 #!XML
 <com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
@@ -20,7 +20,7 @@ Add this to your xml
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>
 ```
-Add this to your Activity or Fragment
+#### Add this to your Activity or Fragment
 ```kotlin
 #!kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,7 +106,7 @@ fun readBookmarks(pxlPhoto: PXLPhoto): HashMap<String, Boolean> {
 
 }
 
-If you want to change the bookmark
+#### If you want to change the bookmark
 ```kotlin
 #!kotlin
 bookmarkDrawable = ProductViewHolder.Bookmark().apply {
@@ -115,7 +115,7 @@ bookmarkDrawable = ProductViewHolder.Bookmark().apply {
     unselectedIcon = R.drawable.<your unselectedIcon>
 }
 ```
-If you want to change the bookmark with ColorFilter, add the code to ProductViewHolder.Configuration()
+#### If you want to change the bookmark with ColorFilter, add the code to ProductViewHolder.Configuration()
 ```kotlin
 #!kotlin
 bookmarkDrawable = ProductViewHolder.Bookmark().apply {
@@ -126,7 +126,7 @@ bookmarkDrawable = ProductViewHolder.Bookmark().apply {
 }
 ```
 
-If you want to custom the look of price and currency symbol, add the code to ProductViewHolder.Configuration()
+#### If you want to custom the look of price and currency symbol, add the code to ProductViewHolder.Configuration()
 ```kotlin
 #!kotlin
 priceTextStyle = CurrencyTextStyle().apply {
@@ -146,7 +146,7 @@ priceTextStyle = CurrencyTextStyle().apply {
     }
 }
 ```
-Play and stop the video
+#### Play and stop the video
 - Option 1: Automatic using androidx.lifecycle.Lifecycle(Jetpack)
   - Prerequisite: add the dependencies in the doc (https://developer.android.com/jetpack/androidx/releases/lifecycle) to your app gradle. You can also see the sample on app/build.gradle in the demo app.   
   - Add the codes 
@@ -178,13 +178,13 @@ class YourActivity : AppCompatActivity() {
 }
 ```
 
-Mute the video
+#### Mute the video
 ```kotlin
 #!kotlin
 pxlPhotoProductView.mute()
 ```
 
-Unmute the Video
+#### Unmute the Video
 ```kotlin
 #!kotlin
 pxlPhotoProductView.unmute()
@@ -196,7 +196,7 @@ this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhoto
 - infinite scroll is available.
 - playing a video
 
-Add this to your xml
+#### Add this to your xml
 ```xml
 #!xml
 <com.pixlee.pixleesdk.ui.widgets.PXLPhotoRecyclerView
@@ -205,7 +205,7 @@ Add this to your xml
     android:layout_height="match_parent"/>
 ```
 
-Control the video with
+#### Control the video with
 ```kotlin
 #!kotlin
 PhotoWithImageScaleType(pxlPhoto = pxlPhoto,  //data
@@ -216,7 +216,7 @@ PhotoWithImageScaleType(pxlPhoto = pxlPhoto,  //data
 )
 ```
 
-Add this to your Activity or Fragment
+#### Add this to your Activity or Fragment
 ```kotlin
 #!kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
@@ -326,7 +326,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 }
 ```
 
-Play and stop the video
+#### Play and stop the video
 - Option 1: Automatic using androidx.lifecycle.Lifecycle(Jetpack)
   - Prerequisite: add the dependencies in the doc (https://developer.android.com/jetpack/androidx/releases/lifecycle) to your app gradle. You can also see the sample on app/build.gradle in the demo app.   
   - Add the codes 
@@ -367,7 +367,7 @@ this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhoto
 - infinite scroll is not available here.
 - auto video playing is not available.
 
-Add this to your xml
+#### Add this to your xml
 ```xml
 #!xml
 <com.pixlee.pixleesdk.ui.widgets.list.PXLPhotoRecyclerViewInGrid
@@ -376,7 +376,7 @@ Add this to your xml
     android:layout_height="match_parent"/>
 ```
 
-isLoopingVideo and soundMuted will be ignored in PXLPhotoRecyclerViewInGrid because PXLPhotoRecyclerViewInGrid does not support playing videos in the list 
+#### isLoopingVideo and soundMuted will be ignored in PXLPhotoRecyclerViewInGrid because PXLPhotoRecyclerViewInGrid does not support playing videos in the list 
 ```kotlin
 #!kotlin
 PhotoWithImageScaleType(pxlPhoto = pxlPhoto,  //data
@@ -387,7 +387,7 @@ PhotoWithImageScaleType(pxlPhoto = pxlPhoto,  //data
 )
 ```
 
-Add this to your Activity or Fragment
+#### Add this to your Activity or Fragment
 ```kotlin
 #!kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
@@ -521,7 +521,7 @@ fun getTitleGif(): ListHeader{
 ## PXLPhotoView
 If you want to display your a PXLPhoto without a list of PXLProduct in your layout, you can use this codes.
 
-Add this to your xml
+#### Add this to your xml
 ```xml
 #!xml
 <com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
@@ -531,7 +531,7 @@ Add this to your xml
 />
 ```
 
-Add this to your Activity or Fragment
+#### Add this to your Activity or Fragment
 ```kotlin
 #!kotlin
 class YourActivity: AppCompatActivity, LifecycleObserver {
