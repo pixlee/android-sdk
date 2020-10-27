@@ -66,7 +66,7 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
 )
 ```
 - #### Advanced parameter options
-    - note: you can implement multi-region by adding regionId to PXLKtxBaseAlbum.Params. Then, you can get the right currencies of your products.
+    - note: you can get the right currencies of your products by adding regionId to PXLKtxBaseAlbum.Params.
 ```kotlin
 #!kotlin
 
