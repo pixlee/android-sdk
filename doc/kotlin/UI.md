@@ -134,31 +134,32 @@ fun readBookmarks(pxlPhoto: PXLPhoto): HashMap<String, Boolean> {
 ```kotlin
 #!kotlin
 pxlPhotoProductView.loadContent(...
-        headerConfiguration = PXLPhotoProductView.Configuration().apply {
-            backButton = PXLPhotoProductView.CircleButton().apply {
-                icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18
-                iconColor = Color.BLACK
-                backgroundColor = Color.WHITE
-                padding = 10.px.toInt()
-                onClickListener = {
-                    // back button's click effect
-                    Toast.makeText(this@ViewerActivity, "Replace this with your codes, currently 'onBackPressed()'", Toast.LENGTH_LONG).show()
-                    onBackPressed()
-                }
+    ...
+    headerConfiguration = PXLPhotoProductView.Configuration().apply {
+        backButton = PXLPhotoProductView.CircleButton().apply {
+            icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18
+            iconColor = Color.BLACK
+            backgroundColor = Color.WHITE
+            padding = 10.px.toInt()
+            onClickListener = {
+                // back button's click effect
+                Toast.makeText(this@ViewerActivity, "Replace this with your codes, currently 'onBackPressed()'", Toast.LENGTH_LONG).show()
+                onBackPressed()
             }
-            muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
-                mutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_up_black_18
-                unmutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_off_black_18
-                iconColor = Color.BLACK
-                backgroundColor = Color.WHITE
-                padding = 10.px.toInt()
-                onCheckedListener = {
-                    Toast.makeText(this@ViewerActivity, "is muted: $it'", Toast.LENGTH_LONG).show()
-                }
+        }
+        muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
+            mutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_up_black_18
+            unmutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_off_black_18
+            iconColor = Color.BLACK
+            backgroundColor = Color.WHITE
+            padding = 10.px.toInt()
+            onCheckedListener = {
+                Toast.makeText(this@ViewerActivity, "is muted: $it'", Toast.LENGTH_LONG).show()
             }
-        },
-        configuration = ...
-        ....
+        }
+    },
+    configuration = ...
+    ....
 )
 ```
 
@@ -166,6 +167,7 @@ pxlPhotoProductView.loadContent(...
 ```kotlin
 #!kotlin
 pxlPhotoProductView.loadContent(...
+    ...
     bookmarkDrawable = ProductViewHolder.Bookmark().apply {
         isVisible = true
         selectedIcon = R.drawable.<your selectedIcon> 
@@ -178,6 +180,7 @@ pxlPhotoProductView.loadContent(...
 ```kotlin
 #!kotlin
 pxlPhotoProductView.loadContent(...
+    ...
     configuration = ProductViewHolder.Configuration().apply {
         ...
         bookmarkDrawable = ProductViewHolder.Bookmark().apply {
@@ -196,6 +199,7 @@ pxlPhotoProductView.loadContent(...
 ```kotlin
 #!kotlin
 pxlPhotoProductView.loadContent(...
+    ...
     configuration = ProductViewHolder.Configuration().apply {
         ...
         priceTextStyle = CurrencyTextStyle().apply {
