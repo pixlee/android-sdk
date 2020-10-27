@@ -20,7 +20,6 @@ import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.util.px
 import com.pixlee.pixleesdk.util.setCompatIconWithColor
-import kotlinx.android.synthetic.main.item_product.*
 import kotlinx.android.synthetic.main.widget_viewer.view.*
 import java.util.*
 
@@ -112,7 +111,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
             ivBack.setCompatIconWithColor(iconColor, icon)
         }
 
-        vMute.visibility = if (headerConfiguration.muteCheckBox != null) View.VISIBLE else View.GONE
+        vMute.visibility = if (headerConfiguration.muteCheckBox != null && photoInfo?.pxlPhoto?.isVideo?:false) View.VISIBLE else View.GONE
         headerConfiguration.muteCheckBox?.apply {
             vMute.setOnClickListener {
                 if (isMutted) {
