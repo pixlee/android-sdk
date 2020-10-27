@@ -64,8 +64,8 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
         val isFirstPage = page == 1
         return params!!.let {
             when (it.searchId) {
-                is SearchId.Album -> ktxBasicDataSource.getPhotosWithID(it.searchId.id, it.filterOptions, it.sortOptions, it.perPage, page)
-                is SearchId.Product -> ktxBasicDataSource.getPhotosWithSKU(it.searchId.sku, it.filterOptions, it.sortOptions, it.perPage, page)
+                is SearchId.Album -> ktxBasicDataSource.getPhotosWithID(it.searchId.id, it.filterOptions, it.sortOptions, it.perPage, page, it.regionId)
+                is SearchId.Product -> ktxBasicDataSource.getPhotosWithSKU(it.searchId.sku, it.filterOptions, it.sortOptions, it.perPage, page, it.regionId)
             }.apply {
                 // update albumId with the albumId from the response
                 currentAlbumId = albumId

@@ -68,8 +68,8 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
                 // show a loading UI on the mobile screen
                 _loading.value = true
                 pxlKtxAlbum.getNextPage().let {
+                    val newList = ArrayList<PhotoWithImageScaleType>()
                     if (it.photos.isNotEmpty()) {
-                        val newList = ArrayList<PhotoWithImageScaleType>()
                         it.photos.forEach {
                             Log.e("pxlvideo", "pxlvideo.url: ${it.videoUrl.toString()}")
                             Log.e("pxlvideo", "pxlvideo.big: ${it.getUrlForSize(PXLPhotoSize.BIG)}")
@@ -80,8 +80,8 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
                                     soundMuted = true))
                         }
                         allPXLPhotos.addAll(it.photos)
-                        _resultEvent.value = Event(Command.Data(newList, it.page == 1))
                     }
+                    _resultEvent.value = Event(Command.Data(newList, it.page == 1))
 
                     canLoadMore = it.next
                     _loading.value = false

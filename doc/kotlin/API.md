@@ -81,7 +81,8 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
         sortType = PXLAlbumSortType.RECENCY
         descending = true
         // ... there's more.
-    }
+    },
+    regionId = <Optional: your region id(Int)>       //<-------------- HERE is where you need to add your region id (Optional)
 )
 ```
 ### Get content (a list of PXLPhoto)

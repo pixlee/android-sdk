@@ -68,7 +68,8 @@ public class PXLPdpAlbum extends PXLBaseAlbum {
                 filterOptions != null ? filterOptions.toParamString() : null,
                 sortOptions != null ? sortOptions.toParamString() : null,
                 perPage,
-                desiredPage
+                desiredPage,
+                null
         );
     }
 }

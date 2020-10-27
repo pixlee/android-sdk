@@ -41,6 +41,11 @@ import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
 import com.pixlee.pixleesdk.ui.widgets.list.Space
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.*
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.drawerLayout
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.fabFilter
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.lottieView
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.v_body
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.*
 import kotlinx.android.synthetic.main.module_search.*
 
 /**
@@ -100,6 +105,13 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
                                 viewModel.getPhotoWithId(it)
                             }
                         }
+
+                        // if no result in the first page, open search panel so that the SDK developers will try out different filters
+                        if(it.list.isEmpty()){
+                            Toast.makeText(context, "success!! but you got an empty list.\nwhat about trying different searching options here?", Toast.LENGTH_LONG).show()
+                            drawerLayout.openDrawer(GravityCompat.END)
+                        }
+
                     } else {
                         pxlPhotoRecyclerViewInGrid.addList(it.list)
                     }
@@ -231,7 +243,8 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
                         searchId = searchId,
                         perPage = readPerPage(),
                         filterOptions = readFilterOptionsFromUI(),
-                        sortOptions = readSortOptionsFromUI()
+                        sortOptions = readSortOptionsFromUI(),
+                        regionId = readRegionIdFromUI()
                 ))
                 PXLAlbumSortOptions().apply {
                     sortType = PXLAlbumSortType.RECENCY
@@ -252,6 +265,13 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         } else 20
 
         // a default for perPage
+    }
+
+    fun readRegionIdFromUI(): Int?{
+        val data = textViewRegionId.text.toString()
+        return if (data.isNotEmpty()) {
+            Integer.valueOf(data)
+        } else null
     }
 
     fun readSortOptionsFromUI(): PXLAlbumSortOptions {

@@ -81,7 +81,24 @@
                     android:id="@+id/textViewPerPage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="perPage"
+                    android:hint="per Page"
+                    android:inputType="number"
+                    android:maxLength="20"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- perPage -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/filterContentTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textViewRegionId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="region Id"
                     android:inputType="number"
                     android:maxLength="20"
                     android:maxLines="1" />

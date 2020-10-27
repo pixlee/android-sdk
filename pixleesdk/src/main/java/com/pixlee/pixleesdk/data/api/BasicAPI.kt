@@ -21,7 +21,9 @@ interface BasicAPI {
             @Query("filters") filters: String?,
             @Query("sort") sort: String?,
             @Query("per_page") per_page: Int,
-            @Query("page") page: Int
+            @Query("page") page: Int,
+            @Query("region_id") region_id: Int?
+
     ): Call<PhotoResult>
 
     @GET("albums/{album_id}/photos")
@@ -31,7 +33,8 @@ interface BasicAPI {
             @Query("filters") filters: String?,
             @Query("sort") sort: String?,
             @Query("per_page") per_page: Int,
-            @Query("page") page: Int
+            @Query("page") page: Int,
+            @Query("region_id") region_id: Int?
     ): Call<PhotoResult>
 
     @GET("media/{album_photo_id}")
