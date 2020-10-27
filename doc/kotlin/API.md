@@ -82,7 +82,7 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
         descending = true
         // ... there's more.
     },
-    regionId = <Optional: your region id(Int)>       //<-------------- HERE is where you need to add your region id (Optional)
+    regionId = <Optional: your region id(Int)>       //<-------------- HERE is where you need to add your region id (Optional). If you don't know your region ids, please ask your account manager to give you it. 
 )
 ```
 ### Get content (a list of PXLPhoto)

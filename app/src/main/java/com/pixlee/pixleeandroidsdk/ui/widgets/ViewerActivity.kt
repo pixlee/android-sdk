@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -15,6 +14,7 @@ import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
+import com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
 import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import com.pixlee.pixleesdk.util.px
@@ -36,10 +36,8 @@ class ViewerActivity : AppCompatActivity() {
         PXLViewUtil.expandContentAreaOverStatusBar(this)
 
         // give a padding to the top as much as the status bar's height
-        bodyView.setPadding(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
+        pxlPhotoProductView.addPaddingToHeader(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
 
-        // back button's click effect
-        backButton.setOnClickListener(View.OnClickListener { onBackPressed() })
         val i = intent
         if (i == null) {
             finish()
@@ -53,19 +51,34 @@ class ViewerActivity : AppCompatActivity() {
         }
 
         init(item)
-
-        switchSound.isChecked = !item.soundMuted
-        switchSound.setOnClickListener {
-            if(switchSound.isChecked)
-                pxlPhotoProductView.unmute()
-            else
-                pxlPhotoProductView.mute()
-        }
     }
 
     fun init(item: PhotoWithVideoInfo){
         pxlPhotoProductView.useLifecycleObserver(lifecycle)
         pxlPhotoProductView.setContent(photoInfo = item,
+                headerConfiguration = PXLPhotoProductView.Configuration().apply {
+                    backButton = PXLPhotoProductView.CircleButton().apply {
+                        icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18
+                        iconColor = Color.BLACK
+                        backgroundColor = Color.WHITE
+                        padding = 10.px.toInt()
+                        onClickListener = {
+                            // back button's click effect
+                            Toast.makeText(this@ViewerActivity, "Replace this with your codes, currently 'onBackPressed()'", Toast.LENGTH_LONG).show()
+                            onBackPressed()
+                        }
+                    }
+                    muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
+                        mutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_up_black_18
+                        unmutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_off_black_18
+                        iconColor = Color.BLACK
+                        backgroundColor = Color.WHITE
+                        padding = 10.px.toInt()
+                        onCheckedListener = {
+                            Toast.makeText(this@ViewerActivity, "is muted: $it'", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                },
                 configuration = ProductViewHolder.Configuration().apply {
                     circleIcon = ProductViewHolder.CircleIcon().apply {
                         icon = R.drawable.outline_shopping_bag_black_24

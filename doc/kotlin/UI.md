@@ -35,6 +35,29 @@ override fun onCreate(savedInstanceState: Bundle?) {
         return
     }
     pxlPhotoProductView.loadContent(photoInfo = item,
+        headerConfiguration = PXLPhotoProductView.Configuration().apply {
+            backButton = PXLPhotoProductView.CircleButton().apply {
+                icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18
+                iconColor = Color.BLACK
+                backgroundColor = Color.WHITE
+                padding = 10.px.toInt()
+                onClickListener = {
+                    // back button's click effect
+                    Toast.makeText(this@ViewerActivity, "Replace this with your codes, currently 'onBackPressed()'", Toast.LENGTH_LONG).show()
+                    onBackPressed()
+                }
+            }
+            muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
+                mutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_up_black_18
+                unmutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_off_black_18
+                iconColor = Color.BLACK
+                backgroundColor = Color.WHITE
+                padding = 10.px.toInt()
+                onCheckedListener = {
+                    Toast.makeText(this@ViewerActivity, "is muted: $it'", Toast.LENGTH_LONG).show()
+                }
+            }
+        },
         configuration = ProductViewHolder.Configuration().apply {
             circleIcon = ProductViewHolder.CircleIcon().apply {
                 icon = R.drawable.<your drawable>
@@ -105,46 +128,96 @@ fun readBookmarks(pxlPhoto: PXLPhoto): HashMap<String, Boolean> {
     return bookmarkMap
 
 }
+```
+#### Added back and mute/unmute buttons to PXLPhotoProductView
+`headerConfiguration:PXLPhotoProductView.Configuration` is added to pxlPhotoProductView.loadContent(). With this, you can customize icon color, icon, circle color and padding in the circle, and also listen click event for the back and mute/unmute buttons.
+```kotlin
+#!kotlin
+pxlPhotoProductView.loadContent(...
+        headerConfiguration = PXLPhotoProductView.Configuration().apply {
+            backButton = PXLPhotoProductView.CircleButton().apply {
+                icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18
+                iconColor = Color.BLACK
+                backgroundColor = Color.WHITE
+                padding = 10.px.toInt()
+                onClickListener = {
+                    // back button's click effect
+                    Toast.makeText(this@ViewerActivity, "Replace this with your codes, currently 'onBackPressed()'", Toast.LENGTH_LONG).show()
+                    onBackPressed()
+                }
+            }
+            muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
+                mutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_up_black_18
+                unmutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_off_black_18
+                iconColor = Color.BLACK
+                backgroundColor = Color.WHITE
+                padding = 10.px.toInt()
+                onCheckedListener = {
+                    Toast.makeText(this@ViewerActivity, "is muted: $it'", Toast.LENGTH_LONG).show()
+                }
+            }
+        },
+        configuration = ...
+        ....
+)
+```
 
 #### If you want to change the bookmark
 ```kotlin
 #!kotlin
-bookmarkDrawable = ProductViewHolder.Bookmark().apply {
-    isVisible = true
-    selectedIcon = R.drawable.<your selectedIcon> 
-    unselectedIcon = R.drawable.<your unselectedIcon>
-}
+pxlPhotoProductView.loadContent(...
+    bookmarkDrawable = ProductViewHolder.Bookmark().apply {
+        isVisible = true
+        selectedIcon = R.drawable.<your selectedIcon> 
+        unselectedIcon = R.drawable.<your unselectedIcon>
+    }
+    ...
+)
 ```
 #### If you want to change the bookmark with ColorFilter, add the code to ProductViewHolder.Configuration()
 ```kotlin
 #!kotlin
-bookmarkDrawable = ProductViewHolder.Bookmark().apply {
-    isVisible = true
-    selectedIcon = R.drawable.<your selectedIcon> 
-        unselectedIcon = R.drawable.<your unselectedIcon>
-    filterColor = ProductViewHolder.Bookmark.FilterColor(<your selectedColor>, <your unselectedColor>)
-}
+pxlPhotoProductView.loadContent(...
+    configuration = ProductViewHolder.Configuration().apply {
+        ...
+        bookmarkDrawable = ProductViewHolder.Bookmark().apply {
+            isVisible = true
+            selectedIcon = R.drawable.<your selectedIcon> 
+                unselectedIcon = R.drawable.<your unselectedIcon>
+            filterColor = ProductViewHolder.Bookmark.FilterColor(<your selectedColor>, <your unselectedColor>)
+        }
+        ...
+    }    
+    ...
+)
 ```
 
 #### If you want to custom the look of price and currency symbol, add the code to ProductViewHolder.Configuration()
 ```kotlin
 #!kotlin
-priceTextStyle = CurrencyTextStyle().apply {
-    defaultCurrency = "EUR" // or null
-    leftText = TextStyle().apply {
-        color = Color.BLACK
-        size = 24.px
-        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-        typeface = null
-    }
-
-    rightText = TextStyle().apply {
-        color = Color.BLACK
-        size = 14.px
-        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-        typeface = null
-    }
-}
+pxlPhotoProductView.loadContent(...
+    configuration = ProductViewHolder.Configuration().apply {
+        ...
+        priceTextStyle = CurrencyTextStyle().apply {
+            defaultCurrency = "EUR" // or null
+            leftText = TextStyle().apply {
+                color = Color.BLACK
+                size = 24.px
+                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                typeface = null
+            }
+        
+            rightText = TextStyle().apply {
+                color = Color.BLACK
+                size = 14.px
+                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                typeface = null
+            }
+        }
+        ...
+    }    
+    ...
+)
 ```
 #### Play and stop the video
 - Option 1: Automatic using androidx.lifecycle.Lifecycle(Jetpack)
