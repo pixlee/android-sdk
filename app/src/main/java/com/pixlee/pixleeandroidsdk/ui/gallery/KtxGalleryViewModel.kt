@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
  * Created by sungjun on 9/18/20.
  */
 class KtxGalleryViewModel(pxlKtxAlbum: PXLKtxAlbum) : BaseViewModel(pxlKtxAlbum) {
-    fun getPhotoWithId(albumPhotoId:String){
+    fun getPhotoWithId(albumPhotoId: String) {
         viewModelScope.launch {
             try {
                 pxlKtxAlbum.getPhotoWithId(albumPhotoId)
@@ -20,10 +20,30 @@ class KtxGalleryViewModel(pxlKtxAlbum: PXLKtxAlbum) : BaseViewModel(pxlKtxAlbum)
         }
     }
 
-    fun getPhotoWithId(pxlPhoto: PXLPhoto){
+    fun getPhotoWithId(pxlPhoto: PXLPhoto) {
         viewModelScope.launch {
             try {
                 pxlKtxAlbum.getPhotoWithId(pxlPhoto)
+            } catch (e: Exception) {
+                // error handling
+            }
+        }
+    }
+
+    fun getPhotoFromRegion(albumPhotoId: String, regionId: Int?) {
+        viewModelScope.launch {
+            try {
+                pxlKtxAlbum.getPhotoFromRegion(albumPhotoId, regionId)
+            } catch (e: Exception) {
+                // error handling
+            }
+        }
+    }
+
+    fun getPhotoFromRegion(pxlPhoto: PXLPhoto, regionId: Int?) {
+        viewModelScope.launch {
+            try {
+                pxlKtxAlbum.getPhotoFromRegion(pxlPhoto, regionId)
             } catch (e: Exception) {
                 // error handling
             }

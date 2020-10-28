@@ -108,7 +108,7 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
                         pxlPhotoRecyclerView.playVideo()
                         if (it.list.isNotEmpty()) {
                             it.list.firstOrNull()?.pxlPhoto?.also {
-                                viewModel.getPhotoWithId(it)
+                                viewModel.getPhotoFromRegion(it, 2469) // add your own region id
                             }
                         }
 

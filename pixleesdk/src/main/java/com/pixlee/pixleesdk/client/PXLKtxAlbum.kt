@@ -115,6 +115,28 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
     }
 
     /**
+     * get Photo data
+     *
+     * @param pxlPhoto: PXLPhoto
+     * @param regionId: region id
+     * @return PXLPhoto
+     */
+    suspend fun getPhotoFromRegion(pxlPhoto: PXLPhoto, regionId: Int?): PXLPhoto {
+        return ktxBasicDataSource.getPhoto(pxlPhoto.albumPhotoId, regionId)
+    }
+
+    /**
+     * get Photo data
+     *
+     * @param albumPhotoId: PXLPhoto.albumPhotoId
+     * @param regionId: region id
+     * @return PXLPhoto
+     */
+    suspend fun getPhotoFromRegion(albumPhotoId: String, regionId: Int?): PXLPhoto {
+        return ktxBasicDataSource.getPhoto(albumPhotoId, regionId)
+    }
+
+    /**
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
      * sort order, and filter options before calling.
      *

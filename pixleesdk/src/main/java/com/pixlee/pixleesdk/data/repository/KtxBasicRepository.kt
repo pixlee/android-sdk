@@ -60,6 +60,13 @@ interface KtxBasicDataSource {
     suspend fun getMedia(album_photo_id: String): PXLPhoto
 
     /**
+     * @param album_photo_id: This is returns PXLPhoto with album_photo_id which can be discovered in PXLPhoto.albumPhotoId
+     * @param region_id: region id to get data from a specific region
+     * @return PXLPhoto
+     */
+    suspend fun getPhoto(album_photo_id: String, region_id:Int?): PXLPhoto
+
+    /**
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
      * sort order, and filter options before calling.
      *
@@ -100,6 +107,10 @@ class KtxBasicRepository(var api: KtxBasicAPI) : KtxBasicDataSource {
 
     override suspend fun getMedia(album_photo_id: String): PXLPhoto {
         return api.getMedia(album_photo_id, PXLClient.apiKey)
+    }
+
+    override suspend fun getPhoto(album_photo_id: String, region_id: Int?): PXLPhoto {
+        return api.getPhoto(album_photo_id, PXLClient.apiKey, region_id)
     }
 
     override suspend fun postMediaWithURI(json: JSONObject): MediaResult {

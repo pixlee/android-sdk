@@ -14,7 +14,7 @@ import retrofit2.http.*
  * - Retrofit Document: https://square.github.io/retrofit/
  */
 interface KtxBasicAPI {
-    @GET("albums/from_sku")
+    @GET("api/v2/albums/from_sku")
     suspend fun getPhotosWithSKU(
             @Query("sku") sku: String,
             @Query("api_key") api_key: String?,
@@ -25,7 +25,7 @@ interface KtxBasicAPI {
             @Query("region_id") region_id: Int?
     ): PhotoResult
 
-    @GET("albums/{album_id}/photos")
+    @GET("api/v2/albums/{album_id}/photos")
     suspend fun getPhotosWithID(
             @Path("album_id") album_id: String,
             @Query("api_key") api_key: String?,
@@ -36,11 +36,14 @@ interface KtxBasicAPI {
             @Query("region_id") region_id: Int?
     ): PhotoResult
 
-    @GET("media/{album_photo_id}")
+    @GET("api/v2/media/{album_photo_id}")
     @Wrapped(path = ["data"])
     suspend fun getMedia(@Path("album_photo_id") album_photo_id: String, @Query("api_key") api_key: String?): PXLPhoto
 
-    @POST("media")
+    @GET("getPhoto")
+    suspend fun getPhoto(@Query("album_photo_id") album_photo_id: String, @Query("api_key") api_key: String?, @Query("region_id") region_id: Int?): PXLPhoto
+
+    @POST("api/v2/media")
     suspend fun postMediaWithURI(
             @Header("Signature") Signature: String,
             @Query("api_key") api_key: String?,
@@ -48,7 +51,7 @@ interface KtxBasicAPI {
     ): MediaResult
 
     @Multipart
-    @POST("media/file")
+    @POST("api/v2/media/file")
     suspend fun postMediaWithFile(
             @Header("Signature") Signature: String,
             @Query("api_key") api_key: String?,
