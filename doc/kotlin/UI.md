@@ -286,7 +286,46 @@ this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhoto
 ```kotlin
 #!kotlin
 PhotoWithImageScaleType(pxlPhoto = pxlPhoto,  //data
-    imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP, // [CENTER_CROP, FIT_CENTER]
+    configuration = PXLPhotoView.Configuration().apply { // size, color of buttons and texts
+        // Customize image size
+        pxlPhotoSize = PXLPhotoSize.ORIGINAL
+        // Customize image scale type
+        imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP
+        // Customize Main TextView
+        mainTextViewStyle = TextViewStyle().apply {
+            text = "Main Text"
+            size = 30.px
+            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+            typeface = null
+        }
+        // Customize Sub TextView
+        subTextViewStyle = TextViewStyle().apply {
+            text = "Sub Text"
+            size = 18.px
+            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+            typeface = null
+        }
+        // Customize Button
+        buttonStyle = PXLPhotoView.ButtonStyle().apply {
+            isButtonVisible = true
+            text = "Action Button"
+            size = 20.px
+            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+            typeface = null
+            buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
+            stroke = PXLPhotoView.Stroke().apply {
+                width = 2.px.toInt()
+                color = Color.WHITE
+                radiusInPixel = 25.px
+                padding = PXLPhotoView.Padding().apply {
+                    left = 20.px.toInt()
+                    centerRight = 40.px.toInt()
+                    topBottom = 10.px.toInt()
+                }
+            }
+        }
+    
+    },
     heightInPixel = cellSize, // the height cell size in RecyclerView
     isLoopingVideo = true,    // true: loop the video, false; play it once and stop it
     soundMuted = true        // true: muted, false: unmuted
@@ -305,44 +344,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
     pxlPhotoRecyclerView.initiate(infiniteScroll = true, // or false
             showingDebugView = false, // false: for production, true: development only when you want to see the debug info
             alphaForStoppedVideos = 0.5f, // this is the alpha(opacity) of visible items in recyclerview except the first fully visible view(always 1f) 
-            configuration = PXLPhotoView.Configuration().apply {
-                // Customize image size
-                pxlPhotoSize = PXLPhotoSize.ORIGINAL
-                // Customize Main TextView
-                mainTextViewStyle = TextViewStyle().apply {
-                    text = "Main Text"
-                    size = 30.px
-                    sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                    typeface = null
-                }
-                // Customize Sub TextView
-                subTextViewStyle = TextViewStyle().apply {
-                    text = "Sub Text"
-                    size = 18.px
-                    sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                    typeface = null
-                }
-                // Customize Button
-                buttonStyle = PXLPhotoView.ButtonStyle().apply {
-                    isButtonVisible = true
-                    text = "Action Button"
-                    size = 20.px
-                    sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                    typeface = null
-                    buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
-                    stroke = PXLPhotoView.Stroke().apply {
-                        width = 2.px.toInt()
-                        color = Color.WHITE
-                        radiusInPixel = 25.px
-                        padding = PXLPhotoView.Padding().apply {
-                            left = 20.px.toInt()
-                            centerRight = 40.px.toInt()
-                            topBottom = 10.px.toInt()
-                        }
-                    }
-                }
-
-            }, onButtonClickedListener = { view, pxlPhoto ->
+            onButtonClickedListener = { view, pxlPhoto ->
                 context?.also { ctx ->
                     // you can add your business logic here
                     Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
@@ -381,12 +383,89 @@ override fun onCreate(savedInstanceState: Bundle?) {
         val list = ArrayList<PhotoWithImageScaleType>()
         pxlPhotos.forEach { pxlPhoto ->
             list.add(PhotoWithImageScaleType(pxlPhoto = pxlPhoto,
-                                            imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP,
+                                            configuration = PXLPhotoView.Configuration().apply {
+                                                            // Customize image size
+                                                            pxlPhotoSize = PXLPhotoSize.ORIGINAL
+                                                            // Customize image scale type
+                                                            imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP
+                                                            // Customize Main TextView
+                                                            mainTextViewStyle = TextViewStyle().apply {
+                                                                text = "Main Text"
+                                                                size = 30.px
+                                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                                                typeface = null
+                                                            }
+                                                            // Customize Sub TextView
+                                                            subTextViewStyle = TextViewStyle().apply {
+                                                                text = "Sub Text"
+                                                                size = 18.px
+                                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                                                typeface = null
+                                                            }
+                                                            // Customize Button
+                                                            buttonStyle = PXLPhotoView.ButtonStyle().apply {
+                                                                isButtonVisible = true
+                                                                text = "Action Button"
+                                                                size = 20.px
+                                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                                                typeface = null
+                                                                buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
+                                                                stroke = PXLPhotoView.Stroke().apply {
+                                                                    width = 2.px.toInt()
+                                                                    color = Color.WHITE
+                                                                    radiusInPixel = 25.px
+                                                                    padding = PXLPhotoView.Padding().apply {
+                                                                        left = 20.px.toInt()
+                                                                        centerRight = 40.px.toInt()
+                                                                        topBottom = 10.px.toInt()
+                                                                    }
+                                                                }
+                                                            }
+                                            
+                                                        },
                                             heightInPixel = cellSize,
                                             isLoopingVideo = true,
                                             soundMuted = true))
             list.add(PhotoWithImageScaleType(pxlPhoto = pxlPhoto,
-                                            imageScaleType = PXLPhotoView.ImageScaleType.FIT_CENTER,
+                                            configuration = PXLPhotoView.Configuration().apply {
+                                                            // Customize image size
+                                                            pxlPhotoSize = PXLPhotoSize.ORIGINAL
+                                                            imageScaleType = PXLPhotoView.ImageScaleType.FIT_CENTER
+                                                            // Customize Main TextView
+                                                            mainTextViewStyle = TextViewStyle().apply {
+                                                                text = "Main Text"
+                                                                size = 30.px
+                                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                                                typeface = null
+                                                            }
+                                                            // Customize Sub TextView
+                                                            subTextViewStyle = TextViewStyle().apply {
+                                                                text = "Sub Text"
+                                                                size = 18.px
+                                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                                                typeface = null
+                                                            }
+                                                            // Customize Button
+                                                            buttonStyle = PXLPhotoView.ButtonStyle().apply {
+                                                                isButtonVisible = true
+                                                                text = "Action Button"
+                                                                size = 20.px
+                                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                                                typeface = null
+                                                                buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
+                                                                stroke = PXLPhotoView.Stroke().apply {
+                                                                    width = 2.px.toInt()
+                                                                    color = Color.WHITE
+                                                                    radiusInPixel = 25.px
+                                                                    padding = PXLPhotoView.Padding().apply {
+                                                                        left = 20.px.toInt()
+                                                                        centerRight = 40.px.toInt()
+                                                                        topBottom = 10.px.toInt()
+                                                                    }
+                                                                }
+                                                            }
+                                            
+                                                        },
                                             heightInPixel = cellSize,
                                             isLoopingVideo = true,
                                             soundMuted = true))
@@ -469,7 +548,40 @@ this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhoto
 ```kotlin
 #!kotlin
 PhotoWithImageScaleType(pxlPhoto = pxlPhoto,  //data
-    imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP, // [CENTER_CROP, FIT_CENTER]
+    configuration = PXLPhotoView.Configuration().apply{
+        // Customize image size, not a video
+        pxlPhotoSize = PXLPhotoSize.ORIGINAL
+        // Customize image scale type
+        imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP // [CENTER_CROP, FIT_CENTER]
+        // Customize Main TextView
+        mainTextViewStyle = TextViewStyle().apply {
+            text = "Spring\nColors"
+            size = 30.px
+            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+            typeface = null
+            textPadding = TextPadding(bottom = 30.px.toInt())
+        }
+        // Customize Sub TextView
+        subTextViewStyle = null // you can hide this view by giving it null
+        // Customize Button
+        buttonStyle = PXLPhotoView.ButtonStyle().apply {
+            text = "VER AHORA"
+            size = 12.px
+            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+            typeface = null
+            buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
+            stroke = PXLPhotoView.Stroke().apply {
+                width = 1.px.toInt()
+                color = Color.WHITE
+                radiusInPixel = 25.px
+                padding = PXLPhotoView.Padding().apply {
+                    left = 10.px.toInt()
+                    centerRight = 20.px.toInt()
+                    topBottom = 10.px.toInt()
+                }
+            }
+        }
+    }
     heightInPixel = cellSize, // the height cell size in RecyclerView
     isLoopingVideo = true,    // true: loop the video, false; play it once and stop it
     soundMuted = true        // true: muted, false: unmuted
@@ -492,39 +604,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
                     },
                     listHeader = getTitleGif(), // you can custom your spannable either using getTitleSpannable() or getTitleGif(), examples of how you can implement your spannable  
                     showingDebugView = false,
-                    configuration = PXLPhotoView.Configuration().apply {
-                        // Customize image size, not a video
-                        pxlPhotoSize = PXLPhotoSize.ORIGINAL
-                        // Customize Main TextView
-                        mainTextViewStyle = TextViewStyle().apply {
-                            text = "Spring\nColors"
-                            size = 30.px
-                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                            typeface = null
-                            textPadding = TextPadding(bottom = 30.px.toInt())
-                        }
-                        // Customize Sub TextView
-                        subTextViewStyle = null // you can hide this view by giving it null
-                        // Customize Button
-                        buttonStyle = PXLPhotoView.ButtonStyle().apply {
-                            text = "VER AHORA"
-                            size = 12.px
-                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                            typeface = null
-                            buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
-                            stroke = PXLPhotoView.Stroke().apply {
-                                width = 1.px.toInt()
-                                color = Color.WHITE
-                                radiusInPixel = 25.px
-                                padding = PXLPhotoView.Padding().apply {
-                                    left = 10.px.toInt()
-                                    centerRight = 20.px.toInt()
-                                    topBottom = 10.px.toInt()
-                                }
-                            }
-                        }
-    
-                    }, onButtonClickedListener = { view, photoWithImageScaleType ->
+                    onButtonClickedListener = { view, photoWithImageScaleType ->
                 context?.also { ctx ->
                     // you can add your business logic here
                     Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
@@ -563,12 +643,80 @@ fun startList(cellSize: Int) {
     val list = ArrayList<PhotoWithImageScaleType>()
     pxlPhotos.forEach { pxlPhoto ->
         list.add(PhotoWithImageScaleType(pxlPhoto = pxlPhoto,
-                                        imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP,
+                                        configuration = PXLPhotoView.Configuration().apply {
+                                            // Customize image size, not a video
+                                            pxlPhotoSize = PXLPhotoSize.ORIGINAL
+                                            // Customize image scale type
+                                            imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP // [CENTER_CROP, FIT_CENTER]
+                                            // Customize Main TextView
+                                            mainTextViewStyle = TextViewStyle().apply {
+                                                text = "Spring\nColors"
+                                                size = 30.px
+                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                                typeface = null
+                                                textPadding = TextPadding(bottom = 30.px.toInt())
+                                            }
+                                            // Customize Sub TextView
+                                            subTextViewStyle = null // you can hide this view by giving it null
+                                            // Customize Button
+                                            buttonStyle = PXLPhotoView.ButtonStyle().apply {
+                                                text = "VER AHORA"
+                                                size = 12.px
+                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                                typeface = null
+                                                buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
+                                                stroke = PXLPhotoView.Stroke().apply {
+                                                    width = 1.px.toInt()
+                                                    color = Color.WHITE
+                                                    radiusInPixel = 25.px
+                                                    padding = PXLPhotoView.Padding().apply {
+                                                        left = 10.px.toInt()
+                                                        centerRight = 20.px.toInt()
+                                                        topBottom = 10.px.toInt()
+                                                    }
+                                                }
+                                            }
+                        
+                                        },
                                         heightInPixel = cellSize,
                                         isLoopingVideo = true,
                                         soundMuted = true))
         list.add(PhotoWithImageScaleType(pxlPhoto = pxlPhoto,
-                                        imageScaleType = PXLPhotoView.ImageScaleType.FIT_CENTER,
+                                        configuration = PXLPhotoView.Configuration().apply {
+                                            // Customize image size, not a video
+                                            pxlPhotoSize = PXLPhotoSize.ORIGINAL
+                                            // Customize image scale type
+                                            imageScaleType = PXLPhotoView.ImageScaleType.FIT_CENTER // [CENTER_CROP, FIT_CENTER]
+                                            // Customize Main TextView
+                                            mainTextViewStyle = TextViewStyle().apply {
+                                                text = "Spring\nColors"
+                                                size = 30.px
+                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                                typeface = null
+                                                textPadding = TextPadding(bottom = 30.px.toInt())
+                                            }
+                                            // Customize Sub TextView
+                                            subTextViewStyle = null // you can hide this view by giving it null
+                                            // Customize Button
+                                            buttonStyle = PXLPhotoView.ButtonStyle().apply {
+                                                text = "VER AHORA"
+                                                size = 12.px
+                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                                typeface = null
+                                                buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
+                                                stroke = PXLPhotoView.Stroke().apply {
+                                                    width = 1.px.toInt()
+                                                    color = Color.WHITE
+                                                    radiusInPixel = 25.px
+                                                    padding = PXLPhotoView.Padding().apply {
+                                                        left = 10.px.toInt()
+                                                        centerRight = 20.px.toInt()
+                                                        topBottom = 10.px.toInt()
+                                                    }
+                                                }
+                                            }
+                        
+                                        },
                                         heightInPixel = cellSize,
                                         isLoopingVideo = true,
                                         soundMuted = true))
@@ -676,7 +824,7 @@ class YourActivity: AppCompatActivity, LifecycleObserver {
         pxlPhotoView.setConfiguration(configuration)
 
         val item: PhotoWithImageScaleType? = arguments?.getParcelable("photoWithImageScaleType") // read PhotoWithImageScaleType
-        pxlPhotoView.loadContent(item, PXLPhotoView.ImageScaleType.CENTER_CROP)   
+        pxlPhotoView.setContent(item, PXLPhotoView.ImageScaleType.CENTER_CROP)   
     }
     
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)

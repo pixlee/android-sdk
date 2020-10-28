@@ -30,6 +30,7 @@ import com.pixlee.pixleesdk.enums.PXLContentSource
 import com.pixlee.pixleesdk.enums.PXLContentType
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
+import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.util.px
@@ -130,6 +131,45 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
     }
 
     fun initList() {
+        viewModel.customizedConfiguration = PXLPhotoView.Configuration().apply {
+            // Customize image size, not a video
+            pxlPhotoSize = PXLPhotoSize.ORIGINAL
+            // Customize image scale type
+            imageScaleType = ImageScaleType.CENTER_CROP
+            // Customize Main TextView
+            mainTextViewStyle = TextViewStyle().apply {
+                text = "Main Text"
+                size = 30.px
+                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                typeface = null
+            }
+            // Customize Sub TextView
+            subTextViewStyle = TextViewStyle().apply {
+                text = "Sub Text"
+                size = 18.px
+                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                typeface = null
+            }
+            // Customize Button
+            buttonStyle = PXLPhotoView.ButtonStyle().apply {
+                text = "Action Button"
+                size = 20.px
+                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                typeface = null
+                buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
+                stroke = PXLPhotoView.Stroke().apply {
+                    width = 2.px.toInt()
+                    color = Color.WHITE
+                    radiusInPixel = 25.px
+                    padding = PXLPhotoView.Padding().apply {
+                        left = 20.px.toInt()
+                        centerRight = 40.px.toInt()
+                        topBottom = 10.px.toInt()
+                    }
+                }
+            }
+        }
+
         // this will play the video on onResume and stop the video on onPause
         pxlPhotoRecyclerView.useLifecycleObserver(lifecycle)
 
@@ -137,43 +177,7 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
         pxlPhotoRecyclerView.initiate(infiniteScroll = true,
                 showingDebugView = false,
                 alphaForStoppedVideos = 0.5f,
-                configuration = PXLPhotoView.Configuration().apply {
-                    // Customize image size, not a video
-                    pxlPhotoSize = PXLPhotoSize.ORIGINAL
-                    // Customize Main TextView
-                    mainTextViewStyle = TextViewStyle().apply {
-                        text = "Main Text"
-                        size = 30.px
-                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                        typeface = null
-                    }
-                    // Customize Sub TextView
-                    subTextViewStyle = TextViewStyle().apply {
-                        text = "Sub Text"
-                        size = 18.px
-                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                        typeface = null
-                    }
-                    // Customize Button
-                    buttonStyle = PXLPhotoView.ButtonStyle().apply {
-                        text = "Action Button"
-                        size = 20.px
-                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                        typeface = null
-                        buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
-                        stroke = PXLPhotoView.Stroke().apply {
-                            width = 2.px.toInt()
-                            color = Color.WHITE
-                            radiusInPixel = 25.px
-                            padding = PXLPhotoView.Padding().apply {
-                                left = 20.px.toInt()
-                                centerRight = 40.px.toInt()
-                                topBottom = 10.px.toInt()
-                            }
-                        }
-                    }
-
-                }, onButtonClickedListener = { view, photoWithImageScaleType ->
+                onButtonClickedListener = { view, photoWithImageScaleType ->
             context?.also { ctx ->
                 // you can add your business logic here
                 Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()

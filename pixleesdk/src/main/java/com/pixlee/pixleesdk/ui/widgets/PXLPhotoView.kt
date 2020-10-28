@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
@@ -23,6 +24,7 @@ import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.util.px
 import jp.wasabeef.glide.transformations.BlurTransformation
+import kotlinx.android.parcel.Parcelize
 
 /**
  * This view is to show a photo of PXLPhoto inside a RecyclerView or a ViewGroup
@@ -37,28 +39,32 @@ class PXLPhotoView : RelativeLayout {
         }
     }
 
+    @Parcelize
     data class Configuration(
             var pxlPhotoSize: PXLPhotoSize = PXLPhotoSize.ORIGINAL, // PXLPhotoSize [THUMBNAIL, MEDIUM, BIG, ORIGINAL]
             var imageScaleType: ImageScaleType = ImageScaleType.FIT_CENTER,
             var mainTextViewStyle: TextViewStyle? = null, // if null, the view is gone
             var subTextViewStyle: TextViewStyle? = null, // if null, the view is gone
             var buttonStyle: ButtonStyle? = null  // if null, the view is gone
-    )
+    ): Parcelable
 
+    @Parcelize
     class ButtonStyle(
             var buttonIcon: Int? = R.drawable.baseline_play_arrow_white_24,
             var stroke: Stroke = Stroke(),
-            var padding: Padding = Padding()) : TextViewStyle(textPadding = TextPadding())
+            var padding: Padding = Padding()) : TextViewStyle(textPadding = TextPadding()), Parcelable
 
+    @Parcelize
     class Stroke(var width: Int = 2.px.toInt(),
                  var color: Int = Color.WHITE,
-                 var radiusInPixel: Float = 25.px)
+                 var radiusInPixel: Float = 25.px): Parcelable
 
     // in pixel
+    @Parcelize
     class Padding(
             var left: Int = 20.px.toInt(),
             var centerRight: Int = 40.px.toInt(),
-            var topBottom: Int = 10.px.toInt())
+            var topBottom: Int = 10.px.toInt()): Parcelable
 
 
     val defaultScaleType = ImageScaleType.FIT_CENTER

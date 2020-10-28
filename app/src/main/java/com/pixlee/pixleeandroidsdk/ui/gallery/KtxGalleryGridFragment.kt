@@ -149,6 +149,40 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
     }
 
     fun initGrid() {
+        viewModel.customizedConfiguration = PXLPhotoView.Configuration().apply {
+            // Customize image size, not a video
+            pxlPhotoSize = PXLPhotoSize.ORIGINAL
+            // Customize image scale type
+            imageScaleType = ImageScaleType.CENTER_CROP
+            // Customize Main TextView
+            mainTextViewStyle = TextViewStyle().apply {
+                text = "Spring\nColors"
+                size = 30.px
+                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                typeface = null
+                textPadding = TextPadding(bottom = 30.px.toInt())
+            }
+            // Customize Sub TextView
+            subTextViewStyle = null // you can hide this view by giving it null
+            // Customize Button
+            buttonStyle = PXLPhotoView.ButtonStyle().apply {
+                text = "VER AHORA"
+                size = 12.px
+                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                typeface = null
+                buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
+                stroke = PXLPhotoView.Stroke().apply {
+                    width = 1.px.toInt()
+                    color = Color.WHITE
+                    radiusInPixel = 25.px
+                    padding = PXLPhotoView.Padding().apply {
+                        left = 10.px.toInt()
+                        centerRight = 20.px.toInt()
+                        topBottom = 10.px.toInt()
+                    }
+                }
+            }
+        }
         // you can customize color, size if you need
         pxlPhotoRecyclerViewInGrid.initiate(gridSpan = 2, // the number of cells in a row in the grid list
                 lineSpace = Space().apply {
@@ -157,39 +191,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
                 },
                 listHeader = getTitleGif(), // you can custom your spannable either using getTitleSpannable() or getTitleGif(), examples of how you can implement your spannable
                 showingDebugView = false,
-                configuration = PXLPhotoView.Configuration().apply {
-                    // Customize image size, not a video
-                    pxlPhotoSize = PXLPhotoSize.ORIGINAL
-                    // Customize Main TextView
-                    mainTextViewStyle = TextViewStyle().apply {
-                        text = "Spring\nColors"
-                        size = 30.px
-                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                        typeface = null
-                        textPadding = TextPadding(bottom = 30.px.toInt())
-                    }
-                    // Customize Sub TextView
-                    subTextViewStyle = null // you can hide this view by giving it null
-                    // Customize Button
-                    buttonStyle = PXLPhotoView.ButtonStyle().apply {
-                        text = "VER AHORA"
-                        size = 12.px
-                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                        typeface = null
-                        buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
-                        stroke = PXLPhotoView.Stroke().apply {
-                            width = 1.px.toInt()
-                            color = Color.WHITE
-                            radiusInPixel = 25.px
-                            padding = PXLPhotoView.Padding().apply {
-                                left = 10.px.toInt()
-                                centerRight = 20.px.toInt()
-                                topBottom = 10.px.toInt()
-                            }
-                        }
-                    }
-
-                }, onButtonClickedListener = { view, photoWithImageScaleType ->
+                onButtonClickedListener = { view, photoWithImageScaleType ->
             context?.also { ctx ->
                 // you can add your business logic here
                 Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()

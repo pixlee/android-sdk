@@ -22,16 +22,16 @@ class PXLPhotoViewHolder(override val containerView: View) :
         RecyclerView.ViewHolder(containerView),
         LayoutContainer {
 
-    fun bind(data: PhotoWithImageScaleType, configuration: PXLPhotoView.Configuration? = null, showingDebugView: Boolean = false) {
+    fun bind(data: PhotoWithImageScaleType, showingDebugView: Boolean = false) {
         pxlPhotoView.layoutParams.height = data.heightInPixel
-        pxlPhotoView.setConfiguration(configuration = configuration ?: PXLPhotoView.Configuration())
-        pxlPhotoView.setContent(data.pxlPhoto, data.imageScaleType)
+        pxlPhotoView.setConfiguration(configuration = data.configuration)
+        pxlPhotoView.setContent(data.pxlPhoto, data.configuration.imageScaleType)
         pxlPhotoView.setLooping(data.isLoopingVideo)
         pxlPhotoView.changeVolume(if(data.soundMuted) 0f else 1f)
 
         tv.visibility = if (showingDebugView) View.VISIBLE else View.GONE
         tvPercent.visibility = if (showingDebugView) View.VISIBLE else View.GONE
-        tv.text = "ScaleType: ${data.imageScaleType.name}\nwidth: ${pxlPhotoView.layoutParams.width}, height: ${pxlPhotoView.layoutParams.height}\nid: ${data.pxlPhoto.id}"
+        tv.text = "ScaleType: ${data.configuration.imageScaleType.name}\nwidth: ${pxlPhotoView.layoutParams.width}, height: ${pxlPhotoView.layoutParams.height}\nid: ${data.pxlPhoto.id}"
     }
 
     companion object {
@@ -51,13 +51,13 @@ class PXLPhotoViewHolder(override val containerView: View) :
  */
 @Parcelize
 class PhotoWithImageScaleType(override val pxlPhoto: PXLPhoto,
-                              override val imageScaleType: ImageScaleType,
+                              override val configuration: PXLPhotoView.Configuration,
                               val heightInPixel: Int = 400.px.toInt(),
                               override val isLoopingVideo: Boolean = true,
-                              override var soundMuted: Boolean = false):PhotoWithVideoInfo(pxlPhoto, imageScaleType,isLoopingVideo, soundMuted), Parcelable
+                              override var soundMuted: Boolean = false):PhotoWithVideoInfo(pxlPhoto, configuration, isLoopingVideo, soundMuted), Parcelable
 
 @Parcelize
 open class PhotoWithVideoInfo(open val pxlPhoto: PXLPhoto,
-                              open val imageScaleType: ImageScaleType,
+                              open val configuration: PXLPhotoView.Configuration,
                               open val isLoopingVideo: Boolean = true,
                               open val soundMuted: Boolean = false): Parcelable

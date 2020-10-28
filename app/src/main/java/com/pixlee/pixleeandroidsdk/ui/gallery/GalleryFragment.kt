@@ -1,7 +1,9 @@
 package com.pixlee.pixleeandroidsdk.ui.gallery
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.*
 import androidx.annotation.StringRes
 import androidx.core.view.GravityCompat
@@ -25,9 +27,12 @@ import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLAlbumSortType
 import com.pixlee.pixleesdk.enums.PXLContentSource
 import com.pixlee.pixleesdk.enums.PXLContentType
+import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
+import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.fragment_gallery.*
 import kotlinx.android.synthetic.main.module_search.*
 
@@ -333,7 +338,44 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
 
             } else {
                 val info = PhotoWithVideoInfo(pxlPhoto = photo,
-                        imageScaleType = ImageScaleType.CENTER_CROP,
+                        configuration = PXLPhotoView.Configuration().apply {
+                            // Customize image size, not a video
+                            pxlPhotoSize = PXLPhotoSize.ORIGINAL
+                            // Cystomize scale type
+                            imageScaleType = ImageScaleType.CENTER_CROP
+                            // Customize Main TextView
+                            mainTextViewStyle = TextViewStyle().apply {
+                                text = "Main Text"
+                                size = 30.px
+                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                typeface = null
+                            }
+                            // Customize Sub TextView
+                            subTextViewStyle = TextViewStyle().apply {
+                                text = "Sub Text"
+                                size = 18.px
+                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                typeface = null
+                            }
+                            // Customize Button
+                            buttonStyle = PXLPhotoView.ButtonStyle().apply {
+                                text = "Action Button"
+                                size = 20.px
+                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                typeface = null
+                                buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
+                                stroke = PXLPhotoView.Stroke().apply {
+                                    width = 2.px.toInt()
+                                    color = Color.WHITE
+                                    radiusInPixel = 25.px
+                                    padding = PXLPhotoView.Padding().apply {
+                                        left = 20.px.toInt()
+                                        centerRight = 40.px.toInt()
+                                        topBottom = 10.px.toInt()
+                                    }
+                                }
+                            }
+                        },
                         isLoopingVideo = true,
                         soundMuted = true)
                 ViewerActivity.launch(context!!, info)

@@ -35,7 +35,6 @@ open class PXLPhotoRecyclerViewInGrid : BaseRecyclerView {
                  lineSpace: Space = Space(),
                  listHeader: ListHeader? = null,
                  showingDebugView: Boolean = false,   // false: for production, true: development only when you want to see the debug info
-                 configuration: PXLPhotoView.Configuration? = null,
                  onButtonClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null,
                  onPhotoClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null) {
         layoutManager = StaggeredGridLayoutManager(gridSpan, StaggeredGridLayoutManager.VERTICAL)
@@ -45,23 +44,9 @@ open class PXLPhotoRecyclerViewInGrid : BaseRecyclerView {
         adapter = pxlPhotoAdapter
         pxlPhotoAdapter.infiniteScroll = false
         pxlPhotoAdapter.showingDebugView = showingDebugView
-        pxlPhotoAdapter.photoViewConfiguration = configuration
         pxlPhotoAdapter.onButtonClickedListener = onButtonClickedListener
         pxlPhotoAdapter.onPhotoClickedListener = onPhotoClickedListener
         pxlPhotoAdapter.notifyDataSetChanged()
-    }
-
-    internal override fun setList(type: ListAddType, list: List<PXLPhoto>, imageScaleType: ImageScaleType, heightInPixel: Int) {
-        clearOldList(type)
-        if (pxlPhotoAdapter.list.isEmpty() && listHeader != null) {
-            pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.Header(listHeader = listHeader!!))
-        }
-        if (list.isNotEmpty()) {
-            list.forEach {
-                pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.Content(PhotoWithImageScaleType(it, imageScaleType, heightInPixel)))
-            }
-            pxlPhotoAdapter.notifyDataSetChanged()
-        }
     }
 
     internal override fun setList(type: ListAddType, list: List<PhotoWithImageScaleType>) {

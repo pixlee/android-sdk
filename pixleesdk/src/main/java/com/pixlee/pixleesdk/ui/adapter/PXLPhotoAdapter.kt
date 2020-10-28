@@ -17,7 +17,6 @@ import kotlinx.android.synthetic.main.item_pxlphoto.*
 class PXLPhotoAdapter(
         var onButtonClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null,
         var onPhotoClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null,
-        var photoViewConfiguration: PXLPhotoView.Configuration? = null,
         var infiniteScroll: Boolean = false,
         var showingDebugView: Boolean = false
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -63,7 +62,7 @@ class PXLPhotoAdapter(
                 }
 
                 val data = item as Item.Content
-                holder.bind(data.data, photoViewConfiguration, showingDebugView)
+                holder.bind(data.data, showingDebugView)
                 holder.itemView.setOnClickListener {
                     onPhotoClickedListener?.also {
                         it(holder.itemView, data.data)

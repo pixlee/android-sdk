@@ -32,34 +32,10 @@ open class BaseRecyclerView : RecyclerView {
     }
 
     /**
-     * Add a list: List<PhotoWithImageScaleType> to an existing list
-     */
-    fun addList(list: List<PXLPhoto>, imageScaleType: ImageScaleType, heightInPixel: Int = 400.px.toInt()) {
-        setList(ListAddType.ADD, list, imageScaleType, heightInPixel)
-    }
-
-    /**
      * Replace a list: List<PhotoWithImageScaleType> with an existing list
      */
     fun replaceList(list: List<PhotoWithImageScaleType>) {
         setList(ListAddType.REPLACE, list)
-    }
-
-    /**
-     * Replace a list: List<PXLPhoto> with an existing list
-     */
-    fun replaceList(list: List<PXLPhoto>, imageScaleType: ImageScaleType, heightInPixel: Int = 400.px.toInt()) {
-        setList(ListAddType.REPLACE, list, imageScaleType, heightInPixel)
-    }
-
-    internal open fun setList(type: ListAddType, list: List<PXLPhoto>, imageScaleType: ImageScaleType, heightInPixel: Int = 400.px.toInt()) {
-        clearOldList(type)
-        if (list.isNotEmpty()) {
-            list.forEach {
-                pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.Content(PhotoWithImageScaleType(it, imageScaleType, heightInPixel)))
-            }
-            pxlPhotoAdapter.notifyDataSetChanged()
-        }
     }
 
     internal open fun setList(type: ListAddType, list: List<PhotoWithImageScaleType>) {

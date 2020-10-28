@@ -2,17 +2,21 @@ package com.pixlee.pixleesdk.ui.widgets
 
 import android.graphics.Color
 import android.graphics.Typeface
+import android.os.Parcelable
 import android.util.TypedValue
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import com.pixlee.pixleesdk.util.px
+import kotlinx.android.parcel.Parcelize
 
 /**
  * This lets the app customize TextView with text:String
  */
-open class TextViewStyle(var text: String = "", var textPadding:TextPadding = TextPadding(bottom = 14.px.toInt())) : TextStyle()
+@Parcelize
+open class TextViewStyle(var text: String = "", var textPadding:TextPadding = TextPadding(bottom = 14.px.toInt())) : TextStyle(), Parcelable
 
-open class TextPadding(var left: Int = 0, var top: Int = 0, var right: Int = 0, var bottom: Int = 0)
+@Parcelize
+open class TextPadding(var left: Int = 0, var top: Int = 0, var right: Int = 0, var bottom: Int = 0): Parcelable
 
 /**
  * this is for a view with price and currency

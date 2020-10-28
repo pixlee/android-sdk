@@ -75,7 +75,7 @@ class ViewerActivity : AppCompatActivity() {
                         backgroundColor = Color.WHITE
                         padding = 10.px.toInt()
                         onCheckedListener = {
-                            Toast.makeText(this@ViewerActivity, "is muted: $it'", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@ViewerActivity, "is muted: $it", Toast.LENGTH_LONG).show()
                         }
                     }
                 },
