@@ -8,6 +8,7 @@
         - [Advanced parameter options](#Advanced-parameter-options)
     - [Get content](#Get-content)
     - [Get a PXLPhoto with an album photo id](API.md#get-pxlphoto-with-an-albumphotoid)
+    - [Get a PXLPhoto with an album photo id and regionId](API.md#get-pxlphoto-with-an-albumphotoid-and-regionId)
     - [How to get image urls](#How-to-get-image-urls)
 - Analytics
     - [Album Analytics](#Album-Analytics)
@@ -107,6 +108,15 @@ val result = pxlKtxAlbum.getNextPage()
 
 val albumPhotoId:String = <one of your album photo ids>
 val result:PXLPhoto = pxlKtxAlbum.getPhotoWithId(albumPhotoId)
+```
+
+### Get a PXLPhoto with an album photo id and regionId
+```kotlin
+#!Kotlin.coroutines
+
+val albumPhotoId:String = <one of your album photo ids>
+val regionId:Int = <one of region ids>
+val result:PXLPhoto = pxlKtxAlbum.getPhotoFromRegion(albumPhotoId, regionId)
 ```
 
 ### How to get image urls
