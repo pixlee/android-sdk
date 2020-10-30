@@ -16,6 +16,7 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.view.ViewCompat
 import cn.jzvd.Jzvd
+import cn.jzvd.Jzvd.STATE_NORMAL
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
@@ -210,6 +211,25 @@ class PXLPhotoView : RelativeLayout {
                 ImageScaleType.CENTER_CROP -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_FILL_SCROP)
             }
             videoView.play()
+            //videoView.resumeVideo()
+        }
+    }
+
+    fun resumeVideo() {
+        if(pxlPhoto?.isVideo ?: false){
+            when (currentConfiguration.imageScaleType) {
+                ImageScaleType.FIT_CENTER -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_ADAPTER)
+                ImageScaleType.CENTER_CROP -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_FILL_SCROP)
+            }
+            videoView.resumeVideo()
+        }
+    }
+
+    fun pauseVideo(){
+        if(pxlPhoto?.isVideo ?: false){
+            Log.e("PXLPhotoView", "===mediaInterface.pause(), isPlaying: ${videoView.isPlaying}, mediaInterface: ${videoView.mediaInterface}")
+            videoView.pauseVideo()
+//            PXLPhotoView.releaseAllVideos()
         }
     }
 

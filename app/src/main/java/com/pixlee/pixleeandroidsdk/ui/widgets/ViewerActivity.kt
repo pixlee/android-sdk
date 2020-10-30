@@ -54,7 +54,10 @@ class ViewerActivity : AppCompatActivity() {
     }
 
     fun init(item: PhotoWithVideoInfo){
+        // by passing lifecycle to pxlPhotoProductView, the SDK will automatically start and stop the video
         pxlPhotoProductView.useLifecycleObserver(lifecycle)
+
+        // set your ui settings
         pxlPhotoProductView.setContent(photoInfo = item,
                 headerConfiguration = PXLPhotoProductView.Configuration().apply {
                     backButton = PXLPhotoProductView.CircleButton().apply {
@@ -129,7 +132,6 @@ class ViewerActivity : AppCompatActivity() {
                     val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it.link.toString()))
                     startActivity(browserIntent)
                 })
-        pxlPhotoProductView.playVideo()
     }
 
     /**

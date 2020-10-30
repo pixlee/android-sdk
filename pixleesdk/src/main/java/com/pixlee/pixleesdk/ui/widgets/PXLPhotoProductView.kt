@@ -209,7 +209,8 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun stopVideo() {
-        PXLPhotoView.releaseAllVideos()
+        //PXLPhotoView.releaseAllVideos()
+        pxlPhotoView.pauseVideo()
     }
 
     private var adapter: ProductAdapter? = null

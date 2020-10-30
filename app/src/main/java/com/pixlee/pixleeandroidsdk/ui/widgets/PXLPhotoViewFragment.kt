@@ -170,6 +170,65 @@ class PXLPhotoViewFragment : BaseFragment(), LifecycleObserver {
         PXLPhotoView.releaseAllVideos()
     }
 
+
+
+
+
+
+//    var currentView: Int = 0
+//    fun playRelevantVideo(scrollBounds: Rect) {
+//        if (pxlPhotoViewFitWrapLandscape.getLocalVisibleRect(scrollBounds)) {
+//            currentView = 1
+//            stopVideo(2)
+//            stopVideo(3)
+//            pxlPhotoViewFitWrapLandscape.playVideo()
+//            return
+//        }
+//
+//        if (pxlPhotoViewCrop.getLocalVisibleRect(scrollBounds)) {
+//            currentView = 2
+//            stopVideo(1)
+//            stopVideo(3)
+//            pxlPhotoViewCrop.playVideo()
+//            return
+//        }
+//
+//        if (pxlPhotoViewFitPortrait.getLocalVisibleRect(scrollBounds)) {
+//            currentView = 3
+//            stopVideo(1)
+//            stopVideo(2)
+//            pxlPhotoViewFitPortrait.playVideo()
+//            return
+//        }
+//    }
+//
+//    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+//    fun playVideo() {
+//        if (currentView > 0) {
+//            val scrollBounds = Rect()
+//            scrollView.getHitRect(scrollBounds)
+//            playRelevantVideo(scrollBounds)
+//        }
+//    }
+//
+//    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+//    fun stopVideoOnResume() {
+//        when(currentView){
+//            1 -> pxlPhotoViewFitWrapLandscape.pauseVideo()
+//            2 -> pxlPhotoViewCrop.pauseVideo()
+//            3 -> pxlPhotoViewFitPortrait.pauseVideo()
+//        }
+//        currentView = 0
+//    }
+//
+//    fun stopVideo(index:Int){
+//        when(index){
+//            1 -> pxlPhotoViewFitWrapLandscape.pauseVideo()
+//            2 -> pxlPhotoViewCrop.pauseVideo()
+//            3 -> pxlPhotoViewFitPortrait.pauseVideo()
+//        }
+//    }
+
     companion object {
         fun getInstance(pxlPhoto: PhotoWithImageScaleType): Fragment {
             val f = PXLPhotoViewFragment()

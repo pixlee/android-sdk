@@ -64,13 +64,15 @@ public class MainActivity extends BaseActivity {
         public void onBackStackChanged() {
             FragmentManager fm = getSupportFragmentManager();
             int fragmentCount = fm.getFragments().size();
-            String title;
+            String title = "";
             if (fragmentCount > 0) {
-                BaseFragment fragment = (BaseFragment) fm.getFragments().get(fragmentCount - 1);
-                if (fragment.getCustomTitle() != null) {
-                    title = fragment.getCustomTitle();
-                } else {
-                    title = getString(fragment.getTitleResource());
+                if(fm.getFragments().get(fragmentCount - 1) instanceof BaseFragment){
+                    BaseFragment fragment = (BaseFragment) fm.getFragments().get(fragmentCount - 1);
+                    if (fragment.getCustomTitle() != null) {
+                        title = fragment.getCustomTitle();
+                    } else {
+                        title = getString(fragment.getTitleResource());
+                    }
                 }
             } else {
                 title = getString(R.string.app_name);

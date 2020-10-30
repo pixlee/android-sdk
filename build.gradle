@@ -53,5 +53,5 @@ ext {
     glide = "4.11.0"
     orhanobutLogger = "2.2.0"
     lottie = "3.4.1"
-    androidJZVideo="1.0.4"
+    androidJZVideo="1.0.7"
 }

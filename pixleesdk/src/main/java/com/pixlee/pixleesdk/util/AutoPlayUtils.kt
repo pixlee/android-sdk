@@ -16,21 +16,24 @@ object AutoPlayUtils {
     var positionInList = -1 //记录当前播放列表位置
 
     /**
-     * @param firstVisiblePosition 首个可见item位置
-     * @param lastVisiblePosition  最后一个可见item位置
+     * @param recyclerView
+     * @param firstVisiblePosition
+     * @param lastVisiblePosition
+     * @param alphaForStoppedVideos alpha for view.alpha when not playing the video
      */
     fun onScrollPlayVideo(recyclerView: RecyclerView, jzvdId: Int, firstVisiblePosition: Int, lastVisiblePosition: Int, alphaForStoppedVideos: Float) {
         Log.d("AuthPlayUtils", "position first: $firstVisiblePosition, lastVisiblePosition: $lastVisiblePosition")
         var playingIdx = -1
         for (i in 0..lastVisiblePosition - firstVisiblePosition) {
             val child = recyclerView.getChildAt(i)
-            if(child!=null){
+            if (child != null) {
                 val pxlPhotoView = child.findViewById<PXLPhotoView>(jzvdId)
                 if (playingIdx == -1 && getViewVisiblePercent(pxlPhotoView) == 100) {
                     if (positionInList != i + firstVisiblePosition) {
                         Log.e("AuthPlayUtils", "-- detected player performClick() position: " + (firstVisiblePosition + i))
                         playingIdx = i
                         pxlPhotoView.playVideo()
+                        positionInList = playingIdx
                     }
                 }
                 child.alpha = if (playingIdx == i) 1f else alphaForStoppedVideos
@@ -39,16 +42,25 @@ object AutoPlayUtils {
     }
 
     /**
-     * @param firstVisiblePosition 首个可见item位置
-     * @param lastVisiblePosition  最后一个可见item位置
-     * @param percent              当item被遮挡percent/1时释放,percent取值0-1
+     * @param recyclerView
+     * @param firstVisiblePosition
+     * @param lastVisiblePosition
+     * @param percent
+     * @param alphaForStoppedVideos alpha for view.alpha when not playing the video
      */
-    fun onScrollReleaseAllVideos(firstVisiblePosition: Int, lastVisiblePosition: Int, percent: Int) {
+    fun onScrollReleaseAllVideos(recyclerView: RecyclerView, firstVisiblePosition: Int, lastVisiblePosition: Int, percent: Int, alphaForStoppedVideos: Float) {
         if (Jzvd.CURRENT_JZVD == null) return
         if (positionInList >= 0) {
             if (positionInList <= firstVisiblePosition || positionInList >= lastVisiblePosition - 1) {
+                Log.d("AuthPlayUtils", "-- getViewVisiblePercent () positionInList: " + positionInList)
                 if (getViewVisiblePercent(Jzvd.CURRENT_JZVD) < percent) {
                     PXLPhotoView.releaseAllVideos()
+                    for (i in 0..lastVisiblePosition - firstVisiblePosition) {
+                        val child = recyclerView.getChildAt(i)
+                        if (child != null) {
+                            child.alpha = alphaForStoppedVideos
+                        }
+                    }
                 }
             }
         }
