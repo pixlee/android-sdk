@@ -91,7 +91,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         initHeader(headerConfiguration)
         loadProducts(configuration)
 
-        pxlPhotoView.setConfiguration(configuration = PXLPhotoView.Configuration())
+        pxlPhotoView.setConfiguration(configuration = PXLPhotoView.Configuration(pxlPhotoSize = photoInfo.configuration.pxlPhotoSize))
         pxlPhotoView.setContent(photoInfo.pxlPhoto, photoInfo.configuration.imageScaleType)
         pxlPhotoView.setLooping(photoInfo.isLoopingVideo)
         pxlPhotoView.changeVolume(if (photoInfo.soundMuted) 0f else 1f)

@@ -47,7 +47,7 @@ class PXLPhotoView : RelativeLayout {
             var mainTextViewStyle: TextViewStyle? = null, // if null, the view is gone
             var subTextViewStyle: TextViewStyle? = null, // if null, the view is gone
             var buttonStyle: ButtonStyle? = null  // if null, the view is gone
-    ): Parcelable
+    ) : Parcelable
 
     @Parcelize
     class ButtonStyle(
@@ -58,14 +58,14 @@ class PXLPhotoView : RelativeLayout {
     @Parcelize
     class Stroke(var width: Int = 2.px.toInt(),
                  var color: Int = Color.WHITE,
-                 var radiusInPixel: Float = 25.px): Parcelable
+                 var radiusInPixel: Float = 25.px) : Parcelable
 
     // in pixel
     @Parcelize
     class Padding(
             var left: Int = 20.px.toInt(),
             var centerRight: Int = 40.px.toInt(),
-            var topBottom: Int = 10.px.toInt()): Parcelable
+            var topBottom: Int = 10.px.toInt()) : Parcelable
 
 
     val defaultScaleType = ImageScaleType.FIT_CENTER
@@ -176,11 +176,11 @@ class PXLPhotoView : RelativeLayout {
         return this
     }
 
-    fun mute(){
+    fun mute() {
         changeVolume(0f)
     }
 
-    fun unmute(){
+    fun unmute() {
         changeVolume(1f)
     }
 
@@ -205,7 +205,7 @@ class PXLPhotoView : RelativeLayout {
      * if the content is video, this plays the
      */
     fun playVideo() {
-        if(pxlPhoto?.isVideo ?: false){
+        if (pxlPhoto?.isVideo ?: false) {
             when (currentConfiguration.imageScaleType) {
                 ImageScaleType.FIT_CENTER -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_ADAPTER)
                 ImageScaleType.CENTER_CROP -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_FILL_SCROP)
@@ -216,7 +216,7 @@ class PXLPhotoView : RelativeLayout {
     }
 
     fun resumeVideo() {
-        if(pxlPhoto?.isVideo ?: false){
+        if (pxlPhoto?.isVideo ?: false) {
             when (currentConfiguration.imageScaleType) {
                 ImageScaleType.FIT_CENTER -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_ADAPTER)
                 ImageScaleType.CENTER_CROP -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_FILL_SCROP)
@@ -225,8 +225,8 @@ class PXLPhotoView : RelativeLayout {
         }
     }
 
-    fun pauseVideo(){
-        if(pxlPhoto?.isVideo ?: false){
+    fun pauseVideo() {
+        if (pxlPhoto?.isVideo ?: false) {
             Log.e("PXLPhotoView", "===mediaInterface.pause(), isPlaying: ${videoView.isPlaying}, mediaInterface: ${videoView.mediaInterface}")
             videoView.pauseVideo()
 //            PXLPhotoView.releaseAllVideos()
@@ -325,6 +325,11 @@ class PXLPhotoView : RelativeLayout {
     }
 
     private fun startBlurBG() {
+        if (currentConfiguration.imageScaleType == ImageScaleType.CENTER_CROP) {
+            // if center crop, don't load blur to preserve the compute power because this are will not be visible on the screen.
+            return
+        }
+
         // load a main image into an ImageView
         pxlPhoto?.also {
             Glide.with(this)
@@ -339,12 +344,17 @@ class PXLPhotoView : RelativeLayout {
         imageView.visibility = VISIBLE
         imageView.scaleType = currentConfiguration.imageScaleType.type
         pxlPhoto?.also {
-            val imageUrl = it.getUrlForSize(currentConfiguration.pxlPhotoSize
-                    ?: PXLPhotoSize.ORIGINAL).toString()
-            Log.d("pxlphoto", "pxlphoto.url: $imageUrl")
+            // this replaces video's original size with big size because video's original returns a video url while other sizes return photo urls.
+            // to reduce a loading time, we use a photo here
+            val pxlPhotoSize: PXLPhotoSize = if (pxlPhoto?.isVideo ?: false && currentConfiguration.pxlPhotoSize == PXLPhotoSize.ORIGINAL) {
+                PXLPhotoSize.BIG
+            } else {
+                currentConfiguration.pxlPhotoSize
+            }
+
+            val imageUrl = it.getUrlForSize(pxlPhotoSize).toString()
+
             // load a main image into an ImageView
-
-
             var builder = Glide.with(this).asBitmap().load(imageUrl)
             builder = builder.signature(ObjectKey(imageUrl + currentConfiguration.imageScaleType.type))
 //            builder = builder.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
