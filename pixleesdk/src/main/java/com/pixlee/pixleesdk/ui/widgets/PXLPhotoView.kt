@@ -355,10 +355,8 @@ class PXLPhotoView : RelativeLayout {
             val imageUrl = it.getUrlForSize(pxlPhotoSize).toString()
 
             // load a main image into an ImageView
-            var builder = Glide.with(this).asBitmap().load(imageUrl)
+            var builder = Glide.with(this).load(imageUrl)
             builder = builder.signature(ObjectKey(imageUrl + currentConfiguration.imageScaleType.type))
-//            builder = builder.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            builder = builder.skipMemoryCache(true)
             builder = when (currentConfiguration.imageScaleType) {
                 ImageScaleType.FIT_CENTER -> builder.fitCenter()
                 ImageScaleType.CENTER_CROP -> builder.centerCrop()
