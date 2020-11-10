@@ -237,7 +237,7 @@ pxlPhotoProductView.loadContent(...
         }
     }
     ```   
-- Option 2: Manual (do this if you want to play and stop the video when you need)
+- Option 2: Manual (use this if you want to play, stop and release the video when you need)
 ```kotlin
 #!kotlin
 class YourActivity : AppCompatActivity() {
