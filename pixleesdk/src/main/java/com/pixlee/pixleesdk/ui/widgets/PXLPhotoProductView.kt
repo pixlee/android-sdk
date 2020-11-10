@@ -219,4 +219,9 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         super.onDetachedFromWindow()
         // Stop media player
     }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun releaseVideo() {
+        PXLPhotoView.releaseAllVideos()
+    }
 }

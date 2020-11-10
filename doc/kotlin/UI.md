@@ -252,6 +252,11 @@ class YourActivity : AppCompatActivity() {
         super.onPause()
         pxlPhotoProductView.stopVideo()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        pxlPhotoProductView.releaseVideo()
+    }
 }
 ```
 

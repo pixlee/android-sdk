@@ -91,7 +91,7 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
                                     },
                                     heightInPixel = cellHeightInPixel,
                                     isLoopingVideo = true,
-                                    soundMuted = true))
+                                    soundMuted = false))
                         }
                         allPXLPhotos.addAll(it.photos)
                     }
