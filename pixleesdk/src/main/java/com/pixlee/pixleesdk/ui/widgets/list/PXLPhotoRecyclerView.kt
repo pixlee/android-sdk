@@ -2,20 +2,21 @@ package com.pixlee.pixleesdk.ui.widgets.list
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cn.jzvd.Jzvd
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+//import com.master.exoplayer.MasterExoPlayerHelper
 import com.pixlee.pixleesdk.R
-import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
-import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.AutoPlayUtils
+import com.pixlee.pixleesdk.video.TransparentStyledPlayerView
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -45,6 +46,7 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
         this.adapter = pxlPhotoAdapter
     }
 
+    //    lateinit var masterExoPlayerHelper: MasterExoPlayerHelper
     internal var alphaForStoppedVideos: Float = 1f
     fun initiate(infiniteScroll: Boolean = false,     // or false
                  showingDebugView: Boolean = false,   // false: for production, true: development only when you want to see the debug info
@@ -59,19 +61,16 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
         pxlPhotoAdapter.onButtonClickedListener = onButtonClickedListener
         pxlPhotoAdapter.onPhotoClickedListener = onPhotoClickedListener
 
+
         addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
             override fun onChildViewAttachedToWindow(view: View) {
             }
 
             override fun onChildViewDetachedFromWindow(view: View) {
                 val pxlPhotoView = view.findViewById<PXLPhotoView>(R.id.pxlPhotoView)
-                val jzvd: Jzvd = pxlPhotoView.videoView
-                if (jzvd != null && Jzvd.CURRENT_JZVD != null &&
-                        jzvd.jzDataSource.containsTheUrl(Jzvd.CURRENT_JZVD.jzDataSource.currentUrl)) {
-                    if (Jzvd.CURRENT_JZVD != null && Jzvd.CURRENT_JZVD.screen != Jzvd.SCREEN_FULLSCREEN) {
-                        view.alpha = alphaForStoppedVideos
-                        PXLPhotoView.releaseAllVideos()
-                    }
+                if (pxlPhotoView.havePlayer()) {
+                    view.alpha = alphaForStoppedVideos
+                    pxlPhotoView.pauseVideo()
                 }
             }
         })
@@ -86,7 +85,7 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy != 0) {
-                    AutoPlayUtils.onScrollReleaseAllVideos(recyclerView, linearLayoutManager.findFirstVisibleItemPosition(), linearLayoutManager.findLastVisibleItemPosition(), 20, alphaForStoppedVideos)
+                    AutoPlayUtils.onScrollReleaseAllVideos(recyclerView, R.id.pxlPhotoView, linearLayoutManager.findFirstVisibleItemPosition(), linearLayoutManager.findLastVisibleItemPosition(), 20, alphaForStoppedVideos)
                 }
             }
         })
@@ -111,11 +110,18 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
 
     internal fun playVideoIfneeded(recyclerView: RecyclerView) {
         if (linearLayoutManager != null && pxlPhotoAdapter != null && pxlPhotoAdapter.list.isNotEmpty()) {
+            var muted = false
+            if(pxlPhotoAdapter.list.lastOrNull() is PXLPhotoAdapter.Item.Content){
+                (pxlPhotoAdapter.list.lastOrNull() as PXLPhotoAdapter.Item.Content).let {
+                    muted = it.data.soundMuted
+                }
+            }
             AutoPlayUtils.onScrollPlayVideo(recyclerView,
                     R.id.pxlPhotoView,
                     linearLayoutManager.findFirstVisibleItemPosition(),
                     linearLayoutManager.findLastVisibleItemPosition(),
-                    alphaForStoppedVideos)
+                    alphaForStoppedVideos,
+                    muted)
         }
     }
 
@@ -126,14 +132,23 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
      * If you want to manually play and stop the video, don't use this and do use playVideo() and stopVideo() when you want
      */
     fun useLifecycleObserver(lifecycle: Lifecycle) {
+//        masterExoPlayerHelper.makeLifeCycleAware(lifecycle)
         lifecycle.addObserver(this)
     }
 
     private var playingVideo = false
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    private fun playVideoOnStart() {
+        playVideo()
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun playVideo() {
+        // The reason why we need post {} is to give list time to get the item loaded completely.
+        // linearLayoutManager.findFirstVisibleItemPosition() and linearLayoutManager.findLastVisibleItemPosition() return -1 without post {}.
         post {
+            changingSoundJob?.cancel()
             playingVideo = true
             playVideoIfneeded(this)
         }
@@ -141,8 +156,15 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun stopVideo() {
+        changingSoundJob?.cancel()
         playingVideo = false
-        PXLPhotoView.releaseAllVideos()
+
+        AutoPlayUtils.releaseAllVideos(this, R.id.pxlPhotoView, linearLayoutManager.findFirstVisibleItemPosition(), linearLayoutManager.findLastVisibleItemPosition(), alphaForStoppedVideos)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    private fun stopVideoOnStop() {
+        stopVideo()
     }
 
     /**
@@ -159,11 +181,11 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
         changeSound(false)
     }
 
-    var changingSoundJob:Job? = null
+    var changingSoundJob: Job? = null
     private fun changeSound(muted: Boolean) {
         changingSoundJob?.cancel()
         changingSoundJob = launch {
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.IO) {
                 if (pxlPhotoAdapter.list.isNotEmpty()) {
                     pxlPhotoAdapter.list.forEach {
                         when (it) {
@@ -176,10 +198,12 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
                 }
             }
 
-            pxlPhotoAdapter.notifyDataSetChanged()
-            if (playingVideo) {
-                playVideo()
-            }
+            changeVolume(muted)
         }
+    }
+
+    private fun changeVolume(muted: Boolean) {
+        Log.e("aa", "changeVolume- applyVolume: ${linearLayoutManager.findFirstVisibleItemPosition()}")
+        AutoPlayUtils.applyVolume(this, R.id.pxlPhotoView, linearLayoutManager.findFirstVisibleItemPosition(), linearLayoutManager.findLastVisibleItemPosition(), muted, alphaForStoppedVideos)
     }
 }

@@ -200,17 +200,24 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         lifecycle.addObserver(this)
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        playVideo()
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun playVideo() {
-        post {
-            pxlPhotoView.playVideo()
-        }
+        pxlPhotoView.playVideo()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun stopVideo() {
-        //PXLPhotoView.releaseAllVideos()
         pxlPhotoView.pauseVideo()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onStop() {
+        stopVideo()
     }
 
     private var adapter: ProductAdapter? = null
