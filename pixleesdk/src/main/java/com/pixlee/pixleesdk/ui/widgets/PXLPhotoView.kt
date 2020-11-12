@@ -46,7 +46,7 @@ import java.util.*
 /**
  * This view is to show a photo of PXLPhoto inside a RecyclerView or a ViewGroup
  */
-class PXLPhotoView : RelativeLayout, PlaybackPreparer {
+class PXLPhotoView : RelativeLayout {
     companion object {
         /**
          * this is to release video player
@@ -83,6 +83,21 @@ class PXLPhotoView : RelativeLayout, PlaybackPreparer {
             var centerRight: Int = 40.px.toInt(),
             var topBottom: Int = 10.px.toInt()) : Parcelable
 
+    // #####################################
+    // ######### Start: ExoPlayer ##########
+    // #####################################
+    private var startWindow = 0
+    private var startPosition: Long = 0
+    private var trackSelector: DefaultTrackSelector? = null
+    private var trackSelectorParameters: DefaultTrackSelector.Parameters? = null
+    private var startAutoPlay = true
+    // Fields used only for ad playback.
+    private var dataSourceFactory: DataSource.Factory? = null
+    private var mediaItems: List<MediaItem>? = null
+    protected var player: SimpleExoPlayer? = null
+    // ###################################
+    // ######### End: ExoPlayer ##########
+    // ###################################
 
     val defaultScaleType = ImageScaleType.FIT_CENTER
     var pxlPhoto: PXLPhoto? = null
@@ -450,7 +465,9 @@ class PXLPhotoView : RelativeLayout, PlaybackPreparer {
             player!!.setAudioAttributes(AudioAttributes.DEFAULT, true)
             player!!.playWhenReady = startAutoPlay
             videoView.player = player
-            videoView.setPlaybackPreparer(this)
+            videoView.setPlaybackPreparer {
+                player!!.prepare()
+            }
         }
         val haveStartPosition = startWindow != C.INDEX_UNSET
         if (haveStartPosition) {
@@ -503,20 +520,6 @@ class PXLPhotoView : RelativeLayout, PlaybackPreparer {
             }
             return Pair.create(0, errorString)
         }
-    }
-
-    private var startWindow = 0
-    private var startPosition: Long = 0
-    private var trackSelector: DefaultTrackSelector? = null
-    private var trackSelectorParameters: DefaultTrackSelector.Parameters? = null
-    private var startAutoPlay = true
-    // Fields used only for ad playback.
-    private var adsLoader: AdsLoader? = null
-    private var dataSourceFactory: DataSource.Factory? = null
-    private var mediaItems: List<MediaItem>? = null
-    protected var player: SimpleExoPlayer? = null
-    override fun preparePlayback() {
-        player!!.prepare()
     }
 
     override fun onDetachedFromWindow() {
