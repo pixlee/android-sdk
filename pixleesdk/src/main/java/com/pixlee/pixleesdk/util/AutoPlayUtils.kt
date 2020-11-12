@@ -18,7 +18,7 @@ object AutoPlayUtils {
      * @param lastVisiblePosition
      * @param alphaForStoppedVideos alpha for view.alpha when not playing the video
      */
-    fun onScrollPlayVideo(recyclerView: RecyclerView, pxlPhotoViewId: Int, firstVisiblePosition: Int, lastVisiblePosition: Int, alphaForStoppedVideos: Float) {
+    fun onScrollPlayVideo(recyclerView: RecyclerView, pxlPhotoViewId: Int, firstVisiblePosition: Int, lastVisiblePosition: Int, alphaForStoppedVideos: Float, muted: Boolean) {
         var playingIdx = -1
         var positionInList = -1
         for (i in 0..lastVisiblePosition - firstVisiblePosition) {
@@ -29,6 +29,7 @@ object AutoPlayUtils {
                     if (positionInList != i + firstVisiblePosition) {
                         playingIdx = i
                         pxlPhotoView.playVideo()
+                        pxlPhotoView.changeVolume(if(muted) 0f else 1f)
                         positionInList = playingIdx
                     }
                 }

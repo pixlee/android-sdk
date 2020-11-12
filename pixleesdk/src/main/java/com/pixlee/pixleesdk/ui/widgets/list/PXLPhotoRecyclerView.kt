@@ -110,11 +110,18 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
 
     internal fun playVideoIfneeded(recyclerView: RecyclerView) {
         if (linearLayoutManager != null && pxlPhotoAdapter != null && pxlPhotoAdapter.list.isNotEmpty()) {
+            var muted = false
+            if(pxlPhotoAdapter.list.lastOrNull() is PXLPhotoAdapter.Item.Content){
+                (pxlPhotoAdapter.list.lastOrNull() as PXLPhotoAdapter.Item.Content).let {
+                    muted = it.data.soundMuted
+                }
+            }
             AutoPlayUtils.onScrollPlayVideo(recyclerView,
                     R.id.pxlPhotoView,
                     linearLayoutManager.findFirstVisibleItemPosition(),
                     linearLayoutManager.findLastVisibleItemPosition(),
-                    alphaForStoppedVideos)
+                    alphaForStoppedVideos,
+                    muted)
         }
     }
 
@@ -151,6 +158,7 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
     fun stopVideo() {
         changingSoundJob?.cancel()
         playingVideo = false
+
         AutoPlayUtils.releaseAllVideos(this, R.id.pxlPhotoView, linearLayoutManager.findFirstVisibleItemPosition(), linearLayoutManager.findLastVisibleItemPosition(), alphaForStoppedVideos)
     }
 
@@ -190,7 +198,6 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
                 }
             }
 
-            //pxlPhotoAdapter.notifyDataSetChanged()
             changeVolume(muted)
         }
     }
