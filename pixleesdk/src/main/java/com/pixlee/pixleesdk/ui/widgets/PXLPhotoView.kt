@@ -2,14 +2,15 @@ package com.pixlee.pixleesdk.ui.widgets
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.PixelFormat
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.Log
 import android.util.Pair
-import android.view.*
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -248,6 +249,7 @@ class PXLPhotoView : RelativeLayout, PlaybackPreparer {
             }
             // change volume
             player?.volume = volume
+            player?.repeatMode = if (looping) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
             if(isNotPlaying) videoView.onResume()
         }
     }
@@ -436,7 +438,7 @@ class PXLPhotoView : RelativeLayout, PlaybackPreparer {
 
             val mediaSourceFactory: MediaSourceFactory = DefaultMediaSourceFactory(dataSourceFactory!!)
 
-            trackSelector = DefaultTrackSelector( context)
+            trackSelector = DefaultTrackSelector(context)
             trackSelector!!.parameters = trackSelectorParameters!!
 
             player = SimpleExoPlayer.Builder(context, renderersFactory)
