@@ -1,7 +1,6 @@
 package com.pixlee.pixleesdk.util
 
 import android.graphics.Rect
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
@@ -62,11 +61,11 @@ object AutoPlayUtils {
         for (i in 0..lastVisiblePosition - firstVisiblePosition) {
             recyclerView.getChildAt(i)?.let { child ->
                 val pxlPhotoView = child.findViewById<PXLPhotoView>(pxlPhotoViewId)
-                if (pxlPhotoView!=null && pxlPhotoView.havePlayer() && getViewVisiblePercent(pxlPhotoView) < percent) {
+                if (pxlPhotoView!=null && pxlPhotoView.hasPlayer() && getViewVisiblePercent(pxlPhotoView) < percent) {
                     pxlPhotoView.pauseVideo()
                 }
 
-                if(pxlPhotoView==null || !pxlPhotoView.havePlayer()){
+                if(pxlPhotoView==null || !pxlPhotoView.hasPlayer()){
                     child.alpha = alphaForStoppedVideos
                 }
             }
@@ -77,7 +76,7 @@ object AutoPlayUtils {
         for (i in 0..lastVisiblePosition - firstVisiblePosition) {
             recyclerView.getChildAt(i)?.let { child ->
                 val pxlPhotoView = child.findViewById<PXLPhotoView>(pxlPhotoViewId)
-                if (pxlPhotoView!=null && pxlPhotoView.havePlayer()) {
+                if (pxlPhotoView!=null && pxlPhotoView.hasPlayer()) {
                     pxlPhotoView.pauseVideo()
                 }
                 child.alpha = alphaForStoppedVideos
@@ -90,7 +89,7 @@ object AutoPlayUtils {
             recyclerView.getChildAt(i)?.let { child ->
                 val pxlPhotoView = child.findViewById<PXLPhotoView>(pxlPhotoViewId)
                 pxlPhotoView.changeVolume(if(muted) 0f else 1f)
-                if (pxlPhotoView!=null && pxlPhotoView.havePlayer()) {
+                if (pxlPhotoView!=null && pxlPhotoView.hasPlayer()) {
                     child.alpha = 1f
                 }else{
                     child.alpha = alphaForStoppedVideos

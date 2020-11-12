@@ -66,7 +66,7 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
 
             override fun onChildViewDetachedFromWindow(view: View) {
                 val pxlPhotoView = view.findViewById<PXLPhotoView>(R.id.pxlPhotoView)
-                if (pxlPhotoView.havePlayer()) {
+                if (pxlPhotoView.hasPlayer()) {
                     view.alpha = alphaForStoppedVideos
                     pxlPhotoView.pauseVideo()
                 }

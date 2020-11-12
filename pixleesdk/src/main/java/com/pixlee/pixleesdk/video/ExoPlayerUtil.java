@@ -19,17 +19,19 @@ import android.content.Context;
 
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.RenderersFactory;
-import com.google.android.exoplayer2.database.DatabaseProvider;
-import com.google.android.exoplayer2.database.ExoDatabaseProvider;
-import com.google.android.exoplayer2.ext.cronet.CronetDataSourceFactory;
-import com.google.android.exoplayer2.ext.cronet.CronetEngineWrapper;
 import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.upstream.FileDataSourceFactory;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
+import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.upstream.cache.Cache;
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource;
+import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory;
 import com.google.android.exoplayer2.upstream.cache.NoOpCacheEvictor;
 import com.google.android.exoplayer2.upstream.cache.SimpleCache;
+import com.google.android.exoplayer2.util.Util;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
@@ -39,10 +41,8 @@ import java.util.concurrent.Executors;
 /** Utility methods for the demo app. */
 public final class ExoPlayerUtil {
   private static final String DOWNLOAD_CONTENT_DIRECTORY = "downloads";
+  public static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
 
-  private static DataSource.@MonotonicNonNull Factory dataSourceFactory;
-  private static HttpDataSource.@MonotonicNonNull Factory httpDataSourceFactory;
-  private static @MonotonicNonNull DatabaseProvider databaseProvider;
   private static @MonotonicNonNull File downloadDirectory;
   private static @MonotonicNonNull Cache downloadCache;
 
@@ -60,47 +60,7 @@ public final class ExoPlayerUtil {
                 ? DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
                 : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
             : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF;
-    return new DefaultRenderersFactory(context.getApplicationContext())
-        .setExtensionRendererMode(extensionRendererMode);
-  }
-
-  public static synchronized HttpDataSource.Factory getHttpDataSourceFactory(Context context) {
-    if (httpDataSourceFactory == null) {
-      context = context.getApplicationContext();
-      CronetEngineWrapper cronetEngineWrapper = new CronetEngineWrapper(context);
-      httpDataSourceFactory =
-          new CronetDataSourceFactory(cronetEngineWrapper, Executors.newSingleThreadExecutor());
-    }
-    return httpDataSourceFactory;
-  }
-
-  /** Returns a {@link DataSource.Factory}. */
-  public static synchronized DataSource.Factory getDataSourceFactory(Context context) {
-    if (dataSourceFactory == null) {
-      context = context.getApplicationContext();
-      DefaultDataSourceFactory upstreamFactory =
-          new DefaultDataSourceFactory(context, getHttpDataSourceFactory(context));
-      dataSourceFactory = buildReadOnlyCacheDataSource(upstreamFactory, getDownloadCache(context));
-    }
-    return dataSourceFactory;
-  }
-
-  private static synchronized Cache getDownloadCache(Context context) {
-    if (downloadCache == null) {
-      File downloadContentDirectory =
-          new File(getDownloadDirectory(context), DOWNLOAD_CONTENT_DIRECTORY);
-      downloadCache =
-          new SimpleCache(
-              downloadContentDirectory, new NoOpCacheEvictor(), getDatabaseProvider(context));
-    }
-    return downloadCache;
-  }
-
-  private static synchronized DatabaseProvider getDatabaseProvider(Context context) {
-    if (databaseProvider == null) {
-      databaseProvider = new ExoDatabaseProvider(context);
-    }
-    return databaseProvider;
+    return new DefaultRenderersFactory(context.getApplicationContext(), extensionRendererMode);
   }
 
   private static synchronized File getDownloadDirectory(Context context) {
@@ -113,14 +73,50 @@ public final class ExoPlayerUtil {
     return downloadDirectory;
   }
 
-  private static CacheDataSource.Factory buildReadOnlyCacheDataSource(
-          DataSource.Factory upstreamFactory, Cache cache) {
-    return new CacheDataSource.Factory()
-        .setCache(cache)
-        .setUpstreamDataSourceFactory(upstreamFactory)
-        .setCacheWriteDataSinkFactory(null)
-        .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR);
+  private ExoPlayerUtil() {}
+
+  /**
+   * Returns a new DataSource factory.
+   *
+   * @param useBandwidthMeter Whether to set {@link #BANDWIDTH_METER} as a listener to the new
+   *     DataSource factory.
+   * @return A new DataSource factory.
+   */
+  public static DataSource.Factory buildDataSourceFactory(Context context, boolean useBandwidthMeter) {
+    return buildDataSourceFactory(context, useBandwidthMeter ? BANDWIDTH_METER : null);
   }
 
-  private ExoPlayerUtil() {}
+  /** Returns a {@link DataSource.Factory}. */
+  public static DataSource.Factory buildDataSourceFactory(Context context, TransferListener<? super DataSource> listener) {
+    String userAgent = Util.getUserAgent(context, "PXLExoPlayer");
+    DefaultDataSourceFactory upstreamFactory =
+            new DefaultDataSourceFactory(context, listener, buildHttpDataSourceFactory(userAgent, listener));
+    return buildReadOnlyCacheDataSource(upstreamFactory, getDownloadCache(context));
+  }
+
+  /** Returns a {@link HttpDataSource.Factory}. */
+  public static HttpDataSource.Factory buildHttpDataSourceFactory(
+          String userAgent,
+          TransferListener<? super DataSource> listener) {
+    return new DefaultHttpDataSourceFactory(userAgent, listener);
+  }
+
+  private static  synchronized Cache getDownloadCache(Context context) {
+    if (downloadCache == null) {
+      File downloadContentDirectory = new File(getDownloadDirectory(context), DOWNLOAD_CONTENT_DIRECTORY);
+      downloadCache = new SimpleCache(downloadContentDirectory, new NoOpCacheEvictor());
+    }
+    return downloadCache;
+  }
+
+  private static CacheDataSourceFactory buildReadOnlyCacheDataSource(
+          DefaultDataSourceFactory upstreamFactory, Cache cache) {
+    return new CacheDataSourceFactory(
+            cache,
+            upstreamFactory,
+            new FileDataSourceFactory(),
+            /* cacheWriteDataSinkFactory= */ null,
+            CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR,
+            /* eventListener= */ null);
+  }
 }

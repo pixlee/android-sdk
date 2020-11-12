@@ -1,8 +1,8 @@
 package com.pixlee.pixleesdk.video;
 
-import static com.google.android.exoplayer2.util.Assertions.checkNotNull;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -10,9 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -24,61 +21,46 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.annotation.IntDef;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
+
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ControlDispatcher;
+import com.google.android.exoplayer2.DefaultControlDispatcher;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.PlaybackPreparer;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Player.DiscontinuityReason;
-import com.google.android.exoplayer2.Timeline;
-import com.google.android.exoplayer2.Timeline.Period;
 import com.google.android.exoplayer2.metadata.Metadata;
-import com.google.android.exoplayer2.metadata.flac.PictureFrame;
 import com.google.android.exoplayer2.metadata.id3.ApicFrame;
 import com.google.android.exoplayer2.source.TrackGroupArray;
-import com.google.android.exoplayer2.source.ads.AdsLoader;
 import com.google.android.exoplayer2.text.Cue;
 import com.google.android.exoplayer2.text.TextOutput;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.ResizeMode;
-import com.google.android.exoplayer2.ui.DefaultTimeBar;
-import com.google.android.exoplayer2.ui.StyledPlayerControlView;
-import com.google.android.exoplayer2.ui.StyledPlayerView;
+import com.google.android.exoplayer2.ui.PlayerControlView;
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.ui.SubtitleView;
-import com.google.android.exoplayer2.ui.spherical.SingleTapListener;
-import com.google.android.exoplayer2.ui.spherical.SphericalGLSurfaceView;
 import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.ErrorMessageProvider;
 import com.google.android.exoplayer2.util.RepeatModeUtil;
 import com.google.android.exoplayer2.util.Util;
-import com.google.android.exoplayer2.video.VideoDecoderGLSurfaceView;
 import com.google.android.exoplayer2.video.VideoListener;
-import com.google.common.collect.ImmutableList;
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.util.ArrayList;
 import java.util.List;
-import org.checkerframework.checker.nullness.qual.EnsuresNonNullIf;
-import org.checkerframework.checker.nullness.qual.RequiresNonNull;
 
 /**
  * A high level view for {@link Player} media playbacks. It displays video, subtitles and album art
- * during playback, and displays playback controls using a {@link StyledPlayerControlView}.
+ * during playback, and displays playback controls using a {@link PlayerControlView}.
  *
- * <p>A StyledPlayerView can be customized by setting attributes (or calling corresponding methods),
- * overriding drawables, overriding the view's layout file, or by specifying a custom view layout
- * file.
+ * <p>A PlayerView can be customized by setting attributes (or calling corresponding methods),
+ * overriding the view's layout file or by specifying a custom view layout file, as outlined below.
  *
  * <h3>Attributes</h3>
  *
- * The following attributes can be set on a StyledPlayerView when used in a layout XML file:
+ * The following attributes can be set on a PlayerView when used in a layout XML file:
  *
  * <ul>
  *   <li><b>{@code use_artwork}</b> - Whether artwork is used if available in audio streams.
@@ -89,7 +71,7 @@ import org.checkerframework.checker.nullness.qual.RequiresNonNull;
  *   <li><b>{@code default_artwork}</b> - Default artwork to use if no artwork available in audio
  *       streams.
  *       <ul>
- *         <li>Corresponding method: {@link #setDefaultArtwork(Drawable)}
+ *         <li>Corresponding method: {@link #setDefaultArtwork(Bitmap)}
  *         <li>Default: {@code null}
  *       </ul>
  *   <li><b>{@code use_controller}</b> - Whether the playback controls can be shown.
@@ -116,10 +98,10 @@ import org.checkerframework.checker.nullness.qual.RequiresNonNull;
  *         <li>Default: {@code true}
  *       </ul>
  *   <li><b>{@code show_buffering}</b> - Whether the buffering spinner is displayed when the player
- *       is buffering. Valid values are {@code never}, {@code when_playing} and {@code always}.
+ *       is buffering.
  *       <ul>
- *         <li>Corresponding method: {@link #setShowBuffering(int)}
- *         <li>Default: {@code never}
+ *         <li>Corresponding method: {@link #setShowBuffering(boolean)}
+ *         <li>Default: {@code false}
  *       </ul>
  *   <li><b>{@code resize_mode}</b> - Controls how video and album art is resized within the view.
  *       Valid values are {@code fit}, {@code fixed_width}, {@code fixed_height} and {@code fill}.
@@ -128,20 +110,14 @@ import org.checkerframework.checker.nullness.qual.RequiresNonNull;
  *         <li>Default: {@code fit}
  *       </ul>
  *   <li><b>{@code surface_type}</b> - The type of surface view used for video playbacks. Valid
- *       values are {@code surface_view}, {@code texture_view}, {@code spherical_gl_surface_view},
- *       {@code video_decoder_gl_surface_view} and {@code none}. Using {@code none} is recommended
- *       for audio only applications, since creating the surface can be expensive. Using {@code
- *       surface_view} is recommended for video applications. Note, TextureView can only be used in
- *       a hardware accelerated window. When rendered in software, TextureView will draw nothing.
+ *       values are {@code surface_view}, {@code texture_view} and {@code none}. Using {@code none}
+ *       is recommended for audio only applications, since creating the surface can be expensive.
+ *       Using {@code surface_view} is recommended for video applications. Note, TextureView can
+ *       only be used in a hardware accelerated window. When rendered in software, TextureView will
+ *       draw nothing.
  *       <ul>
  *         <li>Corresponding method: None
  *         <li>Default: {@code surface_view}
- *       </ul>
- *   <li><b>{@code use_sensor_rotation}</b> - Whether to use the orientation sensor for rotation
- *       during spherical playbacks (if available).
- *       <ul>
- *         <li>Corresponding method: {@link #setUseSensorRotation(boolean)}
- *         <li>Default: {@code true}
  *       </ul>
  *   <li><b>{@code shutter_background_color}</b> - The background color of the {@code exo_shutter}
  *       view.
@@ -159,33 +135,28 @@ import org.checkerframework.checker.nullness.qual.RequiresNonNull;
  *       for more details.
  *       <ul>
  *         <li>Corresponding method: None
- *         <li>Default: {@code R.layout.exo_styled_player_view}
+ *         <li>Default: {@code R.id.exo_player_view}
  *       </ul>
  *   <li><b>{@code controller_layout_id}</b> - Specifies the id of the layout resource to be
- *       inflated by the child {@link StyledPlayerControlView}. See below for more details.
+ *       inflated by the child {@link PlayerControlView}. See below for more details.
  *       <ul>
  *         <li>Corresponding method: None
- *         <li>Default: {@code R.layout.exo_styled_player_control_view}
+ *         <li>Default: {@code R.id.exo_player_control_view}
  *       </ul>
- *   <li>All attributes that can be set on {@link StyledPlayerControlView} and {@link
- *       DefaultTimeBar} can also be set on a StyledPlayerView, and will be propagated to the
- *       inflated {@link StyledPlayerControlView} unless the layout is overridden to specify a
- *       custom {@code exo_controller} (see below).
+ *   <li>All attributes that can be set on a {@link PlayerControlView} can also be set on a
+ *       PlayerView, and will be propagated to the inflated {@link PlayerControlView} unless the
+ *       layout is overridden to specify a custom {@code exo_controller} (see below).
  * </ul>
- *
- * <h3>Overriding drawables</h3>
- *
- * The drawables used by {@link StyledPlayerControlView} (with its default layout file) can be
- * overridden by drawables with the same names defined in your application. See the {@link
- * StyledPlayerControlView} documentation for a list of drawables that can be overridden.
  *
  * <h3>Overriding the layout file</h3>
  *
- * To customize the layout of StyledPlayerView throughout your app, or just for certain
- * configurations, you can define {@code exo_styled_player_view.xml} layout files in your
- * application {@code res/layout*} directories. These layouts will override the one provided by the
- * ExoPlayer library, and will be inflated for use by StyledPlayerView. The view identifies and
- * binds its children by looking for the following ids:
+ * To customize the layout of PlayerView throughout your app, or just for certain configurations,
+ * you can define {@code exo_player_view.xml} layout files in your application {@code res/layout*}
+ * directories. These layouts will override the one provided by the ExoPlayer library, and will be
+ * inflated for use by PlayerView. The view identifies and binds its children by looking for the
+ * following ids:
+ *
+ * <p>
  *
  * <ul>
  *   <li><b>{@code exo_content_frame}</b> - A frame whose aspect ratio is resized based on the video
@@ -195,9 +166,8 @@ import org.checkerframework.checker.nullness.qual.RequiresNonNull;
  *         <li>Type: {@link AspectRatioFrameLayout}
  *       </ul>
  *   <li><b>{@code exo_shutter}</b> - A view that's made visible when video should be hidden. This
- *       view is typically an opaque view that covers the video surface, thereby obscuring it when
- *       visible. Obscuring the surface in this way also helps to prevent flicker at the start of
- *       playback when {@code surface_type="surface_view"}.
+ *       view is typically an opaque view that covers the video surface view, thereby obscuring it
+ *       when visible.
  *       <ul>
  *         <li>Type: {@link View}
  *       </ul>
@@ -219,22 +189,16 @@ import org.checkerframework.checker.nullness.qual.RequiresNonNull;
  *         <li>Type: {@link TextView}
  *       </ul>
  *   <li><b>{@code exo_controller_placeholder}</b> - A placeholder that's replaced with the inflated
- *       {@link StyledPlayerControlView}. Ignored if an {@code exo_controller} view exists.
+ *       {@link PlayerControlView}. Ignored if an {@code exo_controller} view exists.
  *       <ul>
  *         <li>Type: {@link View}
  *       </ul>
- *   <li><b>{@code exo_controller}</b> - An already inflated {@link StyledPlayerControlView}. Allows
- *       use of a custom extension of {@link StyledPlayerControlView}. {@link
- *       StyledPlayerControlView} and {@link DefaultTimeBar} attributes set on the StyledPlayerView
- *       will not be automatically propagated through to this instance. If a view exists with this
- *       id, any {@code exo_controller_placeholder} view will be ignored.
+ *   <li><b>{@code exo_controller}</b> - An already inflated {@link PlayerControlView}. Allows use
+ *       of a custom extension of {@link PlayerControlView}. Note that attributes such as {@code
+ *       rewind_increment} will not be automatically propagated through to this instance. If a view
+ *       exists with this id, any {@code exo_controller_placeholder} view will be ignored.
  *       <ul>
- *         <li>Type: {@link StyledPlayerControlView}
- *       </ul>
- *   <li><b>{@code exo_ad_overlay}</b> - A {@link FrameLayout} positioned on top of the player which
- *       is used to show ad UI (if applicable).
- *       <ul>
- *         <li>Type: {@link FrameLayout}
+ *         <li>Type: {@link PlayerControlView}
  *       </ul>
  *   <li><b>{@code exo_overlay}</b> - A {@link FrameLayout} positioned on top of the player which
  *       the app can access via {@link #getOverlayFrameLayout()}, provided for convenience.
@@ -248,90 +212,52 @@ import org.checkerframework.checker.nullness.qual.RequiresNonNull;
  *
  * <h3>Specifying a custom layout file</h3>
  *
- * Defining your own {@code exo_styled_player_view.xml} is useful to customize the layout of
- * StyledPlayerView throughout your application. It's also possible to customize the layout for a
- * single instance in a layout file. This is achieved by setting the {@code player_layout_id}
- * attribute on a StyledPlayerView. This will cause the specified layout to be inflated instead of
- * {@code exo_styled_player_view.xml} for only the instance on which the attribute is set.
+ * Defining your own {@code exo_player_view.xml} is useful to customize the layout of PlayerView
+ * throughout your application. It's also possible to customize the layout for a single instance in
+ * a layout file. This is achieved by setting the {@code player_layout_id} attribute on a
+ * PlayerView. This will cause the specified layout to be inflated instead of {@code
+ * exo_player_view.xml} for only the instance on which the attribute is set.
  */
-public class TransparentStyledPlayerView extends FrameLayout implements AdsLoader.AdViewProvider {
-
-    // LINT.IfChange
-    /**
-     * Determines when the buffering view is shown. One of {@link #SHOW_BUFFERING_NEVER}, {@link
-     * #SHOW_BUFFERING_WHEN_PLAYING} or {@link #SHOW_BUFFERING_ALWAYS}.
-     */
-    @Documented
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({SHOW_BUFFERING_NEVER, SHOW_BUFFERING_WHEN_PLAYING, SHOW_BUFFERING_ALWAYS})
-    public @interface ShowBuffering {}
-    /** The buffering view is never shown. */
-    public static final int SHOW_BUFFERING_NEVER = 0;
-    /**
-     * The buffering view is shown when the player is in the {@link Player#STATE_BUFFERING buffering}
-     * state and {@link Player#getPlayWhenReady() playWhenReady} is {@code true}.
-     */
-    public static final int SHOW_BUFFERING_WHEN_PLAYING = 1;
-    /**
-     * The buffering view is always shown when the player is in the {@link Player#STATE_BUFFERING
-     * buffering} state.
-     */
-    public static final int SHOW_BUFFERING_ALWAYS = 2;
-    // LINT.ThenChange(../../../../../../res/values/attrs.xml)
-
-    // LINT.IfChange
+public class TransparentStyledPlayerView extends FrameLayout {
     private static final int SURFACE_TYPE_NONE = 0;
     private static final int SURFACE_TYPE_SURFACE_VIEW = 1;
     private static final int SURFACE_TYPE_TEXTURE_VIEW = 2;
-    private static final int SURFACE_TYPE_SPHERICAL_GL_SURFACE_VIEW = 3;
-    private static final int SURFACE_TYPE_VIDEO_DECODER_GL_SURFACE_VIEW = 4;
-    // LINT.ThenChange(../../../../../../res/values/attrs.xml)
 
+    private final AspectRatioFrameLayout contentFrame;
+    private final View shutterView;
+    private final View surfaceView;
+    private final ImageView artworkView;
+    private final SubtitleView subtitleView;
+    private final @Nullable View bufferingView;
+    private final @Nullable TextView errorMessageView;
+    private final PlayerControlView controller;
     private final ComponentListener componentListener;
-    @Nullable private final AspectRatioFrameLayout contentFrame;
-    @Nullable private final View shutterView;
-    @Nullable private final View surfaceView;
-    @Nullable private final ImageView artworkView;
-    @Nullable private final SubtitleView subtitleView;
-    @Nullable private final View bufferingView;
-    @Nullable private final TextView errorMessageView;
-    @Nullable private final StyledPlayerControlView controller;
-    @Nullable private final FrameLayout adOverlayFrameLayout;
-    @Nullable private final FrameLayout overlayFrameLayout;
+    private final FrameLayout overlayFrameLayout;
 
-    @Nullable private Player player;
+    private Player player;
     private boolean useController;
-    @Nullable private StyledPlayerControlView.VisibilityListener controllerVisibilityListener;
     private boolean useArtwork;
-    @Nullable private Drawable defaultArtwork;
-    private @ShowBuffering
-    int showBuffering;
+    private Bitmap defaultArtwork;
+    private boolean showBuffering;
     private boolean keepContentOnPlayerReset;
-    private boolean useSensorRotation;
-    @Nullable private ErrorMessageProvider<? super ExoPlaybackException> errorMessageProvider;
-    @Nullable private CharSequence customErrorMessage;
+    private @Nullable ErrorMessageProvider<? super ExoPlaybackException> errorMessageProvider;
+    private @Nullable CharSequence customErrorMessage;
     private int controllerShowTimeoutMs;
     private boolean controllerAutoShow;
     private boolean controllerHideDuringAds;
     private boolean controllerHideOnTouch;
     private int textureViewRotation;
-    private boolean isTouching;
-    private static final int PICTURE_TYPE_FRONT_COVER = 3;
-    private static final int PICTURE_TYPE_NOT_SET = -1;
 
     public TransparentStyledPlayerView(Context context) {
-        this(context, /* attrs= */ null);
+        this(context, null);
     }
 
-    public TransparentStyledPlayerView(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, /* defStyleAttr= */ 0);
+    public TransparentStyledPlayerView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
-    @SuppressWarnings({"nullness:argument.type.incompatible", "nullness:method.invocation.invalid"})
-    public TransparentStyledPlayerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TransparentStyledPlayerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
-        componentListener = new ComponentListener();
 
         if (isInEditMode()) {
             contentFrame = null;
@@ -342,7 +268,7 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
             bufferingView = null;
             errorMessageView = null;
             controller = null;
-            adOverlayFrameLayout = null;
+            componentListener = null;
             overlayFrameLayout = null;
             ImageView logo = new ImageView(context);
             if (Util.SDK_INT >= 23) {
@@ -356,54 +282,47 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
 
         boolean shutterColorSet = false;
         int shutterColor = 0;
-        int playerLayoutId = com.google.android.exoplayer2.ui.R.layout.exo_styled_player_view;
+        int playerLayoutId = com.google.android.exoplayer2.ui.R.layout.exo_player_view;
         boolean useArtwork = true;
         int defaultArtworkId = 0;
         boolean useController = true;
         int surfaceType = SURFACE_TYPE_TEXTURE_VIEW;
         int resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT;
-        int controllerShowTimeoutMs = StyledPlayerControlView.DEFAULT_SHOW_TIMEOUT_MS;
+        int controllerShowTimeoutMs = PlayerControlView.DEFAULT_SHOW_TIMEOUT_MS;
         boolean controllerHideOnTouch = true;
         boolean controllerAutoShow = true;
         boolean controllerHideDuringAds = true;
-        int showBuffering = SHOW_BUFFERING_NEVER;
-        useSensorRotation = true;
+        boolean showBuffering = false;
         if (attrs != null) {
-            TypedArray a =
-                    context.getTheme().obtainStyledAttributes(attrs, com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView, 0, 0);
+            TypedArray a = context.getTheme().obtainStyledAttributes(attrs, com.google.android.exoplayer2.ui.R.styleable.PlayerView, 0, 0);
             try {
-                shutterColorSet = a.hasValue(com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView_shutter_background_color);
-                shutterColor =
-                        a.getColor(com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView_shutter_background_color, shutterColor);
-                playerLayoutId =
-                        a.getResourceId(com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView_player_layout_id, playerLayoutId);
-                useArtwork = a.getBoolean(com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView_use_artwork, useArtwork);
+                shutterColorSet = a.hasValue(com.google.android.exoplayer2.ui.R.styleable.PlayerView_shutter_background_color);
+                shutterColor = a.getColor(com.google.android.exoplayer2.ui.R.styleable.PlayerView_shutter_background_color, shutterColor);
+                playerLayoutId = a.getResourceId(com.google.android.exoplayer2.ui.R.styleable.PlayerView_player_layout_id, playerLayoutId);
+                useArtwork = a.getBoolean(com.google.android.exoplayer2.ui.R.styleable.PlayerView_use_artwork, useArtwork);
                 defaultArtworkId =
-                        a.getResourceId(com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView_default_artwork, defaultArtworkId);
-                useController = a.getBoolean(com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView_use_controller, useController);
-                surfaceType = a.getInt(com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView_surface_type, surfaceType);
-                resizeMode = a.getInt(com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView_resize_mode, resizeMode);
+                        a.getResourceId(com.google.android.exoplayer2.ui.R.styleable.PlayerView_default_artwork, defaultArtworkId);
+                useController = a.getBoolean(com.google.android.exoplayer2.ui.R.styleable.PlayerView_use_controller, useController);
+                surfaceType = a.getInt(com.google.android.exoplayer2.ui.R.styleable.PlayerView_surface_type, surfaceType);
+                resizeMode = a.getInt(com.google.android.exoplayer2.ui.R.styleable.PlayerView_resize_mode, resizeMode);
                 controllerShowTimeoutMs =
-                        a.getInt(com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView_show_timeout, controllerShowTimeoutMs);
+                        a.getInt(com.google.android.exoplayer2.ui.R.styleable.PlayerView_show_timeout, controllerShowTimeoutMs);
                 controllerHideOnTouch =
-                        a.getBoolean(com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView_hide_on_touch, controllerHideOnTouch);
-                controllerAutoShow =
-                        a.getBoolean(com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView_auto_show, controllerAutoShow);
-                showBuffering = a.getInteger(com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView_show_buffering, showBuffering);
+                        a.getBoolean(com.google.android.exoplayer2.ui.R.styleable.PlayerView_hide_on_touch, controllerHideOnTouch);
+                controllerAutoShow = a.getBoolean(com.google.android.exoplayer2.ui.R.styleable.PlayerView_auto_show, controllerAutoShow);
+                showBuffering = a.getBoolean(com.google.android.exoplayer2.ui.R.styleable.PlayerView_show_buffering, showBuffering);
                 keepContentOnPlayerReset =
                         a.getBoolean(
-                                com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView_keep_content_on_player_reset,
-                                keepContentOnPlayerReset);
+                                com.google.android.exoplayer2.ui.R.styleable.PlayerView_keep_content_on_player_reset, keepContentOnPlayerReset);
                 controllerHideDuringAds =
-                        a.getBoolean(com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView_hide_during_ads, controllerHideDuringAds);
-                useSensorRotation =
-                        a.getBoolean(com.google.android.exoplayer2.ui.R.styleable.StyledPlayerView_use_sensor_rotation, useSensorRotation);
+                        a.getBoolean(com.google.android.exoplayer2.ui.R.styleable.PlayerView_hide_during_ads, controllerHideDuringAds);
             } finally {
                 a.recycle();
             }
         }
 
         LayoutInflater.from(context).inflate(playerLayoutId, this);
+        componentListener = new ComponentListener();
         setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
 
         // Content frame.
@@ -423,31 +342,15 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
             ViewGroup.LayoutParams params =
                     new ViewGroup.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            switch (surfaceType) {
-                case SURFACE_TYPE_TEXTURE_VIEW:
-                    surfaceView = new TextureView(context);
-                    break;
-                case SURFACE_TYPE_SPHERICAL_GL_SURFACE_VIEW:
-                    SphericalGLSurfaceView sphericalGLSurfaceView = new SphericalGLSurfaceView(context);
-                    sphericalGLSurfaceView.setSingleTapListener(componentListener);
-                    sphericalGLSurfaceView.setUseSensorRotation(useSensorRotation);
-                    surfaceView = sphericalGLSurfaceView;
-                    break;
-                case SURFACE_TYPE_VIDEO_DECODER_GL_SURFACE_VIEW:
-                    surfaceView = new VideoDecoderGLSurfaceView(context);
-                    break;
-                default:
-                    surfaceView = new SurfaceView(context);
-                    break;
-            }
+            surfaceView =
+                    surfaceType == SURFACE_TYPE_TEXTURE_VIEW
+                            ? new TextureView(context)
+                            : new SurfaceView(context);
             surfaceView.setLayoutParams(params);
             contentFrame.addView(surfaceView, 0);
         } else {
             surfaceView = null;
         }
-
-        // Ad overlay frame layout.
-        adOverlayFrameLayout = findViewById(com.google.android.exoplayer2.ui.R.id.exo_ad_overlay);
 
         // Overlay frame layout.
         overlayFrameLayout = findViewById(com.google.android.exoplayer2.ui.R.id.exo_overlay);
@@ -456,7 +359,7 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
         artworkView = findViewById(com.google.android.exoplayer2.ui.R.id.exo_artwork);
         this.useArtwork = useArtwork && artworkView != null;
         if (defaultArtworkId != 0) {
-            defaultArtwork = ContextCompat.getDrawable(getContext(), defaultArtworkId);
+            defaultArtwork = BitmapFactory.decodeResource(context.getResources(), defaultArtworkId);
         }
 
         // Subtitle view.
@@ -480,15 +383,14 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
         }
 
         // Playback control view.
-        StyledPlayerControlView customController = findViewById(com.google.android.exoplayer2.ui.R.id.exo_controller);
+        PlayerControlView customController = findViewById(com.google.android.exoplayer2.ui.R.id.exo_controller);
         View controllerPlaceholder = findViewById(com.google.android.exoplayer2.ui.R.id.exo_controller_placeholder);
         if (customController != null) {
             this.controller = customController;
         } else if (controllerPlaceholder != null) {
             // Propagate attrs as playbackAttrs so that PlayerControlView's custom attributes are
-            // transferred, but standard attributes (e.g. background) are not.
-            this.controller = new StyledPlayerControlView(context, null, 0, attrs);
-            controller.setId(com.google.android.exoplayer2.ui.R.id.exo_controller);
+            // transferred, but standard FrameLayout attributes (e.g. background) are not.
+            this.controller = new PlayerControlView(context, null, 0, attrs);
             controller.setLayoutParams(controllerPlaceholder.getLayoutParams());
             ViewGroup parent = ((ViewGroup) controllerPlaceholder.getParent());
             int controllerIndex = parent.indexOfChild(controllerPlaceholder);
@@ -502,11 +404,7 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
         this.controllerAutoShow = controllerAutoShow;
         this.controllerHideDuringAds = controllerHideDuringAds;
         this.useController = useController && controller != null;
-        if (controller != null) {
-            controller.hideImmediately();
-            controller.addVisibilityListener(/* listener= */ componentListener);
-        }
-        updateContentDescription();
+        hideController();
     }
 
     /**
@@ -517,9 +415,9 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
      * @param newPlayerView The new view to attach to the player.
      */
     public static void switchTargetView(
-            Player player,
-            @Nullable StyledPlayerView oldPlayerView,
-            @Nullable StyledPlayerView newPlayerView) {
+            @NonNull Player player,
+            @Nullable TransparentStyledPlayerView oldPlayerView,
+            @Nullable TransparentStyledPlayerView newPlayerView) {
         if (oldPlayerView == newPlayerView) {
             return;
         }
@@ -536,7 +434,6 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
     }
 
     /** Returns the player currently set on this view, or null if no player is set. */
-    @Nullable
     public Player getPlayer() {
         return player;
     }
@@ -545,74 +442,56 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
      * Set the {@link Player} to use.
      *
      * <p>To transition a {@link Player} from targeting one view to another, it's recommended to use
-     * {@link #switchTargetView(Player, com.google.android.exoplayer2.ui.StyledPlayerView, com.google.android.exoplayer2.ui.StyledPlayerView)} rather than this method.
-     * If you do wish to use this method directly, be sure to attach the player to the new view
-     * <em>before</em> calling {@code setPlayer(null)} to detach it from the old one. This ordering is
-     * significantly more efficient and may allow for more seamless transitions.
+     * {@link #switchTargetView(Player, PlayerView, PlayerView)} rather than this method. If you do
+     * wish to use this method directly, be sure to attach the player to the new view <em>before</em>
+     * calling {@code setPlayer(null)} to detach it from the old one. This ordering is significantly
+     * more efficient and may allow for more seamless transitions.
      *
-     * @param player The {@link Player} to use, or {@code null} to detach the current player. Only
-     *     players which are accessed on the main thread are supported ({@code
-     *     player.getApplicationLooper() == Looper.getMainLooper()}).
+     * @param player The {@link Player} to use.
      */
-    public void setPlayer(@Nullable Player player) {
-        Assertions.checkState(Looper.myLooper() == Looper.getMainLooper());
-        Assertions.checkArgument(
-                player == null || player.getApplicationLooper() == Looper.getMainLooper());
+    public void setPlayer(Player player) {
         if (this.player == player) {
             return;
         }
-        @Nullable Player oldPlayer = this.player;
-        if (oldPlayer != null) {
-            oldPlayer.removeListener(componentListener);
-            @Nullable Player.VideoComponent oldVideoComponent = oldPlayer.getVideoComponent();
+        if (this.player != null) {
+            this.player.removeListener(componentListener);
+            Player.VideoComponent oldVideoComponent = this.player.getVideoComponent();
             if (oldVideoComponent != null) {
                 oldVideoComponent.removeVideoListener(componentListener);
                 if (surfaceView instanceof TextureView) {
                     oldVideoComponent.clearVideoTextureView((TextureView) surfaceView);
-                } else if (surfaceView instanceof SphericalGLSurfaceView) {
-                    ((SphericalGLSurfaceView) surfaceView).setVideoComponent(null);
-                } else if (surfaceView instanceof VideoDecoderGLSurfaceView) {
-                    oldVideoComponent.setVideoDecoderOutputBufferRenderer(null);
                 } else if (surfaceView instanceof SurfaceView) {
                     oldVideoComponent.clearVideoSurfaceView((SurfaceView) surfaceView);
                 }
             }
-            @Nullable Player.TextComponent oldTextComponent = oldPlayer.getTextComponent();
+            Player.TextComponent oldTextComponent = this.player.getTextComponent();
             if (oldTextComponent != null) {
                 oldTextComponent.removeTextOutput(componentListener);
             }
         }
+        this.player = player;
+        if (useController) {
+            controller.setPlayer(player);
+        }
         if (subtitleView != null) {
             subtitleView.setCues(null);
-        }
-        this.player = player;
-        if (useController()) {
-            controller.setPlayer(player);
         }
         updateBuffering();
         updateErrorMessage();
         updateForCurrentTrackSelections(/* isNewPlayer= */ true);
         if (player != null) {
-            @Nullable Player.VideoComponent newVideoComponent = player.getVideoComponent();
+            Player.VideoComponent newVideoComponent = player.getVideoComponent();
             if (newVideoComponent != null) {
                 if (surfaceView instanceof TextureView) {
                     newVideoComponent.setVideoTextureView((TextureView) surfaceView);
-                } else if (surfaceView instanceof SphericalGLSurfaceView) {
-                    ((SphericalGLSurfaceView) surfaceView).setVideoComponent(newVideoComponent);
-                } else if (surfaceView instanceof VideoDecoderGLSurfaceView) {
-                    newVideoComponent.setVideoDecoderOutputBufferRenderer(
-                            ((VideoDecoderGLSurfaceView) surfaceView).getVideoDecoderOutputBufferRenderer());
                 } else if (surfaceView instanceof SurfaceView) {
                     newVideoComponent.setVideoSurfaceView((SurfaceView) surfaceView);
                 }
                 newVideoComponent.addVideoListener(componentListener);
             }
-            @Nullable Player.TextComponent newTextComponent = player.getTextComponent();
+            Player.TextComponent newTextComponent = player.getTextComponent();
             if (newTextComponent != null) {
                 newTextComponent.addTextOutput(componentListener);
-                if (subtitleView != null) {
-                    subtitleView.setCues(newTextComponent.getCurrentCues());
-                }
             }
             player.addListener(componentListener);
             maybeShowController(false);
@@ -631,18 +510,18 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
     }
 
     /**
-     * Sets the {@link ResizeMode}.
+     * Sets the resize mode.
      *
-     * @param resizeMode The {@link ResizeMode}.
+     * @param resizeMode The resize mode.
      */
     public void setResizeMode(@ResizeMode int resizeMode) {
-        Assertions.checkStateNotNull(contentFrame);
+        Assertions.checkState(contentFrame != null);
         contentFrame.setResizeMode(resizeMode);
     }
 
-    /** Returns the {@link ResizeMode}. */
+    /** Returns the resize mode. */
     public @ResizeMode int getResizeMode() {
-        Assertions.checkStateNotNull(contentFrame);
+        Assertions.checkState(contentFrame != null);
         return contentFrame.getResizeMode();
     }
 
@@ -665,8 +544,7 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
     }
 
     /** Returns the default artwork to display. */
-    @Nullable
-    public Drawable getDefaultArtwork() {
+    public Bitmap getDefaultArtwork() {
         return defaultArtwork;
     }
 
@@ -674,9 +552,9 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
      * Sets the default artwork to display if {@code useArtwork} is {@code true} and no artwork is
      * present in the media.
      *
-     * @param defaultArtwork the default artwork to display
+     * @param defaultArtwork the default artwork to display.
      */
-    public void setDefaultArtwork(@Nullable Drawable defaultArtwork) {
+    public void setDefaultArtwork(Bitmap defaultArtwork) {
         if (this.defaultArtwork != defaultArtwork) {
             this.defaultArtwork = defaultArtwork;
             updateForCurrentTrackSelections(/* isNewPlayer= */ false);
@@ -700,13 +578,12 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
             return;
         }
         this.useController = useController;
-        if (useController()) {
+        if (useController) {
             controller.setPlayer(player);
         } else if (controller != null) {
             controller.hide();
-            controller.setPlayer(/* player= */ null);
+            controller.setPlayer(null);
         }
-        updateContentDescription();
     }
 
     /**
@@ -723,9 +600,8 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
     /**
      * Sets whether the currently displayed video frame or media artwork is kept visible when the
      * player is reset. A player reset is defined to mean the player being re-prepared with different
-     * media, the player transitioning to unprepared media, {@link Player#stop(boolean)} being called
-     * with {@code reset=true}, or the player being replaced or cleared by calling {@link
-     * #setPlayer(Player)}.
+     * media, {@link Player#stop(boolean)} being called with {@code reset=true}, or the player being
+     * replaced or cleared by calling {@link #setPlayer(Player)}.
      *
      * <p>If enabled, the currently displayed video frame or media artwork will be kept visible until
      * the player set on the view has been successfully prepared with new media and loaded enough of
@@ -748,30 +624,12 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
     }
 
     /**
-     * Sets whether to use the orientation sensor for rotation during spherical playbacks (if
-     * available)
-     *
-     * @param useSensorRotation Whether to use the orientation sensor for rotation during spherical
-     *     playbacks.
-     */
-    public void setUseSensorRotation(boolean useSensorRotation) {
-        if (this.useSensorRotation != useSensorRotation) {
-            this.useSensorRotation = useSensorRotation;
-            if (surfaceView instanceof SphericalGLSurfaceView) {
-                ((SphericalGLSurfaceView) surfaceView).setUseSensorRotation(useSensorRotation);
-            }
-        }
-    }
-
-    /**
      * Sets whether a buffering spinner is displayed when the player is in the buffering state. The
      * buffering spinner is not displayed by default.
      *
-     * @param showBuffering The mode that defines when the buffering spinner is displayed. One of
-     *     {@link #SHOW_BUFFERING_NEVER}, {@link #SHOW_BUFFERING_WHEN_PLAYING} and {@link
-     *     #SHOW_BUFFERING_ALWAYS}.
+     * @param showBuffering Whether the buffering icon is displayer
      */
-    public void setShowBuffering(@ShowBuffering int showBuffering) {
+    public void setShowBuffering(boolean showBuffering) {
         if (this.showBuffering != showBuffering) {
             this.showBuffering = showBuffering;
             updateBuffering();
@@ -806,25 +664,16 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (player != null && player.isPlayingAd()) {
+            // Focus any overlay UI now, in case it's provided by a WebView whose contents may update
+            // dynamically. This is needed to make the "Skip ad" button focused on Android TV when using
+            // IMA [Internal: b/62371030].
+            overlayFrameLayout.requestFocus();
             return super.dispatchKeyEvent(event);
         }
-
-        boolean isDpadKey = isDpadKey(event.getKeyCode());
-        boolean handled = false;
-        if (isDpadKey && useController() && !controller.isFullyVisible()) {
-            // Handle the key event by showing the controller.
-            maybeShowController(true);
-            handled = true;
-        } else if (dispatchMediaKeyEvent(event) || super.dispatchKeyEvent(event)) {
-            // The key event was handled as a media key or by the super class. We should also show the
-            // controller, or extend its show timeout if already visible.
-            maybeShowController(true);
-            handled = true;
-        } else if (isDpadKey && useController()) {
-            // The key event wasn't handled, but we should extend the controller's show timeout.
-            maybeShowController(true);
-        }
-        return handled;
+        boolean isDpadWhenControlHidden =
+                isDpadKey(event.getKeyCode()) && useController && !controller.isVisible();
+        maybeShowController(true);
+        return isDpadWhenControlHidden || dispatchMediaKeyEvent(event) || super.dispatchKeyEvent(event);
     }
 
     /**
@@ -835,12 +684,7 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
      * @return Whether the key event was handled.
      */
     public boolean dispatchMediaKeyEvent(KeyEvent event) {
-        return useController() && controller.dispatchMediaKeyEvent(event);
-    }
-
-    /** Returns whether the controller is currently fully visible. */
-    public boolean isControllerFullyVisible() {
-        return controller != null && controller.isFullyVisible();
+        return useController && controller.dispatchMediaKeyEvent(event);
     }
 
     /**
@@ -881,9 +725,9 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
      *     controller to remain visible indefinitely.
      */
     public void setControllerShowTimeoutMs(int controllerShowTimeoutMs) {
-        Assertions.checkStateNotNull(controller);
+        Assertions.checkState(controller != null);
         this.controllerShowTimeoutMs = controllerShowTimeoutMs;
-        if (controller.isFullyVisible()) {
+        if (controller.isVisible()) {
             // Update the controller's timeout if necessary.
             showController();
         }
@@ -900,9 +744,8 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
      * @param controllerHideOnTouch Whether the playback controls are hidden by touch events.
      */
     public void setControllerHideOnTouch(boolean controllerHideOnTouch) {
-        Assertions.checkStateNotNull(controller);
+        Assertions.checkState(controller != null);
         this.controllerHideOnTouch = controllerHideOnTouch;
-        updateContentDescription();
     }
 
     /**
@@ -936,97 +779,56 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
     }
 
     /**
-     * Set the {@link StyledPlayerControlView.VisibilityListener}.
+     * Set the {@link PlayerControlView.VisibilityListener}.
      *
-     * @param listener The listener to be notified about visibility changes, or null to remove the
-     *     current listener.
+     * @param listener The listener to be notified about visibility changes.
      */
-    public void setControllerVisibilityListener(
-            @Nullable StyledPlayerControlView.VisibilityListener listener) {
-        Assertions.checkStateNotNull(controller);
-        if (this.controllerVisibilityListener == listener) {
-            return;
-        }
-        if (this.controllerVisibilityListener != null) {
-            controller.removeVisibilityListener(this.controllerVisibilityListener);
-        }
-        this.controllerVisibilityListener = listener;
-        if (listener != null) {
-            controller.addVisibilityListener(listener);
-        }
-    }
-
-    /**
-     * Sets the {@link StyledPlayerControlView.OnFullScreenModeChangedListener}.
-     *
-     * @param listener The listener to be notified when the fullscreen button is clicked, or null to
-     *     remove the current listener and hide the fullscreen button.
-     */
-    public void setControllerOnFullScreenModeChangedListener(
-            @Nullable StyledPlayerControlView.OnFullScreenModeChangedListener listener) {
-        Assertions.checkStateNotNull(controller);
-        controller.setOnFullScreenModeChangedListener(listener);
+    public void setControllerVisibilityListener(PlayerControlView.VisibilityListener listener) {
+        Assertions.checkState(controller != null);
+        controller.setVisibilityListener(listener);
     }
 
     /**
      * Sets the {@link PlaybackPreparer}.
      *
-     * @param playbackPreparer The {@link PlaybackPreparer}, or null to remove the current playback
-     *     preparer.
+     * @param playbackPreparer The {@link PlaybackPreparer}.
      */
     public void setPlaybackPreparer(@Nullable PlaybackPreparer playbackPreparer) {
-        Assertions.checkStateNotNull(controller);
+        Assertions.checkState(controller != null);
         controller.setPlaybackPreparer(playbackPreparer);
     }
 
     /**
      * Sets the {@link ControlDispatcher}.
      *
-     * @param controlDispatcher The {@link ControlDispatcher}.
+     * @param controlDispatcher The {@link ControlDispatcher}, or null to use {@link
+     *     DefaultControlDispatcher}.
      */
-    public void setControlDispatcher(ControlDispatcher controlDispatcher) {
-        Assertions.checkStateNotNull(controller);
+    public void setControlDispatcher(@Nullable ControlDispatcher controlDispatcher) {
+        Assertions.checkState(controller != null);
         controller.setControlDispatcher(controlDispatcher);
     }
 
     /**
-     * Sets whether the rewind button is shown.
+     * Sets the rewind increment in milliseconds.
      *
-     * @param showRewindButton Whether the rewind button is shown.
+     * @param rewindMs The rewind increment in milliseconds. A non-positive value will cause the
+     *     rewind button to be disabled.
      */
-    public void setShowRewindButton(boolean showRewindButton) {
-        Assertions.checkStateNotNull(controller);
-        controller.setShowRewindButton(showRewindButton);
+    public void setRewindIncrementMs(int rewindMs) {
+        Assertions.checkState(controller != null);
+        controller.setRewindIncrementMs(rewindMs);
     }
 
     /**
-     * Sets whether the fast forward button is shown.
+     * Sets the fast forward increment in milliseconds.
      *
-     * @param showFastForwardButton Whether the fast forward button is shown.
+     * @param fastForwardMs The fast forward increment in milliseconds. A non-positive value will
+     *     cause the fast forward button to be disabled.
      */
-    public void setShowFastForwardButton(boolean showFastForwardButton) {
-        Assertions.checkStateNotNull(controller);
-        controller.setShowFastForwardButton(showFastForwardButton);
-    }
-
-    /**
-     * Sets whether the previous button is shown.
-     *
-     * @param showPreviousButton Whether the previous button is shown.
-     */
-    public void setShowPreviousButton(boolean showPreviousButton) {
-        Assertions.checkStateNotNull(controller);
-        controller.setShowPreviousButton(showPreviousButton);
-    }
-
-    /**
-     * Sets whether the next button is shown.
-     *
-     * @param showNextButton Whether the next button is shown.
-     */
-    public void setShowNextButton(boolean showNextButton) {
-        Assertions.checkStateNotNull(controller);
-        controller.setShowNextButton(showNextButton);
+    public void setFastForwardIncrementMs(int fastForwardMs) {
+        Assertions.checkState(controller != null);
+        controller.setFastForwardIncrementMs(fastForwardMs);
     }
 
     /**
@@ -1035,7 +837,7 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
      * @param repeatToggleModes A set of {@link RepeatModeUtil.RepeatToggleModes}.
      */
     public void setRepeatToggleModes(@RepeatModeUtil.RepeatToggleModes int repeatToggleModes) {
-        Assertions.checkStateNotNull(controller);
+        Assertions.checkState(controller != null);
         controller.setRepeatToggleModes(repeatToggleModes);
     }
 
@@ -1045,28 +847,8 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
      * @param showShuffleButton Whether the shuffle button is shown.
      */
     public void setShowShuffleButton(boolean showShuffleButton) {
-        Assertions.checkStateNotNull(controller);
+        Assertions.checkState(controller != null);
         controller.setShowShuffleButton(showShuffleButton);
-    }
-
-    /**
-     * Sets whether the subtitle button is shown.
-     *
-     * @param showSubtitleButton Whether the subtitle button is shown.
-     */
-    public void setShowSubtitleButton(boolean showSubtitleButton) {
-        Assertions.checkStateNotNull(controller);
-        controller.setShowSubtitleButton(showSubtitleButton);
-    }
-
-    /**
-     * Sets whether the vr button is shown.
-     *
-     * @param showVrButton Whether the vr button is shown.
-     */
-    public void setShowVrButton(boolean showVrButton) {
-        Assertions.checkStateNotNull(controller);
-        controller.setShowVrButton(showVrButton);
     }
 
     /**
@@ -1075,7 +857,7 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
      * @param showMultiWindowTimeBar Whether to show all windows.
      */
     public void setShowMultiWindowTimeBar(boolean showMultiWindowTimeBar) {
-        Assertions.checkStateNotNull(controller);
+        Assertions.checkState(controller != null);
         controller.setShowMultiWindowTimeBar(showMultiWindowTimeBar);
     }
 
@@ -1091,7 +873,7 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
      */
     public void setExtraAdGroupMarkers(
             @Nullable long[] extraAdGroupTimesMs, @Nullable boolean[] extraPlayedAdGroups) {
-        Assertions.checkStateNotNull(controller);
+        Assertions.checkState(controller != null);
         controller.setExtraAdGroupMarkers(extraAdGroupTimesMs, extraPlayedAdGroups);
     }
 
@@ -1101,9 +883,8 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
      * @param listener The listener to be notified about aspect ratios changes of the video content or
      *     the content frame.
      */
-    public void setAspectRatioListener(
-            @Nullable AspectRatioFrameLayout.AspectRatioListener listener) {
-        Assertions.checkStateNotNull(contentFrame);
+    public void setAspectRatioListener(AspectRatioFrameLayout.AspectRatioListener listener) {
+        Assertions.checkState(contentFrame != null);
         contentFrame.setAspectRatioListener(listener);
     }
 
@@ -1114,17 +895,11 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
      *   <li>{@link SurfaceView} by default, or if the {@code surface_type} attribute is set to {@code
      *       surface_view}.
      *   <li>{@link TextureView} if {@code surface_type} is {@code texture_view}.
-     *   <li>{@link SphericalGLSurfaceView} if {@code surface_type} is {@code
-     *       spherical_gl_surface_view}.
-     *   <li>{@link VideoDecoderGLSurfaceView} if {@code surface_type} is {@code
-     *       video_decoder_gl_surface_view}.
      *   <li>{@code null} if {@code surface_type} is {@code none}.
      * </ul>
      *
-     * @return The {@link SurfaceView}, {@link TextureView}, {@link SphericalGLSurfaceView}, {@link
-     *     VideoDecoderGLSurfaceView} or {@code null}.
+     * @return The {@link SurfaceView}, {@link TextureView} or {@code null}.
      */
-    @Nullable
     public View getVideoSurfaceView() {
         return surfaceView;
     }
@@ -1136,7 +911,6 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
      * @return The overlay {@link FrameLayout}, or {@code null} if the layout has been customized and
      *     the overlay is not present.
      */
-    @Nullable
     public FrameLayout getOverlayFrameLayout() {
         return overlayFrameLayout;
     }
@@ -1147,149 +921,30 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
      * @return The {@link SubtitleView}, or {@code null} if the layout has been customized and the
      *     subtitle view is not present.
      */
-    @Nullable
     public SubtitleView getSubtitleView() {
         return subtitleView;
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (!useController() || player == null) {
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (!useController || player == null || ev.getActionMasked() != MotionEvent.ACTION_DOWN) {
             return false;
         }
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                isTouching = true;
-                return true;
-            case MotionEvent.ACTION_UP:
-                if (isTouching) {
-                    isTouching = false;
-                    return performClick();
-                }
-                return false;
-            default:
-                return false;
+        if (!controller.isVisible()) {
+            maybeShowController(true);
+        } else if (controllerHideOnTouch) {
+            controller.hide();
         }
-    }
-
-    @Override
-    public boolean performClick() {
-        super.performClick();
-        return toggleControllerVisibility();
+        return true;
     }
 
     @Override
     public boolean onTrackballEvent(MotionEvent ev) {
-        if (!useController() || player == null) {
+        if (!useController || player == null) {
             return false;
         }
         maybeShowController(true);
         return true;
-    }
-
-    /**
-     * Should be called when the player is visible to the user and if {@code surface_type} is {@code
-     * spherical_gl_surface_view}. It is the counterpart to {@link #onPause()}.
-     *
-     * <p>This method should typically be called in {@code Activity.onStart()}, or {@code
-     * Activity.onResume()} for API versions &lt;= 23.
-     */
-    public void onResume() {
-        if (surfaceView instanceof SphericalGLSurfaceView) {
-            ((SphericalGLSurfaceView) surfaceView).onResume();
-        }
-    }
-
-    /**
-     * Should be called when the player is no longer visible to the user and if {@code surface_type}
-     * is {@code spherical_gl_surface_view}. It is the counterpart to {@link #onResume()}.
-     *
-     * <p>This method should typically be called in {@code Activity.onStop()}, or {@code
-     * Activity.onPause()} for API versions &lt;= 23.
-     */
-    public void onPause() {
-        if (surfaceView instanceof SphericalGLSurfaceView) {
-            ((SphericalGLSurfaceView) surfaceView).onPause();
-        }
-    }
-
-    /**
-     * Called when there's a change in the aspect ratio of the content being displayed. The default
-     * implementation sets the aspect ratio of the content frame to that of the content, unless the
-     * content view is a {@link SphericalGLSurfaceView} in which case the frame's aspect ratio is
-     * cleared.
-     *
-     * @param contentAspectRatio The aspect ratio of the content.
-     * @param contentFrame The content frame, or {@code null}.
-     * @param contentView The view that holds the content being displayed, or {@code null}.
-     */
-    protected void onContentAspectRatioChanged(
-            float contentAspectRatio,
-            @Nullable AspectRatioFrameLayout contentFrame,
-            @Nullable View contentView) {
-        if (contentFrame != null) {
-            contentFrame.setAspectRatio(
-                    contentView instanceof SphericalGLSurfaceView ? 0 : contentAspectRatio);
-        }
-    }
-
-    // AdsLoader.AdViewProvider implementation.
-
-    @Override
-    public ViewGroup getAdViewGroup() {
-        return Assertions.checkStateNotNull(
-                adOverlayFrameLayout, "exo_ad_overlay must be present for ad playback");
-    }
-
-    @Override
-    public List<AdsLoader.OverlayInfo> getAdOverlayInfos() {
-        List<AdsLoader.OverlayInfo> overlayViews = new ArrayList<>();
-        if (overlayFrameLayout != null) {
-            overlayViews.add(
-                    new AdsLoader.OverlayInfo(
-                            overlayFrameLayout,
-                            AdsLoader.OverlayInfo.PURPOSE_NOT_VISIBLE,
-                            /* detailedReason= */ "Transparent overlay does not impact viewability"));
-        }
-        if (controller != null) {
-            overlayViews.add(
-                    new AdsLoader.OverlayInfo(controller, AdsLoader.OverlayInfo.PURPOSE_CONTROLS));
-        }
-        return ImmutableList.copyOf(overlayViews);
-    }
-
-    // Internal methods.
-
-    @EnsuresNonNullIf(expression = "controller", result = true)
-    private boolean useController() {
-        if (useController) {
-            Assertions.checkStateNotNull(controller);
-            return true;
-        }
-        return false;
-    }
-
-    @EnsuresNonNullIf(expression = "artworkView", result = true)
-    private boolean useArtwork() {
-        if (useArtwork) {
-            Assertions.checkStateNotNull(artworkView);
-            return true;
-        }
-        return false;
-    }
-
-    private boolean toggleControllerVisibility() {
-        if (!useController() || player == null) {
-            return false;
-        }
-        if (!controller.isFullyVisible()) {
-            maybeShowController(true);
-            return true;
-        } else if (controllerHideOnTouch) {
-            controller.hide();
-            return true;
-        }
-        return false;
     }
 
     /** Shows the playback controls, but only if forced or shown indefinitely. */
@@ -1297,9 +952,8 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
         if (isPlayingAd() && controllerHideDuringAds) {
             return;
         }
-        if (useController()) {
-            boolean wasShowingIndefinitely =
-                    controller.isFullyVisible() && controller.getShowTimeoutMs() <= 0;
+        if (useController) {
+            boolean wasShowingIndefinitely = controller.isVisible() && controller.getShowTimeoutMs() <= 0;
             boolean shouldShowIndefinitely = shouldShowControllerIndefinitely();
             if (isForced || wasShowingIndefinitely || shouldShowIndefinitely) {
                 showController(shouldShowIndefinitely);
@@ -1313,14 +967,13 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
         }
         int playbackState = player.getPlaybackState();
         return controllerAutoShow
-                && !player.getCurrentTimeline().isEmpty()
                 && (playbackState == Player.STATE_IDLE
                 || playbackState == Player.STATE_ENDED
-                || !checkNotNull(player).getPlayWhenReady());
+                || !player.getPlayWhenReady());
     }
 
     private void showController(boolean showIndefinitely) {
-        if (!useController()) {
+        if (!useController) {
             return;
         }
         controller.setShowTimeoutMs(showIndefinitely ? 0 : controllerShowTimeoutMs);
@@ -1332,7 +985,6 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
     }
 
     private void updateForCurrentTrackSelections(boolean isNewPlayer) {
-        @Nullable Player player = this.player;
         if (player == null || player.getCurrentTrackGroups().isEmpty()) {
             if (!keepContentOnPlayerReset) {
                 hideArtwork();
@@ -1359,19 +1011,19 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
         // Video disabled so the shutter must be closed.
         closeShutter();
         // Display artwork if enabled and available, else hide it.
-        if (useArtwork()) {
+        if (useArtwork) {
             for (int i = 0; i < selections.length; i++) {
-                @Nullable TrackSelection selection = selections.get(i);
+                TrackSelection selection = selections.get(i);
                 if (selection != null) {
                     for (int j = 0; j < selection.length(); j++) {
-                        @Nullable Metadata metadata = selection.getFormat(j).metadata;
+                        Metadata metadata = selection.getFormat(j).metadata;
                         if (metadata != null && setArtworkFromMetadata(metadata)) {
                             return;
                         }
                     }
                 }
             }
-            if (setDrawableArtwork(defaultArtwork)) {
+            if (setArtworkFromBitmap(defaultArtwork)) {
                 return;
             }
         }
@@ -1379,45 +1031,27 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
         hideArtwork();
     }
 
-    @RequiresNonNull("artworkView")
     private boolean setArtworkFromMetadata(Metadata metadata) {
-        boolean isArtworkSet = false;
-        int currentPictureType = PICTURE_TYPE_NOT_SET;
         for (int i = 0; i < metadata.length(); i++) {
             Metadata.Entry metadataEntry = metadata.get(i);
-            int pictureType;
-            byte[] bitmapData;
             if (metadataEntry instanceof ApicFrame) {
-                bitmapData = ((ApicFrame) metadataEntry).pictureData;
-                pictureType = ((ApicFrame) metadataEntry).pictureType;
-            } else if (metadataEntry instanceof PictureFrame) {
-                bitmapData = ((PictureFrame) metadataEntry).pictureData;
-                pictureType = ((PictureFrame) metadataEntry).pictureType;
-            } else {
-                continue;
-            }
-            // Prefer the first front cover picture. If there aren't any, prefer the first picture.
-            if (currentPictureType == PICTURE_TYPE_NOT_SET || pictureType == PICTURE_TYPE_FRONT_COVER) {
+                byte[] bitmapData = ((ApicFrame) metadataEntry).pictureData;
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapData, 0, bitmapData.length);
-                isArtworkSet = setDrawableArtwork(new BitmapDrawable(getResources(), bitmap));
-                currentPictureType = pictureType;
-                if (currentPictureType == PICTURE_TYPE_FRONT_COVER) {
-                    break;
-                }
+                return setArtworkFromBitmap(bitmap);
             }
         }
-        return isArtworkSet;
+        return false;
     }
 
-    @RequiresNonNull("artworkView")
-    private boolean setDrawableArtwork(@Nullable Drawable drawable) {
-        if (drawable != null) {
-            int drawableWidth = drawable.getIntrinsicWidth();
-            int drawableHeight = drawable.getIntrinsicHeight();
-            if (drawableWidth > 0 && drawableHeight > 0) {
-                float artworkAspectRatio = (float) drawableWidth / drawableHeight;
-                onContentAspectRatioChanged(artworkAspectRatio, contentFrame, artworkView);
-                artworkView.setImageDrawable(drawable);
+    private boolean setArtworkFromBitmap(Bitmap bitmap) {
+        if (bitmap != null) {
+            int bitmapWidth = bitmap.getWidth();
+            int bitmapHeight = bitmap.getHeight();
+            if (bitmapWidth > 0 && bitmapHeight > 0) {
+                if (contentFrame != null) {
+                    contentFrame.setAspectRatio((float) bitmapWidth / bitmapHeight);
+                }
+                artworkView.setImageBitmap(bitmap);
                 artworkView.setVisibility(VISIBLE);
                 return true;
             }
@@ -1441,10 +1075,10 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
     private void updateBuffering() {
         if (bufferingView != null) {
             boolean showBufferingSpinner =
-                    player != null
+                    showBuffering
+                            && player != null
                             && player.getPlaybackState() == Player.STATE_BUFFERING
-                            && (showBuffering == SHOW_BUFFERING_ALWAYS
-                            || (showBuffering == SHOW_BUFFERING_WHEN_PLAYING && player.getPlayWhenReady()));
+                            && player.getPlayWhenReady();
             bufferingView.setVisibility(showBufferingSpinner ? View.VISIBLE : View.GONE);
         }
     }
@@ -1456,8 +1090,13 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
                 errorMessageView.setVisibility(View.VISIBLE);
                 return;
             }
-            @Nullable ExoPlaybackException error = player != null ? player.getPlayerError() : null;
-            if (error != null && errorMessageProvider != null) {
+            ExoPlaybackException error = null;
+            if (player != null
+                    && player.getPlaybackState() == Player.STATE_IDLE
+                    && errorMessageProvider != null) {
+                error = player.getPlaybackError();
+            }
+            if (error != null) {
                 CharSequence errorMessage = errorMessageProvider.getErrorMessage(error).second;
                 errorMessageView.setText(errorMessage);
                 errorMessageView.setVisibility(View.VISIBLE);
@@ -1467,34 +1106,13 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
         }
     }
 
-    private void updateContentDescription() {
-        if (controller == null || !useController) {
-            setContentDescription(/* contentDescription= */ null);
-        } else if (controller.isFullyVisible()) {
-            setContentDescription(
-                    /* contentDescription= */ controllerHideOnTouch
-                            ? getResources().getString(com.google.android.exoplayer2.ui.R.string.exo_controls_hide)
-                            : null);
-        } else {
-            setContentDescription(
-                    /* contentDescription= */ getResources().getString(com.google.android.exoplayer2.ui.R.string.exo_controls_show));
-        }
-    }
-
-    private void updateControllerVisibility() {
-        if (isPlayingAd() && controllerHideDuringAds) {
-            hideController();
-        } else {
-            maybeShowController(false);
-        }
-    }
-
-    @RequiresApi(23)
+    @TargetApi(23)
     private static void configureEditModeLogoV23(Resources resources, ImageView logo) {
         logo.setImageDrawable(resources.getDrawable(com.google.android.exoplayer2.ui.R.drawable.exo_edit_mode_logo, null));
         logo.setBackgroundColor(resources.getColor(com.google.android.exoplayer2.ui.R.color.exo_edit_mode_background_color, null));
     }
 
+    @SuppressWarnings("deprecation")
     private static void configureEditModeLogo(Resources resources, ImageView logo) {
         logo.setImageDrawable(resources.getDrawable(com.google.android.exoplayer2.ui.R.drawable.exo_edit_mode_logo));
         logo.setBackgroundColor(resources.getColor(com.google.android.exoplayer2.ui.R.color.exo_edit_mode_background_color));
@@ -1507,10 +1125,12 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
 
     /** Applies a texture rotation to a {@link TextureView}. */
     private static void applyTextureViewRotation(TextureView textureView, int textureViewRotation) {
-        Matrix transformMatrix = new Matrix();
         float textureViewWidth = textureView.getWidth();
         float textureViewHeight = textureView.getHeight();
-        if (textureViewWidth != 0 && textureViewHeight != 0 && textureViewRotation != 0) {
+        if (textureViewWidth == 0 || textureViewHeight == 0 || textureViewRotation == 0) {
+            textureView.setTransform(null);
+        } else {
+            Matrix transformMatrix = new Matrix();
             float pivotX = textureViewWidth / 2;
             float pivotY = textureViewHeight / 2;
             transformMatrix.postRotate(textureViewRotation, pivotX, pivotY);
@@ -1524,8 +1144,8 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
                     textureViewHeight / rotatedTextureRect.height(),
                     pivotX,
                     pivotY);
+            textureView.setTransform(transformMatrix);
         }
-        textureView.setTransform(transformMatrix);
     }
 
     @SuppressLint("InlinedApi")
@@ -1541,20 +1161,8 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
                 || keyCode == KeyEvent.KEYCODE_DPAD_CENTER;
     }
 
-    private final class ComponentListener
-            implements Player.EventListener,
-            TextOutput,
-            VideoListener,
-            OnLayoutChangeListener,
-            SingleTapListener,
-            StyledPlayerControlView.VisibilityListener {
-
-        private final Period period;
-        private @Nullable Object lastPeriodUidWithTracks;
-
-        public ComponentListener() {
-            period = new Period();
-        }
+    private final class ComponentListener extends Player.DefaultEventListener
+            implements TextOutput, VideoListener, OnLayoutChangeListener {
 
         // TextOutput implementation
 
@@ -1570,6 +1178,9 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
         @Override
         public void onVideoSizeChanged(
                 int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
+            if (contentFrame == null) {
+                return;
+            }
             float videoAspectRatio =
                     (height == 0 || width == 0) ? 1 : (width * pixelWidthHeightRatio) / height;
 
@@ -1592,7 +1203,7 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
                 applyTextureViewRotation((TextureView) surfaceView, textureViewRotation);
             }
 
-            onContentAspectRatioChanged(videoAspectRatio, contentFrame, surfaceView);
+            contentFrame.setAspectRatio(videoAspectRatio);
         }
 
         @Override
@@ -1604,46 +1215,20 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
 
         @Override
         public void onTracksChanged(TrackGroupArray tracks, TrackSelectionArray selections) {
-            // Suppress the update if transitioning to an unprepared period within the same window. This
-            // is necessary to avoid closing the shutter when such a transition occurs. See:
-            // https://github.com/google/ExoPlayer/issues/5507.
-            Player player = checkNotNull(TransparentStyledPlayerView.this.player);
-            Timeline timeline = player.getCurrentTimeline();
-            if (timeline.isEmpty()) {
-                lastPeriodUidWithTracks = null;
-            } else if (!player.getCurrentTrackGroups().isEmpty()) {
-                lastPeriodUidWithTracks =
-                        timeline.getPeriod(player.getCurrentPeriodIndex(), period, /* setIds= */ true).uid;
-            } else if (lastPeriodUidWithTracks != null) {
-                int lastPeriodIndexWithTracks = timeline.getIndexOfPeriod(lastPeriodUidWithTracks);
-                if (lastPeriodIndexWithTracks != C.INDEX_UNSET) {
-                    int lastWindowIndexWithTracks =
-                            timeline.getPeriod(lastPeriodIndexWithTracks, period).windowIndex;
-                    if (player.getCurrentWindowIndex() == lastWindowIndexWithTracks) {
-                        // We're in the same window. Suppress the update.
-                        return;
-                    }
-                }
-                lastPeriodUidWithTracks = null;
-            }
-
             updateForCurrentTrackSelections(/* isNewPlayer= */ false);
         }
 
         // Player.EventListener implementation
 
         @Override
-        public void onPlaybackStateChanged(@Player.State int playbackState) {
+        public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
             updateBuffering();
             updateErrorMessage();
-            updateControllerVisibility();
-        }
-
-        @Override
-        public void onPlayWhenReadyChanged(
-                boolean playWhenReady, @Player.PlayWhenReadyChangeReason int reason) {
-            updateBuffering();
-            updateControllerVisibility();
+            if (isPlayingAd() && controllerHideDuringAds) {
+                hideController();
+            } else {
+                maybeShowController(false);
+            }
         }
 
         @Override
@@ -1667,20 +1252,6 @@ public class TransparentStyledPlayerView extends FrameLayout implements AdsLoade
                 int oldRight,
                 int oldBottom) {
             applyTextureViewRotation((TextureView) view, textureViewRotation);
-        }
-
-        // SingleTapListener implementation
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            return toggleControllerVisibility();
-        }
-
-        // StyledPlayerControlView.VisibilityListener implementation
-
-        @Override
-        public void onVisibilityChange(int visibility) {
-            updateContentDescription();
         }
     }
 }
