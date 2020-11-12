@@ -19,7 +19,6 @@ object AutoPlayUtils {
      * @param alphaForStoppedVideos alpha for view.alpha when not playing the video
      */
     fun onScrollPlayVideo(recyclerView: RecyclerView, pxlPhotoViewId: Int, firstVisiblePosition: Int, lastVisiblePosition: Int, alphaForStoppedVideos: Float) {
-        Log.d("AuthPlayUtils", "position first: $firstVisiblePosition, lastVisiblePosition: $lastVisiblePosition")
         var playingIdx = -1
         var positionInList = -1
         for (i in 0..lastVisiblePosition - firstVisiblePosition) {
@@ -85,13 +84,26 @@ object AutoPlayUtils {
         }
     }
 
+    fun applyVolume(recyclerView: RecyclerView, pxlPhotoViewId: Int, firstVisiblePosition: Int, lastVisiblePosition: Int, muted:Boolean, alphaForStoppedVideos: Float) {
+        for (i in 0..lastVisiblePosition - firstVisiblePosition) {
+            recyclerView.getChildAt(i)?.let { child ->
+                val pxlPhotoView = child.findViewById<PXLPhotoView>(pxlPhotoViewId)
+                pxlPhotoView.changeVolume(if(muted) 0f else 1f)
+                if (pxlPhotoView!=null && pxlPhotoView.havePlayer()) {
+                    child.alpha = 1f
+                }else{
+                    child.alpha = alphaForStoppedVideos
+                }
+            }
+        }
+    }
+
     /**
      * @param view
      * @return 当前视图可见比列
      */
     fun getViewVisiblePercent(view: View?): Int {
         if (view == null) {
-            Log.d("AuthPlayUtils", "-- getViewVisiblePercent () view is null")
             return 0
         }
 
@@ -99,7 +111,6 @@ object AutoPlayUtils {
         val rect = Rect()
         val result = !view.getLocalVisibleRect(rect)
         if (result) {
-            Log.d("AuthPlayUtils", "-- getViewVisiblePercent () getLocalVisibleRect false")
             return 0
         }
         val height = view.height
@@ -111,7 +122,6 @@ object AutoPlayUtils {
         } else if (rect.bottom in 1 until height) {
             percents = rect.bottom * 100 / height
         }
-        Log.d("AuthPlayUtils", "-- getViewVisiblePercent () percents: " + percents)
         return percents
     }
 }

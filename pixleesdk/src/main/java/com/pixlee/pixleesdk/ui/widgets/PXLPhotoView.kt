@@ -2,15 +2,14 @@ package com.pixlee.pixleesdk.ui.widgets
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PixelFormat
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.Log
 import android.util.Pair
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -238,6 +237,9 @@ class PXLPhotoView : RelativeLayout, PlaybackPreparer {
             videoView.visibility = View.VISIBLE
             val isNotPlaying = !isPlaying()
             if(isNotPlaying) initVideoPlayer()
+            if(isNotPlaying) {
+                videoView.setShutterBackgroundColor(Color.TRANSPARENT)
+            }
             if(isNotPlaying){
                 videoView.resizeMode = when (currentConfiguration.imageScaleType) {
                     ImageScaleType.FIT_CENTER -> AspectRatioFrameLayout.RESIZE_MODE_FIT
@@ -253,6 +255,7 @@ class PXLPhotoView : RelativeLayout, PlaybackPreparer {
     fun pauseVideo() {
         Log.e("PXLPhotoViewVP", "## pauseVideo()")
         if (pxlPhoto?.isVideo ?: false) {
+            videoView.visibility = View.GONE
             videoView.onPause()
             releasePlayer()
         }
@@ -372,10 +375,6 @@ class PXLPhotoView : RelativeLayout, PlaybackPreparer {
         currentConfiguration.imageScaleType = imageScaleType
         startBlurBG()
         startPhoto()
-
-        if (pxlPhoto.isVideo) {
-            videoView.setShutterBackgroundColor(Color.TRANSPARENT)
-        }
     }
 
     private fun startBlurBG() {

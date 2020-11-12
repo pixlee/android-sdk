@@ -2,6 +2,7 @@ package com.pixlee.pixleesdk.ui.widgets.list
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -45,7 +46,7 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
         this.adapter = pxlPhotoAdapter
     }
 
-//    lateinit var masterExoPlayerHelper: MasterExoPlayerHelper
+    //    lateinit var masterExoPlayerHelper: MasterExoPlayerHelper
     internal var alphaForStoppedVideos: Float = 1f
     fun initiate(infiniteScroll: Boolean = false,     // or false
                  showingDebugView: Boolean = false,   // false: for production, true: development only when you want to see the debug info
@@ -172,11 +173,11 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
         changeSound(false)
     }
 
-    var changingSoundJob:Job? = null
+    var changingSoundJob: Job? = null
     private fun changeSound(muted: Boolean) {
         changingSoundJob?.cancel()
         changingSoundJob = launch {
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.IO) {
                 if (pxlPhotoAdapter.list.isNotEmpty()) {
                     pxlPhotoAdapter.list.forEach {
                         when (it) {
@@ -189,10 +190,13 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
                 }
             }
 
-            pxlPhotoAdapter.notifyDataSetChanged()
-            if (playingVideo) {
-                playVideo()
-            }
+            //pxlPhotoAdapter.notifyDataSetChanged()
+            changeVolume(muted)
         }
+    }
+
+    private fun changeVolume(muted: Boolean) {
+        Log.e("aa", "changeVolume- applyVolume: ${linearLayoutManager.findFirstVisibleItemPosition()}")
+        AutoPlayUtils.applyVolume(this, R.id.pxlPhotoView, linearLayoutManager.findFirstVisibleItemPosition(), linearLayoutManager.findLastVisibleItemPosition(), muted, alphaForStoppedVideos)
     }
 }
