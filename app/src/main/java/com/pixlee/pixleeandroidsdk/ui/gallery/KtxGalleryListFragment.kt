@@ -135,7 +135,7 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
             // Customize image size, not a video
             pxlPhotoSize = PXLPhotoSize.ORIGINAL
             // Customize image scale type
-            imageScaleType = ImageScaleType.CENTER_CROP
+            imageScaleType = ImageScaleType.FIT_CENTER
             // Customize Main TextView
             mainTextViewStyle = TextViewStyle().apply {
                 text = "Main Text"

@@ -7,7 +7,9 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.Log
+import android.util.Pair
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -15,28 +17,42 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.view.ViewCompat
-import cn.jzvd.Jzvd
-import cn.jzvd.Jzvd.STATE_NORMAL
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
+import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.audio.AudioAttributes
+import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer.DecoderInitializationException
+import com.google.android.exoplayer2.mediacodec.MediaCodecUtil.DecoderQueryException
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import com.google.android.exoplayer2.source.MediaSourceFactory
+import com.google.android.exoplayer2.source.ads.AdsLoader
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector.ParametersBuilder
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultAllocator
+import com.google.android.exoplayer2.util.ErrorMessageProvider
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.util.px
+import com.pixlee.pixleesdk.video.ExoPlayerUtil
+import com.pixlee.pixleesdk.video.TransparentStyledPlayerView
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.parcel.Parcelize
+import java.util.*
 
 /**
  * This view is to show a photo of PXLPhoto inside a RecyclerView or a ViewGroup
  */
-class PXLPhotoView : RelativeLayout {
+class PXLPhotoView : RelativeLayout, PlaybackPreparer {
     companion object {
         /**
          * this is to release video player
          */
         fun releaseAllVideos() {
-            Jzvd.releaseAllVideos()
+            //Jzvd.releaseAllVideos()
         }
     }
 
@@ -71,7 +87,6 @@ class PXLPhotoView : RelativeLayout {
     val defaultScaleType = ImageScaleType.FIT_CENTER
     var pxlPhoto: PXLPhoto? = null
 
-
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
@@ -91,9 +106,17 @@ class PXLPhotoView : RelativeLayout {
         }
     }
 
-    val videoView: VideoWidget by lazy {
-        VideoWidget(context).apply {
+    val videoView: TransparentStyledPlayerView by lazy {
+        TransparentStyledPlayerView(context).apply {
             id = ViewCompat.generateViewId()
+            useController = false
+            setErrorMessageProvider(PlayerErrorMessageProvider())
+            dataSourceFactory = ExoPlayerUtil.getDataSourceFactory(context)
+
+            val builder = ParametersBuilder( /* context= */context)
+            trackSelectorParameters = builder.build()
+
+            requestFocus()
         }
     }
 
@@ -171,8 +194,9 @@ class PXLPhotoView : RelativeLayout {
      * @return PXLPhotoView, builder pattern
      */
     fun changeVolume(volume: Float): PXLPhotoView {
+        Log.e("", "changeVolume: $volume")
         this.volume = volume
-        videoView.changeVolume(volume)
+        player?.volume = volume
         return this
     }
 
@@ -192,44 +216,72 @@ class PXLPhotoView : RelativeLayout {
      */
     fun setLooping(looping: Boolean): PXLPhotoView {
         this.looping = looping
-        videoView.setLooping(looping)
+        player?.repeatMode = if (looping) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
         return this
     }
 
 
     fun isPlaying(): Boolean {
-        return videoView.isPlaying
+        return player?.isPlaying ?: false
+    }
+
+    fun havePlayer(): Boolean {
+        return player!=null
     }
 
     /**
      * if the content is video, this plays the
      */
     fun playVideo() {
+        Log.e("PXLPhotoViewVP", "======> playVideo()")
         if (pxlPhoto?.isVideo ?: false) {
-            when (currentConfiguration.imageScaleType) {
-                ImageScaleType.FIT_CENTER -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_ADAPTER)
-                ImageScaleType.CENTER_CROP -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_FILL_SCROP)
+            videoView.visibility = View.VISIBLE
+            val isNotPlaying = !isPlaying()
+            if(isNotPlaying) initVideoPlayer()
+            if(isNotPlaying){
+                videoView.resizeMode = when (currentConfiguration.imageScaleType) {
+                    ImageScaleType.FIT_CENTER -> AspectRatioFrameLayout.RESIZE_MODE_FIT
+                    ImageScaleType.CENTER_CROP -> AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                }
             }
-            videoView.play()
-            //videoView.resumeVideo()
-        }
-    }
-
-    fun resumeVideo() {
-        if (pxlPhoto?.isVideo ?: false) {
-            when (currentConfiguration.imageScaleType) {
-                ImageScaleType.FIT_CENTER -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_ADAPTER)
-                ImageScaleType.CENTER_CROP -> Jzvd.setVideoImageDisplayType(Jzvd.VIDEO_IMAGE_DISPLAY_TYPE_FILL_SCROP)
-            }
-            videoView.resumeVideo()
+            // change volume
+            player?.volume = volume
+            if(isNotPlaying) videoView.onResume()
         }
     }
 
     fun pauseVideo() {
+        Log.e("PXLPhotoViewVP", "## pauseVideo()")
         if (pxlPhoto?.isVideo ?: false) {
-            Log.e("PXLPhotoView", "===mediaInterface.pause(), isPlaying: ${videoView.isPlaying}, mediaInterface: ${videoView.mediaInterface}")
-            videoView.pauseVideo()
-//            PXLPhotoView.releaseAllVideos()
+            videoView.onPause()
+            releasePlayer()
+        }
+    }
+
+    protected fun releasePlayer() {
+        Log.e("PXLPhotoViewVP", "## releasePlayer() player: $player")
+        if (player != null) {
+            updateTrackSelectorParameters()
+            updateStartPosition()
+            player?.stop()
+            player?.release()
+            player = null
+            mediaItems = emptyList()
+            trackSelector = null
+        }
+    }
+
+    private fun updateTrackSelectorParameters() {
+        if (trackSelector != null) {
+            trackSelectorParameters = trackSelector!!.parameters
+        }
+    }
+
+    private fun updateStartPosition() {
+        if (player != null) {
+            startAutoPlay = player!!.playWhenReady
+            startWindow = player!!.currentWindowIndex
+            startPosition = Math.max(0, player!!.contentPosition)
         }
     }
 
@@ -260,6 +312,7 @@ class PXLPhotoView : RelativeLayout {
             addRule(ALIGN_RIGHT, imageView.id)
             addRule(ALIGN_BOTTOM, imageView.id)
             videoView.layoutParams = this
+            videoView.visibility = View.GONE
             addView(videoView)
         }
 
@@ -319,8 +372,9 @@ class PXLPhotoView : RelativeLayout {
         currentConfiguration.imageScaleType = imageScaleType
         startBlurBG()
         startPhoto()
+
         if (pxlPhoto.isVideo) {
-            initVideoPlayer()
+            videoView.setShutterBackgroundColor(Color.TRANSPARENT)
         }
     }
 
@@ -367,8 +421,106 @@ class PXLPhotoView : RelativeLayout {
     }
 
     private fun initVideoPlayer() {
-        Log.d("pxlphoto", "pxlphoto.videoUrl: ${pxlPhoto?.videoUrl}")
-        videoView.setUp(pxlPhoto?.videoUrl, null, Jzvd.SCREEN_NORMAL)
+        Log.e("PXLPhotoViewVP", "## initVideoPlayer() start player: $player")
+        if (player == null) {
+            mediaItems = createMediaItems()
+            if (mediaItems==null && mediaItems!!.isEmpty() ?: true) {
+                return
+            }
+            val preferExtensionDecoders = false
+            val renderersFactory: RenderersFactory = ExoPlayerUtil.buildRenderersFactory( /* context= */context, preferExtensionDecoders)
+
+            val builder = DefaultLoadControl.Builder()
+            builder.setAllocator(DefaultAllocator(true, 2 * 1024 * 1024))
+            builder.setBufferDurationsMs(5000, 5000, 5000, 5000)
+            builder.setPrioritizeTimeOverSizeThresholds(true)
+
+            val mediaSourceFactory: MediaSourceFactory = DefaultMediaSourceFactory(dataSourceFactory!!)
+
+            trackSelector = DefaultTrackSelector( context)
+            trackSelector!!.parameters = trackSelectorParameters!!
+
+            player = SimpleExoPlayer.Builder(context, renderersFactory)
+                    .setMediaSourceFactory(mediaSourceFactory)
+                    .setTrackSelector(trackSelector!!)
+                    .setLoadControl(builder.build())
+                    .build()
+
+            player!!.setAudioAttributes(AudioAttributes.DEFAULT, true)
+            player!!.playWhenReady = startAutoPlay
+            videoView.player = player
+            videoView.setPlaybackPreparer(this)
+        }
+        val haveStartPosition = startWindow != C.INDEX_UNSET
+        if (haveStartPosition) {
+            player?.seekTo(startWindow, startPosition)
+        }
+        player!!.setMediaItems(mediaItems!!, !haveStartPosition)
+        player?.prepare()
+        Log.e("PXLPhotoViewVP", "## initVideoPlayer() done player: $player")
+        return
+    }
+
+    private fun createMediaItems(): List<MediaItem>? {
+        val mediaItems: ArrayList<MediaItem> = ArrayList()
+        val item = MediaItem.Builder()
+                .setUri(pxlPhoto?.videoUrl)
+                .setMediaMetadata(MediaMetadata.Builder().setTitle("").build())
+                //.setMimeType(DemoUtil.MIME_TYPE_DASH)
+                .build()
+
+        mediaItems.add(item)
+//        for (i in mediaItems.indices) {
+//            val mediaItem = mediaItems[i]
+//            if (!Util.checkCleartextTrafficPermitted(mediaItem)) {
+//                return emptyList()
+//            }
+//        }
+        return mediaItems
+    }
+
+    private class PlayerErrorMessageProvider : ErrorMessageProvider<ExoPlaybackException> {
+        override fun getErrorMessage(e: ExoPlaybackException): Pair<Int, String> {
+            var errorString: String = "error_generic"
+            if (e.type == ExoPlaybackException.TYPE_RENDERER) {
+                val cause = e.rendererException
+                if (cause is DecoderInitializationException) {
+                    // Special case for decoder initialization failures.
+                    val decoderInitializationException = cause
+                    if (decoderInitializationException.codecInfo == null) {
+                        if (decoderInitializationException.cause is DecoderQueryException) {
+                            errorString = "error_querying_decoders"
+                        } else if (decoderInitializationException.secureDecoderRequired) {
+                            errorString = "error_no_secure_decoder: " + decoderInitializationException.mimeType
+                        } else {
+                            errorString = "error_no_decoder: " + decoderInitializationException.mimeType
+                        }
+                    } else {
+                        errorString = "error_instantiating_decoder: " + decoderInitializationException.codecInfo!!.name
+                    }
+                }
+            }
+            return Pair.create(0, errorString)
+        }
+    }
+
+    private var startWindow = 0
+    private var startPosition: Long = 0
+    private var trackSelector: DefaultTrackSelector? = null
+    private var trackSelectorParameters: DefaultTrackSelector.Parameters? = null
+    private var startAutoPlay = true
+    // Fields used only for ad playback.
+    private var adsLoader: AdsLoader? = null
+    private var dataSourceFactory: DataSource.Factory? = null
+    private var mediaItems: List<MediaItem>? = null
+    protected var player: SimpleExoPlayer? = null
+    override fun preparePlayback() {
+        player!!.prepare()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        releasePlayer()
     }
 
     /**
