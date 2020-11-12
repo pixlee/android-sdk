@@ -26,7 +26,6 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
         ```
     1. Add the dependency
         - The latest $pixleeSDK is [![](https://jitpack.io/v/pixlee/android-sdk.svg)](https://jitpack.io/#pixlee/android-sdk)
-        - The latest $videoPlayerManager is [![](https://jitpack.io/v/pixlee/android-video-player.svg)](https://jitpack.io/#pixlee/android-video-player)
         ```gradle
         dependencies {
                 implementation 'com.github.pixlee:android-sdk:$pixleeSDK
