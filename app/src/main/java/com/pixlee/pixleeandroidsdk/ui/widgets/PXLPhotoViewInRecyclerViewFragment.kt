@@ -150,12 +150,12 @@ class PXLPhotoViewInRecyclerViewFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        pxlPhotoRecyclerView.playVideo()
+        pxlPhotoRecyclerView.playVideoOnResume()
     }
 
     override fun onStop() {
         super.onStop()
-        pxlPhotoRecyclerView.stopVideo()
+        pxlPhotoRecyclerView.stopVideoOnPause()
     }
 
     companion object {

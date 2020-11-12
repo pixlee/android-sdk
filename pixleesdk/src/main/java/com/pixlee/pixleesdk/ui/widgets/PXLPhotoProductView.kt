@@ -50,6 +50,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
             var onCheckedListener: ((isChecked: Boolean) -> Unit)? = null
     )
 
+    private var adapter: ProductAdapter? = null
     private var photoInfo: PhotoWithVideoInfo? = null
     var bookmarkMap: HashMap<String, Boolean>? = null
     var onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null
@@ -201,34 +202,22 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onStart() {
-        playVideo()
+    fun playVideoOnStart() {
+        playVideoOnResume()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun playVideo() {
+    fun playVideoOnResume() {
         pxlPhotoView.playVideo()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun stopVideo() {
+    fun stopVideoOnPause() {
         pxlPhotoView.pauseVideo()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    fun onStop() {
-        stopVideo()
-    }
-
-    private var adapter: ProductAdapter? = null
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        // Stop media player
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun releaseVideo() {
-        PXLPhotoView.releaseAllVideos()
+    fun stopVideoOnStop() {
+        stopVideoOnPause()
     }
 }

@@ -47,15 +47,6 @@ import java.util.*
  * This view is to show a photo of PXLPhoto inside a RecyclerView or a ViewGroup
  */
 class PXLPhotoView : RelativeLayout {
-    companion object {
-        /**
-         * this is to release video player
-         */
-        fun releaseAllVideos() {
-            //Jzvd.releaseAllVideos()
-        }
-    }
-
     @Parcelize
     data class Configuration(
             var pxlPhotoSize: PXLPhotoSize = PXLPhotoSize.ORIGINAL, // PXLPhotoSize [THUMBNAIL, MEDIUM, BIG, ORIGINAL]

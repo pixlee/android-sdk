@@ -241,21 +241,25 @@ pxlPhotoProductView.loadContent(...
 ```kotlin
 #!kotlin
 class YourActivity : AppCompatActivity() {
-    // play video
-    override fun onResume() {
-        super.onResume()
-        pxlPhotoProductView.playVideo()
-    }
     
-    // stop video
-    override fun onPause() {
-        super.onPause()
-        pxlPhotoProductView.stopVideo()
+    override fun onStart() {
+        super.onStart()
+        pxlPhotoProductView.playVideoOnStart()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        pxlPhotoProductView.releaseVideo()
+    override fun onResume() {
+        super.onResume()
+        pxlPhotoProductView.playVideoOnResume()
+    }
+    
+    override fun onPause() {
+        super.onPause()
+        pxlPhotoProductView.stopVideoOnPause()
+    }
+
+    override fun onStop() {
+        super.onStart()
+        pxlPhotoProductView.stopVideoOnStop()
     }
 }
 ```
@@ -505,17 +509,26 @@ override fun onCreate(savedInstanceState: Bundle?) {
 ```kotlin
 #!kotlin
 class YourActivity : AppCompatActivity() {
-    // play video
+    override fun onStart() {
+        super.onStart()
+        pxlPhotoRecyclerView.playVideoOnStart()
+    }
+
     override fun onResume() {
         super.onResume()
-        pxlPhotoRecyclerView.playVideo()
+        pxlPhotoRecyclerView.playVideoOnResume()
     }
     
-    // stop video
     override fun onPause() {
         super.onPause()
-        pxlPhotoRecyclerView.stopVideo()
+        pxlPhotoRecyclerView.stopVideoOnPause()
     }
+
+    override fun onStop() {
+        super.onStart()
+        pxlPhotoRecyclerView.stopVideoOnStop()
+    }
+
 }
 ```
 
@@ -831,18 +844,25 @@ class YourActivity: AppCompatActivity, LifecycleObserver {
         val item: PhotoWithImageScaleType? = arguments?.getParcelable("photoWithImageScaleType") // read PhotoWithImageScaleType
         pxlPhotoView.setContent(item, PXLPhotoView.ImageScaleType.CENTER_CROP)   
     }
-    
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun playVideo() {
-        // play video, you can also use this code onCreate or when getting data from the API
-        pxlPhotoView.playVideo() // play the video
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun playVideoOnStart() {
+        pxlPhotoView.playVideo()
     }
     
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun playVideoOnResume() {
+        pxlPhotoView.playVideo()
+    }
     
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun stopVideo() {
-        // stop any video
-        PXLPhotoView.releaseAllVideos()
+    fun stopVideoOnPause() {
+        pxlPhotoView.pauseVideo()
+    }
+    
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun stopVideoOnStop() {
+        pxlPhotoView.pauseVideo()
     }
 }
 

@@ -34,7 +34,6 @@ import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.util.px
-import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.*
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.*
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.drawerLayout
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.fabFilter
@@ -105,7 +104,7 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
                 is BaseViewModel.Command.Data -> {
                     if (it.isFirstPage) {
                         pxlPhotoRecyclerView.replaceList(it.list)
-                        pxlPhotoRecyclerView.playVideo()
+                        pxlPhotoRecyclerView.playVideoOnResume()
                         if (it.list.isNotEmpty()) {
                             it.list.firstOrNull()?.pxlPhoto?.also {
                                 viewModel.getPhotoFromRegion(it, readRegionIdFromUI()) // add your own region id

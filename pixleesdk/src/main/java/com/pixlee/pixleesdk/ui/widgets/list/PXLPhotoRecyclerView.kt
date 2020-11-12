@@ -9,14 +9,12 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 //import com.master.exoplayer.MasterExoPlayerHelper
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.AutoPlayUtils
-import com.pixlee.pixleesdk.video.TransparentStyledPlayerView
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -140,11 +138,11 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun playVideoOnStart() {
-        playVideo()
+        playVideoOnResume()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun playVideo() {
+    fun playVideoOnResume() {
         // The reason why we need post {} is to give list time to get the item loaded completely.
         // linearLayoutManager.findFirstVisibleItemPosition() and linearLayoutManager.findLastVisibleItemPosition() return -1 without post {}.
         post {
@@ -155,7 +153,7 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun stopVideo() {
+    fun stopVideoOnPause() {
         changingSoundJob?.cancel()
         playingVideo = false
 
@@ -164,7 +162,7 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     private fun stopVideoOnStop() {
-        stopVideo()
+        stopVideoOnPause()
     }
 
     /**
