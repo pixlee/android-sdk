@@ -53,5 +53,11 @@ ext {
     glide = "4.11.0"
     orhanobutLogger = "2.2.0"
     lottie = "3.4.1"
-    androidJZVideo="1.0.3"
+    androidJZVideo="1.0.8"
+
+    checkerframeworkVersion = '3.3.0'
+    //exoPlayer="2.12.1"
+    exoPlayer="2.8.2"
+
+    supportLibraryVersion = '27.0.0'
 }

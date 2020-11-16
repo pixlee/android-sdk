@@ -3,46 +3,84 @@ package com.pixlee.pixleesdk.ui.adapter
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.pixlee.pixleesdk.data.PXLPhoto
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.pixlee.pixleesdk.ui.viewholder.PXLPhotoViewHolder
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
+import com.pixlee.pixleesdk.ui.viewholder.TextHeaderViewHolder
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
 import kotlinx.android.synthetic.main.item_pxlphoto.*
 
 /**
  * This is to display PhotoWithImageScaleType having PXLPhoto in a RecyclerView.
  */
 class PXLPhotoAdapter(
-        var onButtonClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null,
-        var onPhotoClickedListener: ((view: View, pxlPhoto: PXLPhoto) -> Unit)? = null,
-        var photoViewConfiguration: PXLPhotoView.Configuration? = null,
+        var onButtonClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null,
+        var onPhotoClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null,
         var infiniteScroll: Boolean = false,
         var showingDebugView: Boolean = false
-) : RecyclerView.Adapter<PXLPhotoViewHolder>() {
-    val list: ArrayList<PhotoWithImageScaleType> = ArrayList()
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PXLPhotoViewHolder {
-        return PXLPhotoViewHolder.create(parent)
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    sealed class Item {
+        class Header(val listHeader: ListHeader) : Item()
+        class Content(val data: PhotoWithImageScaleType) : Item()
     }
 
-    override fun onBindViewHolder(holder: PXLPhotoViewHolder, position: Int) {
+    val list: ArrayList<Item> = ArrayList()
+
+    val TYPE_HEADER = 1
+    val TYPE_ITEM = 2
+    override fun getItemViewType(position: Int): Int {
+        return when (list[getRealPosition(position)]) {
+            is Item.Header -> TYPE_HEADER
+            is Item.Content -> TYPE_ITEM
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            TYPE_HEADER -> TextHeaderViewHolder.create(parent)
+            else -> PXLPhotoViewHolder.create(parent)
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = list[getRealPosition(position)]
-        holder.bind(item, photoViewConfiguration, showingDebugView)
-        holder.itemView.setOnClickListener {
-            onPhotoClickedListener?.also {
-                it(holder.itemView, item.pxlPhoto)
+        when (holder) {
+            is TextHeaderViewHolder -> {
+                if(holder.itemView.layoutParams is StaggeredGridLayoutManager.LayoutParams){
+                    val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+                    layoutParams.isFullSpan = true
+                }
+
+                val data = item as Item.Header
+                holder.bind(data.listHeader)
+                holder.itemView.setOnClickListener(null)
+            }
+            is PXLPhotoViewHolder -> {
+                if(holder.itemView.layoutParams is StaggeredGridLayoutManager.LayoutParams){
+
+                }
+
+                val data = item as Item.Content
+                holder.bind(data.data, showingDebugView)
+                holder.itemView.setOnClickListener {
+                    onPhotoClickedListener?.also {
+                        it(holder.itemView, data.data)
+                    }
+                }
+
+                if (onButtonClickedListener == null) {
+                    holder.pxlPhotoView.setButtonClickListener(null)
+                } else {
+                    holder.pxlPhotoView.setButtonClickListener(View.OnClickListener {
+                        onButtonClickedListener?.also {
+                            it(holder.itemView, data.data)
+                        }
+                    })
+                }
             }
         }
 
-        if (onButtonClickedListener == null) {
-            holder.pxlPhotoView.setButtonClickListener(null)
-        } else {
-            holder.pxlPhotoView.setButtonClickListener(View.OnClickListener {
-                onButtonClickedListener?.also {
-                    it(holder.itemView, item.pxlPhoto)
-                }
-            })
-        }
     }
 
     fun getRealPosition(position: Int): Int {

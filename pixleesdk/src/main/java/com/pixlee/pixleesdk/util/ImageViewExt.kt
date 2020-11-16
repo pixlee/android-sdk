@@ -6,6 +6,9 @@ import android.graphics.PorterDuff
 import android.os.Build
 import android.widget.ImageView
 import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
+import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
+import kotlinx.android.synthetic.main.item_product.*
 
 
 /**
@@ -21,5 +24,9 @@ fun ImageView.setCompatColorFilter(@ColorInt color: Int? = null) {
     }else{
         background.colorFilter = null
     }
+}
 
+fun ImageView.setCompatIconWithColor(@ColorInt color:Int, @DrawableRes drawable:Int) {
+    setBackgroundResource(drawable)
+    setCompatColorFilter(color)
 }

@@ -7,13 +7,15 @@
     android:layout_height="match_parent"
     tools:openDrawer="end">
     <RelativeLayout
+        android:id="@+id/v_body"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.pixlee.pixleesdk.ui.widgets.PXLPhotoRecyclerView
-            android:id="@+id/pxlPhotoRecyclerView"
+        <com.pixlee.pixleesdk.ui.widgets.list.PXLPhotoRecyclerViewInGrid
+            android:id="@+id/pxlPhotoRecyclerViewInGrid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+
         <com.pixlee.pixleesdk.ui.widgets.PXLLoading
             android:id="@+id/lottieView"
             android:layout_width="80dp"

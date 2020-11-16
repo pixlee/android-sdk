@@ -1,6 +1,11 @@
 # pixlee-android-sdk
 This SDK makes it easy for Pixlee customers to find and download Pixlee images and albums.  There's a native wrapper to the Pixlee album API for Android, and there's also a demo app showing how easy it is to drop in and customize a UI. This repo includes both the Pixlee Android SDK and an example project to show you how it's used.  
 
+
+### Notice: please be aware of these terms in the document. 
+- the word 'content' is used in the documentation. this means a photo or video.
+- The PXLPhoto class represents a piece of content, which can be a photo or video
+
 # Table of Content
 - [Get Started](#Get-Started)
 - [Run the Demo App](#Run-the-Demo-App)

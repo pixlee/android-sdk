@@ -1,6 +1,8 @@
 package com.pixlee.pixleeandroidsdk.ui
 
+import android.graphics.Color
 import android.util.Log
+import android.util.TypedValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,7 +13,10 @@ import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
+import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+import com.pixlee.pixleesdk.ui.widgets.TextPadding
+import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.util.px
 import kotlinx.coroutines.launch
 
@@ -57,6 +62,8 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
         // viewModelScope.launch(..) { pxlKtxAlbum.getFirstPage() }
     }
 
+    var customizedConfiguration:PXLPhotoView.Configuration = PXLPhotoView.Configuration()
+
     /**
      * retrieve the next page from Pixlee server
      */
@@ -67,20 +74,28 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
                 // show a loading UI on the mobile screen
                 _loading.value = true
                 pxlKtxAlbum.getNextPage().let {
+                    val newList = ArrayList<PhotoWithImageScaleType>()
                     if (it.photos.isNotEmpty()) {
-                        val newList = ArrayList<PhotoWithImageScaleType>()
                         it.photos.forEach {
                             Log.e("pxlvideo", "pxlvideo.url: ${it.videoUrl.toString()}")
                             Log.e("pxlvideo", "pxlvideo.big: ${it.getUrlForSize(PXLPhotoSize.BIG)}")
                             newList.add(PhotoWithImageScaleType(pxlPhoto = it,
-                                    imageScaleType = PXLPhotoView.ImageScaleType.FIT_CENTER,
+                                    configuration = customizedConfiguration.copy().apply {
+                                        mainTextViewStyle = TextViewStyle().apply {
+                                            text = "${newList.size}\n${customizedConfiguration.mainTextViewStyle?.text ?: ""}"
+                                            size = 30.px
+                                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                            typeface = null
+                                            textPadding = TextPadding(bottom = 30.px.toInt())
+                                        }
+                                    },
                                     heightInPixel = cellHeightInPixel,
                                     isLoopingVideo = true,
                                     soundMuted = false))
                         }
                         allPXLPhotos.addAll(it.photos)
-                        _resultEvent.value = Event(Command.Data(newList, it.page == 1))
                     }
+                    _resultEvent.value = Event(Command.Data(newList, it.page == 1))
 
                     canLoadMore = it.next
                     _loading.value = false

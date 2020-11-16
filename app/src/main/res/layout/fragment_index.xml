@@ -24,11 +24,21 @@
                 android:layout_marginRight="@dimen/margin"/>
             <com.google.android.material.button.MaterialButton
                 style="@style/NextButtonDefault"
-                android:id="@+id/btKtxAlbum"
+                android:id="@+id/btKtxAlbumList"
                 android:textSize="14sp"
                 android:paddingTop="16sp"
                 android:paddingBottom="13dp"
-                android:text="@string/title_ktx_album"
+                android:text="@string/title_ktx_album_list"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                />
+            <com.google.android.material.button.MaterialButton
+                style="@style/NextButtonDefault"
+                android:id="@+id/btKtxAlbumGrid"
+                android:textSize="14sp"
+                android:paddingTop="16sp"
+                android:paddingBottom="13dp"
+                android:text="@string/title_ktx_album_grid"
                 android:layout_marginLeft="@dimen/margin"
                 android:layout_marginRight="@dimen/margin"
                 />

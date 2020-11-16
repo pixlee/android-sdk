@@ -3,10 +3,12 @@
 - [Album and Product Features](#Album-and-Product-Features)
     - [Initialization](#Initialization)
     - [Prepare parameters](#Prepare-parameters)
-        - Option 1: [to get Album photos](#to-get-Album-photos)
-        - Option 2: [to get Product photos](#to-get-Product-photos)
+        - Option 1: [to get Album content](#to-get-Album-content)
+        - Option 2: [to get Product content](#to-get-Product-content)
         - [Advanced parameter options](#Advanced-parameter-options)
-    - [Get Photos](#Get-Photos)
+    - [Get content](#Get-content)
+    - [Get a PXLPhoto with an album photo id](API.md#get-pxlphoto-with-an-albumphotoid)
+    - [Get a PXLPhoto with an album photo id and regionId](API.md#get-pxlphoto-with-an-albumphotoid-and-regionId)
     - [How to get image urls](#How-to-get-image-urls)
 - Analytics
     - [Album Analytics](#Album-Analytics)
@@ -20,7 +22,7 @@
         - [Conversion](#Conversion)
 
 ## Album and Product Features
-To prepare to load the photos, you'll need the codes below
+To prepare to load the content, you'll need the codes below
 ### Initialization
 ```kotlin
 #!kotlin
@@ -44,7 +46,7 @@ val ktxAnalyticsDataSource = client.ktxAnalyticsDataSource
 val pxlKtxAlbum = PXLKtxAlbum(ktxBasicDataSource, ktxAnalyticsDataSource)
 ```
 ### Prepare parameters
-- #### Option 1: to get Album photos
+- #### Option 1: to get Album content
 ```kotlin
 #!kotlin
 
@@ -54,7 +56,7 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
      searchId = searchId
 )
 ```
-- #### Option 2: to get Product photos
+- #### Option 2: to get Product content
 ```kotlin
 #!kotlin
 
@@ -65,6 +67,7 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
 )
 ```
 - #### Advanced parameter options
+    - note: you can get the right currencies of your products by adding regionId to PXLKtxBaseAlbum.Params.
 ```kotlin
 #!kotlin
 
@@ -80,10 +83,11 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
         sortType = PXLAlbumSortType.RECENCY
         descending = true
         // ... there's more.
-    }
+    },
+    regionId = <Optional: your region id(Int)>       //<-------------- HERE is where you need to add your region id (Optional). If you don't know your region ids, please ask your account manager to give you it. 
 )
 ```
-### Get Photos
+### Get content (a list of PXLPhoto)
 Get the first page
 ```kotlin
 #!Kotlin.coroutines
@@ -98,7 +102,24 @@ Get the next pages
 val result = pxlKtxAlbum.getNextPage()
 ```
 
-## How to get image urls
+### Get PXLPhoto with an albumPhotoId
+```kotlin
+#!Kotlin.coroutines
+
+val albumPhotoId:String = <one of your album photo ids>
+val result:PXLPhoto = pxlKtxAlbum.getPhotoWithId(albumPhotoId)
+```
+
+### Get a PXLPhoto with an album photo id and regionId
+```kotlin
+#!Kotlin.coroutines
+
+val albumPhotoId:String = <one of your album photo ids>
+val regionId:Int = <one of region ids>
+val result:PXLPhoto = pxlKtxAlbum.getPhotoFromRegion(albumPhotoId, regionId)
+```
+
+### How to get image urls
 Some imageURL fields can be empty or null depending on its data's status. In order to get appropriate images, you can use this method.
 ```kotlin
 #!kotlin
@@ -119,7 +140,7 @@ You can see the example codes for analytics in the demo app.
 Be aware of the difference between **Opened Widget** and **Widget Visible**. (Need a sample code. Check the demo app in the project)
 
 There is an order of firing these two APIs.
-1. **Opened Widget**: You should fire this when firing the api is done and loading the photo data into your own view for the widget is complete.
+1. **Opened Widget**: You should fire this when firing the api is done and loading a list of PXLPhoto into your own view for the widget is complete.
 2. **Widget Visible**: **Opened Widget** should be fired first. Then, you can fire this when your own view for the widget started to be visible on the screen.
 
 - #### Opened Widget
@@ -153,7 +174,7 @@ See the onComplete function in GalleryFragment.java for an example.
 
     pxlKtxAlbum.loadMore();
     ```
-- if you want to manually fire pxlKtxAlbum.loadMore(), first you must successfully call this pxlKtxAlbum.getNextPage(callLoadMoreAnalytics = true) to get photos which does not fire loadMore(), then you manually fire pxlKtxAlbum.loadMore() in your app.
+- if you want to manually fire pxlKtxAlbum.loadMore(), first you must successfully call this pxlKtxAlbum.getNextPage(callLoadMoreAnalytics = true) to get content which does not fire loadMore(), then you manually fire pxlKtxAlbum.loadMore() in your app.
 
 ### Opened Lightbox
 - To fire an opened ligtbox event, simply call the `openedLightbox` method of PXLKtxAlbum, and an "Opened Lightbox" event will be fired containing all of the necessary analytics information.
@@ -161,8 +182,8 @@ See the onComplete function in GalleryFragment.java for an example.
     ```kotlin
     #!Kotlin.coroutines
 
-    pxlKtxAlbum.openedLightbox(photo.albumPhotoId)
-    pxlKtxAlbum.openedLightbox(photo)
+    pxlKtxAlbum.openedLightbox(pxlPhoto.albumPhotoId)
+    pxlKtxAlbum.openedLightbox(pxlPhoto)
     ```
 
 ### Action Clicked
@@ -171,8 +192,8 @@ See the onComplete function in GalleryFragment.java for an example.
     ```kotlin
     #!Kotlin.coroutines
 
-    pxlKtxAlbum.actionClicked(photo.albumPhotoId, "https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html");
-    pxlKtxAlbum.actionClicked(photo, "https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html");
+    pxlKtxAlbum.actionClicked(pxlPhoto.albumPhotoId, "https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html");
+    pxlKtxAlbum.actionClicked(pxlPhoto, "https://ca.puma.com/en/ca/pd/clyde-court-core-basketball-shoes/191712.html");
 
     ```
 ## Ecommerce Analytics

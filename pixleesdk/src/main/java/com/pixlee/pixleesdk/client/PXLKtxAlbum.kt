@@ -64,8 +64,8 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
         val isFirstPage = page == 1
         return params!!.let {
             when (it.searchId) {
-                is SearchId.Album -> ktxBasicDataSource.getPhotosWithID(it.searchId.id, it.filterOptions, it.sortOptions, it.perPage, page)
-                is SearchId.Product -> ktxBasicDataSource.getPhotosWithSKU(it.searchId.sku, it.filterOptions, it.sortOptions, it.perPage, page)
+                is SearchId.Album -> ktxBasicDataSource.getPhotosWithID(it.searchId.id, it.filterOptions, it.sortOptions, it.perPage, page, it.regionId)
+                is SearchId.Product -> ktxBasicDataSource.getPhotosWithSKU(it.searchId.sku, it.filterOptions, it.sortOptions, it.perPage, page, it.regionId)
             }.apply {
                 // update albumId with the albumId from the response
                 currentAlbumId = albumId
@@ -112,6 +112,28 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      */
     suspend fun getPhotoWithId(albumPhotoId: String): PXLPhoto {
         return ktxBasicDataSource.getMedia(albumPhotoId)
+    }
+
+    /**
+     * get Photo data
+     *
+     * @param pxlPhoto: PXLPhoto
+     * @param regionId: region id
+     * @return PXLPhoto
+     */
+    suspend fun getPhotoFromRegion(pxlPhoto: PXLPhoto, regionId: Int?): PXLPhoto {
+        return ktxBasicDataSource.getPhoto(pxlPhoto.albumPhotoId, regionId)
+    }
+
+    /**
+     * get Photo data
+     *
+     * @param albumPhotoId: PXLPhoto.albumPhotoId
+     * @param regionId: region id
+     * @return PXLPhoto
+     */
+    suspend fun getPhotoFromRegion(albumPhotoId: String, regionId: Int?): PXLPhoto {
+        return ktxBasicDataSource.getPhoto(albumPhotoId, regionId)
     }
 
     /**

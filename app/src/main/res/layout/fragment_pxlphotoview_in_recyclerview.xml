@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.pixlee.pixleesdk.ui.widgets.PXLPhotoRecyclerView
+    <com.pixlee.pixleesdk.ui.widgets.list.PXLPhotoRecyclerView
         android:id="@+id/pxlPhotoRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

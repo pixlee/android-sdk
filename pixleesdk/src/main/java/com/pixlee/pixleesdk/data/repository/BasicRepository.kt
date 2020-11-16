@@ -27,7 +27,8 @@ interface BasicDataSource {
             filters: String?,
             sort: String?,
             per_page: Int,
-            page: Int
+            page: Int,
+            region_id: Int?
     ): Call<PhotoResult>
 
     fun getPhotosWithID(
@@ -36,7 +37,8 @@ interface BasicDataSource {
             filters: String?,
             sort: String?,
             per_page: Int,
-            page: Int
+            page: Int,
+            region_id: Int?
     ): Call<PhotoResult>
 
     fun getMedia(album_photo_id: String, api_key: String): Call<PXLPhoto>
@@ -48,12 +50,12 @@ interface BasicDataSource {
  * This object loads data from and uploads data to the server using BasicAPI.java, a Retrofit HTTP API class.
  */
 class BasicRepository(var api: BasicAPI) : BasicDataSource {
-    override fun getPhotosWithSKU(sku: String, api_key: String, filters: String?, sort: String?, per_page: Int, page: Int): Call<PhotoResult> {
-        return api.getPhotosWithSKU(sku, api_key, filters, sort, per_page, page)
+    override fun getPhotosWithSKU(sku: String, api_key: String, filters: String?, sort: String?, per_page: Int, page: Int, region_id: Int?): Call<PhotoResult> {
+        return api.getPhotosWithSKU(sku, api_key, filters, sort, per_page, page, region_id)
     }
 
-    override fun getPhotosWithID(album_id: String, api_key: String, filters: String?, sort: String?, per_page: Int, page: Int): Call<PhotoResult> {
-        return api.getPhotosWithID(album_id, api_key, filters, sort, per_page, page)
+    override fun getPhotosWithID(album_id: String, api_key: String, filters: String?, sort: String?, per_page: Int, page: Int, region_id: Int?): Call<PhotoResult> {
+        return api.getPhotosWithID(album_id, api_key, filters, sort, per_page, page, region_id)
     }
 
     override fun getMedia(album_photo_id: String, api_key: String): Call<PXLPhoto> {

@@ -3,17 +3,18 @@ package com.pixlee.pixleeandroidsdk.ui.widgets
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
+import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
+import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
+import com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
 import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import com.pixlee.pixleesdk.util.px
@@ -35,45 +36,94 @@ class ViewerActivity : AppCompatActivity() {
         PXLViewUtil.expandContentAreaOverStatusBar(this)
 
         // give a padding to the top as much as the status bar's height
-        bodyView.setPadding(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
+        pxlPhotoProductView.addPaddingToHeader(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
 
-        // back button's click effect
-        backButton.setOnClickListener(View.OnClickListener { onBackPressed() })
         val i = intent
         if (i == null) {
             finish()
             return
         }
-        val pxlPhoto: PXLPhoto? = i.getParcelableExtra("pxlPhoto")
+        val item: PhotoWithVideoInfo? = i.getParcelableExtra("photoWithVideoInfo")
         // if the photo is null, close this image view
-        if (pxlPhoto == null) {
+        if (item == null) {
             finish()
             return
         }
-        pxlPhotoProductView.setPhoto(pxlPhoto = pxlPhoto,
+
+        init(item)
+    }
+
+    fun init(item: PhotoWithVideoInfo){
+        // by passing lifecycle to pxlPhotoProductView, the SDK will automatically start and stop the video
+        pxlPhotoProductView.useLifecycleObserver(lifecycle)
+
+        // set your ui settings
+        pxlPhotoProductView.setContent(photoInfo = item,
+                headerConfiguration = PXLPhotoProductView.Configuration().apply {
+                    backButton = PXLPhotoProductView.CircleButton().apply {
+                        icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18
+                        iconColor = Color.BLACK
+                        backgroundColor = Color.WHITE
+                        padding = 10.px.toInt()
+                        onClickListener = {
+                            // back button's click effect
+                            Toast.makeText(this@ViewerActivity, "Replace this with your codes, currently 'onBackPressed()'", Toast.LENGTH_LONG).show()
+                            onBackPressed()
+                        }
+                    }
+                    muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
+                        mutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_up_black_18
+                        unmutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_off_black_18
+                        iconColor = Color.BLACK
+                        backgroundColor = Color.WHITE
+                        padding = 10.px.toInt()
+                        onCheckedListener = {
+                            Toast.makeText(this@ViewerActivity, "is muted: $it", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                },
                 configuration = ProductViewHolder.Configuration().apply {
                     circleIcon = ProductViewHolder.CircleIcon().apply {
                         icon = R.drawable.outline_shopping_bag_black_24
                         iconColor = Color.DKGRAY
                         backgroundColor = ContextCompat.getColor(this@ViewerActivity, R.color.yellow_800)
+                        padding = 5.px.toInt()
                     }
                     mainTextStyle = TextStyle().apply {
+                        color = Color.BLACK
                         size = 14.px
                         sizeUnit = TypedValue.COMPLEX_UNIT_PX
                         typeface = null
                     }
                     subTextStyle = TextStyle().apply {
+                        color = Color.BLACK
                         size = 12.px
                         sizeUnit = TypedValue.COMPLEX_UNIT_PX
                         typeface = null
                     }
-                    priceTextStyle = TextStyle().apply {
-                        size = 24.px
-                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                        typeface = null
+                    bookmarkDrawable = ProductViewHolder.Bookmark().apply {
+                        isVisible = true
+                        selectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_black_36
+                        unselectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_border_black_36
+                    }
+                    priceTextStyle = CurrencyTextStyle().apply {
+                        defaultCurrency = "EUR" // or null
+                        leftText = TextStyle().apply {
+                            color = Color.BLACK
+                            size = 24.px
+                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                            typeface = null
+                        }
+
+                        rightText = TextStyle().apply {
+                            color = Color.BLACK
+                            size = 14.px
+                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                            typeface = null
+                        }
                     }
                 },
-                bookmarkMap = readBookmarks(pxlPhoto),
+                bookmarkMap = readBookmarks(item.pxlPhoto),
                 onBookmarkClicked = { productId, isBookmarkChecked ->
                     Toast.makeText(this, "productId: $productId\nisBookmarkChecked: $isBookmarkChecked", Toast.LENGTH_SHORT).show()
                 },
@@ -100,9 +150,9 @@ class ViewerActivity : AppCompatActivity() {
 
     companion object {
         // start video view with a photo data
-        fun launch(context: Context, pxlPhoto: PXLPhoto?) {
+        fun launch(context: Context, pxlPhoto: PhotoWithVideoInfo?) {
             val i = Intent(context, ViewerActivity::class.java)
-            i.putExtra("pxlPhoto", pxlPhoto)
+            i.putExtra("photoWithVideoInfo", pxlPhoto)
             context.startActivity(i)
         }
     }

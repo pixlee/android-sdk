@@ -1,14 +1,17 @@
 package com.pixlee.pixleesdk.ui.viewholder
 
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
+import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.item_pxlphoto.*
 
 /**
@@ -19,16 +22,16 @@ class PXLPhotoViewHolder(override val containerView: View) :
         RecyclerView.ViewHolder(containerView),
         LayoutContainer {
 
-    fun bind(data: PhotoWithImageScaleType, configuration: PXLPhotoView.Configuration? = null, showingDebugView: Boolean = false) {
+    fun bind(data: PhotoWithImageScaleType, showingDebugView: Boolean = false) {
         pxlPhotoView.layoutParams.height = data.heightInPixel
-        pxlPhotoView.setConfiguration(configuration = configuration ?: PXLPhotoView.Configuration())
-        pxlPhotoView.setPhoto(data.pxlPhoto, data.imageScaleType)
+        pxlPhotoView.setConfiguration(configuration = data.configuration)
+        pxlPhotoView.setContent(data.pxlPhoto, data.configuration.imageScaleType)
         pxlPhotoView.setLooping(data.isLoopingVideo)
-        pxlPhotoView.setVolume(if(data.soundMuted) 0f else 1f)
+        pxlPhotoView.changeVolume(if(data.soundMuted) 0f else 1f)
 
         tv.visibility = if (showingDebugView) View.VISIBLE else View.GONE
         tvPercent.visibility = if (showingDebugView) View.VISIBLE else View.GONE
-        tv.text = "ScaleType: ${data.imageScaleType.name}\nwidth: ${pxlPhotoView.layoutParams.width}, height: ${pxlPhotoView.layoutParams.height}\nid: ${data.pxlPhoto.id}"
+        tv.text = "ScaleType: ${data.configuration.imageScaleType.name}\nwidth: ${pxlPhotoView.layoutParams.width}, height: ${pxlPhotoView.layoutParams.height}\nid: ${data.pxlPhoto.id}"
     }
 
     companion object {
@@ -46,8 +49,15 @@ class PXLPhotoViewHolder(override val containerView: View) :
  * Via bind() method, PXLPhotoViewHolder receives this class as an argument and change the UI and manipulate VideoPlayerView.
  * You can pass PhotoWithImageScaleType when declaring PXLPhotoAdapter
  */
-class PhotoWithImageScaleType(val pxlPhoto: PXLPhoto,
-                              val imageScaleType: PXLPhotoView.ImageScaleType,
+@Parcelize
+class PhotoWithImageScaleType(override val pxlPhoto: PXLPhoto,
+                              override val configuration: PXLPhotoView.Configuration,
                               val heightInPixel: Int = 400.px.toInt(),
-                              val isLoopingVideo: Boolean = true,
-                              val soundMuted: Boolean = false)
+                              override val isLoopingVideo: Boolean = true,
+                              override var soundMuted: Boolean = false):PhotoWithVideoInfo(pxlPhoto, configuration, isLoopingVideo, soundMuted), Parcelable
+
+@Parcelize
+open class PhotoWithVideoInfo(open val pxlPhoto: PXLPhoto,
+                              open val configuration: PXLPhotoView.Configuration,
+                              open val isLoopingVideo: Boolean = true,
+                              open val soundMuted: Boolean = false): Parcelable

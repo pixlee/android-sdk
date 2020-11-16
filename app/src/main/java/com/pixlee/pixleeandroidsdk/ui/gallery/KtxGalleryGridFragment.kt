@@ -2,6 +2,9 @@ package com.pixlee.pixleeandroidsdk.ui.gallery
 
 import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +13,8 @@ import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.pixlee.pixleeandroidsdk.BuildConfig
@@ -23,24 +28,32 @@ import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
 import com.pixlee.pixleesdk.data.PXLAlbumSortOptions
-import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLAlbumSortType
 import com.pixlee.pixleesdk.enums.PXLContentSource
 import com.pixlee.pixleesdk.enums.PXLContentType
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
+import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
+import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+import com.pixlee.pixleesdk.ui.widgets.TextPadding
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
+import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
+import com.pixlee.pixleesdk.ui.widgets.list.Space
 import com.pixlee.pixleesdk.util.px
-import kotlinx.android.synthetic.main.fragment_ktx_gallery.*
-import kotlinx.android.synthetic.main.fragment_ktx_gallery.pxlPhotoRecyclerView
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.*
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.drawerLayout
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.fabFilter
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.lottieView
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.v_body
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.*
 import kotlinx.android.synthetic.main.module_search.*
 
 /**
  * This shows how you can load photos of Pixlee using PXLAlbum.java
  */
-class KtxGalleryFragment : BaseFragment() {
+class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
     override fun getTitleResource(): Int {
-        return R.string.title_ktx_album
+        return R.string.title_ktx_album_grid
     }
 
     val viewModel: KtxGalleryViewModel by lazy {
@@ -49,42 +62,32 @@ class KtxGalleryFragment : BaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_ktx_gallery, container, false)
+        return inflater.inflate(R.layout.fragment_ktx_gallery_grid, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         radioGroupContentTypeVideo.isChecked = true
+        initRecyclerView()
         addViewModelListeners()
-        addClickListeners()
-        configureViews()
+        initFilterClickListeners()
 
-        pxlPhotoRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        v_body.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 try {
-                    if (pxlPhotoRecyclerView == null)
+                    if (v_body == null)
                         return
 
-                    val cellHeightInPixel = pxlPhotoRecyclerView.measuredHeight * 0.4f
+                    val cellHeightInPixel = v_body.measuredHeight * 0.5f
                     viewModel.cellHeightInPixel = cellHeightInPixel.toInt()
                     loadAlbum()
-                    pxlPhotoRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    v_body.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
 
             }
         })
-    }
-
-    override fun onResume() {
-        super.onResume()
-        pxlPhotoRecyclerView.onResume()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        pxlPhotoRecyclerView.onPause()
     }
 
     fun addViewModelListeners() {
@@ -96,15 +99,21 @@ class KtxGalleryFragment : BaseFragment() {
             when (it) {
                 is BaseViewModel.Command.Data -> {
                     if (it.isFirstPage) {
-                        pxlPhotoRecyclerView.replaceList(it.list)
-                        pxlPhotoRecyclerView.onResume()
-                        if(it.list.isNotEmpty()){
+                        pxlPhotoRecyclerViewInGrid.replaceList(it.list)
+                        if (it.list.isNotEmpty()) {
                             it.list.firstOrNull()?.pxlPhoto?.also {
-                                viewModel.getPhotoWithId(it)
+                                viewModel.getPhotoFromRegion(it, readRegionIdFromUI())  // add your own region id
                             }
                         }
+
+                        // if no result in the first page, open search panel so that the SDK developers will try out different filters
+                        if(it.list.isEmpty()){
+                            Toast.makeText(context, "success!! but you got an empty list.\nwhat about trying different searching options here?", Toast.LENGTH_LONG).show()
+                            drawerLayout.openDrawer(GravityCompat.END)
+                        }
+
                     } else {
-                        pxlPhotoRecyclerView.addList(it.list)
+                        pxlPhotoRecyclerViewInGrid.addList(it.list)
                     }
 
                 }
@@ -112,65 +121,91 @@ class KtxGalleryFragment : BaseFragment() {
         })
     }
 
-    fun addClickListeners() {
-        // you can customize color, size if you need
-        pxlPhotoRecyclerView.initiate(infiniteScroll = false,
-                showingDebugView = true,
-                configuration = PXLPhotoView.Configuration().apply {
-                    // Customize image size, not a video
-                    pxlPhotoSize = PXLPhotoSize.ORIGINAL
-                    // Customize Main TextView
-                    mainTextViewStyle = TextViewStyle().apply {
-                        text = "Main Text"
-                        size = 30.px
-                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                        typeface = null
-                    }
-                    // Customize Sub TextView
-                    subTextViewStyle = TextViewStyle().apply {
-                        text = "Sub Text"
-                        size = 18.px
-                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                        typeface = null
-                    }
-                    // Customize Button
-                    buttonStyle = PXLPhotoView.ButtonStyle().apply {
-                        isButtonVisible = true
-                        text = "Action Button"
-                        size = 20.px
-                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                        typeface = null
-                        buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
-                        stroke = PXLPhotoView.Stroke().apply {
-                            width = 2.px.toInt()
-                            color = Color.WHITE
-                            radiusInPixel = 25.px
-                            stroke = PXLPhotoView.Stroke().apply {
-                                width = 2.px.toInt()
-                                color = Color.WHITE
-                                radiusInPixel = 25.px
-                            }
-                            padding = PXLPhotoView.Padding().apply {
-                                left = 20.px.toInt()
-                                centerRight = 40.px.toInt()
-                                topBottom = 10.px.toInt()
-                            }
-                        }
-                    }
+    fun initRecyclerView() {
+        initGrid()
+    }
 
-                }, onButtonClickedListener = { view, pxlPhoto ->
+    fun getTitleSpannable(): ListHeader{
+        val top = "PXLEE\nSHOPPERS"
+        val tv = "\nTV"
+        val total = top + tv
+        val spannable = SpannableString(total)
+
+        spannable.setSpan(AbsoluteSizeSpan(40.px.toInt()), 0, top.length, 0); // set size
+        spannable.setSpan(ForegroundColorSpan(Color.BLACK), 0, top.length, 0);// set color
+
+        total.indexOf(tv).let { tvLocatedAt ->
+            spannable.setSpan(AbsoluteSizeSpan(20.px.toInt()), tvLocatedAt, tvLocatedAt + tv.length, 0); // set size
+            spannable.setSpan(ForegroundColorSpan(Color.BLACK), tvLocatedAt, tvLocatedAt + tv.length, 0);// set color
+        }
+
+        val padding = 20.px.toInt()
+        return ListHeader.SpannableText(spannable = spannable,
+                padding = TextPadding(left = padding, top = padding, right = padding, bottom = padding))
+    }
+
+    fun getTitleGif(): ListHeader{
+        return ListHeader.Gif(url = "https://media.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif", heightInPixel = 200.px.toInt(), imageScaleType = ImageScaleType.CENTER_CROP)
+    }
+
+    fun initGrid() {
+        viewModel.customizedConfiguration = PXLPhotoView.Configuration().apply {
+            // Customize image size, not a video
+            pxlPhotoSize = PXLPhotoSize.ORIGINAL
+            // Customize image scale type
+            imageScaleType = ImageScaleType.CENTER_CROP
+            // Customize Main TextView
+            mainTextViewStyle = TextViewStyle().apply {
+                text = "Spring\nColors"
+                size = 30.px
+                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                typeface = null
+                textPadding = TextPadding(bottom = 30.px.toInt())
+            }
+            // Customize Sub TextView
+            subTextViewStyle = null // you can hide this view by giving it null
+            // Customize Button
+            buttonStyle = PXLPhotoView.ButtonStyle().apply {
+                text = "VER AHORA"
+                size = 12.px
+                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                typeface = null
+                buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
+                stroke = PXLPhotoView.Stroke().apply {
+                    width = 1.px.toInt()
+                    color = Color.WHITE
+                    radiusInPixel = 25.px
+                    padding = PXLPhotoView.Padding().apply {
+                        left = 10.px.toInt()
+                        centerRight = 20.px.toInt()
+                        topBottom = 10.px.toInt()
+                    }
+                }
+            }
+        }
+        // you can customize color, size if you need
+        pxlPhotoRecyclerViewInGrid.initiate(gridSpan = 2, // the number of cells in a row in the grid list
+                lineSpace = Space().apply {
+                    lineWidthInPixel = 4.px.toInt() // space in pixel between cells
+                    includingEdge = false           // true: if you want to have the space out side of the list, false: no space out side of the list
+                },
+                listHeader = getTitleGif(), // you can custom your spannable either using getTitleSpannable() or getTitleGif(), examples of how you can implement your spannable
+                showingDebugView = false,
+                onButtonClickedListener = { view, photoWithImageScaleType ->
             context?.also { ctx ->
                 // you can add your business logic here
                 Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
-                moveToViewer(pxlPhoto)
+                moveToViewer(photoWithImageScaleType)
             }
-        }, onPhotoClickedListener = { view, pxlPhoto ->
+        }, onPhotoClickedListener = { view, photoWithImageScaleType ->
             context?.also { ctx ->
                 // you can add your business logic here
                 Toast.makeText(ctx, "onItemClickedListener", Toast.LENGTH_SHORT).show()
             }
         })
+    }
 
+    fun initFilterClickListeners() {
         // set filter buttons
         fabFilter.setOnClickListener { drawerLayout.openDrawer(GravityCompat.END) }
         btnCloseFilter.setOnClickListener { drawerLayout.closeDrawer(GravityCompat.END) }
@@ -210,7 +245,8 @@ class KtxGalleryFragment : BaseFragment() {
                         searchId = searchId,
                         perPage = readPerPage(),
                         filterOptions = readFilterOptionsFromUI(),
-                        sortOptions = readSortOptionsFromUI()
+                        sortOptions = readSortOptionsFromUI(),
+                        regionId = readRegionIdFromUI()
                 ))
                 PXLAlbumSortOptions().apply {
                     sortType = PXLAlbumSortType.RECENCY
@@ -223,24 +259,6 @@ class KtxGalleryFragment : BaseFragment() {
         }
     }
 
-    private fun configureViews() {
-        pxlPhotoRecyclerView.linearLayoutManager
-        pxlPhotoRecyclerView.addOnScrollListener(object :
-                androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-            override fun onScrolled(
-                    recyclerView: androidx.recyclerview.widget.RecyclerView,
-                    dx: Int,
-                    dy: Int
-            ) {
-                super.onScrolled(recyclerView, dx, dy)
-                pxlPhotoRecyclerView.linearLayoutManager.apply {
-                    viewModel.listScrolled(childCount, findLastVisibleItemPosition(), itemCount)
-                }
-
-            }
-        })
-    }
-
     fun readPerPage(): Int {
         // Set textViewPerPage filter if text is not empty
         val minTwitterFollowers = textViewPerPage.text.toString()
@@ -249,6 +267,13 @@ class KtxGalleryFragment : BaseFragment() {
         } else 20
 
         // a default for perPage
+    }
+
+    fun readRegionIdFromUI(): Int?{
+        val data = textViewRegionId.text.toString()
+        return if (data.isNotEmpty()) {
+            Integer.valueOf(data)
+        } else null
     }
 
     fun readSortOptionsFromUI(): PXLAlbumSortOptions {
@@ -375,7 +400,7 @@ class KtxGalleryFragment : BaseFragment() {
      *
      * @param photo
      */
-    fun moveToViewer(photo: PXLPhoto) {
+    fun moveToViewer(photo: PhotoWithImageScaleType) {
         val list = listOf(PhotoLauncher.ViewerActivity, PhotoLauncher.PXLPhotoView/*, PhotoLauncher.PXLPhotoViewInRecyclerView*/)
 
         val listTexts = arrayOfNulls<String>(list.size)
@@ -402,5 +427,27 @@ class KtxGalleryFragment : BaseFragment() {
                     .show()
         }
         //PXLPhotoViewerActivity.launch(context!!, photo)
+    }
+
+    fun isGrid(): Boolean {
+        return arguments?.getBoolean("isGrid") ?: false
+    }
+
+    companion object {
+        fun getGridInstance(): Fragment {
+            val f: Fragment = KtxGalleryGridFragment()
+            val bundle = Bundle()
+            bundle.putBoolean("isGrid", true)
+            f.arguments = bundle
+            return f
+        }
+
+        fun getListInstance(): Fragment {
+            val f: Fragment = KtxGalleryGridFragment()
+            val bundle = Bundle()
+            bundle.putBoolean("isGrid", false)
+            f.arguments = bundle
+            return f
+        }
     }
 }

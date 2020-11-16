@@ -1,34 +1,25 @@
 package com.pixlee.pixleesdk.ui.widgets
 
 import android.content.Context
-import android.content.Intent
-import android.graphics.drawable.Drawable
-import android.media.MediaPlayer
-import android.net.Uri
-import android.os.Handler
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
-import android.widget.ImageView
-import androidx.activity.ComponentActivity
+import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
-import com.pixlee.pixleesdk.data.PXLPhoto
-import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.data.PXLProduct
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
+import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
-import com.pixlee.pixleesdk.util.PXLViewUtil
-import jp.wasabeef.glide.transformations.BlurTransformation
+import com.pixlee.pixleesdk.util.px
+import com.pixlee.pixleesdk.util.setCompatIconWithColor
 import kotlinx.android.synthetic.main.widget_viewer.view.*
 import java.util.*
 
@@ -36,8 +27,31 @@ import java.util.*
  * this view is supposed to be used in a fullscreen.
  * This view take PXLPhoto to show its content(photo/video), a product list with product's bookmark
  */
-class PXLPhotoProductView : FrameLayout {
-    private var pxlPhoto: PXLPhoto? = null
+class PXLPhotoProductView : FrameLayout, LifecycleObserver {
+    class Configuration(
+            var backButton: CircleButton? = null,         // back button
+            var muteCheckBox: MuteCheckBox? = null      // mute/numute check box
+    )
+
+    class CircleButton(
+            @DrawableRes var icon: Int = R.drawable.round_close_black_24,
+            @ColorInt var iconColor: Int = Color.WHITE,
+            @ColorInt var backgroundColor: Int = Color.YELLOW,
+            var padding: Int = 20.px.toInt(),
+            var onClickListener: (() -> Unit)? = null
+    )
+
+    class MuteCheckBox(
+            @DrawableRes var mutedIcon: Int = R.drawable.outline_volume_off_black_24,
+            @DrawableRes var unmutedIcon: Int = R.drawable.outline_volume_up_black_24,
+            @ColorInt var iconColor: Int = Color.WHITE,
+            @ColorInt var backgroundColor: Int = Color.YELLOW,
+            var padding: Int = 20.px.toInt(),
+            var onCheckedListener: ((isChecked: Boolean) -> Unit)? = null
+    )
+
+    private var adapter: ProductAdapter? = null
+    private var photoInfo: PhotoWithVideoInfo? = null
     var bookmarkMap: HashMap<String, Boolean>? = null
     var onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null
     var onProductClicked: ((pxlProduct: PXLProduct) -> Unit)? = null
@@ -58,44 +72,76 @@ class PXLPhotoProductView : FrameLayout {
 
     /**
      * Start the UI
-     * @param pxlPhoto
+     * @param photoInfo: PhotoWithVideoInfo
      * @param bookmarkMap: user's current bookmarks < Product id: String, is bookmarked: Boolean >
      *                      if null, hide bookmark toggle
      *                      if not null, show bookmark toggle
      * @param onBookmarkClicked {productId: String, isBookmarkChecked: Boolean -> ... }
      */
-    fun setPhoto(pxlPhoto: PXLPhoto,
-                 configuration: ProductViewHolder.Configuration = ProductViewHolder.Configuration(),
-                 bookmarkMap: HashMap<String, Boolean>? = null,
-                 onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null,
-                 onProductClicked: ((pxlProduct: PXLProduct) -> Unit)? = null) {
-        this.pxlPhoto = pxlPhoto
+    fun setContent(photoInfo: PhotoWithVideoInfo,
+                   headerConfiguration: Configuration = Configuration(),
+                   configuration: ProductViewHolder.Configuration = ProductViewHolder.Configuration(),
+                   bookmarkMap: HashMap<String, Boolean>? = null,
+                   onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null,
+                   onProductClicked: ((pxlProduct: PXLProduct) -> Unit)? = null) {
+        this.photoInfo = photoInfo
         this.bookmarkMap = bookmarkMap
         this.onBookmarkClicked = onBookmarkClicked
         this.onProductClicked = onProductClicked
-        startBlurBG()
+        isMutted = photoInfo.soundMuted
+        initHeader(headerConfiguration)
         loadProducts(configuration)
-        if (pxlPhoto.isVideo) {
-            startVideo()
-        } else {
-            startPhoto()
+
+        pxlPhotoView.setConfiguration(configuration = PXLPhotoView.Configuration(pxlPhotoSize = photoInfo.configuration.pxlPhotoSize))
+        pxlPhotoView.setContent(photoInfo.pxlPhoto, photoInfo.configuration.imageScaleType)
+        pxlPhotoView.setLooping(photoInfo.isLoopingVideo)
+        pxlPhotoView.changeVolume(if (photoInfo.soundMuted) 0f else 1f)
+    }
+
+    private var headerConfiguration: Configuration? = null
+    private fun initHeader(headerConfiguration: Configuration) {
+        this.headerConfiguration = headerConfiguration
+        vBack.visibility = if (headerConfiguration.backButton != null) View.VISIBLE else View.GONE
+        headerConfiguration.backButton?.apply {
+            vBack.setOnClickListener { onClickListener?.let { it() } }
+            vBack.background = GradientDrawable().apply {
+                shape = android.graphics.drawable.GradientDrawable.OVAL
+                setColor(backgroundColor)
+            }
+            vBack.setPadding(padding, padding, padding, padding)
+            ivBack.setCompatIconWithColor(iconColor, icon)
+        }
+
+        vMute.visibility = if (headerConfiguration.muteCheckBox != null && photoInfo?.pxlPhoto?.isVideo?:false) View.VISIBLE else View.GONE
+        headerConfiguration.muteCheckBox?.apply {
+            vMute.setOnClickListener {
+                if (isMutted) {
+                    unmute()
+                } else {
+                    mute()
+                }
+                onCheckedListener?.let { it1 -> it1(isMutted) }
+            }
+            vMute.background = GradientDrawable().apply {
+                shape = android.graphics.drawable.GradientDrawable.OVAL
+                setColor(backgroundColor)
+            }
+            vMute.setPadding(padding, padding, padding, padding)
+            setMuteIcon(isMutted)
         }
     }
 
-    private fun startBlurBG() {
-        // load a main image into an ImageView
-        pxlPhoto?.also {
-            Glide.with(this)
-                    .load(it.getUrlForSize(PXLPhotoSize.THUMBNAIL).toString())
-                    .centerCrop()
-                    .apply(RequestOptions.bitmapTransform(BlurTransformation(70, 3)))
-                    .into(imageViewBg)
-        }
+    /**
+     * this adds padding to top header.
+     * The content will not be affected by this padding because the header area and the content are not related in a ViewGroup.
+     */
+    fun addPaddingToHeader(left: Int, top: Int, right: Int, bottom: Int) {
+        headerView.setPadding(left, top, right, bottom)
     }
 
     private fun loadProducts(configuration: ProductViewHolder.Configuration) {
         // initiate the product list view
-        pxlPhoto?.also {
+        photoInfo?.pxlPhoto?.also {
             it.products?.also { products ->
                 adapter = ProductAdapter(
                         configuration = configuration,
@@ -117,124 +163,61 @@ class PXLPhotoProductView : FrameLayout {
         }
     }
 
-    private fun startPhoto() {
-        imageView.visibility = VISIBLE
-        pxlPhoto?.also {
-            val imageUrl = it.getUrlForSize(PXLPhotoSize.BIG).toString()
-            // load a main image into an ImageView
-            Glide.with(this)
-                    .load(imageUrl)
-                    .fitCenter()
-                    .listener(object : RequestListener<Drawable?> {
-                        override fun onLoadFailed(e: GlideException?, model: Any, target: Target<Drawable?>, isFirstResource: Boolean): Boolean {
-                            imageView.scaleType = ImageView.ScaleType.CENTER
-                            return false
-                        }
+    var isMutted: Boolean = false
 
-                        override fun onResourceReady(resource: Drawable?, model: Any, target: Target<Drawable?>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-                            lottieView.visibility = GONE
-                            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-                            return false
-                        }
-                    }).into(imageView)
+    /**
+     * mute the sound
+     */
+    fun mute() {
+        changeMute(true)
+    }
+
+    /**
+     * unmute the sound
+     */
+    fun unmute() {
+        changeMute(false)
+    }
+
+    private fun changeMute(muted: Boolean) {
+        isMutted = muted
+        pxlPhotoView.changeVolume(if (muted) 0f else 1f)
+        setMuteIcon(muted)
+    }
+
+    private fun setMuteIcon(muted: Boolean) {
+        headerConfiguration?.muteCheckBox?.apply {
+            ivMute.setCompatIconWithColor(iconColor, if (muted) mutedIcon else unmutedIcon)
         }
     }
 
-    private fun startVideo() {
-        // start a pixlee loading view
-        val json = PXLViewUtil.getLottieLoadingJson(context)
-        lottieView.setAnimationFromJson(json, json)
-        lottieView.playAnimation()
-
-        // play the video
-        playVideo()
+    /**
+     * This will play the video on onResume and stop the video on onPause.
+     *   - when ON_RESUME, this will call playVideo()
+     *   - when ON_PAUSE, this will call stopVideo()
+     * If you want to manually play and stop the video, don't use this and do use playVideo() and stopVideo() when you want
+     */
+    fun useLifecycleObserver(lifecycle: Lifecycle) {
+        lifecycle.addObserver(this)
     }
 
-    private fun playVideo() {
-        pxlPhoto?.also {
-            setVideoViewer(it.getUrlForSize(PXLPhotoSize.ORIGINAL).toString())
-        }
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun playVideoOnStart() {
+        playVideoOnResume()
     }
 
-    private var adapter: ProductAdapter? = null
-    private fun setVideoViewer(videoUrl: String?) {
-        videoView.visibility = VISIBLE
-        videoView.setOnPreparedListener { mediaPlayer ->
-            mediaPlayer.setOnInfoListener { mp, what, extra ->
-                if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                    videoView.alpha = 1f
-                }
-                true
-            }
-            mediaPlayer.isLooping = true
-            lottieView.visibility = GONE
-            if (context is ComponentActivity) {
-                (context as ComponentActivity).lifecycle.addObserver(LifecycleEventObserver { source, event ->
-                    Log.d("PPV", "Lifecycle.Event : " + event.name)
-                    if (event == Lifecycle.Event.ON_DESTROY) {
-                        localHandler.removeCallbacks(runnableTimer)
-                    } else {
-                        localHandler.postDelayed(runnableTimer, 0)
-                    }
-                    if (event == Lifecycle.Event.ON_RESUME) {
-                        onResume()
-                    } else if (event == Lifecycle.Event.ON_PAUSE) {
-                        onPause()
-                    }
-                })
-            }
-        }
-        videoView.setVideoURI(Uri.parse(videoUrl))
-        videoView.setVideoPath(videoUrl)
-        videoView.start()
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun playVideoOnResume() {
+        pxlPhotoView.playVideo()
     }
 
-    private val localHandler = Handler()
-    private var runnableTimer: Runnable = object : Runnable {
-        override fun run() {
-            var started: Boolean = videoView.isPlaying
-            if (!started || videoView.isPlaying) {
-                if (!started) {
-                    started = videoView.isPlaying
-                }
-                tvTime.text = showMMSS(videoView.duration, videoView.currentPosition)
-                localHandler.postDelayed(this, 1000)
-            } else {
-                tvTime.text = showMMSS(videoView.duration, videoView.duration)
-            }
-        }
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun stopVideoOnPause() {
+        pxlPhotoView.pauseVideo()
     }
 
-    private fun showMMSS(duration: Int, timeInMilli: Int): String {
-        val gap = duration - timeInMilli
-        val sec = gap / 1000
-        val min = sec / 60
-        val secOfMin = sec % 60
-        return String.format("$min:%02d", secOfMin)
-    }
-
-    private var stopPosition = 0
-    fun onResume() {
-        pxlPhoto?.also {
-            if (it.isVideo && !videoView.isPlaying) {
-                videoView.seekTo(stopPosition)
-                videoView.start()
-            }
-        }
-
-    }
-
-    fun onPause() {
-        pxlPhoto?.also {
-            if (it.isVideo && videoView.isPlaying) {
-                stopPosition = videoView.currentPosition
-                videoView.pause()
-            }
-        }
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        // Stop media player
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun stopVideoOnStop() {
+        stopVideoOnPause()
     }
 }

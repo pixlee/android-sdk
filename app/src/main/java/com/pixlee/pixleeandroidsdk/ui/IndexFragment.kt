@@ -11,7 +11,8 @@ import com.pixlee.pixleeandroidsdk.data.LocalRepository.Companion.getInstance
 import com.pixlee.pixleeandroidsdk.ui.analytics.AnalyticsFragment
 import com.pixlee.pixleeandroidsdk.ui.analytics.KtxAnalyticsFragment
 import com.pixlee.pixleeandroidsdk.ui.gallery.GalleryFragment
-import com.pixlee.pixleeandroidsdk.ui.gallery.KtxGalleryFragment
+import com.pixlee.pixleeandroidsdk.ui.gallery.KtxGalleryGridFragment
+import com.pixlee.pixleeandroidsdk.ui.gallery.KtxGalleryListFragment
 import com.pixlee.pixleeandroidsdk.ui.uploader.ImageUploaderFragment
 import kotlinx.android.synthetic.main.fragment_index.*
 
@@ -41,8 +42,12 @@ class IndexFragment : BaseFragment() {
     }
 
     fun initKtxButtons() {
-        btKtxAlbum.setOnClickListener {
-            addFragmentToActivity(KtxGalleryFragment())
+        btKtxAlbumList.setOnClickListener {
+            addFragmentToActivity(KtxGalleryListFragment())
+        }
+
+        btKtxAlbumGrid.setOnClickListener {
+            addFragmentToActivity(KtxGalleryGridFragment())
         }
 
         btKtxAnalytics.setOnClickListener {

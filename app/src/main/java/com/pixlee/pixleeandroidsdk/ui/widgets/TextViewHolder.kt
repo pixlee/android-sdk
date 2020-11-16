@@ -21,7 +21,7 @@ class TextViewHolder(override val containerView: View) :
 
     companion object {
         fun create(parent: ViewGroup): TextViewHolder {
-            return TextViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_text, parent, false))
+            return TextViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_header, parent, false))
         }
     }
 }
