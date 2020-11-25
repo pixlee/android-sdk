@@ -17,6 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -25,6 +26,7 @@ import com.pixlee.pixleeandroidsdk.EventObserver
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
+import com.pixlee.pixleeandroidsdk.ui.gallery.live.LiveAdapter
 import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.ViewerActivity
 import com.pixlee.pixleesdk.client.PXLKtxAlbum
@@ -35,6 +37,7 @@ import com.pixlee.pixleesdk.enums.PXLAlbumSortType
 import com.pixlee.pixleesdk.enums.PXLContentSource
 import com.pixlee.pixleesdk.enums.PXLContentType
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
+import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.*
 import com.pixlee.pixleesdk.ui.widgets.list.BaseRecyclerView
@@ -47,7 +50,6 @@ import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.fabFilter
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.lottieView
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.v_body
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.switchSound
-import kotlinx.android.synthetic.main.module_search.*
 
 /**
  * This shows how you can load photos of Pixlee using PXLAlbum.java
@@ -80,6 +82,15 @@ class KtxGalleryGridFragment : BaseKtxGalleryFragment(), LifecycleObserver {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        initLiveList()
+    }
+
+    private var adapter: LiveAdapter? = null
+    fun initLiveList() {
+        //liveList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+//        adapter = LiveAdapter()
+//        liveList.adapter = adapter
     }
 
     override fun initRecyclerView() {

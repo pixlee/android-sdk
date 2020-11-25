@@ -18,6 +18,7 @@ import com.pixlee.pixleeandroidsdk.EventObserver
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
+import com.pixlee.pixleeandroidsdk.ui.live.LiveCameraActivity
 import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.ViewerActivity
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
@@ -381,6 +382,7 @@ abstract class BaseKtxGalleryFragment : BaseFragment() {
 
 
     enum class PhotoLauncher(@StringRes val stringRes: Int) {
+        PixleeLive(R.string.title_pixleeLive),
         ViewerActivity(R.string.title_pxlphoto_activity),
         PXLPhotoView(R.string.title_pxlphotoview),
         PXLPhotoViewInRecyclerView(R.string.title_pxlphotoview_in_recyclerview)
@@ -392,7 +394,7 @@ abstract class BaseKtxGalleryFragment : BaseFragment() {
      * @param photo
      */
     fun moveToViewer(photo: PhotoWithImageScaleType) {
-        val list = listOf(PhotoLauncher.ViewerActivity, PhotoLauncher.PXLPhotoView/*, PhotoLauncher.PXLPhotoViewInRecyclerView*/)
+        val list = listOf(PhotoLauncher.PixleeLive, PhotoLauncher.ViewerActivity, PhotoLauncher.PXLPhotoView/*, PhotoLauncher.PXLPhotoViewInRecyclerView*/)
 
         val listTexts = arrayOfNulls<String>(list.size)
         for (i in list.indices) {
@@ -410,6 +412,7 @@ abstract class BaseKtxGalleryFragment : BaseFragment() {
                     }
                     .setPositiveButton(R.string.next) { dialog, which ->
                         when (list[itemSelected.position]) {
+                            PhotoLauncher.PixleeLive -> LiveCameraActivity.launch(it, photo)
                             PhotoLauncher.ViewerActivity -> ViewerActivity.launch(it, photo)
                             PhotoLauncher.PXLPhotoView -> addFragmentToActivity(PXLPhotoViewFragment.getInstance(photo))
                         }

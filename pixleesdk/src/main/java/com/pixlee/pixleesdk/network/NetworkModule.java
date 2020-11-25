@@ -79,7 +79,7 @@ public class NetworkModule {
         );
     }
 
-    public static final String url = "https://27b04669692c.ngrok.io/";
+    public static final String url = "http://3c1b9be080e7.ngrok.io/";
     //public static final String url = "https://distillery.pixlee.com/";
     public static final String analyticsUrl = "https://inbound-analytics.pixlee.com/";
 

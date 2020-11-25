@@ -1,2 +1,3 @@
+include ':rtmppublisher'
 include ':app'
 include ':pixleesdk'

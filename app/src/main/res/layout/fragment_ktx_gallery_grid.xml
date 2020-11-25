@@ -14,7 +14,16 @@
         <com.pixlee.pixleesdk.ui.widgets.list.PXLPhotoRecyclerViewInGrid
             android:id="@+id/pxlPhotoRecyclerViewInGrid"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:paddingTop="100dp"
+            android:clipToPadding="false"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:theme="@style/Pixlee.Theme.App"
+            android:id="@+id/liveList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <com.pixlee.pixleesdk.ui.widgets.PXLLoading
             android:id="@+id/lottieView"

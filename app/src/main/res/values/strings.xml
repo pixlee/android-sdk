@@ -15,6 +15,7 @@
     <string name="title_pxlphoto_activity">PXLPhoto in Activity</string>
     <string name="title_pxlphotoview">PXLPhotoView</string>
     <string name="title_pxlphotoview_in_recyclerview">PXLPhotoView in RecyclerView</string>
+    <string name="title_pixleeLive">Pixlee Live</string>
 
     <string name="title_widgets">Widgets</string>
     <string name="title_photo_on_list">PXLPhoto on RecyclerView</string>
@@ -64,4 +65,24 @@
 
     <string name="galleryPhotoLauncherMessage">To open PXLPhoto, which viewer would like to launch?</string>
     <string name="next">Next</string>
+
+    <string name="start_publishing">Start Publishing</string>
+    <string name="stop_publishing">Stop Publishing</string>
+    <string name="started_publishing">Publishing Started</string>
+    <string name="stopped_publishing">Publishing Stopped</string>
+    <string name="disconnected_publishing">Publishing Disconnected</string>
+    <string name="failed_publishing">Failed To Connect</string>
+
+    <string name="error_empty_url">url is empty</string>
+
+    <string name="publishing_label">LIVE  %1$s:%2$s</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="rationale_location_contacts">This app needs access to your camera and audio to start the live camera.</string>
+    <string name="returned_from_app_settings_to_activity">
+        Returned from app settings to MainActivity with the following permissions:
+        \n\nCamera: %s
+        \Record Audio: %s
+    </string>
 </resources>
