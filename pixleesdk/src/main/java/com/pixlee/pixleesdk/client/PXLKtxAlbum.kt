@@ -3,6 +3,7 @@ package com.pixlee.pixleesdk.client
 import android.content.Context
 import android.util.Log
 import com.pixlee.pixleesdk.data.PXLPhoto
+import com.pixlee.pixleesdk.data.PXLRegion
 import com.pixlee.pixleesdk.data.PhotoResult
 import com.pixlee.pixleesdk.data.repository.KtxAnalyticsDataSource
 import com.pixlee.pixleesdk.data.repository.KtxBasicDataSource
@@ -134,6 +135,14 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      */
     suspend fun getPhotoFromRegion(albumPhotoId: String, regionId: Int?): PXLPhoto {
         return ktxBasicDataSource.getPhoto(albumPhotoId, regionId)
+    }
+
+    /**
+     * This returns regions you have
+     * @return List<PXLRegion>
+     */
+    suspend fun getRegions(): List<PXLRegion>{
+        return ktxBasicDataSource.getRegions()
     }
 
     /**

@@ -88,7 +88,9 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- perPage -->
+            <TextView style="@style/filterBulletTextView" android:text="Region Id" android:layout_marginTop="10dp"/>
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/vRegionSingle"
                 style="@style/filterContentTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -103,6 +105,17 @@
                     android:maxLength="20"
                     android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/spinnerRegion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp" />
+
             <!-- contentType -->
             <TextView style="@style/filterBulletTextView" android:text="contentType" />
             <RadioGroup style="@style/filterContentView" android:orientation="vertical" android:id="@+id/radioGroupContentType">

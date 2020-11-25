@@ -1,8 +1,6 @@
 package com.pixlee.pixleesdk.data.api
 
-import com.pixlee.pixleesdk.data.MediaResult
-import com.pixlee.pixleesdk.data.PXLPhoto
-import com.pixlee.pixleesdk.data.PhotoResult
+import com.pixlee.pixleesdk.data.*
 import com.serjltt.moshi.adapters.Wrapped
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -42,6 +40,9 @@ interface KtxBasicAPI {
 
     @GET("getPhoto")
     suspend fun getPhoto(@Query("album_photo_id") album_photo_id: String, @Query("api_key") api_key: String?, @Query("region_id") region_id: Int?): PXLPhoto
+
+    @GET("api/v2/regions")
+    suspend fun getRegions(@Query("api_key") api_key: String?): RRegion
 
     @POST("api/v2/media")
     suspend fun postMediaWithURI(

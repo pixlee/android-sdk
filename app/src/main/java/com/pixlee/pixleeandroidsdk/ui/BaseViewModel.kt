@@ -11,6 +11,7 @@ import com.pixlee.pixleeandroidsdk.Event
 import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLPhoto
+import com.pixlee.pixleesdk.data.PXLRegion
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
@@ -43,6 +44,28 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
     var cellHeightInPixel: Int = 200.px.toInt()
     val allPXLPhotos = ArrayList<PXLPhoto>()
 
+    sealed class RegionCommand {
+        object NoRegion : RegionCommand()
+        class Data(val list: List<PXLRegion>) : RegionCommand()
+        object Loading : RegionCommand()
+    }
+
+    protected val _regions = MutableLiveData<RegionCommand>().apply { RegionCommand.NoRegion }
+    val regions: LiveData<RegionCommand>
+        get() = _regions
+
+    fun loadRegions() {
+        _regions.value = RegionCommand.Loading
+        viewModelScope.launch {
+            try {
+                _regions.value = RegionCommand.Data(pxlKtxAlbum.getRegions())
+            } catch (e: Exception) {
+                Log.e("pixlee", String.format("Failed to fetch next page of photos: %s", e.message))
+                _regions.value = RegionCommand.NoRegion
+            }
+        }
+    }
+
     /**
      * This is to set essential request parameters
      */
@@ -62,7 +85,7 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
         // viewModelScope.launch(..) { pxlKtxAlbum.getFirstPage() }
     }
 
-    var customizedConfiguration:PXLPhotoView.Configuration = PXLPhotoView.Configuration()
+    var customizedConfiguration: PXLPhotoView.Configuration = PXLPhotoView.Configuration()
 
     /**
      * retrieve the next page from Pixlee server
