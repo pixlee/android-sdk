@@ -12,11 +12,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.pixlee.pixleeandroidsdk.R
+import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import com.takusemba.rtmppublisher.Publisher
 import com.takusemba.rtmppublisher.PublisherListener
 import kotlinx.android.synthetic.main.activity_live_camera.*
+import kotlinx.coroutines.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
@@ -27,18 +29,40 @@ import pub.devrel.easypermissions.EasyPermissions
 /**
  * This shows how to play the video and its product list
  */
-class LiveCameraActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks{
+class LiveCameraActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
     private var publisher: Publisher? = null
     private val handler = Handler()
     private var thread: Thread? = null
     private var isCounting = false
     var item: PhotoWithVideoInfo? = null
+
+    var pxlKtxAlbum: PXLKtxAlbum? = null
+    fun postLive(isLive: Boolean) {
+        GlobalScope.launch {
+            item?.pxlPhoto?.also {
+                if (pxlKtxAlbum == null) {
+                    pxlKtxAlbum = PXLKtxAlbum(this@LiveCameraActivity)
+                }
+                pxlKtxAlbum?.postLives(it, isLive)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        postLive(false)
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_live_camera)
 
         // set a full screen mode
         PXLViewUtil.expandContentAreaOverStatusBar(this)
+
+        headerView.setPadding(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
+
 
         val i = intent
         if (i == null) {
@@ -56,7 +80,7 @@ class LiveCameraActivity : AppCompatActivity(), EasyPermissions.PermissionCallba
 
         if (hasCameraAndAudioPermissions()) {
             startLiveCamera()
-        }else{
+        } else {
             cameraAndAudioTask()
         }
 
@@ -78,8 +102,8 @@ class LiveCameraActivity : AppCompatActivity(), EasyPermissions.PermissionCallba
     }
 
     fun startLiveCamera() {
-        item?.also{
-            val url = "rtmp://175.195.207.155:1935/live/${it.pxlPhoto.id}"
+        item?.also {
+            val url = "rtmp://175.195.207.155:1935/live/${it.pxlPhoto.albumPhotoId}"
             Log.e("livecamera", "url: $url")
             publisher = Publisher.Builder(this)
                     .setGlView(glView)
@@ -88,8 +112,10 @@ class LiveCameraActivity : AppCompatActivity(), EasyPermissions.PermissionCallba
                     .setAudioBitrate(Publisher.Builder.DEFAULT_AUDIO_BITRATE)
                     .setVideoBitrate(Publisher.Builder.DEFAULT_VIDEO_BITRATE)
                     .setCameraMode(Publisher.Builder.DEFAULT_MODE)
-                    .setListener(object:PublisherListener{
+                    .setListener(object : PublisherListener {
                         override fun onStarted() {
+                            Log.e("livecamera", "=== onStarted ===")
+                            postLive(true)
                             Toast.makeText(this@LiveCameraActivity, R.string.started_publishing, Toast.LENGTH_SHORT)
                                     .apply { setGravity(Gravity.CENTER, 0, 0) }
                                     .run { show() }
@@ -98,6 +124,7 @@ class LiveCameraActivity : AppCompatActivity(), EasyPermissions.PermissionCallba
                         }
 
                         override fun onStopped() {
+                            Log.e("livecamera", "=== onStopped ===")
                             Toast.makeText(this@LiveCameraActivity, R.string.stopped_publishing, Toast.LENGTH_SHORT)
                                     .apply { setGravity(Gravity.CENTER, 0, 0) }
                                     .run { show() }
@@ -106,6 +133,8 @@ class LiveCameraActivity : AppCompatActivity(), EasyPermissions.PermissionCallba
                         }
 
                         override fun onDisconnected() {
+                            Log.e("livecamera", "=== onDisconnected ===")
+                            postLive(false)
                             Toast.makeText(this@LiveCameraActivity, R.string.disconnected_publishing, Toast.LENGTH_SHORT)
                                     .apply { setGravity(Gravity.CENTER, 0, 0) }
                                     .run { show() }
@@ -114,6 +143,8 @@ class LiveCameraActivity : AppCompatActivity(), EasyPermissions.PermissionCallba
                         }
 
                         override fun onFailedToConnect() {
+                            Log.e("livecamera", "=== onFailedToConnect ===")
+                            postLive(false)
                             Toast.makeText(this@LiveCameraActivity, R.string.failed_publishing, Toast.LENGTH_SHORT)
                                     .apply { setGravity(Gravity.CENTER, 0, 0) }
                                     .run { show() }
@@ -174,6 +205,7 @@ class LiveCameraActivity : AppCompatActivity(), EasyPermissions.PermissionCallba
 
     companion object {
         const val RC_CAMERA_AUDIO_PERM = 124
+
         // start video view with a photo data
         fun launch(context: Context, pxlPhoto: PhotoWithVideoInfo?) {
             val i = Intent(context, LiveCameraActivity::class.java)
@@ -201,6 +233,7 @@ class LiveCameraActivity : AppCompatActivity(), EasyPermissions.PermissionCallba
                     Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
         }
     }
+
     private fun hasCameraAndAudioPermissions(): Boolean {
         return EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
     }

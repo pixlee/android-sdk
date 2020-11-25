@@ -270,26 +270,4 @@ public class ImageUploaderFragment extends BaseFragment {
         });
         builder.show();
     }
-
-
-    AlertDialog loadingDialog;
-
-    void makeLoading(Boolean show) {
-        if (show) {
-            if (loadingDialog == null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                LayoutInflater inflater = getLayoutInflater();
-                View dialogLayout = inflater.inflate(R.layout.dialog_progress, null);
-                builder.setView(dialogLayout);
-                builder.setCancelable(false);
-                loadingDialog = builder.show();
-            } else {
-                loadingDialog.show();
-            }
-
-        } else {
-            if (loadingDialog != null && loadingDialog.isShowing())
-                loadingDialog.dismiss();
-        }
-    }
 }

@@ -2,11 +2,13 @@ package com.pixlee.pixleesdk.client
 
 import android.content.Context
 import android.util.Log
+import com.pixlee.pixleesdk.data.PXLLive
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.data.PXLRegion
 import com.pixlee.pixleesdk.data.PhotoResult
 import com.pixlee.pixleesdk.data.repository.KtxAnalyticsDataSource
 import com.pixlee.pixleesdk.data.repository.KtxBasicDataSource
+import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.enums.PXLWidgetType
 import kotlinx.coroutines.*
 import org.json.JSONObject
@@ -143,6 +145,29 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      */
     suspend fun getRegions(): List<PXLRegion>{
         return ktxBasicDataSource.getRegions()
+    }
+
+    /**
+     * This returns regions you have
+     * @return List<PXLRegion>
+     */
+    suspend fun getLives(): List<PXLLive>{
+        return ktxBasicDataSource.getLives()
+    }
+
+    /**
+     * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
+     * sort order, and filter options before calling.
+     *
+     * @param PXLPhoto
+     * @param isLive
+     */
+    suspend fun postLives(pxlPhoto: PXLPhoto, isLive: Boolean) {
+        ktxBasicDataSource.postLives(JSONObject().apply {
+            put("album_photo_id", pxlPhoto.albumPhotoId.toLong())
+            put("image_url", pxlPhoto.getUrlForSize(PXLPhotoSize.THUMBNAIL))
+            put("is_live", isLive)
+        })
     }
 
     /**

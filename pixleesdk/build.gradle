@@ -95,6 +95,7 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-ui:$exoPlayer"
 //    implementation "com.google.android.exoplayer:extension-cronet:$exoPlayer"
     implementation "com.google.android.exoplayer:extension-ima:$exoPlayer"
+    implementation "com.google.android.exoplayer:exoplayer-hls:$exoPlayer"
 
     implementation 'androidx.annotation:annotation:1.1.0'
 }

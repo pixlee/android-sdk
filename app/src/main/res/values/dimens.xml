@@ -4,4 +4,9 @@
 
     <dimen name="margin">25dp</dimen>
     <dimen name="padding">15dp</dimen>
+
+    <dimen name="circle_image_box">70dp</dimen>
+    <dimen name="circle_image_item">65dp</dimen>
+    <dimen name="circle_image_margin">5dp</dimen>
+
 </resources>

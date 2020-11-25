@@ -1,6 +1,5 @@
 package com.pixlee.pixleeandroidsdk.ui
 
-import android.graphics.Color
 import android.util.Log
 import android.util.TypedValue
 import androidx.lifecycle.LiveData
@@ -10,11 +9,11 @@ import androidx.lifecycle.viewModelScope
 import com.pixlee.pixleeandroidsdk.Event
 import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
+import com.pixlee.pixleesdk.data.PXLLive
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.data.PXLRegion
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
-import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextPadding
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
@@ -26,15 +25,15 @@ import kotlinx.coroutines.launch
  */
 open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
 
-    protected val _resultEvent = MutableLiveData<Event<Command>>()
+    protected val _resultEvent = MutableLiveData<Event<ImageCommand>>()
 
     // KtxGalleryFragment.kt will observe this event
-    val searchResultEvent: LiveData<Event<Command>>
+    val searchResultEvent: LiveData<Event<ImageCommand>>
         get() = _resultEvent
 
-    sealed class Command {
-        class Data(val list: List<PhotoWithImageScaleType>, val isFirstPage: Boolean) : Command()
-        class Error(val message: String?) : Command()
+    sealed class ImageCommand {
+        class Data(val list: List<PhotoWithImageScaleType>, val isFirstPage: Boolean) : ImageCommand()
+        class Error(val message: String?) : ImageCommand()
     }
 
     protected val _loading = MutableLiveData<Boolean>().apply { value = false }
@@ -44,24 +43,50 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
     var cellHeightInPixel: Int = 200.px.toInt()
     val allPXLPhotos = ArrayList<PXLPhoto>()
 
-    sealed class RegionCommand {
-        object NoRegion : RegionCommand()
-        class Data(val list: List<PXLRegion>) : RegionCommand()
-        object Loading : RegionCommand()
-    }
-
-    protected val _regions = MutableLiveData<RegionCommand>().apply { RegionCommand.NoRegion }
-    val regions: LiveData<RegionCommand>
+    protected val _regions = MutableLiveData<Command<List<PXLRegion>>>().apply { Command.NoData }
+    val regions: LiveData<Command<List<PXLRegion>>>
         get() = _regions
 
     fun loadRegions() {
-        _regions.value = RegionCommand.Loading
+        _regions.value = Command.Loading
         viewModelScope.launch {
             try {
-                _regions.value = RegionCommand.Data(pxlKtxAlbum.getRegions())
+                _regions.value = Command.Data(pxlKtxAlbum.getRegions())
             } catch (e: Exception) {
                 Log.e("pixlee", String.format("Failed to fetch next page of photos: %s", e.message))
-                _regions.value = RegionCommand.NoRegion
+                _regions.value = Command.NoData
+            }
+        }
+    }
+
+    protected val _lives = MutableLiveData<Command<List<PXLLive>>>().apply { Command.NoData }
+    val lives: LiveData<Command<List<PXLLive>>>
+        get() = _lives
+
+    fun loadLives() {
+        _lives.value = Command.Loading
+        viewModelScope.launch {
+            try {
+                _lives.value = Command.Data(pxlKtxAlbum.getLives())
+
+            } catch (e: Exception) {
+                Log.e("pixlee", String.format("Failed to fetch lives: %s", e.message))
+                _lives.value = Command.NoData
+            }
+        }
+    }
+
+    protected val _eventPxlPhoto = MutableLiveData<Event<Command<PXLPhoto>>>()
+    val eventLiveDetail: LiveData<Event<Command<PXLPhoto>>>
+        get() = _eventPxlPhoto
+    fun getLivePhotoFromRegion(albumPhotoId: String, regionId: Int?) {
+        _eventPxlPhoto.value = Event(Command.Loading)
+        viewModelScope.launch {
+            try {
+                _eventPxlPhoto.value = Event(Command.Data(pxlKtxAlbum.getPhotoFromRegion(albumPhotoId, regionId)))
+            } catch (e: Exception) {
+                // error handling
+                _eventPxlPhoto.value = Event(Command.NoData)
             }
         }
     }
@@ -118,7 +143,7 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
                         }
                         allPXLPhotos.addAll(it.photos)
                     }
-                    _resultEvent.value = Event(Command.Data(newList, it.page == 1))
+                    _resultEvent.value = Event(ImageCommand.Data(newList, it.page == 1))
 
                     canLoadMore = it.next
                     _loading.value = false
@@ -126,7 +151,7 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
             } catch (e: Exception) {
                 // Callback for a failed call to loadNextPageOfPhotos
                 Log.e("pixlee", String.format("Failed to fetch next page of photos: %s", e.message))
-                _resultEvent.value = Event(Command.Error(e.message))
+                _resultEvent.value = Event(ImageCommand.Error(e.message))
                 canLoadMore = true
                 _loading.value = false
             }

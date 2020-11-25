@@ -17,7 +17,6 @@ import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.enums.PXLWidgetType
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
-import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import kotlinx.android.synthetic.main.fragment_analytics.*
 import java.util.*
 
@@ -70,7 +69,7 @@ class KtxAnalyticsFragment : BaseFragment() {
         })
         viewModel.searchResultEvent.observe(this, EventObserver {
             when (it) {
-                is BaseViewModel.Command.Data -> {
+                is BaseViewModel.ImageCommand.Data -> {
                     it.list.firstOrNull()?.also {
                         pxlPhotoView.setContent(it.pxlPhoto, ImageScaleType.FIT_CENTER)
                     }
@@ -82,7 +81,7 @@ class KtxAnalyticsFragment : BaseFragment() {
                     }
 
                 }
-                is BaseViewModel.Command.Error -> {
+                is BaseViewModel.ImageCommand.Error -> {
                     it.message?.also {
                         tvStatus.text = getString(R.string.album_loading_failed, it)
                         showToast(getString(R.string.album_loading_failed, it))

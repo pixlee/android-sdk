@@ -1,6 +1,8 @@
 package com.pixlee.pixleeandroidsdk.ui.gallery
 
+import android.app.ProgressDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.AdapterView
@@ -10,6 +12,8 @@ import androidx.annotation.StringRes
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -18,7 +22,10 @@ import com.pixlee.pixleeandroidsdk.EventObserver
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
+import com.pixlee.pixleeandroidsdk.ui.Command
+import com.pixlee.pixleeandroidsdk.ui.gallery.live.LiveAdapter
 import com.pixlee.pixleeandroidsdk.ui.live.LiveCameraActivity
+import com.pixlee.pixleeandroidsdk.ui.live.LiveViewerActivity
 import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.ViewerActivity
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
@@ -32,6 +39,7 @@ import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLLoading
 import com.pixlee.pixleesdk.ui.widgets.list.BaseRecyclerView
 import com.pixlee.pixleesdk.ui.widgets.list.PXLPhotoRecyclerView
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.*
 import kotlinx.android.synthetic.main.module_search.*
 
 /**
@@ -39,6 +47,7 @@ import kotlinx.android.synthetic.main.module_search.*
  */
 abstract class BaseKtxGalleryFragment : BaseFragment() {
     abstract val viewModel: KtxGalleryViewModel
+    abstract val _liveList: RecyclerView?
     abstract val _v_body: View
     abstract val _switchSound: SwitchMaterial?
     abstract val _pxlPhotoRecyclerView: BaseRecyclerView
@@ -66,6 +75,7 @@ abstract class BaseKtxGalleryFragment : BaseFragment() {
             }
         }
 
+        viewModel.loadLives()
         viewModel.loadRegions()
         initRecyclerView()
         addViewModelListeners()
@@ -90,30 +100,68 @@ abstract class BaseKtxGalleryFragment : BaseFragment() {
         })
     }
 
+    private var adapter: LiveAdapter? = null
     fun addViewModelListeners() {
+        viewModel.eventLiveDetail.observe(this, EventObserver {
+            when (it) {
+                is Command.NoData -> {
+                    Toast.makeText(context, "can't get your PXLPhoto from the server", Toast.LENGTH_LONG).show()
+                }
+
+                is Command.Loading -> {
+                    makeLoading(true)
+                }
+
+                is Command.Data -> {
+                    makeLoading(false)
+                    LiveViewerActivity.launch(context!!, it.data)
+                }
+            }
+        })
+
+        viewModel.lives.observe(this, Observer {
+            when (it) {
+                is Command.NoData -> {
+                    _liveList?.adapter = null
+                }
+
+                is Command.Loading -> {
+                    _liveList?.adapter = null
+                }
+
+                is Command.Data -> {
+                    liveList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    adapter = LiveAdapter(it.data) {
+                        viewModel.getLivePhotoFromRegion(it.albumPhoto_id.toString(), readRegionIdFromUI())
+                    }
+                    liveList.adapter = adapter
+                }
+            }
+        })
+
         viewModel.regions.observe(this, Observer {
             when (it) {
-                is BaseViewModel.RegionCommand.NoRegion -> {
+                is Command.NoData -> {
                     vRegionSingle.visibility = View.VISIBLE
                     vRegionSingle.isEnabled = true
                     spinnerRegion.visibility = View.GONE
                 }
 
-                is BaseViewModel.RegionCommand.Loading -> {
+                is Command.Loading -> {
                     vRegionSingle.visibility = View.VISIBLE
                     vRegionSingle.isEnabled = false
                     spinnerRegion.visibility = View.GONE
                 }
 
-                is BaseViewModel.RegionCommand.Data -> {
+                is Command.Data -> {
                     vRegionSingle.visibility = View.GONE
                     spinnerRegion.visibility = View.VISIBLE
 
-                    context?.also{ctx->
-                        val spinnerArrayAdapter: ArrayAdapter<PXLRegion> = ArrayAdapter(ctx, android.R.layout.simple_spinner_item, it.list)
+                    context?.also { ctx ->
+                        val spinnerArrayAdapter: ArrayAdapter<PXLRegion> = ArrayAdapter(ctx, android.R.layout.simple_spinner_item, it.data)
                         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         spinnerRegion.adapter = spinnerArrayAdapter
-                        spinnerRegion.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+                        spinnerRegion.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                             override fun onItemSelected(p0: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
                             }
@@ -122,10 +170,7 @@ abstract class BaseKtxGalleryFragment : BaseFragment() {
 
                             }
                         }
-
                     }
-
-
                 }
             }
         })
@@ -136,11 +181,11 @@ abstract class BaseKtxGalleryFragment : BaseFragment() {
 
         viewModel.searchResultEvent.observe(this, EventObserver {
             when (it) {
-                is BaseViewModel.Command.Data -> {
+                is BaseViewModel.ImageCommand.Data -> {
                     if (it.isFirstPage) {
                         _pxlPhotoRecyclerView.replaceList(it.list)
 
-                        if(_pxlPhotoRecyclerView is PXLPhotoRecyclerView){
+                        if (_pxlPhotoRecyclerView is PXLPhotoRecyclerView) {
                             val soundList = _pxlPhotoRecyclerView as PXLPhotoRecyclerView
                             soundList.playVideoOnResume()
                         }
@@ -163,6 +208,15 @@ abstract class BaseKtxGalleryFragment : BaseFragment() {
                 }
             }
         })
+
+        val scrollListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                Log.e("ktxScroll", "scroll.dy: ${recyclerView.computeVerticalScrollOffset()}")
+                _liveList?.translationY = (recyclerView.computeVerticalScrollOffset() * -1).toFloat()
+            }
+        }
+        _pxlPhotoRecyclerView.addOnScrollListener(scrollListener)
     }
 
     fun initFilterClickListeners() {
@@ -253,8 +307,8 @@ abstract class BaseKtxGalleryFragment : BaseFragment() {
         if(spinnerRegion.visibility==View.VISIBLE){
             val regions = viewModel.regions.value
             return when(regions){
-                is BaseViewModel.RegionCommand.Data -> {
-                    regions.list[spinnerRegion.selectedItemPosition].id
+                is Command.Data -> {
+                    regions.data[spinnerRegion.selectedItemPosition].id
                 }
                 else ->{
                    null

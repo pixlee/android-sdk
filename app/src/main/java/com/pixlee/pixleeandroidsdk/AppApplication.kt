@@ -12,4 +12,6 @@ class AppApplication: Application() {
         // set credentials for the SDK
         PXLClient.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY)
     }
+
+
 }

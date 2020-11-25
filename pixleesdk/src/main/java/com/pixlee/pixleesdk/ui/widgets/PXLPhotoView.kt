@@ -27,6 +27,7 @@ import com.google.android.exoplayer2.mediacodec.MediaCodecUtil.DecoderQueryExcep
 //import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.hls.HlsMediaSource
 //import com.google.android.exoplayer2.source.MediaSourceFactory
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
@@ -459,7 +460,14 @@ class PXLPhotoView : RelativeLayout {
         if(pxlPhoto?.videoUrl==null)
             return null
 
-        return ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(pxlPhoto?.videoUrl))
+        return if(pxlPhoto?.videoUrl!!.indexOf(".m3u8")>-1){
+            Log.e("PXLPhotoViewVP", "========= createMediaSource()  ->  HlsMediaSource")
+            HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(pxlPhoto?.videoUrl))
+        }else{
+            Log.e("PXLPhotoViewVP", "========= createMediaSource()  ->  ExtractorMediaSource")
+            Log.e("PXLPhotoViewVP", "## initVideoPlayer() done player: $player")
+            ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(pxlPhoto?.videoUrl))
+        }
     }
 
     private class PlayerErrorMessageProvider : ErrorMessageProvider<ExoPlaybackException> {

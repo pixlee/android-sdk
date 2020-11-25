@@ -44,6 +44,16 @@ interface KtxBasicAPI {
     @GET("api/v2/regions")
     suspend fun getRegions(@Query("api_key") api_key: String?): RRegion
 
+    @GET("api/v2/lives")
+    suspend fun getLives(@Query("api_key") api_key: String?): RLives
+
+    @POST("api/v2/lives")
+    suspend fun postLives(
+            @Header("Signature") Signature: String,
+            @Query("api_key") api_key: String?,
+            @Body body: RequestBody
+    )
+
     @POST("api/v2/media")
     suspend fun postMediaWithURI(
             @Header("Signature") Signature: String,

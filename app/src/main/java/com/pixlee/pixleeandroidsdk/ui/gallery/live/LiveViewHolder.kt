@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.pixlee.pixleeandroidsdk.R
+import com.pixlee.pixleesdk.data.PXLLive
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import kotlinx.android.extensions.LayoutContainer
@@ -15,10 +16,10 @@ class LiveViewHolder(override val containerView: View) :
         RecyclerView.ViewHolder(containerView),
         LayoutContainer {
 
-    fun bind(pxlPhoto: PXLPhoto) {
-        var builder = Glide.with(iv)
-                .load(pxlPhoto.getUrlForSize(PXLPhotoSize.THUMBNAIL))
-                .centerCrop()
+    fun bind(pxlLive: PXLLive) {
+        Glide.with(iv)
+                .load(pxlLive.imageUrl)
+                .circleCrop()
                 .into(iv)
     }
 

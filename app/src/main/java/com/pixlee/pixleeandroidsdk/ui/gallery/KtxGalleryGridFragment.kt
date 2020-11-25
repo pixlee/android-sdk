@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -63,6 +64,8 @@ class KtxGalleryGridFragment : BaseKtxGalleryFragment(), LifecycleObserver {
         // get PXLKtxAlbum
         KtxGalleryViewModel(PXLKtxAlbum(context!!))
     }
+    override val _liveList: RecyclerView?
+        get() = liveList
     override val _v_body: View
         get() = v_body
     override val _switchSound: SwitchMaterial?
@@ -82,15 +85,6 @@ class KtxGalleryGridFragment : BaseKtxGalleryFragment(), LifecycleObserver {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        initLiveList()
-    }
-
-    private var adapter: LiveAdapter? = null
-    fun initLiveList() {
-        //liveList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-//        adapter = LiveAdapter()
-//        liveList.adapter = adapter
     }
 
     override fun initRecyclerView() {

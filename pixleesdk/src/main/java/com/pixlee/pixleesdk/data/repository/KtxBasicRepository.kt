@@ -72,6 +72,18 @@ interface KtxBasicDataSource {
      */
     suspend fun getRegions(): List<PXLRegion>
 
+    /**
+     * This returns lives being broadcasted
+     * @return List<PXLLive>
+     */
+    suspend fun getLives(): List<PXLLive>
+
+    /**
+     * When you start live or finish live, fire this API
+     *     - album_photo_id:
+     *     - is_live: true: go live,  false: go offline
+     */
+    suspend fun postLives(json: JSONObject)
 
     /**
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
@@ -122,6 +134,15 @@ class KtxBasicRepository(var api: KtxBasicAPI) : KtxBasicDataSource {
 
     override suspend fun getRegions(): List<PXLRegion> {
         return api.getRegions(PXLClient.apiKey).data
+    }
+
+    override suspend fun getLives(): List<PXLLive> {
+        return api.getLives(PXLClient.apiKey).data
+    }
+
+    override suspend fun postLives(json: JSONObject) {
+        requireNotNull(PXLClient.secretKey) { "no secretKey, please set secretKey before start" }
+        return api.postLives(json.toHMAC(), PXLClient.apiKey, json.toString().toRequestBody(PXLClient.mediaType))
     }
 
     override suspend fun postMediaWithURI(json: JSONObject): MediaResult {

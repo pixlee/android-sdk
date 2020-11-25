@@ -2,11 +2,14 @@ package com.pixlee.pixleeandroidsdk.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import com.pixlee.pixleeandroidsdk.MainActivity;
+import com.pixlee.pixleeandroidsdk.R;
 
 /**
  * This helps Fragments and Dialogs to be loaded
@@ -62,5 +65,25 @@ abstract public class BaseFragment extends Fragment {
         });
         b.show();
 
+    }
+
+    AlertDialog loadingDialog;
+    public void makeLoading(Boolean show) {
+        if (show) {
+            if (loadingDialog == null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                LayoutInflater inflater = getLayoutInflater();
+                View dialogLayout = inflater.inflate(R.layout.dialog_progress, null);
+                builder.setView(dialogLayout);
+                builder.setCancelable(false);
+                loadingDialog = builder.show();
+            } else {
+                loadingDialog.show();
+            }
+
+        } else {
+            if (loadingDialog != null && loadingDialog.isShowing())
+                loadingDialog.dismiss();
+        }
     }
 }
