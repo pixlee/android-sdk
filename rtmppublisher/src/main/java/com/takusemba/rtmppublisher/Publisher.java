@@ -35,11 +35,11 @@ public interface Publisher {
          */
         public static final int DEFAULT_WIDTH = 720;
         public static final int DEFAULT_HEIGHT = 1280;
-        public static final int DEFAULT_AUDIO_BITRATE = 6400;
-//        public static final int DEFAULT_AUDIO_BITRATE = 100000;
+//        public static final int DEFAULT_AUDIO_BITRATE = 6400;
+        public static final int DEFAULT_AUDIO_BITRATE = 100000;
         //public static final int DEFAULT_VIDEO_BITRATE = 100000;
-//        public static final int DEFAULT_VIDEO_BITRATE = 1000000;
-        public static final int DEFAULT_VIDEO_BITRATE = 3000;
+        public static final int DEFAULT_VIDEO_BITRATE = 1000000;
+//        public static final int DEFAULT_VIDEO_BITRATE = 3000;
         public static final CameraMode DEFAULT_MODE = CameraMode.BACK;
 
         /**

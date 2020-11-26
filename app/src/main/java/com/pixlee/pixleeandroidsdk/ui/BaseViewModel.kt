@@ -79,6 +79,7 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
     protected val _eventPxlPhoto = MutableLiveData<Event<Command<PXLPhoto>>>()
     val eventLiveDetail: LiveData<Event<Command<PXLPhoto>>>
         get() = _eventPxlPhoto
+
     fun getLivePhotoFromRegion(albumPhotoId: String, regionId: Int?) {
         _eventPxlPhoto.value = Event(Command.Loading)
         viewModelScope.launch {
@@ -112,12 +113,31 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
 
     var customizedConfiguration: PXLPhotoView.Configuration = PXLPhotoView.Configuration()
 
+    var liveHashMap: HashMap<String, PXLLive>? = null
+
     /**
      * retrieve the next page from Pixlee server
      */
     fun getNextPage() {
         viewModelScope.launch {
             try {
+
+                if (liveHashMap == null) {
+                    _lives.value = Command.Loading
+                    try {
+                        val data = pxlKtxAlbum.getLives()
+                        liveHashMap = HashMap()
+                        data.forEach {
+                            liveHashMap?.put(it.albumPhotoId.toString(), it)
+                        }
+                        _lives.value = Command.Data(data)
+                    } catch (e: Exception) {
+                        Log.e("pixlee", String.format("Failed to fetch lives: %s", e.message))
+                        _lives.value = Command.NoData
+                    }
+                }
+
+
                 canLoadMore = false
                 // show a loading UI on the mobile screen
                 _loading.value = true
@@ -127,19 +147,23 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
                         it.photos.forEach {
                             Log.e("pxlvideo", "pxlvideo.url: ${it.videoUrl.toString()}")
                             Log.e("pxlvideo", "pxlvideo.big: ${it.getUrlForSize(PXLPhotoSize.BIG)}")
-                            newList.add(PhotoWithImageScaleType(pxlPhoto = it,
-                                    configuration = customizedConfiguration.copy().apply {
-                                        mainTextViewStyle = TextViewStyle().apply {
-                                            text = "${newList.size}\n${customizedConfiguration.mainTextViewStyle?.text ?: ""}"
-                                            size = 30.px
-                                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                                            typeface = null
-                                            textPadding = TextPadding(bottom = 30.px.toInt())
-                                        }
-                                    },
-                                    heightInPixel = cellHeightInPixel,
-                                    isLoopingVideo = true,
-                                    soundMuted = false))
+
+                            if (liveHashMap == null || liveHashMap!![it.albumPhotoId]==null) {
+                                newList.add(PhotoWithImageScaleType(pxlPhoto = it,
+                                        configuration = customizedConfiguration.copy().apply {
+                                            mainTextViewStyle = TextViewStyle().apply {
+                                                text = "${newList.size}\n${customizedConfiguration.mainTextViewStyle?.text ?: ""}"
+                                                size = 30.px
+                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                                typeface = null
+                                                textPadding = TextPadding(bottom = 30.px.toInt())
+                                            }
+                                        },
+                                        heightInPixel = cellHeightInPixel,
+                                        isLoopingVideo = true,
+                                        soundMuted = false))
+                            }
+
                         }
                         allPXLPhotos.addAll(it.photos)
                     }

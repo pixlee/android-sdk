@@ -1,6 +1,5 @@
 package com.pixlee.pixleeandroidsdk.ui.gallery
 
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -75,7 +74,6 @@ abstract class BaseKtxGalleryFragment : BaseFragment() {
             }
         }
 
-        viewModel.loadLives()
         viewModel.loadRegions()
         initRecyclerView()
         addViewModelListeners()
@@ -98,6 +96,10 @@ abstract class BaseKtxGalleryFragment : BaseFragment() {
 
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     private var adapter: LiveAdapter? = null
@@ -132,7 +134,7 @@ abstract class BaseKtxGalleryFragment : BaseFragment() {
                 is Command.Data -> {
                     liveList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                     adapter = LiveAdapter(it.data) {
-                        viewModel.getLivePhotoFromRegion(it.albumPhoto_id.toString(), readRegionIdFromUI())
+                        viewModel.getLivePhotoFromRegion(it.albumPhotoId.toString(), readRegionIdFromUI())
                     }
                     liveList.adapter = adapter
                 }

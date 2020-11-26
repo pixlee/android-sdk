@@ -35,6 +35,6 @@ public class PXLRegion {
 
     @Override
     public String toString(){
-        return name;
+        return name + " (" + id + ", "  + region_code+ ")";
     }
 }

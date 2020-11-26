@@ -12,7 +12,7 @@ public class PXLLive {
     public int isLive;
 
     @Json(name = "album_photo_id")
-    public Long albumPhoto_id;
+    public Long albumPhotoId;
 
     @Json(name = "image_url")
     public String imageUrl;

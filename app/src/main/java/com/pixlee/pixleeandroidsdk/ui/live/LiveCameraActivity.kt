@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.pixlee.pixleeandroidsdk.R
+import com.pixlee.pixleeandroidsdk.ui.gallery.KtxGalleryViewModel
 import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.util.PXLViewUtil
@@ -36,15 +37,14 @@ class LiveCameraActivity : AppCompatActivity(), EasyPermissions.PermissionCallba
     private var isCounting = false
     var item: PhotoWithVideoInfo? = null
 
-    var pxlKtxAlbum: PXLKtxAlbum? = null
+    val viewModel: LiveViewerViewModel by lazy {
+        // get PXLKtxAlbum
+        LiveViewerViewModel(PXLKtxAlbum(this))
+    }
+
     fun postLive(isLive: Boolean) {
-        GlobalScope.launch {
-            item?.pxlPhoto?.also {
-                if (pxlKtxAlbum == null) {
-                    pxlKtxAlbum = PXLKtxAlbum(this@LiveCameraActivity)
-                }
-                pxlKtxAlbum?.postLives(it, isLive)
-            }
+        item?.pxlPhoto?.also {
+            viewModel.postLives(it, isLive)
         }
     }
 
@@ -59,9 +59,9 @@ class LiveCameraActivity : AppCompatActivity(), EasyPermissions.PermissionCallba
         setContentView(R.layout.activity_live_camera)
 
         // set a full screen mode
-        PXLViewUtil.expandContentAreaOverStatusBar(this)
+        //PXLViewUtil.expandContentAreaOverStatusBar(this)
 
-        headerView.setPadding(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
+        //headerView.setPadding(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
 
 
         val i = intent
