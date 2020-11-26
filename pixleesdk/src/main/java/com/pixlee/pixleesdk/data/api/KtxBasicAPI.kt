@@ -45,7 +45,7 @@ interface KtxBasicAPI {
     suspend fun getRegions(@Query("api_key") api_key: String?): RRegion
 
     @GET("api/v2/lives")
-    suspend fun getLives(@Query("api_key") api_key: String?): RLives
+    suspend fun getLives(@Query("api_key") api_key: String?, @Query("album_id") album_id: String?): RLives
 
     @POST("api/v2/lives")
     suspend fun postLives(

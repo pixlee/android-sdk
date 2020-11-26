@@ -74,9 +74,11 @@ interface KtxBasicDataSource {
 
     /**
      * This returns lives being broadcasted
+     * @param album_id(Optional) if album_id exists, it will return live data within album_id
+     *                          if album_id does not exist, it will return the whole live data within the account
      * @return List<PXLLive>
      */
-    suspend fun getLives(): List<PXLLive>
+    suspend fun getLives(album_id: String?): List<PXLLive>
 
     /**
      * When you start live or finish live, fire this API
@@ -136,8 +138,8 @@ class KtxBasicRepository(var api: KtxBasicAPI) : KtxBasicDataSource {
         return api.getRegions(PXLClient.apiKey).data
     }
 
-    override suspend fun getLives(): List<PXLLive> {
-        return api.getLives(PXLClient.apiKey).data
+    override suspend fun getLives(album_id: String?): List<PXLLive> {
+        return api.getLives(PXLClient.apiKey, album_id).data
     }
 
     override suspend fun postLives(json: JSONObject) {

@@ -152,7 +152,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      * @return List<PXLRegion>
      */
     suspend fun getLives(): List<PXLLive>{
-        return ktxBasicDataSource.getLives()
+        return ktxBasicDataSource.getLives(album_id = getAlbumIdParam().toString())
     }
 
     /**
