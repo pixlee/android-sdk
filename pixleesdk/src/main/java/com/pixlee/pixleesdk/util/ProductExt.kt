@@ -14,8 +14,9 @@ fun BigDecimal.getFractionalPart(): String {
     val num = this
     val fractionalPart = (num - num.setScale(0, BigDecimal.ROUND_FLOOR)).toPlainString()
     val decimalIndex = fractionalPart.indexOf(".")
-    return if(-1<decimalIndex && decimalIndex< fractionalPart.length)
+    return if (-1 < decimalIndex && decimalIndex < fractionalPart.length) {
         fractionalPart.substring(decimalIndex, fractionalPart.length)
-    else
+    } else {
         ""
+    }
 }
