@@ -68,12 +68,11 @@ public class PXLAlbum extends PXLBaseAlbum{
 
         return basicRepo.getPhotosWithID(
                 this.album_id,
-                PXLClient.Companion.getApiKey(),
                 filterOptions != null ? filterOptions.toParamString() : null,
                 sortOptions != null ? sortOptions.toParamString() : null,
                 perPage,
                 desiredPage,
-                null
+                regionId
         );
     }
 }

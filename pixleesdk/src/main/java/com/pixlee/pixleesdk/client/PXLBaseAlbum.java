@@ -49,6 +49,7 @@ public abstract class PXLBaseAlbum {
     protected ArrayList<PXLPhoto> photos;
     protected PXLAlbumFilterOptions filterOptions;
     protected PXLAlbumSortOptions sortOptions;
+    protected Integer regionId;
     protected HashMap<Integer, Boolean> pagesLoading;
 
     /**
@@ -71,6 +72,7 @@ public abstract class PXLBaseAlbum {
 
     /**
      * Gives hint for you whether to use loadNextPageOfPhotos()
+     *
      * @return hasMore  true: you can fire loadNextPageOfPhotos() to get more data,    false: you cannot load more data
      */
     public boolean isHasMore() {
@@ -107,6 +109,15 @@ public abstract class PXLBaseAlbum {
         this.resetState();
     }
 
+    public void setRegionId(Integer regionId) {
+        this.regionId = regionId;
+        this.resetState();
+    }
+
+    public Integer getRegionId() {
+        return regionId;
+    }
+
     protected void resetState() {
         this.photos.clear();
         this.lastPageLoaded = 0;
@@ -117,7 +128,7 @@ public abstract class PXLBaseAlbum {
     /**
      * Interface for network callbacks such as loadNextPageOfPhotos(...), getPhotoWithId(...) and uploadImage(...)
      */
-    public interface RequestHandlers<T>{
+    public interface RequestHandlers<T> {
         //http -> 200
         void onComplete(T result);
 
@@ -127,11 +138,12 @@ public abstract class PXLBaseAlbum {
 
     /**
      * return success response body to where the requesting api was made
+     *
      * @param response
      * @param handlers
-     * @param <T> return data type
+     * @param <T>      return data type
      */
-    public <T> void processReponse(Response response, RequestHandlers handlers){
+    public <T> void processReponse(Response response, RequestHandlers handlers) {
         if (response.isSuccessful()) {
             if (handlers != null) {
                 handlers.onComplete(response.body());
@@ -261,7 +273,7 @@ public abstract class PXLBaseAlbum {
             return;
         }
 
-        basicRepo.getMedia(album_photo_id, PXLClient.Companion.getApiKey())
+        basicRepo.getMedia(album_photo_id)
                 .enqueue(new Callback<PXLPhoto>() {
                              @Override
                              public void onResponse(Call<PXLPhoto> call, Response<PXLPhoto> response) {
@@ -272,6 +284,62 @@ public abstract class PXLBaseAlbum {
                              public void onFailure(Call<PXLPhoto> call, Throwable t) {
                                  if (handlers != null) {
                                      handlers.onError(t.toString());
+                                 }
+                             }
+                         }
+                );
+    }
+
+    /**
+     * Retrieve a PXLPhoto with album_photo_id
+     *
+     * @param album_photo_id PXLPhoto.albumPhotoId
+     * @return PXLPhoto
+     */
+    public void getPhotoFromRegion(String album_photo_id, final RequestHandlers<PXLPhoto> callback) {
+        if (album_photo_id == null) {
+            Log.e(TAG, "no album_photo_id given");
+            return;
+        }
+        basicRepo.getPhoto(album_photo_id, regionId)
+                .enqueue(new Callback<PXLPhoto>() {
+                             @Override
+                             public void onResponse(Call<PXLPhoto> call, Response<PXLPhoto> response) {
+                                 processReponse(response, callback);
+                             }
+
+                             @Override
+                             public void onFailure(Call<PXLPhoto> call, Throwable t) {
+                                 if (callback != null) {
+                                     callback.onError(t.toString());
+                                 }
+                             }
+                         }
+                );
+    }
+
+    /**
+     * Retrieve a PXLPhoto with album_photo_id
+     *
+     * @param photo this is to get PXLPhoto.albumPhotoId
+     * @return PXLPhoto
+     */
+    public void getPhotoFromRegion(PXLPhoto photo, final RequestHandlers<PXLPhoto> callback) {
+        if (photo == null || photo.albumPhotoId == null) {
+            Log.e(TAG, "no album_photo_id given");
+            return;
+        }
+        basicRepo.getPhoto(photo.albumPhotoId, regionId)
+                .enqueue(new Callback<PXLPhoto>() {
+                             @Override
+                             public void onResponse(Call<PXLPhoto> call, Response<PXLPhoto> response) {
+                                 processReponse(response, callback);
+                             }
+
+                             @Override
+                             public void onFailure(Call<PXLPhoto> call, Throwable t) {
+                                 if (callback != null) {
+                                     callback.onError(t.toString());
                                  }
                              }
                          }
@@ -347,12 +415,12 @@ public abstract class PXLBaseAlbum {
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
      * sort order, and filter options before calling.
      *
-     * @param title    - title or caption of the photo being uploaded
-     * @param email    - email address of the submitting user
-     * @param username - username of the submitting user
+     * @param title          - title or caption of the photo being uploaded
+     * @param email          - email address of the submitting user
+     * @param username       - username of the submitting user
      * @param localPhotoPath - local image file path
-     * @param approved - boolean specifying whether the photo should be marked as approved on upload
-     * @param handlers - a callback fired after this api call is finished
+     * @param approved       - boolean specifying whether the photo should be marked as approved on upload
+     * @param handlers       - a callback fired after this api call is finished
      */
     public void uploadLocalImage(String title, String email, String username, Boolean approved, String localPhotoPath, final RequestHandlers<MediaResult> handlers) {
         try {
@@ -408,7 +476,7 @@ public abstract class PXLBaseAlbum {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/actionClicked", body)
+        analyticsRepo.makeAnalyticsCall("events/actionClicked", regionId, body)
                 .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -452,7 +520,7 @@ public abstract class PXLBaseAlbum {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/openedLightbox", body)
+        analyticsRepo.makeAnalyticsCall("events/openedLightbox", regionId, body)
                 .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -468,6 +536,7 @@ public abstract class PXLBaseAlbum {
 
     /**
      * widgetVisible Analytics
+     *
      * @param widgetType: PXLWidgetType enum class
      * @return true: api called, false: cannot use this. please see the LogCat
      */
@@ -477,6 +546,7 @@ public abstract class PXLBaseAlbum {
 
     /**
      * widgetVisible Analytics
+     *
      * @param widgetType: String
      * @return true: api called, false: cannot use this. please see the LogCat
      */
@@ -486,6 +556,7 @@ public abstract class PXLBaseAlbum {
 
     /**
      * openedWidget Analytics
+     *
      * @param widgetType: PXLWidgetType enum class
      * @return true: api called, false: cannot use this. please see the LogCat
      */
@@ -495,6 +566,7 @@ public abstract class PXLBaseAlbum {
 
     /**
      * openedWidget Analytics
+     *
      * @param widgetType: String
      * @return true: api called, false: cannot use this. please see the LogCat
      */
@@ -502,7 +574,7 @@ public abstract class PXLBaseAlbum {
         return fireWidgetCall("events/openedWidget", widgetType);
     }
 
-    private boolean fireWidgetCall(String requestPath, String widgetType){
+    private boolean fireWidgetCall(String requestPath, String widgetType) {
         if (album_id == null) {
             Log.w(
                     TAG,
@@ -537,7 +609,7 @@ public abstract class PXLBaseAlbum {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall(requestPath, body)
+        analyticsRepo.makeAnalyticsCall(requestPath, regionId, body)
                 .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -586,7 +658,7 @@ public abstract class PXLBaseAlbum {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/loadMore", body)
+        analyticsRepo.makeAnalyticsCall("events/loadMore", regionId, body)
                 .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {

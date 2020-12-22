@@ -25,6 +25,7 @@ interface KtxBasicDataSource {
      * @param sort: sort options
      * @param per_page: how many PXLPhotos you want to receive in a response
      * @param page: this is for pagination, range [(]1 - N], example: first page is 1, the next page is 2, 3, 4, ...
+     * @param region_id: region id to get data from a specific region
      * @return PhotoResult
      */
     suspend fun getPhotosWithSKU(
@@ -42,6 +43,7 @@ interface KtxBasicDataSource {
      * @param sort: sort options
      * @param per_page: how many PXLPhotos you want to receive in a response
      * @param page: this is for pagination, range [(]1 - N], example: first page is 1, the next page is 2, 3, 4, ...
+     * @param region_id: region id to get data from a specific region
      * * @return PhotoResult
      */
     suspend fun getPhotosWithID(

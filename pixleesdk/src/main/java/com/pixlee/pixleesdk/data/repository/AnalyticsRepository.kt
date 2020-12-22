@@ -24,11 +24,13 @@ interface AnalyticsDataSource {
      * Makes a call to the Pixlee Analytics API (limitless beyond). Appends api key, unique id and platform to the request body.
      * on success/error.
      * @param requestPath - path to hit (will be appended to the base Pixlee Analytics api endpoint)
+     * @param regionId: region id that differentiates analytics events by region
      * @param body - key/values to be stored in analytics events
      * @return false if no api key set yet, true otherwise
      */
     fun makeAnalyticsCall(
             requestPath: String,
+            regionId: Int? = null,
             body: JSONObject
     ): Call<String>
 }
@@ -37,8 +39,9 @@ interface AnalyticsDataSource {
  * This object transfers analytics data to the server using AnalyticsAPI.java, a Retrofit HTTP API class.
  */
 class AnalyticsRepository(var api: AnalyticsAPI) : AnalyticsDataSource {
-    override fun makeAnalyticsCall(requestPath: String, json: JSONObject): Call<String> {
+    override fun makeAnalyticsCall(requestPath: String, regionId: Int?, json: JSONObject): Call<String> {
         try {
+            regionId?.also { json.put("region_id", it) }
             json.put("API_KEY", PXLClient.apiKey)
             json.put("uid", PXLClient.android_id)
             json.put("platform", "android")
