@@ -187,7 +187,8 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
                 allPXLPhotos,
                 getPerPageParam(),
                 lastPageLoaded,
-                widgetType)
+                widgetType,
+                params?.regionId)
     }
 
     /**

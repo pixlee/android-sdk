@@ -7,7 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
+import androidx.core.view.GravityCompat
 import androidx.core.widget.NestedScrollView
+import com.google.android.material.radiobutton.MaterialRadioButton
 import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleeandroidsdk.EventObserver
 import com.pixlee.pixleeandroidsdk.R
@@ -15,10 +17,15 @@ import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
 import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
+import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
+import com.pixlee.pixleesdk.data.PXLAlbumSortOptions
+import com.pixlee.pixleesdk.enums.PXLAlbumSortType
+import com.pixlee.pixleesdk.enums.PXLContentSource
+import com.pixlee.pixleesdk.enums.PXLContentType
 import com.pixlee.pixleesdk.enums.PXLWidgetType
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
-import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import kotlinx.android.synthetic.main.fragment_analytics.*
+import kotlinx.android.synthetic.main.module_search.*
 import java.util.*
 
 /**
@@ -56,10 +63,20 @@ class KtxAnalyticsFragment : BaseFragment() {
         setViewModelListener()
         setClickListeners()
         setScrollView()
+        initFilterClickListeners()
 
         // Pixlee Settings
-        initPixleeAlbum()
         loadPixleeAlbum()
+    }
+
+    fun initFilterClickListeners() {
+        // set filter buttons
+        fabFilter.setOnClickListener { drawerLayout.openDrawer(GravityCompat.END) }
+        btnCloseFilter.setOnClickListener { drawerLayout.closeDrawer(GravityCompat.END) }
+        btnApply.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.END)
+            loadPixleeAlbum()
+        }
     }
 
     fun setViewModelListener() {
@@ -93,14 +110,44 @@ class KtxAnalyticsFragment : BaseFragment() {
         })
     }
 
-    private fun initPixleeAlbum() {
-        val params = PXLKtxBaseAlbum.Params(PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID))
-        // Alternative val params = PXLKtxBaseAlbum.Params(PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU))
-        viewModel.init(params)
-    }
-
     private fun loadPixleeAlbum() {
-        viewModel.getFirstPage()
+        context?.also {
+            var searchId: PXLKtxBaseAlbum.SearchId? = null
+            // initiate album
+            for (i in 0 until radioGroupAlbum.childCount) {
+                val rb = radioGroupAlbum.getChildAt(i) as MaterialRadioButton
+                if (radioGroupAlbum.checkedRadioButtonId == rb.id) {
+                    val text = rb.text.toString()
+                    if (text == getString(R.string.radio_album)) {
+                        searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID)
+                    } else if (text == getString(R.string.radio_pdp)) {
+                        searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU)
+                    }
+                    break
+                }
+            }
+
+            if (searchId == null) {
+                // if album is not properly started, stop loading it.
+                showDialog("No Album", "Album is not properly set. Please check the code and try again")
+            } else {
+                // set GET request parameters for the API
+                viewModel.init(PXLKtxBaseAlbum.Params(
+                        searchId = searchId,
+                        perPage = readPerPage(),
+                        filterOptions = readFilterOptionsFromUI(),
+                        sortOptions = readSortOptionsFromUI(),
+                        regionId = readRegionIdFromUI()
+                ))
+                PXLAlbumSortOptions().apply {
+                    sortType = PXLAlbumSortType.RECENCY
+                    descending = true
+                }
+
+                // retrieve the first page
+                viewModel.getFirstPage()
+            }
+        }
     }
 
     private fun setClickListeners() {
@@ -222,5 +269,135 @@ class KtxAnalyticsFragment : BaseFragment() {
         val message = getString(R.string.xxx_is_called, methodName)
         tvStatus.setText(message)
         showToast(message)
+    }
+
+
+    fun readPerPage(): Int {
+        // Set textViewPerPage filter if text is not empty
+        val minTwitterFollowers = textViewPerPage.text.toString()
+        return if (!minTwitterFollowers.isEmpty()) {
+            Integer.valueOf(minTwitterFollowers)
+        } else 20
+
+        // a default for perPage
+    }
+
+    fun readRegionIdFromUI(): Int?{
+        val data = textViewRegionId.text.toString()
+        return if (data.isNotEmpty()) {
+            Integer.valueOf(data)
+        } else null
+    }
+
+    fun readSortOptionsFromUI(): PXLAlbumSortOptions {
+        val sortOptions = PXLAlbumSortOptions()
+        // Set sortType filter if a radio button is selected
+        for (i in 0 until radioGroupSortType.childCount) {
+            val rb = radioGroupSortType.getChildAt(i) as MaterialRadioButton
+            if (radioGroupSortType.checkedRadioButtonId == rb.id) {
+                val text = rb.text.toString()
+                if (text == PXLAlbumSortType.RECENCY.value) sortOptions.sortType = PXLAlbumSortType.RECENCY
+                else if (text == PXLAlbumSortType.APPROVED_TIME.value) sortOptions.sortType = PXLAlbumSortType.APPROVED_TIME
+                else if (text == PXLAlbumSortType.RANDOM.value) sortOptions.sortType = PXLAlbumSortType.RANDOM
+                else if (text == PXLAlbumSortType.PIXLEE_SHARES.value) sortOptions.sortType = PXLAlbumSortType.PIXLEE_SHARES
+                else if (text == PXLAlbumSortType.PIXLEE_LIKES.value) sortOptions.sortType = PXLAlbumSortType.PIXLEE_LIKES
+                else if (text == PXLAlbumSortType.POPULARITY.value) sortOptions.sortType = PXLAlbumSortType.POPULARITY
+                else if (text == PXLAlbumSortType.DYNAMIC.value) sortOptions.sortType = PXLAlbumSortType.DYNAMIC
+                break
+            }
+        }
+
+        // Set sorting direction
+        if (radioGroupSortDirection.checkedRadioButtonId == radioGroupSortDirectionASC.id) sortOptions.descending = false
+        else if (radioGroupSortDirection.checkedRadioButtonId == radioGroupSortDirectionDESC.id) sortOptions.descending = true
+        return sortOptions
+    }
+
+    fun readFilterOptionsFromUI(): PXLAlbumFilterOptions {
+        val filterOptions = PXLAlbumFilterOptions()
+
+        // Set minTwitterFollowers filter if text is not empty
+        val minTwitterFollowers = textViewMinTwitterFollowers.text.toString()
+        if (!minTwitterFollowers.isEmpty()) {
+            filterOptions.minTwitterFollowers = Integer.valueOf(minTwitterFollowers)
+        }
+
+        // Set minInstagramFollowers filter if text is not empty
+        val minInstagramFollowers = textViewMinInstagramFollowers.text.toString()
+        if (!minInstagramFollowers.isEmpty()) {
+            filterOptions.minInstagramFollowers = Integer.valueOf(minInstagramFollowers)
+        }
+
+        // Set hasProduct filter if false or not true is set
+        for (i in 0 until radioGroupHasPermission.childCount) {
+            val rb = radioGroupHasPermission.getChildAt(i) as MaterialRadioButton
+            if (radioGroupHasPermission.checkedRadioButtonId == rb.id) {
+                val text = rb.text.toString()
+                if (text == getString(R.string.radio_false)) filterOptions.hasPermission = false else if (text == getString(R.string.radio_true)) filterOptions.hasPermission = true
+                break
+            }
+        }
+
+        // Set hasProduct filter if false or not true is set
+        for (i in 0 until radioGroupHasProduct.childCount) {
+            val rb = radioGroupHasProduct.getChildAt(i) as MaterialRadioButton
+            if (radioGroupHasProduct.checkedRadioButtonId == rb.id) {
+                val text = rb.text.toString()
+                if (text == getString(R.string.radio_false)) filterOptions.hasProduct = false else if (text == getString(R.string.radio_true)) filterOptions.hasProduct = true
+                break
+            }
+        }
+
+        // Set inStockOnly filter if false or not true is set
+        for (i in 0 until radioGroupInStockOnly.childCount) {
+            val rb = radioGroupInStockOnly.getChildAt(i) as MaterialRadioButton
+            if (radioGroupInStockOnly.checkedRadioButtonId == rb.id) {
+                val text = rb.text.toString()
+                if (text == getString(R.string.radio_false)) filterOptions.inStockOnly = false else if (text == getString(R.string.radio_true)) filterOptions.inStockOnly = true
+                break
+            }
+        }
+
+        // Set contentSource filter if any of its check boxes is selected
+        val contentSource: ArrayList<PXLContentSource> = ArrayList()
+        if (radioGroupContentSourceInstagramFeed.isChecked) contentSource.add(PXLContentSource.INSTAGRAM_FEED)
+        if (radioGroupContentSourceInstagramStory.isChecked) contentSource.add(PXLContentSource.INSTAGRAM_STORY)
+        if (radioGroupContentSourceTwitter.isChecked) contentSource.add(PXLContentSource.TWITTER)
+        if (radioGroupContentSourceFacebook.isChecked) contentSource.add(PXLContentSource.FACEBOOK)
+        if (radioGroupContentSourceApi.isChecked) contentSource.add(PXLContentSource.API)
+        if (radioGroupContentSourceDesktop.isChecked) contentSource.add(PXLContentSource.DESKTOP)
+        if (radioGroupContentSourceEmail.isChecked) contentSource.add(PXLContentSource.EMAIL)
+        if (contentSource.isNotEmpty()) filterOptions.contentSource = contentSource
+
+        // Set contentType filter if any of its check boxes is selected
+        val contentType: ArrayList<PXLContentType> = ArrayList()
+        if (radioGroupContentTypeImage.isChecked) contentType.add(PXLContentType.IMAGE)
+        if (radioGroupContentTypeVideo.isChecked) contentType.add(PXLContentType.VIDEO)
+        if (contentType.isNotEmpty()) filterOptions.contentType = contentType
+
+        // Apart from the examples above, there are more filters you can implement in you app.
+        // These are the example codes
+
+        // ###### date filter examples ######
+        // fo.submittedDateEnd = new Date(2019, 7, 16);
+        // fo.submittedDateStart = new Date(2019, 7, 17);
+        // fo.filterByRadius = "21.3069,-157.8583,20";  radius filter example
+
+        // ###### in_categories filter example ######
+        // ArrayList incategories = new ArrayList<Integer>();
+        // incategories.add(1234);
+        // incategories.add(5678);
+        // fo.inCategories = incategories;
+
+        // ###### filter_by_userhandle filter example ######
+        // HashMap userHandleFilter = new HashMap<String, Object> ();
+        // userHandleFilter.put("contains", new String[] {"test1", "test2"});
+        // fo.filterByUserhandle = userHandleFilter;
+
+        // ###### computer_vision filter example ######
+        // HashMap computerVisionFilter = new HashMap<String, Object> ();
+        // computerVisionFilter.put("contains", new String[] {"hat"});
+        // fo.computerVision = computerVisionFilter;
+        return filterOptions
     }
 }
