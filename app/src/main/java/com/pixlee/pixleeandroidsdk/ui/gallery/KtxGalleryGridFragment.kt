@@ -102,7 +102,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
                         pxlPhotoRecyclerViewInGrid.replaceList(it.list)
                         if (it.list.isNotEmpty()) {
                             it.list.firstOrNull()?.pxlPhoto?.also {
-                                viewModel.getPhotoFromRegion(it, readRegionIdFromUI())  // add your own region id
+                                viewModel.getPhotoFromRegion(it)  // add your own region id
                             }
                         }
 

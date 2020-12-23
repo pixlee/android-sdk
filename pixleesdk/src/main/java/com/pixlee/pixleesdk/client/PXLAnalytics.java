@@ -45,8 +45,9 @@ public class PXLAnalytics {
      * @param price
      * @param quantity
      * @param currency
+     * @param regionId (optional)
      */
-    public void addToCart(String sku, String price, Integer quantity, String currency) {
+    public void addToCart(String sku, String price, Integer quantity, String currency, Integer regionId) {
         JSONObject body = new JSONObject();
 
         try{
@@ -65,7 +66,7 @@ public class PXLAnalytics {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/addToCart", body)
+        analyticsRepo.makeAnalyticsCall("events/addToCart", regionId, body)
                 .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -79,8 +80,8 @@ public class PXLAnalytics {
                 });
     }
 
-    public void addToCart(String sku, String price, Integer quantity) {
-        this.addToCart(sku, price, quantity, null);
+    public void addToCart(String sku, String price, Integer quantity, Integer regionId) {
+        this.addToCart(sku, price, quantity, null, regionId);
     }
 
 
@@ -93,8 +94,9 @@ public class PXLAnalytics {
      * @param cartTotalQuantity
      * @param orderId
      * @param currency
+     * @param regionId (optional)
      */
-    public void conversion(ArrayList<HashMap<String, Object>> cartContents, String cartTotal, Integer cartTotalQuantity, String orderId, String currency){
+    public void conversion(ArrayList<HashMap<String, Object>> cartContents, String cartTotal, Integer cartTotalQuantity, String orderId, String currency, Integer regionId){
         JSONObject body = new JSONObject();
 
         try{
@@ -113,7 +115,7 @@ public class PXLAnalytics {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/conversion", body)
+        analyticsRepo.makeAnalyticsCall("events/conversion", regionId, body)
                 .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -127,11 +129,11 @@ public class PXLAnalytics {
                 });
 
     }
-    public void conversion(ArrayList<HashMap<String, Object>> cartContents, String cartTotal, Integer cartTotalQuantity, String orderId){
-        this.conversion(cartContents, cartTotal, cartTotalQuantity, orderId, null);
+    public void conversion(ArrayList<HashMap<String, Object>> cartContents, String cartTotal, Integer cartTotalQuantity, String orderId, Integer regionId){
+        this.conversion(cartContents, cartTotal, cartTotalQuantity, orderId, null, regionId);
     }
-    public void conversion(ArrayList<HashMap<String, Object>> cartContents, String cartTotal, Integer cartTotalQuantity) {
-       this.conversion(cartContents, cartTotal, cartTotalQuantity, null, null);
+    public void conversion(ArrayList<HashMap<String, Object>> cartContents, String cartTotal, Integer cartTotalQuantity, Integer regionId) {
+       this.conversion(cartContents, cartTotal, cartTotalQuantity, null, null, regionId);
 
     }
 

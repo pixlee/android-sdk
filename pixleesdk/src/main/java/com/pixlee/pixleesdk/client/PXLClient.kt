@@ -19,7 +19,7 @@ class PXLClient(val context: Context) {
     companion object{
         val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
         private var mInstance: PXLClient? = null
-        var apiKey: String? = null
+        var apiKey: String = ""
         var secretKey: String? = null
         var android_id: String? = null
 

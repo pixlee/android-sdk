@@ -193,7 +193,7 @@ public class AnalyticsFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 showMessage("addToCart()");
-                analytics.addToCart(BuildConfig.PIXLEE_SKU, "12000", 3);
+                analytics.addToCart(BuildConfig.PIXLEE_SKU, "12000", 3, album.getRegionId());
 
                 // Alternative: analytics.addToCart(BuildConfig.PIXLEE_SKU, "13000",2, "AUD");
             }
@@ -209,7 +209,7 @@ public class AnalyticsFragment extends BaseFragment {
                 cart1.put("product_sku", BuildConfig.PIXLEE_SKU);
                 cart1.put("quantity", "4");
                 cartContents.add(cart1);
-                analytics.conversion(cartContents, "123", 4);
+                analytics.conversion(cartContents, "123", 4, album.getRegionId());
             }
         });
     }

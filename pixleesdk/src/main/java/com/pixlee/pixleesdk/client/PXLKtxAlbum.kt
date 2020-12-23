@@ -187,7 +187,8 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
                 allPXLPhotos,
                 getPerPageParam(),
                 lastPageLoaded,
-                widgetType)
+                widgetType,
+                params?.regionId)
     }
 
     /**
@@ -200,7 +201,8 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
                 allPXLPhotos,
                 getPerPageParam(),
                 lastPageLoaded,
-                widgetType)
+                widgetType,
+                params?.regionId)
     }
 
     /**
@@ -208,7 +210,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      * After you use getNextPage(callLoadMoreAnalytics:Boolean = false), you must to call this analytics.
      */
     suspend fun loadMore() {
-        ktxAnalyticsDataSource.loadMore(getAlbumIdParam(), allPXLPhotos, getPerPageParam(), lastPageLoaded)
+        ktxAnalyticsDataSource.loadMore(getAlbumIdParam(), allPXLPhotos, getPerPageParam(), lastPageLoaded, params?.regionId)
     }
 
     /**
@@ -217,7 +219,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      * @return true: api called, false: cannot use this. please see the LogCat
      */
     suspend fun widgetVisible(widgetType: PXLWidgetType) {
-        ktxAnalyticsDataSource.widgetVisible(getAlbumIdParam(), allPXLPhotos, getPerPageParam(), lastPageLoaded, widgetType)
+        ktxAnalyticsDataSource.widgetVisible(getAlbumIdParam(), allPXLPhotos, getPerPageParam(), lastPageLoaded, widgetType, params?.regionId)
     }
 
     /**
@@ -226,7 +228,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      * @return true: api called, false: cannot use this. please see the LogCat
      */
     suspend fun widgetVisible(widgetType: String) {
-        ktxAnalyticsDataSource.widgetVisible(getAlbumIdParam(), allPXLPhotos, getPerPageParam(), lastPageLoaded, widgetType)
+        ktxAnalyticsDataSource.widgetVisible(getAlbumIdParam(), allPXLPhotos, getPerPageParam(), lastPageLoaded, widgetType, params?.regionId)
     }
 
     /**
@@ -235,7 +237,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      * @param albumPhotoId PXLPhoto.albumPhotoId
      */
     suspend fun openedLightbox(albumPhotoId: String) {
-        ktxAnalyticsDataSource.openedLightbox(getAlbumIdParam(), albumPhotoId)
+        ktxAnalyticsDataSource.openedLightbox(getAlbumIdParam(), albumPhotoId, params?.regionId)
     }
 
     /**
@@ -244,7 +246,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      * @param photo This is to get PXLPhoto.albumPhotoId
      */
     suspend fun openedLightbox(pxlPhoto: PXLPhoto) {
-        ktxAnalyticsDataSource.openedLightbox(getAlbumIdParam(), pxlPhoto.albumPhotoId)
+        ktxAnalyticsDataSource.openedLightbox(getAlbumIdParam(), pxlPhoto.albumPhotoId, params?.regionId)
     }
 
     /**
@@ -254,7 +256,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      * @param actionLink
      */
     suspend fun actionClicked(albumPhotoId: String, actionLink: String) {
-        ktxAnalyticsDataSource.actionClicked(getAlbumIdParam(), albumPhotoId, actionLink)
+        ktxAnalyticsDataSource.actionClicked(getAlbumIdParam(), albumPhotoId, actionLink, params?.regionId)
     }
 
     /**
@@ -264,7 +266,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      * @param actionLink
      */
     suspend fun actionClicked(pxlPhoto: PXLPhoto, actionLink: String) {
-        ktxAnalyticsDataSource.actionClicked(getAlbumIdParam(), pxlPhoto.albumPhotoId, actionLink)
+        ktxAnalyticsDataSource.actionClicked(getAlbumIdParam(), pxlPhoto.albumPhotoId, actionLink, params?.regionId)
     }
 
     /**
@@ -277,7 +279,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      * @param currency
      */
     suspend fun addToCart(sku: String, price: String, quantity: Int, currency: String? = null) {
-        ktxAnalyticsDataSource.addToCart(sku, price, quantity, currency)
+        ktxAnalyticsDataSource.addToCart(sku, price, quantity, currency, params?.regionId)
     }
 
     /**
@@ -291,7 +293,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      * @param currency
      */
     suspend fun conversion(cartContents: ArrayList<HashMap<String, Any>>, cartTotal: String, cartTotalQuantity: Int, orderId: String? = null, currency: String? = null) {
-        ktxAnalyticsDataSource.conversion(cartContents, cartTotal, cartTotalQuantity, orderId, currency)
+        ktxAnalyticsDataSource.conversion(cartContents, cartTotal, cartTotalQuantity, orderId, currency, params?.regionId)
     }
 
 }

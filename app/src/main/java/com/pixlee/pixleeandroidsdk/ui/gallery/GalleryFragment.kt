@@ -118,6 +118,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
             album?.setPerPage(readPerPage())
             album?.setFilterOptions(readFilterOptionsFromUI())
             album?.setSortOptions(readSortOptionsFromUI())
+            album?.setRegionId(readRegionIdFromUI())
 
             // start requesting the API
             album?.loadNextPageOfPhotos(this)
@@ -133,6 +134,13 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
         } else 20
 
         // a default for perPage
+    }
+
+    fun readRegionIdFromUI(): Int?{
+        val data = textViewRegionId.text.toString()
+        return if (data.isNotEmpty()) {
+            Integer.valueOf(data)
+        } else null
     }
 
     fun readSortOptionsFromUI(): PXLAlbumSortOptions {
