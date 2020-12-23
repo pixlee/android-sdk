@@ -7,8 +7,8 @@
         - Option 2: [to get Product content](#to-get-Product-content)
         - [Advanced parameter options](#Advanced-parameter-options)
     - [Get content](#Get-content)
-    - [Get a PXLPhoto with an album photo id](API.md#get-pxlphoto-with-an-albumphotoid)
-    - [Get a PXLPhoto with an album photo id and regionId](API.md#get-pxlphoto-with-an-albumphotoid-and-regionId)
+    - [Get PXLPhoto from default region](API.md#Get-PXLPhoto-from-default-region)
+    - [Get a PXLPhoto from a region](API.md#Get-a-PXLPhoto-from-a-region)
     - [How to get image urls](#How-to-get-image-urls)
 - Analytics
     - [Album Analytics](#Album-Analytics)
@@ -102,7 +102,8 @@ Get the next pages
 val result = pxlKtxAlbum.getNextPage()
 ```
 
-### Get PXLPhoto with an albumPhotoId
+### Get PXLPhoto from default region
+- if you have multi regions, your default region is set on the server. to get more detail about your default region, please reach out your customer success manager
 ```kotlin
 #!Kotlin.coroutines
 
@@ -110,13 +111,13 @@ val albumPhotoId:String = <one of your album photo ids>
 val result:PXLPhoto = pxlKtxAlbum.getPhotoWithId(albumPhotoId)
 ```
 
-### Get a PXLPhoto with an album photo id and regionId
+### Get a PXLPhoto from a region
+- before firing this, you must basically add region when setting up pxlKtxAlbum.params
 ```kotlin
 #!Kotlin.coroutines
 
 val albumPhotoId:String = <one of your album photo ids>
-val regionId:Int = <one of region ids>
-val result:PXLPhoto = pxlKtxAlbum.getPhotoFromRegion(albumPhotoId, regionId)
+val result:PXLPhoto = pxlKtxAlbum.getPhotoFromRegion(albumPhotoId)
 ```
 
 ### How to get image urls
