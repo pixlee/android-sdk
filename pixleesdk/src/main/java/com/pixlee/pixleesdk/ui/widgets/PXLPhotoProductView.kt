@@ -14,6 +14,8 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pixlee.pixleesdk.R
+import com.pixlee.pixleesdk.client.PXLClient
+import com.pixlee.pixleesdk.client.enums.AnalyticsMode
 import com.pixlee.pixleesdk.data.PXLProduct
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
@@ -21,6 +23,8 @@ import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.util.px
 import com.pixlee.pixleesdk.util.setCompatIconWithColor
 import kotlinx.android.synthetic.main.widget_viewer.view.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -96,6 +100,8 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         pxlPhotoView.setContent(photoInfo.pxlPhoto, photoInfo.configuration.imageScaleType)
         pxlPhotoView.setLooping(photoInfo.isLoopingVideo)
         pxlPhotoView.changeVolume(if (photoInfo.soundMuted) 0f else 1f)
+
+        fireAnalyticsOpenLightbox()
     }
 
     private var headerConfiguration: Configuration? = null
@@ -112,7 +118,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
             ivBack.setCompatIconWithColor(iconColor, icon)
         }
 
-        vMute.visibility = if (headerConfiguration.muteCheckBox != null && photoInfo?.pxlPhoto?.isVideo?:false) View.VISIBLE else View.GONE
+        vMute.visibility = if (headerConfiguration.muteCheckBox != null && photoInfo?.pxlPhoto?.isVideo ?: false) View.VISIBLE else View.GONE
         headerConfiguration.muteCheckBox?.apply {
             vMute.setOnClickListener {
                 if (isMutted) {
@@ -219,5 +225,19 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun stopVideoOnStop() {
         stopVideoOnPause()
+    }
+
+    private var isAnalyticsOpenLightboxFired = false
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    private fun fireAnalyticsOpenLightbox() {
+        if (PXLClient.analyticsMode == AnalyticsMode.AUTO && !isAnalyticsOpenLightboxFired) {
+            GlobalScope.launch {
+                photoInfo?.also {
+                    isAnalyticsOpenLightboxFired = true
+                    PXLClient.getInstance(context).ktxAnalyticsDataSource.openedLightbox(it.pxlPhoto.albumId, it.pxlPhoto)
+                }
+            }
+        }
     }
 }
