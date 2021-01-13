@@ -4,6 +4,7 @@ import android.content.Context
 import android.provider.Settings.Secure
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
+import com.pixlee.pixleesdk.client.enums.AnalyticsMode
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource
 import com.pixlee.pixleesdk.data.repository.BasicDataSource
 import com.pixlee.pixleesdk.data.repository.KtxAnalyticsDataSource
@@ -22,15 +23,17 @@ class PXLClient(val context: Context) {
         var apiKey: String = ""
         var secretKey: String? = null
         var android_id: String? = null
+        var analyticsMode: AnalyticsMode? = null
 
         /***
          * Must be called before use. Sets the api key.
          * @param apiKey
          * @param secretKey can be null if you don't use POST APIs
          */
-        fun initialize(apiKey: String, secretKey: String? = null) {
+        fun initialize(apiKey: String, secretKey: String? = null, analyticsMode: AnalyticsMode = AnalyticsMode.MANUAL) {
             Companion.apiKey = apiKey
             Companion.secretKey = secretKey
+            this.analyticsMode = analyticsMode
         }
 
         /***
