@@ -213,10 +213,10 @@ class KtxAnalyticsFragment : BaseFragment() {
                         widgetVisible = true
                     }
                     if (!pxlPhotoView.getLocalVisibleRect(scrollBounds)
-                            || scrollBounds.height() < pxlPhotoView.getHeight()) {
-                        Log.i("PXLAnalytics", "BTN APPEAR PARCIALY")
+                            || scrollBounds.height() < pxlPhotoView.height) {
+                        Log.i("PXLAnalytics", "btn appears partially")
                     } else {
-                        Log.i("PXLAnalytics", "BTN APPEAR FULLY!!!")
+                        Log.i("PXLAnalytics", "btn appears FULLY!!!")
                     }
                 }
             }
