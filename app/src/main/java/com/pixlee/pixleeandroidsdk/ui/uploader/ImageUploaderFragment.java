@@ -27,8 +27,8 @@ import com.pixlee.pixleeandroidsdk.ui.BaseFragment;
 import com.pixlee.pixleesdk.client.PXLAlbum;
 import com.pixlee.pixleesdk.client.PXLBaseAlbum;
 import com.pixlee.pixleesdk.client.PXLClient;
-import com.pixlee.pixleesdk.data.PXLPhoto;
 import com.pixlee.pixleesdk.data.MediaResult;
+import com.pixlee.pixleesdk.data.PXLPhoto;
 
 import java.util.ArrayList;
 
@@ -71,14 +71,7 @@ public class ImageUploaderFragment extends BaseFragment {
         setClickListeners();
 
         // Pixlee Settings
-        setPixleeCredentials();
         initPixleeAlbum();
-
-
-    }
-
-    public void setPixleeCredentials() {
-        PXLClient.Companion.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY);
     }
 
     private void initPixleeAlbum() {
