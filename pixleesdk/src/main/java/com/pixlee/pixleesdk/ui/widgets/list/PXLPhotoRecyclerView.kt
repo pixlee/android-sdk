@@ -9,7 +9,6 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-//import com.master.exoplayer.MasterExoPlayerHelper
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
@@ -22,17 +21,19 @@ import kotlin.coroutines.CoroutineContext
  * Created by sungjun on 9/17/20.
  */
 
-class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope {
-    lateinit var job: Job
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver {
+    protected val scope = CoroutineScope(Job() + Dispatchers.Main)
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        job = Job()
         initView()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        scope.cancel()
     }
 
     val linearLayoutManager: LinearLayoutManager by lazy {
@@ -182,7 +183,7 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver, CoroutineScope
     var changingSoundJob: Job? = null
     private fun changeSound(muted: Boolean) {
         changingSoundJob?.cancel()
-        changingSoundJob = launch {
+        changingSoundJob = scope.launch {
             withContext(Dispatchers.IO) {
                 if (pxlPhotoAdapter.list.isNotEmpty()) {
                     pxlPhotoAdapter.list.forEach {
