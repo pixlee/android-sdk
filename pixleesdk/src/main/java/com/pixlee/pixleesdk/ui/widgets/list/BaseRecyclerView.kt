@@ -8,8 +8,10 @@ import android.view.Display
 import android.view.View
 import android.view.WindowManager
 import androidx.recyclerview.widget.RecyclerView
+import com.pixlee.pixleesdk.client.PXLAnalytics
 import com.pixlee.pixleesdk.client.PXLClient
-import com.pixlee.pixleesdk.client.enums.AnalyticsMode
+import com.pixlee.pixleesdk.client.PXLKtxAlbum
+import com.pixlee.pixleesdk.enums.PXLWidgetType
 import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import kotlinx.coroutines.GlobalScope
@@ -28,6 +30,13 @@ open class BaseRecyclerView : RecyclerView {
     val pxlPhotoAdapter: PXLPhotoAdapter by lazy {
         PXLPhotoAdapter()
     }
+
+    /**
+     * this is for automatic Analytics event
+     */
+    var pxlKtxAlbum: PXLKtxAlbum? = null
+
+    var pxlWidgetType: String? = null
 
     /**
      * Add a list: List<PhotoWithImageScaleType> to an existing list
@@ -92,33 +101,89 @@ open class BaseRecyclerView : RecyclerView {
         fireAnalytics()
     }
 
+    /**
+     * this let this view to fire 'VisibleWidget' and 'OpenedWidget' analytics events automatically for you.
+     * @param pxlKtxAlbum: PXLKtxAlbum? Please pass the same reference that you make photoInfo: PhotoWithVideoInfo with
+     * @param pxlWidgetType: PXLWidgetType
+     * If you pass pxlKtxAlbum to this method, openLightbox analytics event will get fired automatically.
+     */
+    fun enableAutoAnalytics(pxlKtxAlbum: PXLKtxAlbum, pxlWidgetType: PXLWidgetType) {
+        this.pxlKtxAlbum = pxlKtxAlbum
+        this.pxlWidgetType = pxlWidgetType.type
+        fireAnalytics()
+    }
+
+    /**
+     * this let this view to fire 'VisibleWidget' and 'OpenedWidget' analytics events automatically for you.
+     * If you pass pxlKtxAlbum to this method, openLightbox analytics event will get fired automatically.
+     *
+     * Note that if you need to pass region_id to analytics events, you can set yours to pxlKtxAlbum.params.regionId.
+     * Then pass your pxlKtxAlbum to enableAutoAnalytics(...). That will add region_id to analytics events when they need to be fired.
+     *
+     * @param pxlKtxAlbum: PXLKtxAlbum? Please pass the same reference that you make photoInfo: PhotoWithVideoInfo with
+     * @param pxlWidgetType: String
+     */
+    fun enableAutoAnalytics(pxlKtxAlbum: PXLKtxAlbum, pxlWidgetType: String) {
+        this.pxlKtxAlbum = pxlKtxAlbum
+        this.pxlWidgetType = pxlWidgetType
+        fireAnalytics()
+    }
+
     private fun fireAnalytics() {
         fireAnalyticsOpenedWidget()
         fireAnalyticsVisibleWidget()
     }
 
     private var isAnalyticsOpenedWidgetFired: Boolean = false
-    fun fireAnalyticsOpenedWidget() {
-        if (PXLClient.analyticsMode == AnalyticsMode.AUTO && !isAnalyticsOpenedWidgetFired) {
+    private fun fireAnalyticsOpenedWidget() {
+        if (pxlKtxAlbum!=null && !isAnalyticsOpenedWidgetFired) {
+            if (pxlWidgetType == null) Log.e(PXLAnalytics.TAG, "can't fire OpenedWidget analytics event because pxlWidgetType is null")
+
             GlobalScope.launch {
-                pxlPhotoAdapter.list?.also {
-                    if (it.isNotEmpty() && visibility == View.VISIBLE) {
-                        isAnalyticsOpenedWidgetFired = true
-                        PXLClient.getInstance(context).ktxAnalyticsDataSource.widgetVisible(..)
+                pxlKtxAlbum?.also{ album ->
+                    pxlWidgetType?.also { pxlWidgetType ->
+                        if(visibility == View.VISIBLE){
+                            isAnalyticsOpenedWidgetFired = true
+                            try {
+                                album.openedWidget(pxlWidgetType)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
                     }
+
                 }
             }
         }
     }
 
     private var isAnalyticsVisibleWidgetFired: Boolean = false
-    fun fireAnalyticsVisibleWidget() {
-        if (PXLClient.analyticsMode == AnalyticsMode.AUTO && !isAnalyticsVisibleWidgetFired) {
+    private fun fireAnalyticsVisibleWidget() {
+//        if (PXLClient.analyticsMode == AnalyticsMode.AUTO && !isAnalyticsVisibleWidgetFired) {
+//            GlobalScope.launch {
+//                pxlPhotoAdapter.list.also {
+//                    if (pxlPhotoAdapter.list.isNotEmpty() && isVisibleInScreen()) {
+//                        isAnalyticsVisibleWidgetFired = true
+//                        PXLClient.getInstance(context).ktxAnalyticsDataSource.widgetVisible(..)
+//                    }
+//                }
+//            }
+//        }
+
+        if (pxlKtxAlbum!=null && !isAnalyticsVisibleWidgetFired) {
+            if (pxlWidgetType == null) Log.e(PXLAnalytics.TAG, "can't fire WidgetVisible analytics event because pxlWidgetType is null")
+
             GlobalScope.launch {
-                pxlPhotoAdapter.list.also {
-                    if (it.isNotEmpty() && isVisibleInScreen()) {
-                        isAnalyticsVisibleWidgetFired = true
-                        PXLClient.getInstance(context).ktxAnalyticsDataSource.widgetVisible(..)
+                pxlKtxAlbum?.also{ album ->
+                    pxlWidgetType?.also { pxlWidgetType ->
+                        if(isVisibleInScreen()){
+                            isAnalyticsVisibleWidgetFired = true
+                            try {
+                                album.widgetVisible(pxlWidgetType)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
                     }
                 }
             }

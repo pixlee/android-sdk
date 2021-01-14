@@ -25,10 +25,7 @@ import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
 import com.pixlee.pixleesdk.data.PXLAlbumSortOptions
-import com.pixlee.pixleesdk.enums.PXLAlbumSortType
-import com.pixlee.pixleesdk.enums.PXLContentSource
-import com.pixlee.pixleesdk.enums.PXLContentType
-import com.pixlee.pixleesdk.enums.PXLPhotoSize
+import com.pixlee.pixleesdk.enums.*
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
@@ -60,6 +57,9 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        enableAutoAnalytics()
+
         radioGroupContentTypeVideo.isChecked = true
 
         switchSound.isChecked = false
@@ -91,6 +91,14 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
 
             }
         })
+    }
+
+    fun enableAutoAnalytics() {
+        // if you want to delegate firing `OpenedWidget` and `VisibleWidget` analytics events to PXLPhotoRecyclerView, use this code.
+        // if you want to manually fire it, you don't use this and implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
+
+        // alternative: pxlPhotoRecyclerView.enableAutoAnalytics(viewModel.pxlKtxAlbum, "photowall")
+        pxlPhotoRecyclerView.enableAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall)
     }
 
     fun addViewModelListeners() {

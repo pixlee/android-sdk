@@ -15,7 +15,7 @@ import retrofit2.Response;
 
 
 public class PXLAnalytics {
-    private static final String TAG = "PXLAnalytics";
+    public static final String TAG = "PXLAnalytics";
 
     private AnalyticsDataSource analyticsRepo;
 

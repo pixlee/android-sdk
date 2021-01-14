@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -14,8 +15,9 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pixlee.pixleesdk.R
+import com.pixlee.pixleesdk.client.PXLAnalytics
 import com.pixlee.pixleesdk.client.PXLClient
-import com.pixlee.pixleesdk.client.enums.AnalyticsMode
+import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.data.PXLProduct
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
@@ -23,8 +25,7 @@ import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.util.px
 import com.pixlee.pixleesdk.util.setCompatIconWithColor
 import kotlinx.android.synthetic.main.widget_viewer.view.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 
 /**
@@ -87,7 +88,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                    configuration: ProductViewHolder.Configuration = ProductViewHolder.Configuration(),
                    bookmarkMap: HashMap<String, Boolean>? = null,
                    onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null,
-                   onProductClicked: ((pxlProduct: PXLProduct) -> Unit)? = null) {
+                   onProductClicked: ((pxlProduct: PXLProduct) -> Unit)? = null): PXLPhotoProductView {
         this.photoInfo = photoInfo
         this.bookmarkMap = bookmarkMap
         this.onBookmarkClicked = onBookmarkClicked
@@ -102,6 +103,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         pxlPhotoView.changeVolume(if (photoInfo.soundMuted) 0f else 1f)
 
         fireAnalyticsOpenLightbox()
+        return this
     }
 
     private var headerConfiguration: Configuration? = null
@@ -214,6 +216,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun playVideoOnResume() {
+        fireAnalyticsOpenLightbox()
         pxlPhotoView.playVideo()
     }
 
@@ -227,15 +230,34 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         stopVideoOnPause()
     }
 
+    private var regionId: Int? = null
+    private var isAutoAnalyticsEnabled = false
     private var isAnalyticsOpenLightboxFired = false
+
+    /**
+     * @param regionId: String (Optional) if you need to pass region id to the analytics event, set region id here.
+     */
+    fun enableAutoAnalytics(regionId: Int? = null):PXLPhotoProductView {
+        isAutoAnalyticsEnabled = true
+        this.regionId = regionId
+        fireAnalyticsOpenLightbox()
+        return this
+    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     private fun fireAnalyticsOpenLightbox() {
-        if (PXLClient.analyticsMode == AnalyticsMode.AUTO && !isAnalyticsOpenLightboxFired) {
+        if (isAutoAnalyticsEnabled && !isAnalyticsOpenLightboxFired) {
             GlobalScope.launch {
-                photoInfo?.also {
+                if (photoInfo == null) Log.e(PXLAnalytics.TAG, "can't fire OpenLightbox analytics event because photoInfo is null")
+                if (photoInfo?.pxlPhoto == null) Log.e(PXLAnalytics.TAG, "can't fire OpenLightbox analytics event because photoInfo.pxlPhoto is null")
+
+                photoInfo?.pxlPhoto?.also { pxlPhoto ->
                     isAnalyticsOpenLightboxFired = true
-                    PXLClient.getInstance(context).ktxAnalyticsDataSource.openedLightbox(it.pxlPhoto.albumId, it.pxlPhoto)
+                    try {
+                        PXLClient.getInstance(context).ktxAnalyticsDataSource.openedLightbox(pxlPhoto.albumId, pxlPhoto.albumPhotoId, regionId)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             }
         }
