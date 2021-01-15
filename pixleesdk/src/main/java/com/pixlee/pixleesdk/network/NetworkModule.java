@@ -80,7 +80,7 @@ public class NetworkModule {
     }
 
     public static final String url = "https://distillery.pixlee.com/";
-    public static final String analyticsUrl = "https://inbound-analytics.pixlee.com/";
+    public static final String analyticsUrl = "https://inbound-analytics.pixlee.com/events/";
 
     private static final Long timeout_read = 60L;
     private static final Long timeout_connect = 60L;

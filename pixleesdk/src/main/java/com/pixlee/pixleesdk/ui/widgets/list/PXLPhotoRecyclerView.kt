@@ -99,6 +99,7 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver {
         }
         super.setList(type, list)
         moveScrollToInitialPosition(needToMoveScroll)
+        fireAnalytics()
     }
 
     private fun moveScrollToInitialPosition(needToMoveScroll: Boolean) {

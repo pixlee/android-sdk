@@ -2,6 +2,7 @@ package com.pixlee.pixleeandroidsdk.ui.gallery
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.pixlee.pixleeandroidsdk.BuildConfig
-import com.pixlee.pixleeandroidsdk.EventObserver
+import com.pixlee.pixleesdk.util.EventObserver
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
@@ -26,6 +27,7 @@ import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
 import com.pixlee.pixleesdk.data.PXLAlbumSortOptions
 import com.pixlee.pixleesdk.enums.*
+import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
@@ -57,23 +59,23 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         enableAutoAnalytics()
-
-        radioGroupContentTypeVideo.isChecked = true
-
+        radioGroupContentTypeVideo.isChecked = false
         switchSound.isChecked = false
         switchSound.setOnClickListener {
-            if(switchSound.isChecked)
+            if (switchSound.isChecked)
                 pxlPhotoRecyclerView.unmute()
             else
                 pxlPhotoRecyclerView.mute()
         }
-
         initRecyclerView()
         addViewModelListeners()
         initFilterClickListeners()
         configureViews()
+
+        AnalyticsObserver.instantEvent.observe(this, EventObserver{
+            Log.e("AnalyticsObFragment", "name: ${it.eventName}, isSuccessFul: ${it.isSuccessFul}")
+        })
 
         v_body.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -94,9 +96,8 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
     }
 
     fun enableAutoAnalytics() {
-        // if you want to delegate firing `OpenedWidget` and `VisibleWidget` analytics events to PXLPhotoRecyclerView, use this code.
+        // if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerView, use this code.
         // if you want to manually fire it, you don't use this and implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
-
         // alternative: pxlPhotoRecyclerView.enableAutoAnalytics(viewModel.pxlKtxAlbum, "photowall")
         pxlPhotoRecyclerView.enableAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall)
     }
@@ -120,7 +121,7 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
                         }
 
                         // if no result in the first page, open search panel so that the SDK developers will try out different filters
-                        if(it.list.isEmpty()){
+                        if (it.list.isEmpty()) {
                             Toast.makeText(context, "success!! but you got an empty list.\nwhat about trying different searching options here?", Toast.LENGTH_LONG).show()
                             drawerLayout.openDrawer(GravityCompat.END)
                         }
@@ -185,12 +186,12 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
                 showingDebugView = false,
                 alphaForStoppedVideos = 0.5f,
                 onButtonClickedListener = { view, photoWithImageScaleType ->
-            context?.also { ctx ->
-                // you can add your business logic here
-                Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
-                moveToViewer(photoWithImageScaleType)
-            }
-        }, onPhotoClickedListener = { view, photoWithImageScaleType ->
+                    context?.also { ctx ->
+                        // you can add your business logic here
+                        Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
+                        moveToViewer(photoWithImageScaleType)
+                    }
+                }, onPhotoClickedListener = { view, photoWithImageScaleType ->
             context?.also { ctx ->
                 // you can add your business logic here
                 Toast.makeText(ctx, "onItemClickedListener", Toast.LENGTH_SHORT).show()
@@ -278,7 +279,7 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
         // a default for perPage
     }
 
-    fun readRegionIdFromUI(): Int?{
+    fun readRegionIdFromUI(): Int? {
         val data = textViewRegionId.text.toString()
         return if (data.isNotEmpty()) {
             Integer.valueOf(data)

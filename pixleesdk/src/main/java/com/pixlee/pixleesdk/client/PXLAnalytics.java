@@ -1,5 +1,6 @@
 package com.pixlee.pixleesdk.client;
 
+import com.pixlee.pixleesdk.data.api.AnalyticsEvents;
 import com.pixlee.pixleesdk.data.repository.AnalyticsDataSource;
 
 import org.json.JSONArray;
@@ -66,7 +67,7 @@ public class PXLAnalytics {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/addToCart", regionId, body)
+        analyticsRepo.makeAnalyticsCall(AnalyticsEvents.addToCart, regionId, body)
                 .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -115,7 +116,7 @@ public class PXLAnalytics {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/conversion", regionId, body)
+        analyticsRepo.makeAnalyticsCall(AnalyticsEvents.conversion, regionId, body)
                 .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {

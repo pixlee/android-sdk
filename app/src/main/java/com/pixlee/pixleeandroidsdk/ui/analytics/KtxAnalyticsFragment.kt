@@ -11,7 +11,7 @@ import androidx.core.view.GravityCompat
 import androidx.core.widget.NestedScrollView
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.pixlee.pixleeandroidsdk.BuildConfig
-import com.pixlee.pixleeandroidsdk.EventObserver
+import com.pixlee.pixleesdk.util.EventObserver
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel

@@ -129,58 +129,47 @@ open class BaseRecyclerView : RecyclerView {
         fireAnalytics()
     }
 
-    private fun fireAnalytics() {
+    protected fun fireAnalytics() {
         fireAnalyticsOpenedWidget()
         fireAnalyticsVisibleWidget()
     }
 
     private var isAnalyticsOpenedWidgetFired: Boolean = false
     private fun fireAnalyticsOpenedWidget() {
-        if (pxlKtxAlbum!=null && !isAnalyticsOpenedWidgetFired) {
+        if (pxlKtxAlbum != null && !isAnalyticsOpenedWidgetFired) {
             if (pxlWidgetType == null) Log.e(PXLAnalytics.TAG, "can't fire OpenedWidget analytics event because pxlWidgetType is null")
-
-            GlobalScope.launch {
-                pxlKtxAlbum?.also{ album ->
-                    pxlWidgetType?.also { pxlWidgetType ->
-                        if(visibility == View.VISIBLE){
-                            isAnalyticsOpenedWidgetFired = true
+            if (pxlPhotoAdapter.list.isNotEmpty() && visibility == View.VISIBLE) {
+                isAnalyticsOpenedWidgetFired = true
+                GlobalScope.launch {
+                    pxlKtxAlbum?.also { album ->
+                        pxlWidgetType?.also { pxlWidgetType ->
                             try {
                                 album.openedWidget(pxlWidgetType)
                             } catch (e: Exception) {
+                                isAnalyticsOpenedWidgetFired = false
                                 e.printStackTrace()
                             }
                         }
                     }
-
                 }
             }
+
         }
     }
 
     private var isAnalyticsVisibleWidgetFired: Boolean = false
     private fun fireAnalyticsVisibleWidget() {
-//        if (PXLClient.analyticsMode == AnalyticsMode.AUTO && !isAnalyticsVisibleWidgetFired) {
-//            GlobalScope.launch {
-//                pxlPhotoAdapter.list.also {
-//                    if (pxlPhotoAdapter.list.isNotEmpty() && isVisibleInScreen()) {
-//                        isAnalyticsVisibleWidgetFired = true
-//                        PXLClient.getInstance(context).ktxAnalyticsDataSource.widgetVisible(..)
-//                    }
-//                }
-//            }
-//        }
-
-        if (pxlKtxAlbum!=null && !isAnalyticsVisibleWidgetFired) {
+        if (pxlKtxAlbum != null && !isAnalyticsVisibleWidgetFired) {
             if (pxlWidgetType == null) Log.e(PXLAnalytics.TAG, "can't fire WidgetVisible analytics event because pxlWidgetType is null")
-
-            GlobalScope.launch {
-                pxlKtxAlbum?.also{ album ->
-                    pxlWidgetType?.also { pxlWidgetType ->
-                        if(isVisibleInScreen()){
-                            isAnalyticsVisibleWidgetFired = true
+            if (!isAnalyticsVisibleWidgetFired && pxlPhotoAdapter.list.isNotEmpty() && isVisibleInScreen()) {
+                isAnalyticsVisibleWidgetFired = true
+                GlobalScope.launch {
+                    pxlKtxAlbum?.also { album ->
+                        pxlWidgetType?.also { pxlWidgetType ->
                             try {
                                 album.widgetVisible(pxlWidgetType)
                             } catch (e: Exception) {
+                                isAnalyticsVisibleWidgetFired = false
                                 e.printStackTrace()
                             }
                         }
