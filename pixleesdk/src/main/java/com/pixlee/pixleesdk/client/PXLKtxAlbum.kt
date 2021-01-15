@@ -79,7 +79,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
                 if (!isFirstPage && callLoadMoreAnalytics) {
                     GlobalScope.launch {
                         try {
-                            delay(1000)
+                            //delay(1000)
                             Log.e("KTXAlbum", "before load supervisorScope , albumId: $albumId")
                             loadMore()
                             Log.e("KTXAlbum", "after load supervisorScope , albumId: $albumId")

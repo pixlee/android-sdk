@@ -15,8 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
 import com.google.android.material.radiobutton.MaterialRadioButton
+import com.google.android.material.snackbar.Snackbar
 import com.pixlee.pixleeandroidsdk.BuildConfig
-import com.pixlee.pixleesdk.util.EventObserver
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
@@ -32,13 +32,11 @@ import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
+import com.pixlee.pixleesdk.util.EventObserver
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.*
-import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.drawerLayout
-import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.fabFilter
-import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.lottieView
-import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.v_body
 import kotlinx.android.synthetic.main.module_search.*
+
 
 /**
  * This shows how you can load photos of Pixlee using PXLAlbum.java
@@ -59,6 +57,7 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        listenAnalyticsForInstrumentTesting()
         enableAutoAnalytics()
         radioGroupContentTypeVideo.isChecked = false
         switchSound.isChecked = false
@@ -72,10 +71,6 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
         addViewModelListeners()
         initFilterClickListeners()
         configureViews()
-
-        AnalyticsObserver.instantEvent.observe(this, EventObserver{
-            Log.e("AnalyticsObFragment", "name: ${it.eventName}, isSuccessFul: ${it.isSuccessFul}")
-        })
 
         v_body.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -92,6 +87,17 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
                 }
 
             }
+        })
+    }
+
+    fun listenAnalyticsForInstrumentTesting() {
+        val analyticsEventTexts = StringBuilder()
+        AnalyticsObserver.instantEvent.observe(this, EventObserver {
+            if(analyticsEventTexts.isNotEmpty()) analyticsEventTexts.append(", ")
+            analyticsEventTexts.append(it.eventName)
+
+            tvDebugText.text = "${analyticsEventTexts}"
+            Log.e("AnalyticsObFragment", "name: ${it.eventName}, isSuccessful: ${it.isSuccessFul}")
         })
     }
 
@@ -182,7 +188,7 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
         pxlPhotoRecyclerView.useLifecycleObserver(lifecycle)
 
         // you can customize color, size if you need
-        pxlPhotoRecyclerView.initiate(infiniteScroll = true,
+        pxlPhotoRecyclerView.initiate(infiniteScroll = false,
                 showingDebugView = false,
                 alphaForStoppedVideos = 0.5f,
                 onButtonClickedListener = { view, photoWithImageScaleType ->

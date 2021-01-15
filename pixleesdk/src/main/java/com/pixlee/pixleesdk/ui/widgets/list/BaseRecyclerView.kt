@@ -161,7 +161,7 @@ open class BaseRecyclerView : RecyclerView {
     private fun fireAnalyticsVisibleWidget() {
         if (pxlKtxAlbum != null && !isAnalyticsVisibleWidgetFired) {
             if (pxlWidgetType == null) Log.e(PXLAnalytics.TAG, "can't fire WidgetVisible analytics event because pxlWidgetType is null")
-            if (!isAnalyticsVisibleWidgetFired && pxlPhotoAdapter.list.isNotEmpty() && isVisibleInScreen()) {
+            if (pxlPhotoAdapter.list.isNotEmpty() && isVisibleInScreen()) {
                 isAnalyticsVisibleWidgetFired = true
                 GlobalScope.launch {
                     pxlKtxAlbum?.also { album ->

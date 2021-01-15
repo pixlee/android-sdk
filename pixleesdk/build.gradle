@@ -47,9 +47,12 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines"
 
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20160810'
+    androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:$jakeWhartonOkhttpOdlingResource"
+    debugImplementation 'com.android.support.test.espresso.idling:idling-concurrent:3.0.2'
+
+
 
     implementation "androidx.appcompat:appcompat:$androidxAppcompat"
     implementation "com.google.android.material:material:$material"
