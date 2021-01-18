@@ -468,10 +468,11 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
 #### [Automatic Analytics of PXLPhotoRecyclerView]
 if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerView, use this code. On the other hand, if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
+** Please be aware of giving the same instance of pxlKtxAlbum that you created to retrieve the list of PXLPhotos to send the correct album information the the analytics server. **
 ```kotlin
 #!kotlin
-// alternative: pxlPhotoRecyclerView.enableAutoAnalytics(viewModel.pxlKtxAlbum, "photowall")
-pxlPhotoRecyclerView.enableAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall)
+// alternative: pxlPhotoRecyclerView.enableAutoAnalytics(pxlKtxAlbum, "photowall")
+pxlPhotoRecyclerView.enableAutoAnalytics(pxlKtxAlbum, PXLWidgetType.photowall)
 pxlPhotoRecyclerView.initiate(...)
 ```
 
@@ -852,10 +853,11 @@ class YourActivity: AppCompatActivity, LifecycleObserver {
 ```
 
 #### [Automatic Analytics of PXLPhotoRecyclerViewInGrid] if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerViewInGrid, use this code. On the other hand, if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
+** Please be aware of giving the same instance of pxlKtxAlbum that you created to retrieve the list of PXLPhotos to send the correct album information the the analytics server. **
 ```kotlin
 #!kotlin
-// alternative: pxlPhotoRecyclerViewInGrid.enableAutoAnalytics(viewModel.pxlKtxAlbum, "photowall")
-pxlPhotoRecyclerViewInGrid.enableAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall)
+// alternative: pxlPhotoRecyclerViewInGrid.enableAutoAnalytics(pxlKtxAlbum, "photowall")
+pxlPhotoRecyclerViewInGrid.enableAutoAnalytics(pxlKtxAlbum, PXLWidgetType.photowall)
 pxlPhotoRecyclerViewInGrid.initiate((...)
 ```
 
