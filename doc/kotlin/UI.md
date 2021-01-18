@@ -9,6 +9,10 @@ You can use these UI components after you retrive PXLPhoto data via our API [API
 - [PXLPhotoRecyclerViewInGrid](#PXLPhotoRecyclerViewInGrid) : A RecyclerView displaying a list of PXLPhoto (grid list, no auto video playing, no infinite scroll)
 - [PXLPhotoView](#PXLPhotoView) : A view to display PXLPhoto
 
+## Automatic Analytics with UI Components
+We support that you can delegate firing certain analytics events to UI components.
+-  [PXLPhotoProductView](#PXLPhotoProductView) : `OpenLightbox`, fore more information,
+
 ### PXLPhotoProductView
 This shows a fullscreen PXLPhoto with its PXLProduct list. There is an example in ViewerActivity.kt
 
@@ -129,7 +133,18 @@ fun readBookmarks(pxlPhoto: PXLPhoto): HashMap<String, Boolean> {
 
 }
 ```
-#### Added back and mute/unmute buttons to PXLPhotoProductView
+
+#### [Automatic Analytics of PXLPhotoProductView]
+If you want to delegate firing `OpenLightbox` analytics event to PXLPhotoProductView, use this code. On the other hand, if you want to manually fire the event, you don't use this and implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
+
+```kotlin
+#!kotlin
+// alternative: pxlPhotoProductView.enableAutoAnalytics(regionId)
+pxlPhotoProductView.enableAutoAnalytics(regionId)
+pxlPhotoProductView.setContent(...)
+```
+
+#### you can add back and mute/unmute buttons to PXLPhotoProductView
 `headerConfiguration:PXLPhotoProductView.Configuration` is added to pxlPhotoProductView.loadContent(). With this, you can customize icon color, icon, circle color and padding in the circle, and also listen click event for the back and mute/unmute buttons.
 ```kotlin
 #!kotlin
@@ -392,92 +407,50 @@ override fun onCreate(savedInstanceState: Bundle?) {
         val list = ArrayList<PhotoWithImageScaleType>()
         pxlPhotos.forEach { pxlPhoto ->
             list.add(PhotoWithImageScaleType(pxlPhoto = pxlPhoto,
-                                            configuration = PXLPhotoView.Configuration().apply {
-                                                            // Customize image size
-                                                            pxlPhotoSize = PXLPhotoSize.ORIGINAL
-                                                            // Customize image scale type
-                                                            imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP
-                                                            // Customize Main TextView
-                                                            mainTextViewStyle = TextViewStyle().apply {
-                                                                text = "Main Text"
-                                                                size = 30.px
-                                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                                                                typeface = null
-                                                            }
-                                                            // Customize Sub TextView
-                                                            subTextViewStyle = TextViewStyle().apply {
-                                                                text = "Sub Text"
-                                                                size = 18.px
-                                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                                                                typeface = null
-                                                            }
-                                                            // Customize Button
-                                                            buttonStyle = PXLPhotoView.ButtonStyle().apply {
-                                                                isButtonVisible = true
-                                                                text = "Action Button"
-                                                                size = 20.px
-                                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                                                                typeface = null
-                                                                buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
-                                                                stroke = PXLPhotoView.Stroke().apply {
-                                                                    width = 2.px.toInt()
-                                                                    color = Color.WHITE
-                                                                    radiusInPixel = 25.px
-                                                                    padding = PXLPhotoView.Padding().apply {
-                                                                        left = 20.px.toInt()
-                                                                        centerRight = 40.px.toInt()
-                                                                        topBottom = 10.px.toInt()
-                                                                    }
-                                                                }
-                                                            }
-                                            
-                                                        },
-                                            heightInPixel = cellSize,
-                                            isLoopingVideo = true,
-                                            soundMuted = true))
-            list.add(PhotoWithImageScaleType(pxlPhoto = pxlPhoto,
-                                            configuration = PXLPhotoView.Configuration().apply {
-                                                            // Customize image size
-                                                            pxlPhotoSize = PXLPhotoSize.ORIGINAL
-                                                            imageScaleType = PXLPhotoView.ImageScaleType.FIT_CENTER
-                                                            // Customize Main TextView
-                                                            mainTextViewStyle = TextViewStyle().apply {
-                                                                text = "Main Text"
-                                                                size = 30.px
-                                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                                                                typeface = null
-                                                            }
-                                                            // Customize Sub TextView
-                                                            subTextViewStyle = TextViewStyle().apply {
-                                                                text = "Sub Text"
-                                                                size = 18.px
-                                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                                                                typeface = null
-                                                            }
-                                                            // Customize Button
-                                                            buttonStyle = PXLPhotoView.ButtonStyle().apply {
-                                                                isButtonVisible = true
-                                                                text = "Action Button"
-                                                                size = 20.px
-                                                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                                                                typeface = null
-                                                                buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
-                                                                stroke = PXLPhotoView.Stroke().apply {
-                                                                    width = 2.px.toInt()
-                                                                    color = Color.WHITE
-                                                                    radiusInPixel = 25.px
-                                                                    padding = PXLPhotoView.Padding().apply {
-                                                                        left = 20.px.toInt()
-                                                                        centerRight = 40.px.toInt()
-                                                                        topBottom = 10.px.toInt()
-                                                                    }
-                                                                }
-                                                            }
-                                            
-                                                        },
-                                            heightInPixel = cellSize,
-                                            isLoopingVideo = true,
-                                            soundMuted = true))
+                configuration = PXLPhotoView.Configuration().apply {
+                    // Customize image size
+                    pxlPhotoSize = PXLPhotoSize.ORIGINAL
+                    // Customize image scale type
+                    imageScaleType = PXLPhotoView.ImageScaleType.CENTER_CROP
+                    // Customize Main TextView
+                    mainTextViewStyle = TextViewStyle().apply {
+                        text = "Main Text"
+                        size = 30.px
+                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                        typeface = null
+                    }
+                    // Customize Sub TextView
+                    subTextViewStyle = TextViewStyle().apply {
+                        text = "Sub Text"
+                        size = 18.px
+                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                        typeface = null
+                    }
+                    // Customize Button
+                    buttonStyle = PXLPhotoView.ButtonStyle().apply {
+                        isButtonVisible = true
+                        text = "Action Button"
+                        size = 20.px
+                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                        typeface = null
+                        buttonIcon = com.pixlee.pixleesdk.R.drawable.baseline_play_arrow_white_24
+                        stroke = PXLPhotoView.Stroke().apply {
+                            width = 2.px.toInt()
+                            color = Color.WHITE
+                            radiusInPixel = 25.px
+                            padding = PXLPhotoView.Padding().apply {
+                                left = 20.px.toInt()
+                                centerRight = 40.px.toInt()
+                                topBottom = 10.px.toInt()
+                            }
+                        }
+                    }
+
+                    },
+                heightInPixel = cellSize,
+                isLoopingVideo = true,
+                soundMuted = true)
+            )
         }
 
 
@@ -489,6 +462,14 @@ override fun onCreate(savedInstanceState: Bundle?) {
         // alternative step 2: pxlPhotoRecyclerView.replaceList(photos.toList(), PXLPhotoView.ImageScaleType.CENTER_CROP, cellSize)
     }
 }
+```
+
+#### [Automating Analytics] if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerView, use this code. On the other hand, if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
+```kotlin
+#!kotlin
+// alternative: pxlPhotoRecyclerView.enableAutoAnalytics(viewModel.pxlKtxAlbum, "photowall")
+pxlPhotoRecyclerView.enableAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall)
+pxlPhotoRecyclerView.initiate(...)
 ```
 
 #### Play and stop the video
@@ -865,7 +846,14 @@ class YourActivity: AppCompatActivity, LifecycleObserver {
         pxlPhotoView.pauseVideo()
     }
 }
+```
 
+#### [Automating Analytics] if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerViewInGrid, use this code. On the other hand, if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
+```kotlin
+#!kotlin
+// alternative: pxlPhotoRecyclerViewInGrid.enableAutoAnalytics(viewModel.pxlKtxAlbum, "photowall")
+pxlPhotoRecyclerViewInGrid.enableAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall)
+pxlPhotoRecyclerViewInGrid.initiate((...)
 ```
 
 #### Mute the video
