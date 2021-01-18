@@ -11,7 +11,9 @@ You can use these UI components after you retrive PXLPhoto data via our API [API
 
 ## Automatic Analytics with UI Components
 We support that you can delegate firing certain analytics events to UI components.
--  [PXLPhotoProductView](#PXLPhotoProductView) : `OpenLightbox`, fore more information,
+- [Guide of PXLPhotoProductView](#automatic-analytics-of-pxlphotoproductview) : `OpenLightbox` event
+- [Guide of PXLPhotoRecyclerView](#automatic-analytics-of-pxlPhotoRecyclerView) : 'VisibleWidget' and 'OpenedWidget' events
+- [Guide of PXLPhotoRecyclerViewInGrid](#automatic-analytics-of-pxlphotorecyclerviewingrid) : 'VisibleWidget' and 'OpenedWidget' events
 
 ### PXLPhotoProductView
 This shows a fullscreen PXLPhoto with its PXLProduct list. There is an example in ViewerActivity.kt
@@ -464,7 +466,8 @@ override fun onCreate(savedInstanceState: Bundle?) {
 }
 ```
 
-#### [Automating Analytics] if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerView, use this code. On the other hand, if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
+#### [Automatic Analytics of PXLPhotoRecyclerView]
+if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerView, use this code. On the other hand, if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
 ```kotlin
 #!kotlin
 // alternative: pxlPhotoRecyclerView.enableAutoAnalytics(viewModel.pxlKtxAlbum, "photowall")
@@ -848,7 +851,7 @@ class YourActivity: AppCompatActivity, LifecycleObserver {
 }
 ```
 
-#### [Automating Analytics] if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerViewInGrid, use this code. On the other hand, if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
+#### [Automatic Analytics of PXLPhotoRecyclerViewInGrid] if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerViewInGrid, use this code. On the other hand, if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
 ```kotlin
 #!kotlin
 // alternative: pxlPhotoRecyclerViewInGrid.enableAutoAnalytics(viewModel.pxlKtxAlbum, "photowall")
