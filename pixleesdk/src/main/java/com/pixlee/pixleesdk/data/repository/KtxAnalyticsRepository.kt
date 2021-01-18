@@ -177,9 +177,9 @@ class KtxAnalyticsRepository(var api: KtxAnalyticsAPI) : KtxAnalyticsDataSource 
         var result: String = ""
         try {
             result = api.makeAnalyticsCall(NetworkModule.analyticsUrl + analyticsEvent, json.toString().toRequestBody(PXLClient.mediaType))
-            AnalyticsObserver.push(AnalyticsResult(analyticsEvent, true))
+            AnalyticsObserver.channel.send(AnalyticsResult(analyticsEvent, true))
         } catch (e: Exception) {
-            AnalyticsObserver.push(AnalyticsResult(analyticsEvent, false))
+            AnalyticsObserver.channel.send(AnalyticsResult(analyticsEvent, false))
             throw e
         }
         return result

@@ -63,3 +63,5 @@ fastlane/readme.md
 video-player-visibility-utils/
 video-player-manager/
 JZVideo/
+
+runTestLoop.sh

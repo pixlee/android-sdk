@@ -37,6 +37,13 @@
             app:fabSize="normal"
             app:rippleColor="@android:color/white"
             android:src="@drawable/baseline_filter_alt_24" />
+
+        <TextView
+            android:id="@+id/tvDebugText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:alpha="0"/>
     </RelativeLayout>
     <!--navigation drawer menu-->
     <com.google.android.material.navigation.NavigationView

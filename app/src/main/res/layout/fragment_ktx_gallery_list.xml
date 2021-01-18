@@ -61,6 +61,7 @@
             android:id="@+id/tvDebugText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="visible"
             android:alpha="0"
             />
     </RelativeLayout>

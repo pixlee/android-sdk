@@ -247,8 +247,15 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     private fun fireAnalyticsOpenLightbox() {
         if (isAutoAnalyticsEnabled && !isAnalyticsOpenLightboxFired) {
-            if (photoInfo == null) Log.e(PXLAnalytics.TAG, "can't fire OpenLightbox analytics event because photoInfo is null")
-            if (photoInfo?.pxlPhoto == null) Log.e(PXLAnalytics.TAG, "can't fire OpenLightbox analytics event because photoInfo.pxlPhoto is null")
+            if (photoInfo == null) {
+                Log.e(PXLAnalytics.TAG, "can't fire OpenLightbox analytics event because photoInfo is null")
+                return
+            }
+            if (photoInfo?.pxlPhoto == null) {
+                Log.e(PXLAnalytics.TAG, "can't fire OpenLightbox analytics event because photoInfo.pxlPhoto is null")
+                return
+            }
+
             isAnalyticsOpenLightboxFired = true
             GlobalScope.launch {
                 photoInfo?.pxlPhoto?.also { pxlPhoto ->

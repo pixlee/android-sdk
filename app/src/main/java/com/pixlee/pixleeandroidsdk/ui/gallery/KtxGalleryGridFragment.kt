@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleesdk.util.EventObserver
@@ -29,6 +31,7 @@ import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
 import com.pixlee.pixleesdk.data.PXLAlbumSortOptions
 import com.pixlee.pixleesdk.enums.*
+import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
@@ -41,8 +44,12 @@ import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.*
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.drawerLayout
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.fabFilter
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.lottieView
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.tvDebugText
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.v_body
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.*
 import kotlinx.android.synthetic.main.module_search.*
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
 
 /**
  * This shows how you can load photos of Pixlee using PXLAlbum.java
@@ -63,6 +70,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        listenAnalyticsForInstrumentTesting()
         enableAutoAnalytics()
         radioGroupContentTypeVideo.isChecked = true
         initRecyclerView()
@@ -85,6 +93,12 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
 
             }
         })
+    }
+
+    fun listenAnalyticsForInstrumentTesting(){
+        viewLifecycleOwner.lifecycleScope.launch {
+            AnalyticsObserver.observe("Obsev.GalleryGrid", tvDebugText)
+        }
     }
 
     fun enableAutoAnalytics() {

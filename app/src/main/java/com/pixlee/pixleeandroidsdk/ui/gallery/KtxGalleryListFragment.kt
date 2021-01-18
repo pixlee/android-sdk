@@ -14,8 +14,8 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.radiobutton.MaterialRadioButton
-import com.google.android.material.snackbar.Snackbar
 import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
@@ -36,6 +36,8 @@ import com.pixlee.pixleesdk.util.EventObserver
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.*
 import kotlinx.android.synthetic.main.module_search.*
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
 
 
 /**
@@ -91,14 +93,9 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
     }
 
     fun listenAnalyticsForInstrumentTesting() {
-        val analyticsEventTexts = StringBuilder()
-        AnalyticsObserver.instantEvent.observe(this, EventObserver {
-            if(analyticsEventTexts.isNotEmpty()) analyticsEventTexts.append(", ")
-            analyticsEventTexts.append(it.eventName)
-
-            tvDebugText.text = "${analyticsEventTexts}"
-            Log.e("AnalyticsObFragment", "name: ${it.eventName}, isSuccessful: ${it.isSuccessFul}")
-        })
+        viewLifecycleOwner.lifecycleScope.launch {
+            AnalyticsObserver.observe("Obsev.GalleryList", tvDebugText)
+        }
     }
 
     fun enableAutoAnalytics() {
@@ -200,6 +197,7 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
                 }, onPhotoClickedListener = { view, photoWithImageScaleType ->
             context?.also { ctx ->
                 // you can add your business logic here
+                ViewerActivity.launch(ctx, photoWithImageScaleType)
                 Toast.makeText(ctx, "onItemClickedListener", Toast.LENGTH_SHORT).show()
             }
         })

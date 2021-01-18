@@ -137,7 +137,10 @@ open class BaseRecyclerView : RecyclerView {
     private var isAnalyticsOpenedWidgetFired: Boolean = false
     private fun fireAnalyticsOpenedWidget() {
         if (pxlKtxAlbum != null && !isAnalyticsOpenedWidgetFired) {
-            if (pxlWidgetType == null) Log.e(PXLAnalytics.TAG, "can't fire OpenedWidget analytics event because pxlWidgetType is null")
+            if (pxlWidgetType == null) {
+                Log.e(PXLAnalytics.TAG, "can't fire OpenedWidget analytics event because pxlWidgetType is null")
+                return
+            }
             if (pxlPhotoAdapter.list.isNotEmpty() && visibility == View.VISIBLE) {
                 isAnalyticsOpenedWidgetFired = true
                 GlobalScope.launch {
@@ -160,7 +163,11 @@ open class BaseRecyclerView : RecyclerView {
     private var isAnalyticsVisibleWidgetFired: Boolean = false
     private fun fireAnalyticsVisibleWidget() {
         if (pxlKtxAlbum != null && !isAnalyticsVisibleWidgetFired) {
-            if (pxlWidgetType == null) Log.e(PXLAnalytics.TAG, "can't fire WidgetVisible analytics event because pxlWidgetType is null")
+            if (pxlWidgetType == null) {
+                Log.e(PXLAnalytics.TAG, "can't fire WidgetVisible analytics event because pxlWidgetType is null")
+                return
+            }
+
             if (pxlPhotoAdapter.list.isNotEmpty() && isVisibleInScreen()) {
                 isAnalyticsVisibleWidgetFired = true
                 GlobalScope.launch {
