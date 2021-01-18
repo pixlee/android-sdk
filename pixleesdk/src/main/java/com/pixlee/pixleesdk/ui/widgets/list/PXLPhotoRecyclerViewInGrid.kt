@@ -48,10 +48,6 @@ open class PXLPhotoRecyclerViewInGrid : BaseRecyclerView {
         pxlPhotoAdapter.onPhotoClickedListener = onPhotoClickedListener
         pxlPhotoAdapter.notifyDataSetChanged()
 
-        /*listHeader?.let{
-            pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.Header(listHeader = it))
-            pxlPhotoAdapter.notifyDataSetChanged()
-        }*/
     }
 
     internal override fun setList(type: ListAddType, list: List<PhotoWithImageScaleType>) {
