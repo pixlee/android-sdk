@@ -80,7 +80,7 @@ public class NetworkModule {
     }
 
     public static final String url = "https://distillery.pixlee.com/";
-    public static final String analyticsUrl = "https://inbound-analytics.pixlee.com/";
+    public static final String analyticsUrl = "https://inbound-analytics.pixlee.com/events/";
 
     private static final Long timeout_read = 60L;
     private static final Long timeout_connect = 60L;
@@ -105,56 +105,62 @@ public class NetworkModule {
                 .build();
     }
 
-    public static OkHttpClient provideOkHttpClient() {
-        OkHttpClient.Builder ok = new OkHttpClient.Builder()
-                .connectTimeout(timeout_connect, TimeUnit.SECONDS)
-                .readTimeout(timeout_read, TimeUnit.SECONDS)
-                .writeTimeout(timeout_write, TimeUnit.SECONDS);
+    static OkHttpClient okHttpClient;
 
-        // enable Tls12 on Pre Lollipop
-        try {
-            if (Build.VERSION.SDK_INT < 21) {
-                TLSSocketFactory tlsSocketFactory = new TLSSocketFactory();
-                if (tlsSocketFactory.getTrustManager() != null) {
-                    ok.sslSocketFactory(tlsSocketFactory, tlsSocketFactory.getTrustManager());
+    public static synchronized OkHttpClient provideOkHttpClient() {
+        if (okHttpClient == null) {
+            OkHttpClient.Builder ok = new OkHttpClient.Builder()
+                    .connectTimeout(timeout_connect, TimeUnit.SECONDS)
+                    .readTimeout(timeout_read, TimeUnit.SECONDS)
+                    .writeTimeout(timeout_write, TimeUnit.SECONDS);
+
+            // enable Tls12 on Pre Lollipop
+            try {
+                if (Build.VERSION.SDK_INT < 21) {
+                    TLSSocketFactory tlsSocketFactory = new TLSSocketFactory();
+                    if (tlsSocketFactory.getTrustManager() != null) {
+                        ok.sslSocketFactory(tlsSocketFactory, tlsSocketFactory.getTrustManager());
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-                @Override
-                public void log(String s) {
-                    if (isJSONValid(s))
-                        Logger.json(s);
-                    else
-                        Log.d("pretty", s);
-                }
-
-
-                boolean isJSONValid(String jsonInString) {
-                    try {
-                        new JSONObject(jsonInString);
-                    } catch (JSONException ex) {
-                        try {
-                            new JSONArray(jsonInString);
-                        } catch (JSONException ex1) {
-                            return false;
-                        }
-
+            if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+                    @Override
+                    public void log(String s) {
+                        if (isJSONValid(s))
+                            Logger.json(s);
+                        else
+                            Log.d("pretty", s);
                     }
 
-                    return true;
-                }
 
-            });
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-            ok.addInterceptor(logging);
+                    boolean isJSONValid(String jsonInString) {
+                        try {
+                            new JSONObject(jsonInString);
+                        } catch (JSONException ex) {
+                            try {
+                                new JSONArray(jsonInString);
+                            } catch (JSONException ex1) {
+                                return false;
+                            }
 
+                        }
+
+                        return true;
+                    }
+
+                });
+                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+                ok.addInterceptor(logging);
+
+            }
+
+            okHttpClient = ok.build();
         }
 
-        return ok.build();
+        return okHttpClient;
     }
 }

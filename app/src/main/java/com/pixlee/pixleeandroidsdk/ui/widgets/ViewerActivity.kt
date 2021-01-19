@@ -5,12 +5,15 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
+import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
@@ -19,6 +22,8 @@ import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.activity_viewer.*
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -50,6 +55,7 @@ class ViewerActivity : AppCompatActivity() {
             return
         }
 
+        listenAnalyticsForInstrumentTesting()
         init(item)
     }
 
@@ -57,8 +63,17 @@ class ViewerActivity : AppCompatActivity() {
         // by passing lifecycle to pxlPhotoProductView, the SDK will automatically start and stop the video
         pxlPhotoProductView.useLifecycleObserver(lifecycle)
 
+        // set one of your region ids if you have.
+        val regionId: Int? = null
+
+        // if you want to delegate firing `OpenLightbox` analytics event to PXLPhotoProductView, use this code.
+        // if you want to manually fire it, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
+        // alternative: pxlPhotoProductView.enableAutoAnalytics(regionId)
+        pxlPhotoProductView.enableAutoAnalytics(regionId)
+
         // set your ui settings
-        pxlPhotoProductView.setContent(photoInfo = item,
+        pxlPhotoProductView
+                .setContent(photoInfo = item,
                 headerConfiguration = PXLPhotoProductView.Configuration().apply {
                     backButton = PXLPhotoProductView.CircleButton().apply {
                         icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18
@@ -146,6 +161,12 @@ class ViewerActivity : AppCompatActivity() {
             }
         }
         return bookmarkMap
+    }
+
+    fun listenAnalyticsForInstrumentTesting() {
+        lifecycleScope.launch {
+            AnalyticsObserver.observe("Obsev.ViewerActivity", tvDebugTextViewer)
+        }
     }
 
     companion object {

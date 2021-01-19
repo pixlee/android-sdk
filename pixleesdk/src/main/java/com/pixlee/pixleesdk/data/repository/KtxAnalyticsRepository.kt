@@ -4,10 +4,13 @@ import android.util.Log
 import com.pixlee.pixleesdk.client.PXLBaseAlbum
 import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.client.PXLClient.Companion.android_id
+import com.pixlee.pixleesdk.data.api.AnalyticsEvents
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.data.api.KtxAnalyticsAPI
 import com.pixlee.pixleesdk.enums.PXLWidgetType
 import com.pixlee.pixleesdk.network.NetworkModule
+import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
+import com.pixlee.pixleesdk.network.observer.AnalyticsResult
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONException
@@ -161,7 +164,7 @@ class KtxAnalyticsRepository(var api: KtxAnalyticsAPI) : KtxAnalyticsDataSource 
     val messageForNoAlbumId = "missing album id. " +
             "When using PXLAlbum, you need to set album_id or when using PXLPdpAlbum, you should use loadNextPageOfPhotos() and get 200(http code) from the api so that this object will receive album_id from it"
 
-    override suspend fun makeAnalyticsCall(requestPath: String, regionId: Int?, json: JSONObject): String {
+    override suspend fun makeAnalyticsCall(analyticsEvent: String, regionId: Int?, json: JSONObject): String {
         try {
             regionId?.also { json.put("region_id", it) }
             json.put("API_KEY", PXLClient.apiKey)
@@ -171,11 +174,19 @@ class KtxAnalyticsRepository(var api: KtxAnalyticsAPI) : KtxAnalyticsDataSource 
             e.printStackTrace()
         }
 
-        return api.makeAnalyticsCall(NetworkModule.analyticsUrl + requestPath, json.toString().toRequestBody(PXLClient.mediaType))
+        var result: String = ""
+        try {
+            result = api.makeAnalyticsCall(NetworkModule.analyticsUrl + analyticsEvent, json.toString().toRequestBody(PXLClient.mediaType))
+            AnalyticsObserver.channel.send(AnalyticsResult(analyticsEvent, true))
+        } catch (e: Exception) {
+            AnalyticsObserver.channel.send(AnalyticsResult(analyticsEvent, false))
+            throw e
+        }
+        return result
     }
 
     override suspend fun addToCart(sku: String, price: String, quantity: Int, currency: String?, regionId: Int?): String {
-        return makeAnalyticsCall("events/addToCart", regionId, JSONObject().apply {
+        return makeAnalyticsCall(AnalyticsEvents.addToCart, regionId, JSONObject().apply {
             put("product_sku", sku)
             put("price", price)
             put("quantity", quantity)
@@ -189,7 +200,7 @@ class KtxAnalyticsRepository(var api: KtxAnalyticsAPI) : KtxAnalyticsDataSource 
     }
 
     override suspend fun conversion(cartContents: ArrayList<HashMap<String, Any>>, cartTotal: String, cartTotalQuantity: Int, orderId: String?, currency: String?, regionId: Int?): String {
-        return makeAnalyticsCall("events/conversion", regionId, JSONObject().apply {
+        return makeAnalyticsCall(AnalyticsEvents.conversion, regionId, JSONObject().apply {
             put("cart_contents", JSONArray(cartContents))
             put("cart_total", cartTotal)
             put("cart_total_quantity", cartTotalQuantity)
@@ -203,7 +214,7 @@ class KtxAnalyticsRepository(var api: KtxAnalyticsAPI) : KtxAnalyticsDataSource 
     }
 
     override suspend fun openedLightbox(albumId: Int, albumPhotoId: String, regionId: Int?): String {
-        return makeAnalyticsCall("events/openedLightbox", regionId, JSONObject().apply {
+        return makeAnalyticsCall(AnalyticsEvents.openedLightbox, regionId, JSONObject().apply {
             put("album_id", albumId.toInt())
             put("album_photo_id", albumPhotoId.toInt())
         })
@@ -214,7 +225,7 @@ class KtxAnalyticsRepository(var api: KtxAnalyticsAPI) : KtxAnalyticsDataSource 
     }
 
     override suspend fun actionClicked(albumId: Int, albumPhotoId: String, actionLink: String, regionId: Int?): String {
-        return makeAnalyticsCall("events/actionClicked", regionId, JSONObject().apply {
+        return makeAnalyticsCall(AnalyticsEvents.actionClicked, regionId, JSONObject().apply {
             put("album_id", albumId.toInt())
             put("album_photo_id", albumPhotoId.toInt())
             put("action_link_url", actionLink)
@@ -230,7 +241,7 @@ class KtxAnalyticsRepository(var api: KtxAnalyticsAPI) : KtxAnalyticsDataSource 
     }
 
     override suspend fun openedWidget(albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String, regionId: Int?): String {
-        return widgetAPI("events/openedWidget", albumId, pxlPhotos, perPage, page, pxlWidgetType, regionId)
+        return widgetAPI(AnalyticsEvents.openedWidget, albumId, pxlPhotos, perPage, page, pxlWidgetType, regionId)
     }
 
     override suspend fun widgetVisible(albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: PXLWidgetType, regionId: Int?): String {
@@ -238,7 +249,7 @@ class KtxAnalyticsRepository(var api: KtxAnalyticsAPI) : KtxAnalyticsDataSource 
     }
 
     override suspend fun widgetVisible(albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String, regionId: Int?): String {
-        return widgetAPI("events/widgetVisible", albumId, pxlPhotos, perPage, page, pxlWidgetType, regionId)
+        return widgetAPI(AnalyticsEvents.widgetVisible, albumId, pxlPhotos, perPage, page, pxlWidgetType, regionId)
     }
 
     override suspend fun loadMore(albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, regionId: Int?): String {
@@ -246,7 +257,7 @@ class KtxAnalyticsRepository(var api: KtxAnalyticsAPI) : KtxAnalyticsDataSource 
             Log.w(PXLBaseAlbum.TAG, "first load detected")
             throw IllegalArgumentException("first load detected")
         }
-        return widgetAPI("events/loadMore", albumId, pxlPhotos, perPage, page, null, regionId)
+        return widgetAPI(AnalyticsEvents.loadMore, albumId, pxlPhotos, perPage, page, null, regionId)
     }
 
     suspend fun widgetAPI(requestPath: String, albumId: Int, pxlPhotos: List<PXLPhoto>, perPage: Int, page: Int, pxlWidgetType: String? = null, regionId: Int?): String {

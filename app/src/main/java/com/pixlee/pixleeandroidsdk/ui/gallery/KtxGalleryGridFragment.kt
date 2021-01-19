@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +17,10 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.pixlee.pixleeandroidsdk.BuildConfig
-import com.pixlee.pixleeandroidsdk.EventObserver
+import com.pixlee.pixleesdk.util.EventObserver
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
@@ -28,10 +30,8 @@ import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
 import com.pixlee.pixleesdk.data.PXLAlbumSortOptions
-import com.pixlee.pixleesdk.enums.PXLAlbumSortType
-import com.pixlee.pixleesdk.enums.PXLContentSource
-import com.pixlee.pixleesdk.enums.PXLContentType
-import com.pixlee.pixleesdk.enums.PXLPhotoSize
+import com.pixlee.pixleesdk.enums.*
+import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
@@ -44,9 +44,12 @@ import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.*
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.drawerLayout
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.fabFilter
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.lottieView
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.tvDebugText
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.v_body
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.*
 import kotlinx.android.synthetic.main.module_search.*
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
 
 /**
  * This shows how you can load photos of Pixlee using PXLAlbum.java
@@ -67,6 +70,8 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        listenAnalyticsForInstrumentTesting()
+        enableAutoAnalytics()
         radioGroupContentTypeVideo.isChecked = true
         initRecyclerView()
         addViewModelListeners()
@@ -90,6 +95,19 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         })
     }
 
+    fun listenAnalyticsForInstrumentTesting(){
+        viewLifecycleOwner.lifecycleScope.launch {
+            AnalyticsObserver.observe("Obsev.GalleryGrid", tvDebugText)
+        }
+    }
+
+    fun enableAutoAnalytics() {
+        // if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerViewInGrid, use this code.
+        // if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
+        // alternative: pxlPhotoRecyclerViewInGrid.enableAutoAnalytics(viewModel.pxlKtxAlbum, "photowall")
+        pxlPhotoRecyclerViewInGrid.enableAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall)
+    }
+
     fun addViewModelListeners() {
         viewModel.loading.observe(this, Observer {
             lottieView.visibility = if (it) View.VISIBLE else View.GONE
@@ -107,7 +125,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
                         }
 
                         // if no result in the first page, open search panel so that the SDK developers will try out different filters
-                        if(it.list.isEmpty()){
+                        if (it.list.isEmpty()) {
                             Toast.makeText(context, "success!! but you got an empty list.\nwhat about trying different searching options here?", Toast.LENGTH_LONG).show()
                             drawerLayout.openDrawer(GravityCompat.END)
                         }
@@ -125,7 +143,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         initGrid()
     }
 
-    fun getTitleSpannable(): ListHeader{
+    fun getTitleSpannable(): ListHeader {
         val top = "PXLEE\nSHOPPERS"
         val tv = "\nTV"
         val total = top + tv
@@ -144,7 +162,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
                 padding = TextPadding(left = padding, top = padding, right = padding, bottom = padding))
     }
 
-    fun getTitleGif(): ListHeader{
+    fun getTitleGif(): ListHeader {
         return ListHeader.Gif(url = "https://media.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif", heightInPixel = 200.px.toInt(), imageScaleType = ImageScaleType.CENTER_CROP)
     }
 
@@ -192,12 +210,12 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
                 listHeader = getTitleGif(), // you can custom your spannable either using getTitleSpannable() or getTitleGif(), examples of how you can implement your spannable
                 showingDebugView = false,
                 onButtonClickedListener = { view, photoWithImageScaleType ->
-            context?.also { ctx ->
-                // you can add your business logic here
-                Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
-                moveToViewer(photoWithImageScaleType)
-            }
-        }, onPhotoClickedListener = { view, photoWithImageScaleType ->
+                    context?.also { ctx ->
+                        // you can add your business logic here
+                        Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
+                        moveToViewer(photoWithImageScaleType)
+                    }
+                }, onPhotoClickedListener = { view, photoWithImageScaleType ->
             context?.also { ctx ->
                 // you can add your business logic here
                 Toast.makeText(ctx, "onItemClickedListener", Toast.LENGTH_SHORT).show()
@@ -269,7 +287,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         // a default for perPage
     }
 
-    fun readRegionIdFromUI(): Int?{
+    fun readRegionIdFromUI(): Int? {
         val data = textViewRegionId.text.toString()
         return if (data.isNotEmpty()) {
             Integer.valueOf(data)

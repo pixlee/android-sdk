@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk
+package com.pixlee.pixleesdk.util
 
 import androidx.lifecycle.Observer
 

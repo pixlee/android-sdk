@@ -22,14 +22,13 @@ public class MainActivity extends BaseActivity {
     final String TAG = "MainActivity";
     public int frameLayoutId = R.id.contentFrame;
 
-    ActivityMainBinding binding;
+    public ActivityMainBinding binding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         setSupportActionBar(binding.toolbar);
 
         if (binding.toolbar.getNavigationIcon() != null) {

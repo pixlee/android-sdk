@@ -43,11 +43,23 @@ repositories {
     jcenter()
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     testImplementation 'junit:junit:4.12'
+
+    /**
+     * testing
+     */
+    androidTestImplementation 'androidx.test.ext:junit-ktx:' + rootProject.extJUnitVersion
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:' + rootProject.espressoVersion
+    androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:$jakeWhartonOkhttpOdlingResource"
 
     implementation "androidx.appcompat:appcompat:$androidxAppcompat"
     implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"

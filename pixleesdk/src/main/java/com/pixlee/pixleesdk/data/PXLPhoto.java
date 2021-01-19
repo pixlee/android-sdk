@@ -106,6 +106,10 @@ public class PXLPhoto implements Parcelable {
     @Json(name = "album_photo_id")
     public String albumPhotoId;
 
+    @Json(name = "album_id")
+    @NullableInt
+    public int albumId;
+
     @Json(name = "like_count")
     @NullableInt
     public int likeCount;

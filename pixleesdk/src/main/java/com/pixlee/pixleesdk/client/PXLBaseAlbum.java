@@ -2,6 +2,7 @@ package com.pixlee.pixleesdk.client;
 
 import android.util.Log;
 
+import com.pixlee.pixleesdk.data.api.AnalyticsEvents;
 import com.pixlee.pixleesdk.data.MediaResult;
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions;
 import com.pixlee.pixleesdk.data.PXLAlbumSortOptions;
@@ -476,7 +477,7 @@ public abstract class PXLBaseAlbum {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/actionClicked", regionId, body)
+        analyticsRepo.makeAnalyticsCall(AnalyticsEvents.actionClicked, regionId, body)
                 .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -520,7 +521,7 @@ public abstract class PXLBaseAlbum {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/openedLightbox", regionId, body)
+        analyticsRepo.makeAnalyticsCall(AnalyticsEvents.openedLightbox, regionId, body)
                 .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -551,7 +552,7 @@ public abstract class PXLBaseAlbum {
      * @return true: api called, false: cannot use this. please see the LogCat
      */
     public boolean widgetVisible(String widgetType) {
-        return fireWidgetCall("events/widgetVisible", widgetType);
+        return fireWidgetCall(AnalyticsEvents.widgetVisible, widgetType);
     }
 
     /**
@@ -571,7 +572,7 @@ public abstract class PXLBaseAlbum {
      * @return true: api called, false: cannot use this. please see the LogCat
      */
     public boolean openedWidget(String widgetType) {
-        return fireWidgetCall("events/openedWidget", widgetType);
+        return fireWidgetCall(AnalyticsEvents.openedWidget, widgetType);
     }
 
     private boolean fireWidgetCall(String requestPath, String widgetType) {
@@ -658,7 +659,7 @@ public abstract class PXLBaseAlbum {
             e.printStackTrace();
         }
 
-        analyticsRepo.makeAnalyticsCall("events/loadMore", regionId, body)
+        analyticsRepo.makeAnalyticsCall(AnalyticsEvents.loadMore, regionId, body)
                 .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {

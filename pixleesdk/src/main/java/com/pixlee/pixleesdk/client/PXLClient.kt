@@ -9,7 +9,6 @@ import com.pixlee.pixleesdk.data.repository.BasicDataSource
 import com.pixlee.pixleesdk.data.repository.KtxAnalyticsDataSource
 import com.pixlee.pixleesdk.data.repository.KtxBasicDataSource
 import com.pixlee.pixleesdk.network.NetworkModule
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 
 /**
