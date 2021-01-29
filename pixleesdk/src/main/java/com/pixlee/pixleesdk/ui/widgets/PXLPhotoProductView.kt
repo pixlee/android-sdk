@@ -230,7 +230,6 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         stopVideoOnPause()
     }
 
-    private var regionId: Int? = null
     private var isAutoAnalyticsEnabled = false
     private var isAnalyticsOpenLightboxFired = false
 
@@ -239,7 +238,6 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
      */
     fun enableAutoAnalytics(regionId: Int? = null):PXLPhotoProductView {
         isAutoAnalyticsEnabled = true
-        this.regionId = regionId
         fireAnalyticsOpenLightbox()
         return this
     }
@@ -260,7 +258,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
             GlobalScope.launch {
                 photoInfo?.pxlPhoto?.also { pxlPhoto ->
                     try {
-                        PXLClient.getInstance(context).ktxAnalyticsDataSource.openedLightbox(pxlPhoto.albumId, pxlPhoto.albumPhotoId, regionId)
+                        PXLClient.getInstance(context).ktxAnalyticsDataSource.openedLightbox(pxlPhoto.albumId, pxlPhoto.albumPhotoId)
                     } catch (e: Exception) {
                         isAnalyticsOpenLightboxFired = false
                         e.printStackTrace()

@@ -26,6 +26,7 @@ import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
 import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.ViewerActivity
+import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
@@ -263,9 +264,11 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
                         searchId = searchId,
                         perPage = readPerPage(),
                         filterOptions = readFilterOptionsFromUI(),
-                        sortOptions = readSortOptionsFromUI(),
-                        regionId = readRegionIdFromUI()
+                        sortOptions = readSortOptionsFromUI()
                 ))
+
+                PXLClient.regionId = readRegionIdFromUI()
+
                 PXLAlbumSortOptions().apply {
                     sortType = PXLAlbumSortType.RECENCY
                     descending = true

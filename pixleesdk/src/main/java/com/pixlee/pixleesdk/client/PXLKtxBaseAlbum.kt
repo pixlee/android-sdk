@@ -56,8 +56,7 @@ open class PXLKtxBaseAlbum {
     class Params(val searchId: SearchId,
                  var perPage: Int = 30,
                  var filterOptions: PXLAlbumFilterOptions? = null,
-                 var sortOptions: PXLAlbumSortOptions? = null,
-                 var regionId:Int? = null)
+                 var sortOptions: PXLAlbumSortOptions? = null)
 
     var params: Params? = null
         set(value) {

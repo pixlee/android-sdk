@@ -22,14 +22,18 @@ class PXLClient(val context: Context) {
         var secretKey: String? = null
         var android_id: String? = null
 
+        // region id differentiates analytics events by region
+        var regionId: Int? = null
+
         /***
          * Must be called before use. Sets the api key.
          * @param apiKey
          * @param secretKey can be null if you don't use POST APIs
          */
-        fun initialize(apiKey: String, secretKey: String? = null) {
+        fun initialize(apiKey: String, secretKey: String? = null, regionId: Int? = null) {
             Companion.apiKey = apiKey
             Companion.secretKey = secretKey
+            Companion.regionId = regionId
         }
 
         /***

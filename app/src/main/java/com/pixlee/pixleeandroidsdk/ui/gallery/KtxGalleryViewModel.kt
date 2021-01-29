@@ -33,7 +33,7 @@ class KtxGalleryViewModel(pxlKtxAlbum: PXLKtxAlbum) : BaseViewModel(pxlKtxAlbum)
     fun getPhotoFromRegion(albumPhotoId: String) {
         viewModelScope.launch {
             try {
-                pxlKtxAlbum.getPhotoFromRegion(albumPhotoId, pxlKtxAlbum.params?.regionId)
+                pxlKtxAlbum.getPhotoFromRegion(albumPhotoId)
             } catch (e: Exception) {
                 // error handling
             }
@@ -43,7 +43,7 @@ class KtxGalleryViewModel(pxlKtxAlbum: PXLKtxAlbum) : BaseViewModel(pxlKtxAlbum)
     fun getPhotoFromRegion(pxlPhoto: PXLPhoto) {
         viewModelScope.launch {
             try {
-                pxlKtxAlbum.getPhotoFromRegion(pxlPhoto, pxlKtxAlbum.params?.regionId)
+                pxlKtxAlbum.getPhotoFromRegion(pxlPhoto)
             } catch (e: Exception) {
                 // error handling
             }
