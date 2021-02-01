@@ -33,6 +33,7 @@ import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
+import com.pixlee.pixleesdk.ui.widgets.list.BaseRecyclerView
 import com.pixlee.pixleesdk.util.EventObserver
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.*
@@ -103,7 +104,9 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
         // if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerView, use this code.
         // if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
         // alternative: pxlPhotoRecyclerView.enableAutoAnalytics(viewModel.pxlKtxAlbum, "photowall")
-        pxlPhotoRecyclerView.enableAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall)
+        PXLClient.autoAnalyticsEnabled = true
+
+        pxlPhotoRecyclerView.albumForAutoAnalytics = BaseRecyclerView.AlbumForAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall.type)
     }
 
     fun addViewModelListeners() {

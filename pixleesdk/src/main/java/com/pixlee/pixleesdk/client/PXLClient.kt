@@ -25,15 +25,17 @@ class PXLClient(val context: Context) {
         // region id differentiates analytics events by region
         var regionId: Int? = null
 
+        // if this is true, you can delegate the SDK to fire most analytics events for you. for more information, please read README.md
+        var autoAnalyticsEnabled: Boolean = false
+
         /***
          * Must be called before use. Sets the api key.
          * @param apiKey
          * @param secretKey can be null if you don't use POST APIs
          */
-        fun initialize(apiKey: String, secretKey: String? = null, regionId: Int? = null) {
+        fun initialize(apiKey: String, secretKey: String? = null) {
             Companion.apiKey = apiKey
             Companion.secretKey = secretKey
-            Companion.regionId = regionId
         }
 
         /***

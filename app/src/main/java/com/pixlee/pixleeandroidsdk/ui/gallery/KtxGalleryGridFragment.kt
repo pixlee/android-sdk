@@ -38,6 +38,7 @@ import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextPadding
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
+import com.pixlee.pixleesdk.ui.widgets.list.BaseRecyclerView
 import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
 import com.pixlee.pixleesdk.ui.widgets.list.Space
 import com.pixlee.pixleesdk.util.px
@@ -106,7 +107,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         // if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerViewInGrid, use this code.
         // if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
         // alternative: pxlPhotoRecyclerViewInGrid.enableAutoAnalytics(viewModel.pxlKtxAlbum, "photowall")
-        pxlPhotoRecyclerViewInGrid.enableAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall)
+        pxlPhotoRecyclerViewInGrid.albumForAutoAnalytics = BaseRecyclerView.AlbumForAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall.type)
     }
 
     fun addViewModelListeners() {
