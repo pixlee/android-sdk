@@ -63,9 +63,6 @@ class ViewerActivity : AppCompatActivity() {
         // by passing lifecycle to pxlPhotoProductView, the SDK will automatically start and stop the video
         pxlPhotoProductView.useLifecycleObserver(lifecycle)
 
-        // set one of your region ids if you have.
-        val regionId: Int? = null
-
         // set your ui settings
         pxlPhotoProductView
                 .setContent(photoInfo = item,
