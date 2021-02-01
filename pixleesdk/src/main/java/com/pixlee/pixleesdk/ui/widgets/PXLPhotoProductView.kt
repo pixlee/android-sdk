@@ -230,27 +230,13 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         stopVideoOnPause()
     }
 
-    private var isAutoAnalyticsEnabled = false
     private var isAnalyticsOpenLightboxFired = false
-
-    /**
-     * @param regionId: String (Optional) if you need to pass region id to the analytics event, set region id here.
-     */
-    fun enableAutoAnalytics(regionId: Int? = null):PXLPhotoProductView {
-        isAutoAnalyticsEnabled = true
-        fireAnalyticsOpenLightbox()
-        return this
-    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     private fun fireAnalyticsOpenLightbox() {
-        if (isAutoAnalyticsEnabled && !isAnalyticsOpenLightboxFired) {
-            if (photoInfo == null) {
-                Log.e(PXLAnalytics.TAG, "can't fire OpenLightbox analytics event because photoInfo is null")
-                return
-            }
+        if (PXLClient.autoAnalyticsEnabled && !isAnalyticsOpenLightboxFired) {
             if (photoInfo?.pxlPhoto == null) {
-                Log.e(PXLAnalytics.TAG, "can't fire OpenLightbox analytics event because photoInfo.pxlPhoto is null")
+                Log.e(PXLAnalytics.TAG, "can't fire OpenLightbox analytics event because photoInfo is null")
                 return
             }
 
