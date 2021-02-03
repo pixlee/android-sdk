@@ -2,7 +2,6 @@ package com.pixlee.pixleeandroidsdk.ui.gallery
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -38,7 +37,6 @@ import com.pixlee.pixleesdk.util.EventObserver
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.*
 import kotlinx.android.synthetic.main.module_search.*
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 
 
@@ -62,7 +60,7 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         listenAnalyticsForInstrumentTesting()
-        enableAutoAnalytics()
+        setDataForAutoAnlaytics()
         radioGroupContentTypeVideo.isChecked = false
         switchSound.isChecked = false
         switchSound.setOnClickListener {
@@ -100,13 +98,12 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
         }
     }
 
-    fun enableAutoAnalytics() {
+    fun setDataForAutoAnlaytics() {
         // if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerView, use this code.
-        // if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
-        // alternative: pxlPhotoRecyclerView.enableAutoAnalytics(viewModel.pxlKtxAlbum, "photowall")
-        PXLClient.autoAnalyticsEnabled = true
-
+        // Prerequisite: PXLClient.autoAnalyticsEnabled = true located in in your application level. please check AppApplication.kt
         pxlPhotoRecyclerView.albumForAutoAnalytics = BaseRecyclerView.AlbumForAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall.type)
+
+        // if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
     }
 
     fun addViewModelListeners() {

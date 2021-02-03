@@ -18,6 +18,7 @@
         android:padding="10dp"
         android:background="@color/black_800"
         android:textColor="#ffffff"
+        android:textSize="20sp"
         android:alpha="0"
-        android:textSize="20sp"/>
+        />
 </RelativeLayout>

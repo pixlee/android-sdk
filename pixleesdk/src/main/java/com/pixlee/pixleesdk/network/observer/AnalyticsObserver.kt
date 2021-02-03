@@ -16,10 +16,11 @@ import java.util.concurrent.TimeUnit
 
 object AnalyticsObserver {
     val channel = BroadcastChannel<AnalyticsResult>(10)
-
+    val noEventsMessage = "no events yet"
     suspend fun observe(tag: String, textView: TextView){
+        textView.text = noEventsMessage
         val eventTexts = StringBuilder()
-        var updatedAt: Long = 0L
+        var updatedAt = 0L
         channel.consumeEach {
             if(System.currentTimeMillis() - updatedAt > TimeUnit.SECONDS.toMillis(3)) {
                 eventTexts.clear()

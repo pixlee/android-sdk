@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -48,9 +47,7 @@ import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.fabFilter
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.lottieView
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.tvDebugText
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.v_body
-import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.*
 import kotlinx.android.synthetic.main.module_search.*
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 
 /**
@@ -73,7 +70,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         listenAnalyticsForInstrumentTesting()
-        enableAutoAnalytics()
+        setDataForAutoAnlaytics()
         radioGroupContentTypeVideo.isChecked = true
         initRecyclerView()
         addViewModelListeners()
@@ -103,11 +100,12 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         }
     }
 
-    fun enableAutoAnalytics() {
+    fun setDataForAutoAnlaytics() {
         // if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerViewInGrid, use this code.
-        // if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
-        // alternative: pxlPhotoRecyclerViewInGrid.enableAutoAnalytics(viewModel.pxlKtxAlbum, "photowall")
+        // Prerequisite: PXLClient.autoAnalyticsEnabled = true located in in your application level. please check AppApplication.kt
         pxlPhotoRecyclerViewInGrid.albumForAutoAnalytics = BaseRecyclerView.AlbumForAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall.type)
+
+        // if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
     }
 
     fun addViewModelListeners() {

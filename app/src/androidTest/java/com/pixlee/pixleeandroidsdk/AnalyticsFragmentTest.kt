@@ -17,7 +17,9 @@ import androidx.test.filters.LargeTest
 import com.pixlee.pixleeandroidsdk.tool.MyViewAction
 import com.pixlee.pixleeandroidsdk.tool.OkHttpIdlingResourceRule
 import com.pixlee.pixleeandroidsdk.tool.ScrollToBottomAction
+import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.data.api.AnalyticsEvents
+import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
 import com.pixlee.pixleesdk.ui.viewholder.PXLPhotoViewHolder
 import org.hamcrest.Matcher
 import org.hamcrest.StringDescription
@@ -46,37 +48,53 @@ class AnalyticsFragmentTest {
     @get:Rule
     var rule = OkHttpIdlingResourceRule()
 
+    @Test
+    fun testListHavingAnalyticsOff() {
+        // open widget
+        PXLClient.autoAnalyticsEnabled = false
+        onView(withId(R.id.btKtxAlbumList)).perform(waitUntil(isDisplayed())).perform(ViewActions.click())
+        onView(withId(R.id.tvDebugText)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsObserver.noEventsMessage))))
+        onView(withId(R.id.tvDebugText)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsObserver.noEventsMessage))))
+        onView(withId(R.id.tvDebugText)).check(matches(withText(StringContains.containsString(AnalyticsObserver.noEventsMessage))))
+
+        // open lightbox by clicking an item in list
+        onView(withId(R.id.pxlPhotoRecyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition<PXLPhotoViewHolder>(0, MyViewAction.clickChildViewWithId(R.id.vListRoot)))
+        onView(withId(R.id.tvDebugTextViewer)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsObserver.noEventsMessage))))
+    }
 
     @Test
     fun testList() {
-        val buttonId = R.id.tvDebugText
-
+        // open widget
+        PXLClient.autoAnalyticsEnabled = true
         onView(withId(R.id.btKtxAlbumList)).perform(waitUntil(isDisplayed())).perform(ViewActions.click())
-        onView(withId(buttonId)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.openedWidget))))
-        onView(withId(buttonId)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.widgetVisible))))
-        onView(withId(buttonId)).check(matches(withText(StringContains.containsString(AnalyticsEvents.widgetVisible))))
+        onView(withId(R.id.tvDebugText)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.openedWidget))))
+        onView(withId(R.id.tvDebugText)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.widgetVisible))))
+        onView(withId(R.id.tvDebugText)).check(matches(withText(StringContains.containsString(AnalyticsEvents.widgetVisible))))
+
+        // scroll down to load more photos
         onView(withId(R.id.pxlPhotoRecyclerView)).perform(ScrollToBottomAction())
-        onView(withId(buttonId)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.loadMore))))
+        onView(withId(R.id.tvDebugText)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.loadMore))))
     }
 
     @Test
     fun testGrid() {
-        val buttonId = R.id.tvDebugText
-
+        // open grid widget
+        PXLClient.autoAnalyticsEnabled = true
         onView(withId(R.id.btKtxAlbumGrid)).perform(waitUntil(isDisplayed())).perform(ViewActions.click())
-        onView(withId(buttonId)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.openedWidget))))
-        onView(withId(buttonId)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.widgetVisible))))
+        onView(withId(R.id.tvDebugText)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.openedWidget))))
+        onView(withId(R.id.tvDebugText)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.widgetVisible))))
     }
 
     @Test
     fun testProductDetail() {
-        val buttonId = R.id.tvDebugText
+        // open widget
+        PXLClient.autoAnalyticsEnabled = true
         onView(withId(R.id.btKtxAlbumList)).perform(waitUntil(isDisplayed())).perform(ViewActions.click())
-        onView(withId(buttonId)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.openedWidget))))
-        onView(withId(buttonId)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.widgetVisible))))
-        onView(withId(R.id.pxlPhotoRecyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition<PXLPhotoViewHolder>(0, MyViewAction.clickChildViewWithId(R.id.vListRoot)))
-        //Thread.sleep(1000)
+        onView(withId(R.id.tvDebugText)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.openedWidget))))
+        onView(withId(R.id.tvDebugText)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.widgetVisible))))
 
+        // open lightbox by clicking an item in list
+        onView(withId(R.id.pxlPhotoRecyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition<PXLPhotoViewHolder>(0, MyViewAction.clickChildViewWithId(R.id.vListRoot)))
         onView(withId(R.id.tvDebugTextViewer)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.openedLightbox))))
     }
 
