@@ -347,7 +347,7 @@ public abstract class PXLBaseAlbum {
                 );
     }
 
-    Call<MediaResult> makePostUploadImage(String title, String email, String username, String photoURI, Boolean approved) {
+    public Call<MediaResult> makePostUploadImage(String title, String email, String username, String photoURI, Boolean approved) {
         JSONObject body = new JSONObject();
         try {
             body.put("album_id", Integer.parseInt(this.album_id));

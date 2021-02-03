@@ -49,7 +49,7 @@ public class PXLAlbum extends PXLBaseAlbum{
      * @return
      */
     @Override
-    Call<PhotoResult> makeGetAlbumCall(RequestHandlers<ArrayList<PXLPhoto>> handlers) {
+    public Call<PhotoResult> makeGetAlbumCall(RequestHandlers<ArrayList<PXLPhoto>> handlers) {
         if (album_id == null) {
             handlers.onError("No album id specified");
             return null;

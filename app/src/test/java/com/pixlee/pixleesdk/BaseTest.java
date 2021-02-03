@@ -80,7 +80,7 @@ public class BaseTest {
             mock.setBody(bodyResponse);
         mockWebServer.enqueue(mock);
 
-        PXLClient.initialize(apiKey, secretKey);
+        PXLClient.Companion.initialize(apiKey, secretKey);
     }
 
     /**
