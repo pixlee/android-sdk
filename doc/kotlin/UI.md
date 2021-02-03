@@ -138,7 +138,7 @@ fun readBookmarks(pxlPhoto: PXLPhoto): HashMap<String, Boolean> {
 
 #### [Automatic Analytics of PXLPhotoProductView]
 If you want to delegate firing `OpenLightbox` analytics event to PXLPhotoProductView, use this code. On the other hand, if you want to manually fire the event, you don't use this and implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
-- You need `PXLClient.autoAnalyticsEnabled = true` in your application level.
+- You need `PXLClient.autoAnalyticsEnabled = true` in your application that extends Application.
 ```kotlin
 #!kotlin
 class YourApplication: Application {

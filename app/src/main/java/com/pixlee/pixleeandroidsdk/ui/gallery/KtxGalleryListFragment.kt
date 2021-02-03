@@ -100,7 +100,7 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
 
     fun setDataForAutoAnlaytics() {
         // if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerView, use this code.
-        // Prerequisite: PXLClient.autoAnalyticsEnabled = true located in in your application level. please check AppApplication.kt
+        // Prerequisite: PXLClient.autoAnalyticsEnabled = true located in in your application that extends Application. please check AppApplication.kt
         pxlPhotoRecyclerView.albumForAutoAnalytics = BaseRecyclerView.AlbumForAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall.type)
 
         // if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
