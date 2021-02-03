@@ -105,7 +105,7 @@ class KtxBasicRepository(var api: KtxBasicAPI) : KtxBasicDataSource {
     }
 
     override suspend fun getMedia(album_photo_id: String): PXLPhoto {
-        return api.getMedia(album_photo_id, PXLClient.apiKey)
+        return getPhoto(album_photo_id)
     }
 
     override suspend fun getPhoto(album_photo_id: String): PXLPhoto {

@@ -16,5 +16,9 @@ class AppApplication: Application() {
         // to let PXLPhotoRecyclerViewInGrid, PXLPhotoRecyclerView and PXLPhotoProductView
         // fire 'openedWidget', 'widgetVisible' and 'openedLightbox' analytics events, use this.
         PXLClient.autoAnalyticsEnabled = true
+
+        // (Optional) if you use multi-region, you can set your region id here to get photos, a photo, and products available in the region.
+        val regionId:Int? = null
+        PXLClient.regionId = regionId
     }
 }

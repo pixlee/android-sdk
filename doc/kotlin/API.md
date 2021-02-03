@@ -66,27 +66,6 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
      searchId = searchId
 )
 ```
-- #### Advanced parameter options
-    - note: you can get the right currencies of your products by adding regionId to PXLKtxBaseAlbum.Params.
-```kotlin
-#!kotlin
-
-pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
-    searchId = searchId,
-    perPage = 30,
-    filterOptions = PXLAlbumFilterOptions().apply {
-        hasPermission = true
-        hasProduct = true
-        // ... there's more
-    },
-    sortOptions = PXLAlbumSortOptions().apply {
-        sortType = PXLAlbumSortType.RECENCY
-        descending = true
-        // ... there's more.
-    },
-    regionId = <Optional: your region id(Int)>       //<-------------- HERE is where you need to add your region id (Optional). If you don't know your region ids, please ask your account manager to give you it. 
-)
-```
 ### Get content (a list of PXLPhoto)
 Get the first page
 ```kotlin
@@ -107,8 +86,26 @@ val result = pxlKtxAlbum.getNextPage()
 ```kotlin
 #!Kotlin.coroutines
 
-val albumPhotoId:String = <one of your album photo ids>
-val result:PXLPhoto = pxlKtxAlbum.getPhotoWithId(albumPhotoId)
+class YourApplication: Application {
+    override fun onCreate() {
+        super.onCreate()
+        ... // initializing SDK
+
+        // give null, the default value is null
+        PXLClient.regionId = null
+        ...
+    }
+}
+
+class YourActivityOrFrament: Activity or Fragment {
+    // load this when you need
+    func getPhoto() {
+        val albumPhotoId:String = <one of your album photo ids>
+
+        // Deprecated: pxlKtxAlbum.getPhotoFromRegion(albumPhotoId)
+        val result:PXLPhoto = pxlKtxAlbum.getPhotoWithId(albumPhotoId)
+    }
+}
 ```
 
 ### Get a PXLPhoto from a region
@@ -116,8 +113,28 @@ val result:PXLPhoto = pxlKtxAlbum.getPhotoWithId(albumPhotoId)
 ```kotlin
 #!Kotlin.coroutines
 
-val albumPhotoId:String = <one of your album photo ids>
-val result:PXLPhoto = pxlKtxAlbum.getPhotoFromRegion(albumPhotoId)
+class YourApplication: Application {
+    override fun onCreate() {
+        super.onCreate()
+        ... // initializing SDK
+
+        // give null, the default value is null
+        PXLClient.regionId = your region id
+        ...
+    }
+}
+
+class YourActivityOrFrament: Activity or Fragment {
+    // load this when you need
+    func getPhoto() {
+        val albumPhotoId:String = <one of your album photo ids>
+
+        // Deprecated: pxlKtxAlbum.getPhotoFromRegion(albumPhotoId)
+        // val result:PXLPhoto = pxlKtxAlbum.getPhotoWithId(albumPhotoId)
+    }
+}
+
+
 ```
 
 ### How to get image urls

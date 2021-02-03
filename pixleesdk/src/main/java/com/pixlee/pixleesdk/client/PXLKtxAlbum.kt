@@ -120,6 +120,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      * @param pxlPhoto: PXLPhoto
      * @return PXLPhoto
      */
+    @Deprecated("will be removed soon because getPhotoWithId(pxlPhoto) provides the same functionality.", ReplaceWith("ktxBasicDataSource.getPhotoWithId(pxlPhoto)"))
     suspend fun getPhotoFromRegion(pxlPhoto: PXLPhoto): PXLPhoto {
         return ktxBasicDataSource.getPhoto(pxlPhoto.albumPhotoId)
     }
@@ -130,6 +131,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      * @param albumPhotoId: PXLPhoto.albumPhotoId
      * @return PXLPhoto
      */
+    @Deprecated("will be removed soon  because getPhotoWithId(albumPhotoId) provides the same functionality.", ReplaceWith("ktxBasicDataSource.getPhotoWithId(albumPhotoId)"))
     suspend fun getPhotoFromRegion(albumPhotoId: String): PXLPhoto {
         return ktxBasicDataSource.getPhoto(albumPhotoId)
     }

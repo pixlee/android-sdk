@@ -120,7 +120,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
                         pxlPhotoRecyclerViewInGrid.replaceList(it.list)
                         if (it.list.isNotEmpty()) {
                             it.list.firstOrNull()?.pxlPhoto?.also {
-                                viewModel.getPhotoFromRegion(it)  // add your own region id
+                                viewModel.getPhotoWithId(it)  // add your own region id
                             }
                         }
 
@@ -266,6 +266,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
                         sortOptions = readSortOptionsFromUI()
                 ))
 
+                // Please be aware that the right place you implement to set PXLClient.regionId is in your Application level. please check AppApplication.kt
                 PXLClient.regionId = readRegionIdFromUI()
 
                 PXLAlbumSortOptions().apply {

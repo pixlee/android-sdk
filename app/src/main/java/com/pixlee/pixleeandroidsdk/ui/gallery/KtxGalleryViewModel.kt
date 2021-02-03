@@ -29,24 +29,4 @@ class KtxGalleryViewModel(pxlKtxAlbum: PXLKtxAlbum) : BaseViewModel(pxlKtxAlbum)
             }
         }
     }
-
-    fun getPhotoFromRegion(albumPhotoId: String) {
-        viewModelScope.launch {
-            try {
-                pxlKtxAlbum.getPhotoFromRegion(albumPhotoId)
-            } catch (e: Exception) {
-                // error handling
-            }
-        }
-    }
-
-    fun getPhotoFromRegion(pxlPhoto: PXLPhoto) {
-        viewModelScope.launch {
-            try {
-                pxlKtxAlbum.getPhotoFromRegion(pxlPhoto)
-            } catch (e: Exception) {
-                // error handling
-            }
-        }
-    }
 }
