@@ -70,7 +70,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         listenAnalyticsForInstrumentTesting()
-        setDataForAutoAnlaytics()
+        setDataForAutoAnalytics()
         radioGroupContentTypeVideo.isChecked = true
         initRecyclerView()
         addViewModelListeners()
@@ -100,7 +100,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         }
     }
 
-    fun setDataForAutoAnlaytics() {
+    fun setDataForAutoAnalytics() {
         // if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerViewInGrid, use this code.
         // Prerequisite: PXLClient.autoAnalyticsEnabled = true located in in your application level. please check AppApplication.kt
         pxlPhotoRecyclerViewInGrid.albumForAutoAnalytics = BaseRecyclerView.AlbumForAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall.type)
