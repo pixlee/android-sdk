@@ -138,12 +138,26 @@ fun readBookmarks(pxlPhoto: PXLPhoto): HashMap<String, Boolean> {
 
 #### [Automatic Analytics of PXLPhotoProductView]
 If you want to delegate firing `OpenLightbox` analytics event to PXLPhotoProductView, use this code. On the other hand, if you want to manually fire the event, you don't use this and implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
-
+- You need `PXLClient.autoAnalyticsEnabled = true` in your application level.
 ```kotlin
 #!kotlin
-// alternative: pxlPhotoProductView.enableAutoAnalytics(regionId)
-pxlPhotoProductView.enableAutoAnalytics(regionId)
-pxlPhotoProductView.setContent(...)
+class YourApplication: Application {
+    override fun onCreate() {
+        super.onCreate()
+        // initializing SDK
+        PXLClient.initialize(<your api key>, <your secret key>)
+
+        PXLClient.autoAnalyticsEnabled = true <----- This activates this feature
+        PXLClient.regionId = your region id <--- set it if you use multi-region.
+    }
+}
+
+class YourActivityOrFrament: Activity or Fragment {
+    // load this when you need
+    func setup() {
+        pxlPhotoProductView.setContent(...)
+    }
+}
 ```
 
 #### you can add back and mute/unmute buttons to PXLPhotoProductView
@@ -471,9 +485,29 @@ override fun onCreate(savedInstanceState: Bundle?) {
 - ** [Important] Please be aware of giving the same instance of pxlKtxAlbum that you created to retrieve the list of PXLPhotos to send the correct album information to the analytics server.**
 ```kotlin
 #!kotlin
-// alternative: pxlPhotoRecyclerView.enableAutoAnalytics(pxlKtxAlbum, "photowall")
-pxlPhotoRecyclerView.enableAutoAnalytics(pxlKtxAlbum, PXLWidgetType.photowall)
-pxlPhotoRecyclerView.initiate(...)
+class YourApplication: Application {
+    override fun onCreate() {
+        super.onCreate()
+        // initializing SDK
+        PXLClient.initialize(<your api key>, <your secret key>)
+
+        PXLClient.autoAnalyticsEnabled = true <----- This activates this feature
+        PXLClient.regionId = your region id <--- set it if you use multi-region.
+    }
+}
+
+class YourActivityOrFrament: Activity or Fragment {
+    // load this when you need
+    func setup() {
+        pxlPhotoRecyclerView.albumForAutoAnalytics = BaseRecyclerView.AlbumForAutoAnalytics(pxlKtxAlbum, "your own widget type for analytics tracking")
+        pxlPhotoRecyclerView.initiate(...)
+    }
+
+    func loadPhotos(){
+        val pxlPhoto = pxlKtxAlbum.getNextPage()
+        ...
+    }
+}
 ```
 
 #### Play and stop the video
@@ -857,9 +891,29 @@ class YourActivity: AppCompatActivity, LifecycleObserver {
 - **[Important] Please be aware of giving the same instance of pxlKtxAlbum that you created to retrieve the list of PXLPhotos to send the correct album information to the analytics server.**
 ```kotlin
 #!kotlin
-// alternative: pxlPhotoRecyclerViewInGrid.enableAutoAnalytics(pxlKtxAlbum, "photowall")
-pxlPhotoRecyclerViewInGrid.enableAutoAnalytics(pxlKtxAlbum, PXLWidgetType.photowall)
-pxlPhotoRecyclerViewInGrid.initiate((...)
+class YourApplication: Application {
+    override fun onCreate() {
+        super.onCreate()
+        // initializing SDK
+        PXLClient.initialize(<your api key>, <your secret key>)
+
+        PXLClient.autoAnalyticsEnabled = true <----- This activates this feature
+        PXLClient.regionId = your region id <--- set it if you use multi-region.
+    }
+}
+
+class YourActivityOrFrament: Activity or Fragment {
+    // load this when you need
+    func setup() {
+        pxlPhotoRecyclerViewInGrid.albumForAutoAnalytics = BaseRecyclerView.AlbumForAutoAnalytics(pxlKtxAlbum, "your own widget type for analytics tracking")
+        pxlPhotoRecyclerViewInGrid.initiate(...)
+    }
+
+    func loadPhotos(){
+        val pxlPhoto = pxlKtxAlbum.getNextPage()
+        ...
+    }
+}
 ```
 
 #### Mute the video
