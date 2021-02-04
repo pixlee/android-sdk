@@ -21,7 +21,6 @@ jobs:
       - run:
           name: Build debug APK and release APK
           command: |
-            checkout
             ls -al
             ./gradlew :app:assembleDebug
             ./gradlew :app:assembleDebugAndroidTest
