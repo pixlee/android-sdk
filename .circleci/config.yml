@@ -21,6 +21,7 @@ jobs:
       - run:
           name: Build debug APK and release APK
           command: |
+            echo "$PIXLEE_PROPERTIES" | base64 --decode > pixleekey.properties
             ls -al
             ./gradlew :app:assembleDebug
             ./gradlew :app:assembleDebugAndroidTest
