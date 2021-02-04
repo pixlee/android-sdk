@@ -108,11 +108,11 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
 
     fun addViewModelListeners() {
 
-        viewModel.loading.observe(this, Observer {
+        viewModel.loading.observe(viewLifecycleOwner, Observer {
             lottieView.visibility = if (it) View.VISIBLE else View.GONE
         })
 
-        viewModel.searchResultEvent.observe(this, EventObserver {
+        viewModel.searchResultEvent.observe(viewLifecycleOwner, EventObserver {
             when (it) {
                 is BaseViewModel.Command.Data -> {
                     if (it.isFirstPage) {

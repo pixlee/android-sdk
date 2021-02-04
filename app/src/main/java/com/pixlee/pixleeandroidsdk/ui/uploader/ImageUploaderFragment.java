@@ -156,8 +156,8 @@ public class ImageUploaderFragment extends BaseFragment {
 
 
     void callMediaPicker() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/* video/*");
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/* video/*");
         startActivityForResult(intent, REQ_MEDIA_PICKER);
     }
 

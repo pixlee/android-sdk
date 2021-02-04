@@ -52,15 +52,15 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
 
     /**
      * testing
      */
-    testImplementation "com.fasterxml.jackson.core:jackson-databind:2.10.0"
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:2.10.3"
     //testImplementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8"
     testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp3"
-    androidTestImplementation "com.fasterxml.jackson.core:jackson-databind:2.10.0"
+    androidTestImplementation "com.fasterxml.jackson.core:jackson-databind:2.10.3"
     androidTestImplementation 'androidx.test.ext:junit-ktx:' + rootProject.extJUnitVersion
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:' + rootProject.espressoVersion
     androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:$jakeWhartonOkhttpOdlingResource"
