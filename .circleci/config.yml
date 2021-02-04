@@ -1,4 +1,14 @@
 version: 2
+workflows:
+  androidtest:
+    jobs:
+      - test:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: /.*/
+
 jobs:
   test:
     docker:
