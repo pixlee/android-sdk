@@ -1,8 +1,6 @@
 package com.pixlee.pixleesdk
 
-import android.util.Log
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleesdk.network.HMAC
 import org.json.JSONException
 import org.junit.Assert
