@@ -1,6 +1,6 @@
 version: 2.1
 workflows:
-  androidtest:
+  unit-test:
     jobs:
       - test:
           filters:
@@ -8,9 +8,16 @@ workflows:
               only: /.*/
             branches:
               only: /.*/
-
+  ui-test:
+    jobs:
+      - test:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: /.*/
 jobs:
-  test:
+  unit-test:
     docker:
       - image: circleci/android:api-28-node
         auth:
@@ -19,8 +26,15 @@ jobs:
     steps:
       - checkout
       - unit-tests
+  ui-test:
+    docker:
+      - image: circleci/android:api-28-node
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    steps:
+      - checkout
       - ui-tests
-
 commands:
   unit-tests:
     steps:
