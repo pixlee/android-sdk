@@ -57,6 +57,8 @@ dependencies {
     /**
      * testing
      */
+
+    testImplementation 'org.json:json:20200518'
     testImplementation "com.fasterxml.jackson.core:jackson-databind:2.10.3"
     //testImplementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8"
     testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp3"

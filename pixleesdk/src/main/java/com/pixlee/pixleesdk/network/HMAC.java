@@ -24,6 +24,7 @@ public class HMAC {
 //        return hmacSha1(baseString, secretKey);
     }
 
+
     private static String hmacSha1(String value, String key)
             throws UnsupportedEncodingException, NoSuchAlgorithmException,
             InvalidKeyException {
