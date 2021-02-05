@@ -693,7 +693,8 @@ public abstract class PXLBaseAlbum {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // disable messages from logs to clear noise
+            // e.printStackTrace();
         }
         return message;
     }

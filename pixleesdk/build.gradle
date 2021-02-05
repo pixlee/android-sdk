@@ -45,11 +45,12 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines"
 
-    testImplementation 'junit:junit:4.12'
 
     /**
      * testing
      */
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.json:json:20200518'
     androidTestImplementation "com.fasterxml.jackson.core:jackson-databind:2.10.0"
     androidTestImplementation 'androidx.test.ext:junit-ktx:' + rootProject.extJUnitVersion
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:' + rootProject.espressoVersion
