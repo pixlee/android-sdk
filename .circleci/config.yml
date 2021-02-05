@@ -19,10 +19,13 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build debug APK and release APK
+          name: Store Pixlee crecentials into pixleekey.properties
           command: |
             echo "$PIXLEE_PROPERTIES" | base64 --decode > pixleekey.properties
             ls -al
+      - run:
+          name: Build debug APK and release APK
+          command: |
             ./gradlew :app:assembleDebug
             ./gradlew :app:assembleDebugAndroidTest
       - run:
