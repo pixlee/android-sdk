@@ -18,7 +18,7 @@ import java.security.NoSuchAlgorithmException
 class HMACTest {
     @Test
     @Throws(JSONException::class, InvalidKeyException::class, NoSuchAlgorithmException::class)
-    fun success() {
+    fun `test-HMAC-SHA1`() {
         val text: String = ObjectMapper().createObjectNode().apply{
             this.put("album_id", 12345)
             this.put("title", "Testing Photo Upload")
@@ -27,11 +27,8 @@ class HMACTest {
             this.put("username", "Submitter Person")
             this.put("photo_uri", "https://example.com/test.jpg")
         }.toString().replace("\\/", "/")
-        val test = HMAC.computeHmac(text, BuildConfig.PIXLEE_SECRET_KEY)
-        //val targetResult = "epBvDlHbQho/rNDdQVJowWMtGsg="
-        val targetResult = "ecNiTFet7mjdz13BUUriyc0CgWM="
-        Log.e("UItest", "HMACTest.text: ($text)")
-        Log.e("UItest", "HMACTest.result: ($test), target: $targetResult")
+        val test = HMAC.computeHmac(text, "ABCDEFG")
+        val targetResult = "epBvDlHbQho/rNDdQVJowWMtGsg="
         Assert.assertEquals(targetResult, test)
     }
 }
