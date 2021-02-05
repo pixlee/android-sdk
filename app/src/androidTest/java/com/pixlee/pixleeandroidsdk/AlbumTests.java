@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.pixlee.pixleesdk.client.PXLAlbum;
 import com.pixlee.pixleesdk.client.PXLBaseAlbum;
@@ -18,7 +17,6 @@ import com.pixlee.pixleesdk.enums.PXLPhotoSize;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -27,12 +25,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
-
 /***
  * PXLAlbum tests
  */
-@RunWith(AndroidJUnit4.class)
 public class AlbumTests {
     private final static String TestAlbumId = BuildConfig.PIXLEE_ALBUM_ID;
     private final static String TestApiKey = BuildConfig.PIXLEE_API_KEY;
@@ -50,12 +45,6 @@ public class AlbumTests {
         requestCount = 0;
     }
 
-    @Test
-    public void useAppContext() throws Exception {
-        // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
-        assertEquals("com.pixlee.pixleesdk.test", appContext.getPackageName());
-    }
 
     @Test
     public void testFilters() throws Exception {

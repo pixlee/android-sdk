@@ -14,7 +14,6 @@ import java.security.NoSuchAlgorithmException
 /**
  * Created by sungjun on 2/1/21.
  */
-@RunWith(AndroidJUnit4::class)
 class HMACTest {
     @Test
     @Throws(JSONException::class, InvalidKeyException::class, NoSuchAlgorithmException::class)
