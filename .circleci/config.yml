@@ -1,23 +1,22 @@
 version: 2.1
 workflows:
-  unit-test:
+  testing:
     jobs:
-      - test:
+      - unit:
           filters:
             tags:
               only: /.*/
             branches:
               only: /.*/
-  ui-test:
-    jobs:
-      - test:
+      - ui:
           filters:
             tags:
               only: /.*/
             branches:
               only: /.*/
+
 jobs:
-  unit-test:
+  unit:
     docker:
       - image: circleci/android:api-28-node
         auth:
@@ -26,7 +25,7 @@ jobs:
     steps:
       - checkout
       - unit-tests
-  ui-test:
+  ui:
     docker:
       - image: circleci/android:api-28-node
         auth:
