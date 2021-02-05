@@ -108,7 +108,7 @@ public class QueryAlbumAPITest extends BaseTest {
                         Assert.assertTrue(photos.size() > 0);
                         Assert.assertEquals("yosemite", photos.get(0).photoTitle);
                         Assert.assertEquals("382949209", photos.get(0).albumPhotoId);
-                        Assert.assertEquals(12608567, photos.get(0).albumId);
+                        Assert.assertEquals(1112608567, photos.get(0).albumId);
                     }
 
                     @Override
