@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class JsonUtilTests {
-    //@Test
+    @Test
     public void optDecodeStringTests() throws Exception {
         JSONObject json = new JSONObject();
         String field = "testField";

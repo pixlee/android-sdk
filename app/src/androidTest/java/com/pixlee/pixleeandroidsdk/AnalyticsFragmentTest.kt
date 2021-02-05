@@ -53,7 +53,7 @@ class AnalyticsFragmentTest {
         // open widget
         PXLClient.autoAnalyticsEnabled = false
         onView(withId(R.id.btKtxAlbumList)).perform(waitUntil(isDisplayed())).perform(ViewActions.click())
-        onView(withId(R.id.tvDebugText)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString("force to fail"))))
+        onView(withId(R.id.tvDebugText)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsObserver.noEventsMessage))))
         onView(withId(R.id.tvDebugText)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsObserver.noEventsMessage))))
         onView(withId(R.id.tvDebugText)).check(matches(withText(StringContains.containsString(AnalyticsObserver.noEventsMessage))))
 

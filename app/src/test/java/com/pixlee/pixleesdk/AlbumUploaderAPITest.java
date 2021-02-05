@@ -48,7 +48,7 @@ public class AlbumUploaderAPITest extends BaseTest {
     }
 
 
-    //@Test
+    @Test
     public void success() throws Exception {
         // mock the response
         ready(
@@ -77,7 +77,7 @@ public class AlbumUploaderAPITest extends BaseTest {
         );
     }
 
-    //@Test
+    @Test
     public void error_401() throws Exception {
         // mock the response
         ready(
@@ -104,7 +104,7 @@ public class AlbumUploaderAPITest extends BaseTest {
         );
     }
 
-    //@Test
+    @Test
     public void error_404() throws Exception {
         // mock the response
         ready(
@@ -131,7 +131,7 @@ public class AlbumUploaderAPITest extends BaseTest {
         );
     }
 
-    //@Test
+    @Test
     public void error_nullEmail() throws Exception {
         // mock the response
         ready(
@@ -158,7 +158,7 @@ public class AlbumUploaderAPITest extends BaseTest {
         );
     }
 
-    //@Test
+    @Test
     public void error_501() throws Exception {
         // mock the response
         ready(
