@@ -32,7 +32,7 @@ jobs:
           name: Authorize gcloud and set config defaults
           command: |
             sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-            sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+            sudo gcloud --quiet config set project pixlee-sdk
       - run:
           name: Test with Firebase Test Lab
           command: >
@@ -41,4 +41,4 @@ jobs:
               --app app/build/outputs/apk/debug/app-debug.apk \
               --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
               --device model=Nexus6,version=21,locale=en,orientation=portrait \
-              --results-bucket cloud-test-${GOOGLE_PROJECT_ID}
+              --results-bucket cloud-test-pixlee-sdk
