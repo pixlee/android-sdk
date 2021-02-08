@@ -2,7 +2,6 @@ package com.pixlee.pixleeandroidsdk.ui.gallery
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +21,7 @@ import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
 import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.ViewerActivity
+import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
@@ -32,11 +32,11 @@ import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
+import com.pixlee.pixleesdk.ui.widgets.list.BaseRecyclerView
 import com.pixlee.pixleesdk.util.EventObserver
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.*
 import kotlinx.android.synthetic.main.module_search.*
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 
 
@@ -60,7 +60,7 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         listenAnalyticsForInstrumentTesting()
-        enableAutoAnalytics()
+        setDataForAutoAnalytics()
         radioGroupContentTypeVideo.isChecked = false
         switchSound.isChecked = false
         switchSound.setOnClickListener {
@@ -98,20 +98,21 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
         }
     }
 
-    fun enableAutoAnalytics() {
+    fun setDataForAutoAnalytics() {
         // if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerView, use this code.
+        // Prerequisite: PXLClient.autoAnalyticsEnabled = true located in in your application that extends Application. please check AppApplication.kt
+        pxlPhotoRecyclerView.albumForAutoAnalytics = BaseRecyclerView.AlbumForAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall.type)
+
         // if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
-        // alternative: pxlPhotoRecyclerView.enableAutoAnalytics(viewModel.pxlKtxAlbum, "photowall")
-        pxlPhotoRecyclerView.enableAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall)
     }
 
     fun addViewModelListeners() {
 
-        viewModel.loading.observe(this, Observer {
+        viewModel.loading.observe(viewLifecycleOwner, Observer {
             lottieView.visibility = if (it) View.VISIBLE else View.GONE
         })
 
-        viewModel.searchResultEvent.observe(this, EventObserver {
+        viewModel.searchResultEvent.observe(viewLifecycleOwner, EventObserver {
             when (it) {
                 is BaseViewModel.Command.Data -> {
                     if (it.isFirstPage) {
@@ -119,7 +120,7 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
                         pxlPhotoRecyclerView.playVideoOnResume()
                         if (it.list.isNotEmpty()) {
                             it.list.firstOrNull()?.pxlPhoto?.also {
-                                viewModel.getPhotoFromRegion(it) // add your own region id
+                                viewModel.getPhotoWithId(it) // add your own region id
                             }
                         }
 
@@ -243,9 +244,12 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
                         searchId = searchId,
                         perPage = readPerPage(),
                         filterOptions = readFilterOptionsFromUI(),
-                        sortOptions = readSortOptionsFromUI(),
-                        regionId = readRegionIdFromUI()
+                        sortOptions = readSortOptionsFromUI()
                 ))
+
+                // Please be aware that the right place you implement to set PXLClient.regionId is in your Application level. please check AppApplication.kt
+                PXLClient.regionId = readRegionIdFromUI()
+
                 PXLAlbumSortOptions().apply {
                     sortType = PXLAlbumSortType.RECENCY
                     descending = true

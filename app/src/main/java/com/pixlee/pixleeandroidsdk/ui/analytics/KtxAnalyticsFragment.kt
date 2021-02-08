@@ -11,10 +11,10 @@ import androidx.core.view.GravityCompat
 import androidx.core.widget.NestedScrollView
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.pixlee.pixleeandroidsdk.BuildConfig
-import com.pixlee.pixleesdk.util.EventObserver
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
+import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
@@ -24,6 +24,7 @@ import com.pixlee.pixleesdk.enums.PXLContentSource
 import com.pixlee.pixleesdk.enums.PXLContentType
 import com.pixlee.pixleesdk.enums.PXLWidgetType
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
+import com.pixlee.pixleesdk.util.EventObserver
 import kotlinx.android.synthetic.main.fragment_analytics.*
 import kotlinx.android.synthetic.main.module_search.*
 import java.util.*
@@ -80,20 +81,20 @@ class KtxAnalyticsFragment : BaseFragment() {
     }
 
     fun setViewModelListener() {
-        viewModel.loading.observe(this, androidx.lifecycle.Observer {
+        viewModel.loading.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             vProgress.visibility = if (it) View.VISIBLE else View.INVISIBLE
             if (it) tvStatus.setText(R.string.album_loading_ing)
             enableAlbumButtons(!it)
         })
-        viewModel.searchResultEvent.observe(this, EventObserver {
+        viewModel.searchResultEvent.observe(viewLifecycleOwner, EventObserver {
             when (it) {
                 is BaseViewModel.Command.Data -> {
                     it.list.firstOrNull()?.also {
                         pxlPhotoView.setContent(it.pxlPhoto, ImageScaleType.FIT_CENTER)
                     }
                     tvStatus.setText(R.string.album_loading_complete)
-                    tvStatus.text = if(it.isFirstPage) "First Load" else "Loaded More..."
-                    if(it.isFirstPage){
+                    tvStatus.text = if (it.isFirstPage) "First Load" else "Loaded More..."
+                    if (it.isFirstPage) {
                         // fire analytics after you received more pages
                         viewModel.loadMore()
                     }
@@ -136,9 +137,12 @@ class KtxAnalyticsFragment : BaseFragment() {
                         searchId = searchId,
                         perPage = readPerPage(),
                         filterOptions = readFilterOptionsFromUI(),
-                        sortOptions = readSortOptionsFromUI(),
-                        regionId = readRegionIdFromUI()
+                        sortOptions = readSortOptionsFromUI()
                 ))
+
+                // Please be aware that the right place you implement to set PXLClient.regionId is in your Application level. please check AppApplication.kt
+                PXLClient.regionId = readRegionIdFromUI()
+
                 PXLAlbumSortOptions().apply {
                     sortType = PXLAlbumSortType.RECENCY
                     descending = true
@@ -175,7 +179,7 @@ class KtxAnalyticsFragment : BaseFragment() {
         })
         btAddToCart.setOnClickListener(View.OnClickListener {
             showMessage("addToCart()")
-            viewModel.addToCart( BuildConfig.PIXLEE_SKU, "12000", 3)
+            viewModel.addToCart(BuildConfig.PIXLEE_SKU, "12000", 3)
             // Alternative: viewModel.addToCart("13000",2, "AUD");
         })
         btConversion.setOnClickListener(View.OnClickListener {
@@ -244,11 +248,11 @@ class KtxAnalyticsFragment : BaseFragment() {
         val sb = StringBuilder()
         if (isASC) {
             for (i in 1..100) {
-                sb.append("----- $text ${String.format("%03d", i)} ----\n")
+                sb.append("----- $text ${String.format(Locale.US, "%03d", i)} ----\n")
             }
         } else {
             for (i in 100 downTo 1) {
-                sb.append("----- $text ${String.format("%03d", i)} ----\n")
+                sb.append("----- $text ${String.format(Locale.US, "%03d", i)} ----\n")
             }
         }
         return sb.toString()

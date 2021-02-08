@@ -34,9 +34,18 @@ android {
     }
 
     testOptions {
-        unitTests.returnDefaultValues = true
+//        unitTests.returnDefaultValues = true
+        testOptions {
+            unitTests.all {
+                // All the usual Gradle options.
+                testLogging {
+                    events "passed", "skipped", "failed", "standardOut", "standardError"
+                    outputs.upToDateWhen {false}
+                    showStandardStreams = true
+                }
+            }
+        }
     }
-
 }
 
 repositories {
@@ -52,12 +61,22 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
 
     /**
      * testing
      */
-    androidTestImplementation 'androidx.test.ext:junit-ktx:' + rootProject.extJUnitVersion
+
+    testImplementation 'org.json:json:20200518'
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:2.10.3"
+    //testImplementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8"
+    testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp3"
+
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test:rules:1.3.0'
+    androidTestImplementation 'androidx.test.ext:junit:' + rootProject.extJUnitVersion
+    androidTestImplementation "androidx.test.ext:junit-ktx:" + rootProject.extJUnitVersion
+    androidTestImplementation "com.fasterxml.jackson.core:jackson-databind:2.10.3"
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:' + rootProject.espressoVersion
     androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:$jakeWhartonOkhttpOdlingResource"
 

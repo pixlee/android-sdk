@@ -15,7 +15,6 @@ import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.AutoPlayUtils
 import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by sungjun on 9/17/20.
@@ -99,7 +98,7 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver {
         }
         super.setList(type, list)
         moveScrollToInitialPosition(needToMoveScroll)
-        fireAnalytics()
+        fireOpenAndVisible()
     }
 
     private fun moveScrollToInitialPosition(needToMoveScroll: Boolean) {

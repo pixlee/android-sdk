@@ -5,11 +5,9 @@ import android.text.Spannable
 import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
-import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextPadding
 import com.pixlee.pixleesdk.util.GridSpacingItemDecoration
 import com.pixlee.pixleesdk.util.px
@@ -61,7 +59,7 @@ open class PXLPhotoRecyclerViewInGrid : BaseRecyclerView {
             }
             pxlPhotoAdapter.notifyDataSetChanged()
         }
-        fireAnalytics()
+        fireOpenAndVisible()
     }
 }
 

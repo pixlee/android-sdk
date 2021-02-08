@@ -27,6 +27,7 @@ import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * This shows how you can fire all analytics of Pixlee.
@@ -280,10 +281,10 @@ public class AnalyticsFragment extends BaseFragment {
         StringBuilder sb = new StringBuilder();
         if (isASC) {
             for (int i = 1; i <= 100; i++)
-                sb.append("----- " + text + " " + String.format("%03d", i) + " ----\n");
+                sb.append("----- " + text + " " + String.format(Locale.US,"%03d", i) + " ----\n");
         } else {
             for (int i = 100; i > 0; i--)
-                sb.append("----- " + text + " " + String.format("%03d", i) + " ----\n");
+                sb.append("----- " + text + " " + String.format(Locale.US,"%03d", i) + " ----\n");
         }
         return sb.toString();
     }

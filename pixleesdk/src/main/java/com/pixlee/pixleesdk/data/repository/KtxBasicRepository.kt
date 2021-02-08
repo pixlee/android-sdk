@@ -33,8 +33,7 @@ interface KtxBasicDataSource {
             filters: PXLAlbumFilterOptions?,
             sort: PXLAlbumSortOptions?,
             per_page: Int,
-            page: Int,
-            region_id: Int?
+            page: Int
     ): PhotoResult
 
     /**
@@ -51,8 +50,7 @@ interface KtxBasicDataSource {
             filters: PXLAlbumFilterOptions?,
             sort: PXLAlbumSortOptions?,
             per_page: Int,
-            page: Int,
-            region_id: Int?
+            page: Int
     ): PhotoResult
 
     /**
@@ -63,10 +61,9 @@ interface KtxBasicDataSource {
 
     /**
      * @param album_photo_id: This is returns PXLPhoto with album_photo_id which can be discovered in PXLPhoto.albumPhotoId
-     * @param region_id: region id to get data from a specific region
      * @return PXLPhoto
      */
-    suspend fun getPhoto(album_photo_id: String, region_id:Int?): PXLPhoto
+    suspend fun getPhoto(album_photo_id: String): PXLPhoto
 
     /**
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
@@ -99,20 +96,20 @@ interface KtxBasicDataSource {
  * This object loads data from and uploads data to the server using BasicAPI.java, a Retrofit HTTP API class.
  */
 class KtxBasicRepository(var api: KtxBasicAPI) : KtxBasicDataSource {
-    override suspend fun getPhotosWithSKU(sku: String, filters: PXLAlbumFilterOptions?, sort: PXLAlbumSortOptions?, per_page: Int, page: Int, region_id: Int?): PhotoResult {
-        return api.getPhotosWithSKU(sku, PXLClient.apiKey, filters?.toParamString(), sort?.toParamString(), per_page, page, region_id)
+    override suspend fun getPhotosWithSKU(sku: String, filters: PXLAlbumFilterOptions?, sort: PXLAlbumSortOptions?, per_page: Int, page: Int): PhotoResult {
+        return api.getPhotosWithSKU(sku, PXLClient.apiKey, filters?.toParamString(), sort?.toParamString(), per_page, page, PXLClient.regionId)
     }
 
-    override suspend fun getPhotosWithID(album_id: String, filters: PXLAlbumFilterOptions?, sort: PXLAlbumSortOptions?, per_page: Int, page: Int, region_id: Int?): PhotoResult {
-        return api.getPhotosWithID(album_id, PXLClient.apiKey, filters?.toParamString(), sort?.toParamString(), per_page, page, region_id)
+    override suspend fun getPhotosWithID(album_id: String, filters: PXLAlbumFilterOptions?, sort: PXLAlbumSortOptions?, per_page: Int, page: Int): PhotoResult {
+        return api.getPhotosWithID(album_id, PXLClient.apiKey, filters?.toParamString(), sort?.toParamString(), per_page, page, PXLClient.regionId)
     }
 
     override suspend fun getMedia(album_photo_id: String): PXLPhoto {
-        return api.getMedia(album_photo_id, PXLClient.apiKey)
+        return getPhoto(album_photo_id)
     }
 
-    override suspend fun getPhoto(album_photo_id: String, region_id: Int?): PXLPhoto {
-        return api.getPhoto(album_photo_id, PXLClient.apiKey, region_id)
+    override suspend fun getPhoto(album_photo_id: String): PXLPhoto {
+        return api.getPhoto(album_photo_id, PXLClient.apiKey, PXLClient.regionId)
     }
 
     override suspend fun postMediaWithURI(json: JSONObject): MediaResult {

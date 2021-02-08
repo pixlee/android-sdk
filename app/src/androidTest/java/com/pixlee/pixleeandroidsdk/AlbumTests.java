@@ -1,10 +1,9 @@
-package com.pixlee.pixleesdk;
+package com.pixlee.pixleeandroidsdk;
 
 import android.content.Context;
 import android.util.Log;
 
 import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.pixlee.pixleesdk.client.PXLAlbum;
 import com.pixlee.pixleesdk.client.PXLBaseAlbum;
@@ -18,7 +17,6 @@ import com.pixlee.pixleesdk.enums.PXLPhotoSize;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -27,15 +25,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
-
 /***
  * PXLAlbum tests
  */
-@RunWith(AndroidJUnit4.class)
 public class AlbumTests {
-    private final static String TestAlbumId = "5984962";
-    private final static String TestApiKey = "ccWQFNExi4gQjyNYpOEf";// "zk4wWCOaHAo4Hi8HsE";
+    private final static String TestAlbumId = BuildConfig.PIXLEE_ALBUM_ID;
+    private final static String TestApiKey = BuildConfig.PIXLEE_API_KEY;
     private PXLAlbum testAlbum;
     private Random random;
     private int requestCount;
@@ -43,19 +38,13 @@ public class AlbumTests {
     @Before
     public void setup() {
         Context c = InstrumentationRegistry.getTargetContext();
-        PXLClient.initialize(TestApiKey);
+        PXLClient.Companion.initialize(TestApiKey, null);
 
-        testAlbum = new PXLAlbum(TestAlbumId, PXLClient.getInstance(c));
+        testAlbum = new PXLAlbum(TestAlbumId, PXLClient.Companion.getInstance(c));
         this.random = new Random();
         requestCount = 0;
     }
 
-    @Test
-    public void useAppContext() throws Exception {
-        // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
-        assertEquals("com.pixlee.pixleesdk.test", appContext.getPackageName());
-    }
 
     @Test
     public void testFilters() throws Exception {
@@ -88,7 +77,7 @@ public class AlbumTests {
     public void testPhotoLoad() throws Exception {
         requestCount++;
         // update api key and photo id to match
-        String album_photo_id = "187177895";
+        String album_photo_id = "381257461";
         testAlbum.getPhotoWithId(album_photo_id, new PXLBaseAlbum.RequestHandlers<PXLPhoto>() {
             @Override
             public void onComplete(PXLPhoto photo) {
@@ -142,6 +131,7 @@ public class AlbumTests {
         for (int i = 0; i < fields.length; i++) {
             PXLAlbumFilterOptions fo = new PXLAlbumFilterOptions();
             Object val = this.getTestVal(fields[i]);
+
             if (val != null) {
                 fields[i].set(fo, val);
             } else {
@@ -153,6 +143,10 @@ public class AlbumTests {
     }
 
     private Object getTestVal(Field field) {
+        if("filterByRadius".equals(field.getName())){
+            return "21.3069,-157.8583,20";
+        }
+
         Class<?> type = field.getType();
         if (type.equals(Boolean.TYPE) || type.equals(Boolean.class)) {
             return random.nextBoolean();

@@ -39,13 +39,4 @@ public class JsonUtils {
         }
         return null;
     }
-
-    public static String optDecodeString(String fieldName, JSONObject json) throws UnsupportedEncodingException {
-        if (json == null) {
-            return null;
-        }
-
-        String text = json.optString(fieldName);
-        return URLDecoder.decode(text, Charset.defaultCharset().name());
-    }
 }

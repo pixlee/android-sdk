@@ -7,8 +7,7 @@
         - Option 2: [to get Product content](#to-get-Product-content)
         - [Advanced parameter options](#Advanced-parameter-options)
     - [Get content](#Get-content)
-    - [Get PXLPhoto from default region](API.md#Get-PXLPhoto-from-default-region)
-    - [Get a PXLPhoto from a region](API.md#Get-a-PXLPhoto-from-a-region)
+    - [Get a PXLPhoto](#Get-a-PXLPhoto)
     - [How to get image urls](#How-to-get-image-urls)
 - Analytics
     - [Album Analytics](#Album-Analytics)
@@ -66,27 +65,6 @@ pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
      searchId = searchId
 )
 ```
-- #### Advanced parameter options
-    - note: you can get the right currencies of your products by adding regionId to PXLKtxBaseAlbum.Params.
-```kotlin
-#!kotlin
-
-pxlKtxAlbum.params = PXLKtxBaseAlbum.Params(
-    searchId = searchId,
-    perPage = 30,
-    filterOptions = PXLAlbumFilterOptions().apply {
-        hasPermission = true
-        hasProduct = true
-        // ... there's more
-    },
-    sortOptions = PXLAlbumSortOptions().apply {
-        sortType = PXLAlbumSortType.RECENCY
-        descending = true
-        // ... there's more.
-    },
-    regionId = <Optional: your region id(Int)>       //<-------------- HERE is where you need to add your region id (Optional). If you don't know your region ids, please ask your account manager to give you it. 
-)
-```
 ### Get content (a list of PXLPhoto)
 Get the first page
 ```kotlin
@@ -102,22 +80,33 @@ Get the next pages
 val result = pxlKtxAlbum.getNextPage()
 ```
 
-### Get PXLPhoto from default region
-- if you have multi regions, your default region is set on the server. to get more detail about your default region, please reach out your customer success manager
+### Get a PXLPhoto
 ```kotlin
 #!Kotlin.coroutines
 
-val albumPhotoId:String = <one of your album photo ids>
-val result:PXLPhoto = pxlKtxAlbum.getPhotoWithId(albumPhotoId)
-```
+class YourApplication: Application {
+    override fun onCreate() {
+        super.onCreate()
+        ... // initializing SDK
 
-### Get a PXLPhoto from a region
-- before firing this, you must basically add region when setting up pxlKtxAlbum.params
-```kotlin
-#!Kotlin.coroutines
+        // if you have multi-region, give the right region id. If you don't know about your region ids, Please reach out your Customer Success Manager.
+        // if you don't use multi-region, just ignore this line or give it null (ex: PXLClient.regionId = null)
+        PXLClient.regionId = your region id
+        ...
+    }
+}
 
-val albumPhotoId:String = <one of your album photo ids>
-val result:PXLPhoto = pxlKtxAlbum.getPhotoFromRegion(albumPhotoId)
+class YourActivityOrFrament: Activity or Fragment {
+    // load this when you need
+    func getPhoto() {
+        val albumPhotoId:String = <one of your album photo ids>
+        // Deprecated: pxlKtxAlbum.getPhotoFromRegion(albumPhotoId)
+        // Alternative:  pxlKtxAlbum.getPhotoWithId(pxlPhoto)
+        // val result:PXLPhoto = pxlKtxAlbum.getPhotoWithId(albumPhotoId)
+    }
+}
+
+
 ```
 
 ### How to get image urls
@@ -175,7 +164,7 @@ See the onComplete function in GalleryFragment.java for an example.
 
     pxlKtxAlbum.loadMore();
     ```
-- if you want to manually fire pxlKtxAlbum.loadMore(), first you must successfully call this pxlKtxAlbum.getNextPage(callLoadMoreAnalytics = true) to get content which does not fire loadMore(), then you manually fire pxlKtxAlbum.loadMore() in your app.
+- if you want to manually fire pxlKtxAlbum.loadMore(), first you must successfully call this pxlKtxAlbum.getNextPage() to get content which does not fire loadMore(), then you manually fire pxlKtxAlbum.loadMore() in your app.
 
 ### Opened Lightbox
 - To fire an opened ligtbox event, simply call the `openedLightbox` method of PXLKtxAlbum, and an "Opened Lightbox" event will be fired containing all of the necessary analytics information.

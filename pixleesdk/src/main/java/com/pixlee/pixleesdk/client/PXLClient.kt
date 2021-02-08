@@ -22,6 +22,12 @@ class PXLClient(val context: Context) {
         var secretKey: String? = null
         var android_id: String? = null
 
+        // region id differentiates analytics events by region
+        var regionId: Int? = null
+
+        // if this is true, you can delegate the SDK to fire most analytics events for you. for more information, please read README.md
+        var autoAnalyticsEnabled: Boolean = false
+
         /***
          * Must be called before use. Sets the api key.
          * @param apiKey

@@ -63,14 +63,6 @@ class ViewerActivity : AppCompatActivity() {
         // by passing lifecycle to pxlPhotoProductView, the SDK will automatically start and stop the video
         pxlPhotoProductView.useLifecycleObserver(lifecycle)
 
-        // set one of your region ids if you have.
-        val regionId: Int? = null
-
-        // if you want to delegate firing `OpenLightbox` analytics event to PXLPhotoProductView, use this code.
-        // if you want to manually fire it, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
-        // alternative: pxlPhotoProductView.enableAutoAnalytics(regionId)
-        pxlPhotoProductView.enableAutoAnalytics(regionId)
-
         // set your ui settings
         pxlPhotoProductView
                 .setContent(photoInfo = item,
