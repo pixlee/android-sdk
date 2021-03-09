@@ -10,19 +10,21 @@ import android.util.TypedValue
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.lifecycleScope
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
-import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
-import com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
-import com.pixlee.pixleesdk.ui.widgets.TextStyle
+import com.pixlee.pixleesdk.ui.widgets.*
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.activity_viewer.*
-import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -32,7 +34,7 @@ import java.util.*
 /**
  * This shows how to play the video and its product list
  */
-class ViewerActivity : AppCompatActivity() {
+class ViewerActivity : AppCompatActivity(), LifecycleObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_viewer)
@@ -66,79 +68,111 @@ class ViewerActivity : AppCompatActivity() {
         // set your ui settings
         pxlPhotoProductView
                 .setContent(photoInfo = item,
-                headerConfiguration = PXLPhotoProductView.Configuration().apply {
-                    backButton = PXLPhotoProductView.CircleButton().apply {
-                        icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18
-                        iconColor = Color.BLACK
-                        backgroundColor = Color.WHITE
-                        padding = 10.px.toInt()
-                        onClickListener = {
-                            // back button's click effect
-                            Toast.makeText(this@ViewerActivity, "Replace this with your codes, currently 'onBackPressed()'", Toast.LENGTH_LONG).show()
-                            onBackPressed()
-                        }
-                    }
-                    muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
-                        mutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_up_black_18
-                        unmutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_off_black_18
-                        iconColor = Color.BLACK
-                        backgroundColor = Color.WHITE
-                        padding = 10.px.toInt()
-                        onCheckedListener = {
-                            Toast.makeText(this@ViewerActivity, "is muted: $it", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                },
-                configuration = ProductViewHolder.Configuration().apply {
-                    circleIcon = ProductViewHolder.CircleIcon().apply {
-                        icon = R.drawable.outline_shopping_bag_black_24
-                        iconColor = Color.DKGRAY
-                        backgroundColor = ContextCompat.getColor(this@ViewerActivity, R.color.yellow_800)
-                        padding = 5.px.toInt()
-                    }
-                    mainTextStyle = TextStyle().apply {
-                        color = Color.BLACK
-                        size = 14.px
-                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                        typeface = null
-                    }
-                    subTextStyle = TextStyle().apply {
-                        color = Color.BLACK
-                        size = 12.px
-                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                        typeface = null
-                    }
-                    bookmarkDrawable = ProductViewHolder.Bookmark().apply {
-                        isVisible = true
-                        selectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_black_36
-                        unselectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_border_black_36
-                    }
-                    priceTextStyle = CurrencyTextStyle().apply {
-                        defaultCurrency = "EUR" // or null
-                        leftText = TextStyle().apply {
-                            color = Color.BLACK
-                            size = 24.px
-                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                            typeface = null
-                        }
+                        headerConfiguration = PXLPhotoProductView.Configuration().apply {
+                            backButton = PXLPhotoProductView.CircleButton().apply {
+                                icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18
+                                iconColor = Color.BLACK
+                                backgroundColor = Color.WHITE
+                                padding = 10.px.toInt()
+                                onClickListener = {
+                                    // back button's click effect
+                                    Toast.makeText(this@ViewerActivity, "Replace this with your codes, currently 'onBackPressed()'", Toast.LENGTH_LONG).show()
+                                    onBackPressed()
+                                }
+                            }
+                            muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
+                                mutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_up_black_18
+                                unmutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_off_black_18
+                                iconColor = Color.BLACK
+                                backgroundColor = Color.WHITE
+                                padding = 10.px.toInt()
+                                onCheckedListener = {
+                                    Toast.makeText(this@ViewerActivity, "is muted: $it", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        },
+                        configuration = ProductViewHolder.Configuration().apply {
+                            circleIcon = ProductViewHolder.CircleIcon().apply {
+                                icon = R.drawable.outline_shopping_bag_black_24
+                                iconColor = Color.DKGRAY
+                                backgroundColor = ContextCompat.getColor(this@ViewerActivity, R.color.yellow_800)
+                                padding = 5.px.toInt()
+                            }
+                            mainTextStyle = TextStyle().apply {
+                                color = Color.BLACK
+                                size = 14.px
+                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                typeface = null
+                            }
+                            subTextStyle = TextStyle().apply {
+                                color = Color.BLACK
+                                size = 12.px
+                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                typeface = null
+                            }
+                            videoTimestampTextViewStyle = TextViewStyle().apply {
+                                text = "appears at - " //this text will have a video time text like 03:40 (3 mins and 40 secs)
+                                textPadding = TextPadding(top = 10.px.toInt(), bottom = 10.px.toInt()) // without padding, the click area of this timestamp is quite narrow. If you need a larger click area, give it padding.
+                                color = Color.parseColor("#7A7A7A")
+                                size = 12.px
+                            }
+                            bookmarkDrawable = ProductViewHolder.Bookmark().apply {
+                                isVisible = true
+                                selectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_black_36
+                                unselectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_border_black_36
+                            }
+                            priceTextStyle = CurrencyTextStyle().apply {
+                                defaultCurrency = "EUR" // or null
+                                leftText = TextStyle().apply {
+                                    color = Color.BLACK
+                                    size = 24.px
+                                    sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                    typeface = null
+                                }
 
-                        rightText = TextStyle().apply {
-                            color = Color.BLACK
-                            size = 14.px
-                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                            typeface = null
-                        }
+                                rightText = TextStyle().apply {
+                                    color = Color.BLACK
+                                    size = 14.px
+                                    sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                    typeface = null
+                                }
+                            }
+                        },
+                        bookmarkMap = readBookmarks(item.pxlPhoto),
+                        onBookmarkClicked = { productId, isBookmarkChecked ->
+                            Toast.makeText(this, "productId: $productId\nisBookmarkChecked: $isBookmarkChecked", Toast.LENGTH_SHORT).show()
+                        },
+                        onProductClicked = {
+                            Toast.makeText(this, "product clicked, product id: ${it.id}", Toast.LENGTH_SHORT).show()
+                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it.link.toString()))
+                            startActivity(browserIntent)
+                        })
+    }
+
+    var videoTimer: VideoTimer? = null
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun startTimer() {
+        lifecycleScope.launch {
+            async {
+                videoTimer?.stop()
+                videoTimer = VideoTimer()
+                videoTimer?.start {
+                    val timestamp = pxlPhotoProductView.getTimerTimestamp()
+                    val time = String.format(Locale.US, "%02d:%02d", timestamp / 60, timestamp % 60)
+                    launch(Dispatchers.Main) {
+                        tvDebugTimerTextViewer.text = time
                     }
-                },
-                bookmarkMap = readBookmarks(item.pxlPhoto),
-                onBookmarkClicked = { productId, isBookmarkChecked ->
-                    Toast.makeText(this, "productId: $productId\nisBookmarkChecked: $isBookmarkChecked", Toast.LENGTH_SHORT).show()
-                },
-                onProductClicked = {
-                    Toast.makeText(this, "product clicked, product id: ${it.id}", Toast.LENGTH_SHORT).show()
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it.link.toString()))
-                    startActivity(browserIntent)
-                })
+                    Log.e("videoTimer", "infinite loop end")
+                }
+            }
+            Log.e("videoTimer", "async done")
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun stopTimer() {
+        videoTimer?.stop()
+        videoTimer = null
     }
 
     /**

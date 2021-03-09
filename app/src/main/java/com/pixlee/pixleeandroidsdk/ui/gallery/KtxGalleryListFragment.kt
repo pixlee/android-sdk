@@ -282,7 +282,7 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
         val minTwitterFollowers = textViewPerPage.text.toString()
         return if (!minTwitterFollowers.isEmpty()) {
             Integer.valueOf(minTwitterFollowers)
-        } else 20
+        } else 23
 
         // a default for perPage
     }
