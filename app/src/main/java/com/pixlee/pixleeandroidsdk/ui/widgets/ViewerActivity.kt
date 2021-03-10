@@ -59,6 +59,9 @@ class ViewerActivity : AppCompatActivity() {
         // by passing lifecycle to pxlPhotoProductView, the SDK will automatically start and stop the video
         pxlPhotoProductView.useLifecycleObserver(lifecycle)
 
+        // this is an example that you can change the imageScaleType by using this code. If you want to keep using the sample one, you can ignore this.
+        item.configuration.imageScaleType = ImageScaleType.FIT_CENTER
+
         // set your ui settings
         pxlPhotoProductView
                 .setContent(photoInfo = item,

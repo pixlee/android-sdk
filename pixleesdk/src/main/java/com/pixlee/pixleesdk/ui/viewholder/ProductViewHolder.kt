@@ -8,6 +8,7 @@ import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
@@ -55,6 +56,10 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
             @ColorInt var backgroundColor: Int = Color.YELLOW,
             var padding: Int = 5.px.toInt()
     )
+
+    fun getTimerView() : TextView{
+        return tvVideoTimestamp
+    }
 
     var formatter = DecimalFormat("#,##0.##")
     fun bind(product: PXLProduct, isBookmarked: Boolean?, configuration: Configuration, videoTimestampMap: HashMap<String, PXLVideoTimestamp>) {

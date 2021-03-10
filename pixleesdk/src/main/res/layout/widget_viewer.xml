@@ -82,7 +82,7 @@
         android:layout_margin="10dp"
         android:padding="10dp"
         android:background="@color/black_800"
-        android:alpha="0.5"
+        android:alpha="0"
         android:textColor="#ffffff"
         android:textSize="16sp"
         />

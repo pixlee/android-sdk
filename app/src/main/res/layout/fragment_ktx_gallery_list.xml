@@ -65,7 +65,7 @@
             android:padding="10dp"
             android:background="@color/black_800"
             android:textColor="#ffffff"
-            android:alpha="0"
+            android:alpha="0.3"
             />
     </RelativeLayout>
     <!--navigation drawer menu-->
