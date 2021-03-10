@@ -83,6 +83,12 @@ override fun onCreate(savedInstanceState: Bundle?) {
                 color = Color.WHITE
                 typeface = null
             }
+            videoTimestampTextViewStyle = TextViewStyle().apply {
+                text = "appears at - " //this text will have a video time text like 03:40 (3 mins and 40 secs)
+                textPadding = TextPadding(top = 10.px.toInt(), bottom = 10.px.toInt()) // without padding, the click area of this timestamp is quite narrow. If you need a larger click area, give it padding.
+                color = Color.parseColor("#7A7A7A")
+                size = 12.px
+            }
             bookmarkDrawable = ProductViewHolder.Bookmark().apply {
                 isVisible = true
                 selectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_black_36
@@ -194,6 +200,21 @@ pxlPhotoProductView.loadContent(...
 )
 ```
 
+
+#### If you want to change the design of the layout of the videon timestamp of the product
+```kotlin
+#!kotlin
+ProductView.loadContent(...
+    ...
+    videoTimestampTextViewStyle = TextViewStyle().apply {
+        text = "appears at - " //this text will have a video time text like 03:40 (3 mins and 40 secs)
+        textPadding = TextPadding(top = 10.px.toInt(), bottom = 10.px.toInt()) // without padding, the click area of this timestamp is quite narrow. If you need a larger click area, give it padding.
+        color = Color.parseColor("#7A7A7A")
+        size = 12.px
+    }
+    ...
+)
+```
 #### If you want to change the bookmark
 ```kotlin
 #!kotlin
