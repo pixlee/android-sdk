@@ -5,14 +5,10 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.lifecycleScope
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
@@ -23,8 +19,6 @@ import com.pixlee.pixleesdk.ui.widgets.*
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.activity_viewer.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -34,7 +28,7 @@ import java.util.*
 /**
  * This shows how to play the video and its product list
  */
-class ViewerActivity : AppCompatActivity(), LifecycleObserver {
+class ViewerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_viewer)
@@ -147,32 +141,6 @@ class ViewerActivity : AppCompatActivity(), LifecycleObserver {
                             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it.link.toString()))
                             startActivity(browserIntent)
                         })
-    }
-
-    var videoTimer: VideoTimer? = null
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun startTimer() {
-        lifecycleScope.launch {
-            async {
-                videoTimer?.stop()
-                videoTimer = VideoTimer()
-                videoTimer?.start {
-                    val timestamp = pxlPhotoProductView.getTimerTimestamp()
-                    val time = String.format(Locale.US, "%02d:%02d", timestamp / 60, timestamp % 60)
-                    launch(Dispatchers.Main) {
-                        tvDebugTimerTextViewer.text = time
-                    }
-                    Log.e("videoTimer", "infinite loop end")
-                }
-            }
-            Log.e("videoTimer", "async done")
-        }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun stopTimer() {
-        videoTimer?.stop()
-        videoTimer = null
     }
 
     /**

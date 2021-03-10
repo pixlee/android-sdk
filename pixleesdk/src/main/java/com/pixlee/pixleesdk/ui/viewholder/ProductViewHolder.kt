@@ -91,7 +91,7 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
         val videoTimestampText = if (videoTimestamp != null) {
             String.format(Locale.US, "${configuration.videoTimestampTextViewStyle?.text ?: ""}%02d:%02d", videoTimestamp.timestamp / 60, videoTimestamp.timestamp % 60)
         } else {
-            " "
+            ""
         }
 
         tvVideoTimestamp.text = SpannableString(videoTimestampText).apply {

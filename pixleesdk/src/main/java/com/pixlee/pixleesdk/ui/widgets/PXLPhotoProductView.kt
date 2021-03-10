@@ -14,15 +14,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.client.PXLAnalytics
 import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.data.PXLProduct
 import com.pixlee.pixleesdk.data.PXLVideoTimestamp
-import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
+import com.pixlee.pixleesdk.util.AutoPlayUtils
 import com.pixlee.pixleesdk.util.px
 import com.pixlee.pixleesdk.util.setCompatIconWithColor
 import kotlinx.android.synthetic.main.widget_viewer.view.*
@@ -74,6 +75,21 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = li.inflate(R.layout.widget_viewer, this, false)
         addView(view)
+        addScrollListener()
+    }
+
+    var scrollState = RecyclerView.SCROLL_STATE_IDLE
+    fun addScrollListener() {
+        list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                scrollState = RecyclerView.SCROLL_STATE_IDLE
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+
+            }
+        })
     }
 
     /**
@@ -241,24 +257,28 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                 videoTimer = VideoTimer()
                 videoTimer?.start {
                     val timestamp = pxlPhotoView.getTimestamp()
-                    Log.e("videoTimer", "infinite loop start, timestamp: ${timestamp}")
+                    val time = String.format(Locale.US, "%02d:%02d", timestamp / 60, timestamp % 60)
+                    launch(Dispatchers.Main) {
+                        tvDebugTimerTextViewer.text = time
+                    }
                     photoInfo?.pxlPhoto?.time_based_products?.forEach {
                         if (it.timestamp == timestamp) {
                             val productPosition = productIndexMap[it.productId] ?: -1
                             if (productPosition > -1) {
                                 launch(Dispatchers.Main) {
-                                    list.smoothScrollToPosition(productPosition)
-                                    //list.scrollToPosition(productPosition)
-                                    Log.e("videoTimer", "### PLAY (${it.timestamp})###")
+                                    if (scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                                        list.smoothScrollToPosition(productPosition)
+                                        Log.e("videoTimer", "### PLAY (${it.timestamp})###")
+                                    } else {
+                                        Log.e("videoTimer", "### PLAY ignored because you're scrolling the list (${it.timestamp})###")
+                                    }
                                 }
                                 return@forEach
                             }
                         }
                     }
-                    Log.e("videoTimer", "infinite loop end")
                 }
             }
-            Log.e("videoTimer", "async done")
         }
     }
 
@@ -272,10 +292,6 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun stopVideoOnStop() {
         stopVideoOnPause()
-    }
-
-    fun getTimerTimestamp(): Long {
-        return pxlPhotoView.getTimestamp()
     }
 
     override fun onDetachedFromWindow() {
