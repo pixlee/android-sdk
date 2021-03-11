@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.data.PXLProduct
-import com.pixlee.pixleesdk.data.PXLVideoTimestamp
+import com.pixlee.pixleesdk.data.PXLTimeBasedProduct
 import com.pixlee.pixleesdk.ui.widgets.*
 import com.pixlee.pixleesdk.util.getCurrencySymbol
 import com.pixlee.pixleesdk.util.getFractionalPart
@@ -62,7 +62,7 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
     }
 
     var formatter = DecimalFormat("#,##0.##")
-    fun bind(product: PXLProduct, isBookmarked: Boolean?, configuration: Configuration, videoTimestampMap: HashMap<String, PXLVideoTimestamp>) {
+    fun bind(product: PXLProduct, isBookmarked: Boolean?, configuration: Configuration, timeBasedProductMap: HashMap<String, PXLTimeBasedProduct>) {
         Glide.with(imageView.context)
                 .load(product.imageThumb)
                 .fitCenter()
@@ -92,7 +92,7 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
         }
 
         configuration.videoTimestampTextViewStyle?.also { tvVideoTimestamp.setTextStyle(it) }
-        val videoTimestamp = videoTimestampMap[product.id]
+        val videoTimestamp = timeBasedProductMap[product.id]
         val videoTimestampText = if (videoTimestamp != null) {
             String.format(Locale.US, "${configuration.videoTimestampTextViewStyle?.text ?: ""}%02d:%02d", videoTimestamp.timestamp / 60, videoTimestamp.timestamp % 60)
         } else {

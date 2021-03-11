@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.pixlee.pixleesdk.network.annotation.NullableLong;
 import com.squareup.moshi.Json;
 
-public class PXLVideoTimestamp implements Parcelable {
+public class PXLTimeBasedProduct implements Parcelable {
     @Json(name = "product_id")
     public String productId;
 
@@ -14,11 +14,11 @@ public class PXLVideoTimestamp implements Parcelable {
     @Json(name = "timestamp")
     public long timestamp;
 
-    public PXLVideoTimestamp() {
+    public PXLTimeBasedProduct() {
     }
 
 
-    protected PXLVideoTimestamp(Parcel in) {
+    protected PXLTimeBasedProduct(Parcel in) {
         this.productId = in.readString();
         this.timestamp = in.readLong();
     }
@@ -34,15 +34,15 @@ public class PXLVideoTimestamp implements Parcelable {
         return 0;
     }
 
-    public static final Creator<PXLVideoTimestamp> CREATOR = new Creator<PXLVideoTimestamp>() {
+    public static final Creator<PXLTimeBasedProduct> CREATOR = new Creator<PXLTimeBasedProduct>() {
         @Override
-        public PXLVideoTimestamp createFromParcel(Parcel in) {
-            return new PXLVideoTimestamp(in);
+        public PXLTimeBasedProduct createFromParcel(Parcel in) {
+            return new PXLTimeBasedProduct(in);
         }
 
         @Override
-        public PXLVideoTimestamp[] newArray(int size) {
-            return new PXLVideoTimestamp[size];
+        public PXLTimeBasedProduct[] newArray(int size) {
+            return new PXLTimeBasedProduct[size];
         }
     };
 }

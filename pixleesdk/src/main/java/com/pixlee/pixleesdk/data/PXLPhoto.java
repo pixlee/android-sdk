@@ -188,7 +188,7 @@ public class PXLPhoto implements Parcelable {
     public List<PXLProduct> products;
 
     @Json(name = "time_based_products")
-    public List<PXLVideoTimestamp> time_based_products;
+    public List<PXLTimeBasedProduct> time_based_products;
 
     @Json(name = "pixlee_cdn_photos")
     public CDNPhotos cdnPhotos;
@@ -396,7 +396,7 @@ public class PXLPhoto implements Parcelable {
         this.instUserHasLiked = in.readByte() != 0;
         this.platformLink = (URL) in.readSerializable();
         this.products = in.createTypedArrayList(PXLProduct.CREATOR);
-        this.time_based_products = in.createTypedArrayList(PXLVideoTimestamp.CREATOR);
+        this.time_based_products = in.createTypedArrayList(PXLTimeBasedProduct.CREATOR);
         this.cdnPhotos = in.readParcelable(CDNPhotos.class.getClassLoader());
     }
 

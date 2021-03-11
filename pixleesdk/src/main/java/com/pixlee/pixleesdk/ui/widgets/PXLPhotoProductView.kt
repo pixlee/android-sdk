@@ -19,11 +19,10 @@ import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.client.PXLAnalytics
 import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.data.PXLProduct
-import com.pixlee.pixleesdk.data.PXLVideoTimestamp
+import com.pixlee.pixleesdk.data.PXLTimeBasedProduct
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
-import com.pixlee.pixleesdk.util.AutoPlayUtils
 import com.pixlee.pixleesdk.util.px
 import com.pixlee.pixleesdk.util.setCompatIconWithColor
 import kotlinx.android.synthetic.main.widget_viewer.view.*
@@ -169,7 +168,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         // initiate the product list view
         photoInfo?.pxlPhoto?.also { photo ->
             photo.products?.also { products ->
-                val videoTimestampMap = HashMap<String, PXLVideoTimestamp>() // map <videoId: Long, PXLVideoTime>
+                val videoTimestampMap = HashMap<String, PXLTimeBasedProduct>() // map <videoId: Long, PXLVideoTime>
                 // register video timestamps in a map
                 photo.time_based_products?.forEach {
                     videoTimestampMap[it.productId] = it
@@ -183,7 +182,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                 adapter = ProductAdapter(
                         configuration = configuration,
                         list = products,
-                        videoTimestampMap = videoTimestampMap,
+                        timeBasedProductMap = videoTimestampMap,
                         bookmarkMap = bookmarkMap,
                         onBookmarkChanged = { productId, isBookmarkChecked ->
                             onBookmarkClicked?.let { it -> it(productId, isBookmarkChecked) }
