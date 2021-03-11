@@ -288,6 +288,14 @@ class PXLPhotoView : RelativeLayout {
         }
     }
 
+    fun getTimestamp(): Long {
+        return (player?.contentPosition ?: 0) / 1000
+    }
+
+    fun seekTo(millisecond: Long){
+        player?.seekTo(player!!.currentWindowIndex, millisecond)
+    }
+
     fun setButtonClickListener(buttonClickListener: OnClickListener? = null) {
         button.setOnClickListener(buttonClickListener)
     }
@@ -406,7 +414,7 @@ class PXLPhotoView : RelativeLayout {
                 currentConfiguration.pxlPhotoSize
             }
 
-            val imageUrl = it.getUrlForSize(pxlPhotoSize).toString()
+            val imageUrl = it.getUrlForSize(pxlPhotoSize)?.toString() ?: ""
 
             // load a main image into an ImageView
             var builder = Glide.with(this).load(imageUrl)

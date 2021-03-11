@@ -73,4 +73,17 @@
             </RelativeLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </RelativeLayout>
+    <TextView
+        android:id="@+id/tvDebugTimerTextViewer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/list"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        android:background="@color/black_800"
+        android:alpha="0"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        />
 </RelativeLayout>

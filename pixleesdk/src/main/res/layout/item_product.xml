@@ -59,42 +59,51 @@
             app:layout_constraintTop_toBottomOf="@+id/tvMain"
 
             />
-        <RelativeLayout
-            android:id="@+id/vPriceBox"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvPriceLeft"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingLeft="@dimen/product_center"
-            android:paddingRight="@dimen/product_left"
-            android:paddingBottom="5dp"
+            tools:text="100"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="@dimen/product_center"
+            android:layout_marginBottom="5dp"
             app:layout_constraintLeft_toRightOf="@+id/imageView"
             app:layout_constraintTop_toBottomOf="@+id/tvSub"
-            app:layout_constraintBottom_toBottomOf="parent">
-            <TextView
-                android:id="@+id/tvPriceLeft"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="100"
-                android:textStyle="bold"
-                />
-            <TextView
-                android:id="@+id/tvPriceRight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:singleLine="false"
-                tools:text=".99 $"
-                android:textStyle="bold"
-                android:layout_alignBaseline="@+id/tvPriceLeft"
-                android:layout_toRightOf="@+id/tvPriceLeft"
-                />
-        </RelativeLayout>
+            />
+        <TextView
+            android:id="@+id/tvPriceRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:singleLine="false"
+            tools:text=".99 $"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@+id/tvPriceLeft"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tvPriceLeft"
+            />
+
+        <TextView
+            android:id="@+id/tvVideoTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#7A7A7A"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:singleLine="false"
+            tools:text="appears at - 02:43"
+            app:layout_constraintLeft_toRightOf="@+id/tvPriceRight"
+            app:layout_constraintRight_toLeftOf="@+id/barrier"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tvPriceLeft"
+            />
+
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="tvMain,tvSub,vPriceBox"
+            app:constraint_referenced_ids="tvMain,tvSub"
             app:barrierDirection="end"
             />
         <ImageView

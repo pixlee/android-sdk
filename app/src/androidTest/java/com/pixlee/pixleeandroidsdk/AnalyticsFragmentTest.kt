@@ -35,7 +35,7 @@ import org.junit.runner.RunWith
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @LargeTest
-class AnalyticsFragmentTest {
+class AnalyticsFragmentTest: BaseTest() {
     /**
      * Use [ActivityScenarioRule] to create and launch the activity under test before each test,
      * and close it after each test. This is a replacement for
@@ -96,55 +96,4 @@ class AnalyticsFragmentTest {
         onView(withId(R.id.pxlPhotoRecyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition<PXLPhotoViewHolder>(0, MyViewAction.clickChildViewWithId(R.id.vListRoot)))
         onView(withId(R.id.tvDebugTextViewer)).perform(waitUntil(isDisplayed())).check(matches(withText(StringContains.containsString(AnalyticsEvents.openedLightbox))))
     }
-
-
-    fun waitUntil(matcher: Matcher<View>): ViewAction {
-        return actionWithAssertions(object : ViewAction {
-            override fun getConstraints(): Matcher<View> {
-                return isAssignableFrom(View::class.java)
-            }
-
-            override fun getDescription(): String {
-                val description = StringDescription()
-                matcher.describeTo(description)
-                return String.format("wait until: %s", description)
-            }
-
-            override fun perform(uiController: UiController, view: View) {
-                if (!matcher.matches(view)) {
-                    val callback = LayoutChangeCallback(matcher)
-                    try {
-                        IdlingRegistry.getInstance().register(callback)
-                        view.addOnLayoutChangeListener(callback)
-                        uiController.loopMainThreadUntilIdle()
-                    } finally {
-                        view.removeOnLayoutChangeListener(callback)
-                        IdlingRegistry.getInstance().unregister(callback)
-                    }
-                }
-            }
-        })
-    }
-
-    private class LayoutChangeCallback constructor(val matcher: Matcher<View>) : IdlingResource, View.OnLayoutChangeListener {
-        private var callback: IdlingResource.ResourceCallback? = null
-        private var matched = false
-        override fun getName(): String {
-            return "Layout change callback"
-        }
-
-        override fun isIdleNow(): Boolean {
-            return matched
-        }
-
-        override fun registerIdleTransitionCallback(callback: IdlingResource.ResourceCallback) {
-            this.callback = callback
-        }
-
-        override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
-            matched = matcher.matches(v)
-            callback!!.onTransitionToIdle()
-        }
-    }
-
 }

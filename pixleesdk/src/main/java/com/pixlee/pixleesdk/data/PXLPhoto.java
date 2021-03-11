@@ -187,6 +187,9 @@ public class PXLPhoto implements Parcelable {
     @Json(name = "products")
     public List<PXLProduct> products;
 
+    @Json(name = "time_based_products")
+    public List<PXLTimeBasedProduct> time_based_products;
+
     @Json(name = "pixlee_cdn_photos")
     public CDNPhotos cdnPhotos;
 
@@ -261,7 +264,10 @@ public class PXLPhoto implements Parcelable {
     }
 
     public String getVideoUrl(){
-        return getUrlForSize(PXLPhotoSize.ORIGINAL).toString();
+        if (getUrlForSize(PXLPhotoSize.ORIGINAL)!=null)
+            return getUrlForSize(PXLPhotoSize.ORIGINAL).toString();
+        else
+            return "";
     }
 
 
@@ -338,6 +344,7 @@ public class PXLPhoto implements Parcelable {
         dest.writeByte(this.instUserHasLiked ? (byte) 1 : (byte) 0);
         dest.writeSerializable(this.platformLink);
         dest.writeTypedList(this.products);
+        dest.writeTypedList(this.time_based_products);
         dest.writeParcelable(this.cdnPhotos, flags);
     }
 
@@ -389,6 +396,7 @@ public class PXLPhoto implements Parcelable {
         this.instUserHasLiked = in.readByte() != 0;
         this.platformLink = (URL) in.readSerializable();
         this.products = in.createTypedArrayList(PXLProduct.CREATOR);
+        this.time_based_products = in.createTypedArrayList(PXLTimeBasedProduct.CREATOR);
         this.cdnPhotos = in.readParcelable(CDNPhotos.class.getClassLoader());
     }
 

@@ -3,18 +3,20 @@ package com.pixlee.pixleesdk.ui.viewholder
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.icu.math.BigDecimal
+import android.text.SpannableString
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.data.PXLProduct
-import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
-import com.pixlee.pixleesdk.ui.widgets.TextStyle
-import com.pixlee.pixleesdk.ui.widgets.setTextStyle
+import com.pixlee.pixleesdk.data.PXLTimeBasedProduct
+import com.pixlee.pixleesdk.ui.widgets.*
 import com.pixlee.pixleesdk.util.getCurrencySymbol
 import com.pixlee.pixleesdk.util.getFractionalPart
 import com.pixlee.pixleesdk.util.px
@@ -22,6 +24,7 @@ import com.pixlee.pixleesdk.util.setCompatColorFilter
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_product.*
 import java.text.DecimalFormat
+import java.util.*
 
 
 /**
@@ -32,6 +35,7 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
             var mainTextStyle: TextStyle? = null,
             var subTextStyle: TextStyle? = null,
             var priceTextStyle: CurrencyTextStyle? = null,
+            var videoTimestampTextViewStyle: TextViewStyle? = TextViewStyle(text = "", textPadding = TextPadding()),
             var bookmarkDrawable: Bookmark = Bookmark(),
             var circleIcon: CircleIcon = CircleIcon()
     )
@@ -53,8 +57,12 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
             var padding: Int = 5.px.toInt()
     )
 
+    fun getTimerView() : TextView{
+        return tvVideoTimestamp
+    }
+
     var formatter = DecimalFormat("#,##0.##")
-    fun bind(product: PXLProduct, isBookmarked: Boolean?, configuration: Configuration) {
+    fun bind(product: PXLProduct, isBookmarked: Boolean?, configuration: Configuration, timeBasedProductMap: HashMap<String, PXLTimeBasedProduct>) {
         Glide.with(imageView.context)
                 .load(product.imageThumb)
                 .fitCenter()
@@ -81,6 +89,18 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
             } else {
                 price.getFractionalPart()
             }
+        }
+
+        configuration.videoTimestampTextViewStyle?.also { tvVideoTimestamp.setTextStyle(it) }
+        val videoTimestamp = timeBasedProductMap[product.id]
+        val videoTimestampText = if (videoTimestamp != null) {
+            String.format(Locale.US, "${configuration.videoTimestampTextViewStyle?.text ?: ""}%02d:%02d", videoTimestamp.timestamp / 60, videoTimestamp.timestamp % 60)
+        } else {
+            ""
+        }
+
+        tvVideoTimestamp.text = SpannableString(videoTimestampText).apply {
+            setSpan(UnderlineSpan(), 0, length, 0)
         }
 
         bookmark.visibility = if (configuration.bookmarkDrawable.isVisible) View.VISIBLE else View.GONE
