@@ -163,7 +163,9 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         headerView.setPadding(left, top, right, bottom)
     }
 
-    var productIndexMap = HashMap<String, Int>()
+    class TimeBasedProductWithPosition(val position: Int, val timeBasedProduct: PXLTimeBasedProduct)
+
+    var timestampMap = HashMap<Long, TimeBasedProductWithPosition>()
     private fun loadProducts(configuration: ProductViewHolder.Configuration) {
         // initiate the product list view
         photoInfo?.pxlPhoto?.also { photo ->
@@ -176,7 +178,10 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
 
                 // register product ids' positions in a map
                 photo.products.forEachIndexed { index, pxlProduct ->
-                    productIndexMap[pxlProduct.id] = index
+                    videoTimestampMap[pxlProduct.id]?.let {
+                        timestampMap[it.timestamp] = TimeBasedProductWithPosition(index, it)
+                    }
+
                 }
 
                 adapter = ProductAdapter(
@@ -260,19 +265,14 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                     launch(Dispatchers.Main) {
                         tvDebugTimerTextViewer.text = time
                     }
-                    photoInfo?.pxlPhoto?.time_based_products?.forEach {
-                        if (it.timestamp == timestamp) {
-                            val productPosition = productIndexMap[it.productId] ?: -1
-                            if (productPosition > -1) {
-                                launch(Dispatchers.Main) {
-                                    if (scrollState == RecyclerView.SCROLL_STATE_IDLE) {
-                                        list.smoothScrollToPosition(productPosition)
-                                        Log.e("videoTimer", "### PLAY (${it.timestamp})###")
-                                    } else {
-                                        Log.e("videoTimer", "### PLAY ignored because you're scrolling the list (${it.timestamp})###")
-                                    }
-                                }
-                                return@forEach
+                    val timeBasedProductWithPosition = timestampMap[timestamp]
+                    if (timeBasedProductWithPosition != null && timeBasedProductWithPosition.position > -1) {
+                        launch(Dispatchers.Main) {
+                            if (scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                                list.smoothScrollToPosition(timeBasedProductWithPosition.position)
+                                Log.e("videoTimer", "### PLAY (${timestamp})###")
+                            } else {
+                                Log.e("videoTimer", "### PLAY ignored because you're scrolling the list (${timestamp})###")
                             }
                         }
                     }
