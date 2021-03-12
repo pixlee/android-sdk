@@ -168,7 +168,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         // initiate the product list view
         photoInfo?.pxlPhoto?.also { photo ->
             photo.products?.also { products ->
-                val videoTimestampMap = HashMap<String, PXLTimeBasedProduct>() // map <videoId: Long, PXLVideoTime>
+                val videoTimestampMap = HashMap<String, PXLTimeBasedProduct>() // map <productId: Long, PXLVideoTime>
                 // register video timestamps in a map
                 photo.time_based_products?.forEach {
                     videoTimestampMap[it.productId] = it
