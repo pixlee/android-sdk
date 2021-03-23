@@ -250,11 +250,6 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
                 // Please be aware that the right place you implement to set PXLClient.regionId is in your Application level. please check AppApplication.kt
                 PXLClient.regionId = readRegionIdFromUI()
 
-                PXLAlbumSortOptions().apply {
-                    sortType = PXLAlbumSortType.RECENCY
-                    descending = true
-                }
-
                 // retrieve the first page
                 viewModel.getFirstPage()
             }
