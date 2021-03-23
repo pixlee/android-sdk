@@ -38,7 +38,7 @@ class MainActivity : BaseActivity() {
                     if (pxlListView == null)
                         return
 
-                    initalizeList((pxlListView.measuredHeight * listHeightRatio).toInt())
+                    initiateList((pxlListView.measuredHeight * listHeightRatio).toInt())
 
                     pxlListView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
@@ -49,7 +49,7 @@ class MainActivity : BaseActivity() {
         })
     }
 
-    fun initalizeList(cellHeightInPixel: Int) {
+    fun initiateList(cellHeightInPixel: Int) {
         // you can customize color, size if you need
         pxlListView.initiate(
                 params = getSearchParams(),
