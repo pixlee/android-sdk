@@ -19,7 +19,7 @@ class AppApplication: MultiDexApplication() {
         PXLClient.autoAnalyticsEnabled = true
 
         // (Optional) if you use multi-region, you can set your region id here to get photos, a photo, and products available in the region.
-        val regionId:Int? = null
+        val regionId:Int? = null // replace this value with yours
         PXLClient.regionId = regionId
     }
 }

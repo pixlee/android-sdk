@@ -72,18 +72,8 @@ open class ListViewModel(val pxlKtxAlbum: PXLKtxAlbum){
                 val newList = ArrayList<PhotoWithImageScaleType>()
                 if (it.photos.isNotEmpty()) {
                     it.photos.forEach {
-                        Log.e("pxlvideo", "pxlvideo.url: ${it.videoUrl.toString()}")
-                        Log.e("pxlvideo", "pxlvideo.big: ${it.getUrlForSize(PXLPhotoSize.BIG)}")
                         newList.add(PhotoWithImageScaleType(pxlPhoto = it,
-                                configuration = customizedConfiguration.copy().apply {
-                                    mainTextViewStyle = TextViewStyle().apply {
-                                        text = "${newList.size}\n${customizedConfiguration.mainTextViewStyle?.text ?: ""}"
-                                        size = 30.px
-                                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                                        typeface = null
-                                        textPadding = TextPadding(bottom = 30.px.toInt())
-                                    }
-                                },
+                                configuration = customizedConfiguration,
                                 heightInPixel = cellHeightInPixel,
                                 isLoopingVideo = true,
                                 soundMuted = false))

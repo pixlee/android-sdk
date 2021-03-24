@@ -35,7 +35,7 @@ class PXLListView : BaseRecyclerView, LifecycleObserver {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         initView()
     }
-    var viewModel: ListViewModel? = null
+    var viewModel = ListViewModel(PXLKtxAlbum(context))
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
@@ -49,7 +49,7 @@ class PXLListView : BaseRecyclerView, LifecycleObserver {
     fun initView() {
         layoutManager = linearLayoutManager
         this.adapter = pxlPhotoAdapter
-
+        addViewModelListeners()
     }
 
     //    lateinit var masterExoPlayerHelper: MasterExoPlayerHelper
@@ -71,11 +71,9 @@ class PXLListView : BaseRecyclerView, LifecycleObserver {
         pxlPhotoAdapter.showingDebugView = showingDebugView
         this.alphaForStoppedVideos = alphaForStoppedVideos
 
-        viewModel = ListViewModel(PXLKtxAlbum(context))
-        viewModel?.init(params)
-        viewModel?.customizedConfiguration = configuration
-        viewModel?.cellHeightInPixel = cellHeightInPixel
-        addViewModelListeners()
+        viewModel.init(params)
+        viewModel.customizedConfiguration = configuration
+        viewModel.cellHeightInPixel = cellHeightInPixel
 
         pxlPhotoAdapter.onButtonClickedListener = onButtonClickedListener
         pxlPhotoAdapter.onPhotoClickedListener = onPhotoClickedListener
@@ -119,37 +117,35 @@ class PXLListView : BaseRecyclerView, LifecycleObserver {
     fun loadAlbum() {
         // retrieve the first page
         scope.launch {
-            viewModel?.getFirstPage()
+            viewModel.getFirstPage()
         }
     }
 
     fun addViewModelListeners() {
-        viewModel?.also {viewModel ->
-            val lifecycleOwner = context as? LifecycleOwner ?: throw Exception("androidx.lifecycle.LifecycleOwner is required. Please make sure your Activity or Fragment provides androidx.lifecycle.LifecycleOwner")
+        val lifecycleOwner = context as? LifecycleOwner ?: throw Exception("androidx.lifecycle.LifecycleOwner is required. Please make sure your Activity or Fragment provides androidx.lifecycle.LifecycleOwner")
+        lifecycleOwner.lifecycle.addObserver(this)
+        viewModel.loading.observe(lifecycleOwner, Observer {
+            //lottieView.visibility = if (it) View.VISIBLE else View.GONE
+        })
 
-            viewModel.loading.observe(lifecycleOwner, Observer {
-                //lottieView.visibility = if (it) View.VISIBLE else View.GONE
-            })
+        viewModel.searchResultEvent.observe(lifecycleOwner, EventObserver {
+            when (it) {
+                is ListViewModel.Command.Data -> {
+                    if (it.isFirstPage) {
+                        replaceList(it.list)
+                        playVideoOnResume()
 
-            viewModel.searchResultEvent.observe(lifecycleOwner, EventObserver {
-                when (it) {
-                    is ListViewModel.Command.Data -> {
-                        if (it.isFirstPage) {
-                            replaceList(it.list)
-                            playVideoOnResume()
-
-                            // if no result in the first page, open search panel so that the SDK developers will try out different filters
-                            if (it.list.isEmpty()) {
-                                Toast.makeText(context, "success!! but you got an empty list.\nwhat about trying different searching options here?", Toast.LENGTH_LONG).show()
-                            }
-                        } else {
-                            addList(it.list)
+                        // if no result in the first page, open search panel so that the SDK developers will try out different filters
+                        if (it.list.isEmpty()) {
+                            Toast.makeText(context, "success!! but you got an empty list.\nwhat about trying different searching options here?", Toast.LENGTH_LONG).show()
                         }
-
+                    } else {
+                        addList(it.list)
                     }
+
                 }
-            })
-        }
+            }
+        })
     }
 
     override fun setList(type: ListAddType, list: List<PhotoWithImageScaleType>) {
@@ -183,17 +179,6 @@ class PXLListView : BaseRecyclerView, LifecycleObserver {
                     alphaForStoppedVideos,
                     muted)
         }
-    }
-
-    /**
-     * This will play the video on onResume and stop the video on onPause.
-     *   - when ON_RESUME, this will call playVideo()
-     *   - when ON_PAUSE, this will call stopVideo()
-     * If you want to manually play and stop the video, don't use this and do use playVideo() and stopVideo() when you want
-     */
-    fun useLifecycleObserver(lifecycle: Lifecycle) {
-//        masterExoPlayerHelper.makeLifeCycleAware(lifecycle)
-        lifecycle.addObserver(this)
     }
 
     private var playingVideo = false

@@ -4,6 +4,7 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.ViewTreeObserver
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 /**
  * Created by sungjun on 3/23/21.
  */
-class MainActivity : BaseActivity() {
+class MainActivity : AppCompatActivity() {
     val listHeightRatio = 0.5f
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,9 +29,6 @@ class MainActivity : BaseActivity() {
                 ContextCompat.getColor(this, R.color.grey_60),
                 PorterDuff.Mode.SRC_ATOP
         )
-
-        // this will play the video on onResume and stop the video on onPause
-        pxlListView.useLifecycleObserver(lifecycle)
 
         pxlListView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -52,8 +50,11 @@ class MainActivity : BaseActivity() {
     fun initiateList(cellHeightInPixel: Int) {
         // you can customize color, size if you need
         pxlListView.initiate(
-                params = getSearchParams(),
+                /*infiniteScroll = true,*/
+                /*autoPlayVideo = true,*/
+                /*alphaForStoppedVideos = 0.5f,*/
                 cellHeightInPixel = cellHeightInPixel,
+                params = getSearchParams(),
                 configuration = getConfiguration(),
                 onButtonClickedListener = { view, photoWithImageScaleType ->
                     // TODO: you can add your business logic here
@@ -69,11 +70,11 @@ class MainActivity : BaseActivity() {
         return PXLKtxBaseAlbum.Params(
                 searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // album images
                 //searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU), // product images
-                perPage = 30,
+                /*perPage = 30,*/
                 filterOptions = PXLAlbumFilterOptions().apply {
-                    //hasPermission = true
-                    //hasProduct = true
-                    //inStockOnly = true
+                    /*hasPermission = true*/
+                    hasProduct = true
+                    /*inStockOnly = true*/
                 },
                 sortOptions = PXLAlbumSortOptions().apply {
                     sortType = PXLAlbumSortType.RECENCY
