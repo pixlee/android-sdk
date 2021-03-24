@@ -51,22 +51,11 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    fun initiateList(cellHeightInPixel: Int) {
+    private fun initiateList(cellHeightInPixel: Int) {
         // you can customize color, size if you need
         pxlListView.initiate(
                 widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
-                /** Alternative viewType option: List
-                    viewType = PXLPhotosView.ViewType.List(
-                        infiniteScroll = false,     // or false
-                        autoPlayVideo = false,
-                        alphaForStoppedVideos = 1f
-                    ),
-                 */
-                viewType = PXLPhotosView.ViewType.Grid(
-                        gridSpan = 2,
-                        lineSpace = Space(lineWidthInPixel = 5.px.toInt()),
-                        listHeader = ListHeader.Gif(url = "https://media.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif", heightInPixel = 200.px.toInt(), imageScaleType = ImageScaleType.CENTER_CROP)
-                ),
+                viewType = getViewType(),
                 cellHeightInPixel = cellHeightInPixel,
                 params = getSearchParams(),
                 configuration = getConfiguration(),
@@ -82,13 +71,32 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    fun getSearchParams(): PXLKtxBaseAlbum.Params {
+    // try changing this to see different layouts between list and grid
+    private val isGrid = false
+
+    private fun getViewType(): PXLPhotosView.ViewType {
+        return if (isGrid) {
+            PXLPhotosView.ViewType.Grid(
+                    gridSpan = 2,
+                    lineSpace = Space(lineWidthInPixel = 5.px.toInt()),
+                    listHeader = ListHeader.Gif(url = "https://media.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif", heightInPixel = 200.px.toInt(), imageScaleType = ImageScaleType.CENTER_CROP)
+            )
+        } else {
+            PXLPhotosView.ViewType.List(
+                    infiniteScroll = false,     // or false
+                    autoPlayVideo = false,
+                    alphaForStoppedVideos = 1f
+            )
+        }
+    }
+
+    private fun getSearchParams(): PXLKtxBaseAlbum.Params {
         return PXLKtxBaseAlbum.Params(
-                searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // album images
-                //searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU), // product images
+                // album images
+                searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU),
                 filterOptions = PXLAlbumFilterOptions().apply {
                     hasProduct = true
-                    // options
+                    // more filter options
                     // - hasPermission = true
                     // - inStockOnly = true
                     // - .. there are more. Please check README or PXLAlbumFilterOptions class for more filter options
@@ -100,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    fun getConfiguration(): PXLPhotoView.Configuration {
+    private fun getConfiguration(): PXLPhotoView.Configuration {
         return PXLPhotoView.Configuration().apply {
             // TODO: change variables values to customize the look if needed
             pxlPhotoSize = PXLPhotoSize.MEDIUM
