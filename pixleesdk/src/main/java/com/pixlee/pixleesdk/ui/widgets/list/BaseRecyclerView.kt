@@ -116,9 +116,13 @@ open class BaseRecyclerView : RecyclerView {
         fireAnalyticsWidgetVisible()
     }
 
+    private fun isAutoAnalyticsNeeded(): Boolean {
+        return PXLClient.autoAnalyticsEnabled
+    }
+
     private var isAnalyticsOpenedWidgetFired: Boolean = false
     private fun fireAnalyticsOpenedWidget() {
-        if (PXLClient.autoAnalyticsEnabled && !isAnalyticsOpenedWidgetFired) {
+        if (isAutoAnalyticsNeeded() && !isAnalyticsOpenedWidgetFired) {
             if (albumForAutoAnalytics == null) {
                 Log.e(PXLAnalytics.TAG, "can't fire OpenedWidget analytics event because albumForAutoAnalytics is null. Please pass your own AlbumForAutoAnalytics to albumForAutoAnalytics.")
                 return
@@ -141,7 +145,7 @@ open class BaseRecyclerView : RecyclerView {
 
     private var isAnalyticsWidgetVisibleFired: Boolean = false
     private fun fireAnalyticsWidgetVisible() {
-        if (PXLClient.autoAnalyticsEnabled && !isAnalyticsWidgetVisibleFired) {
+        if (isAutoAnalyticsNeeded() && !isAnalyticsWidgetVisibleFired) {
             if (albumForAutoAnalytics == null) {
                 Log.e(PXLAnalytics.TAG, "can't fire WidgetVisible analytics event because albumForAutoAnalytics is null. Please pass your own AlbumForAutoAnalytics to albumForAutoAnalytics.")
                 return

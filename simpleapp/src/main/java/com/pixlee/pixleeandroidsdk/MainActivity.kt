@@ -13,6 +13,10 @@ import com.pixlee.pixleesdk.enums.PXLAlbumSortType
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
+import com.pixlee.pixleesdk.ui.widgets.list.Space
+import com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
+import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -50,31 +54,44 @@ class MainActivity : AppCompatActivity() {
     fun initiateList(cellHeightInPixel: Int) {
         // you can customize color, size if you need
         pxlListView.initiate(
-                /*infiniteScroll = true,*/
-                /*autoPlayVideo = true,*/
-                /*alphaForStoppedVideos = 0.5f,*/
+                widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
+                /** Alternative viewType option: List
+                    viewType = PXLPhotosView.ViewType.List(
+                        infiniteScroll = false,     // or false
+                        autoPlayVideo = false,
+                        alphaForStoppedVideos = 1f
+                    ),
+                 */
+                viewType = PXLPhotosView.ViewType.Grid(
+                        gridSpan = 2,
+                        lineSpace = Space(lineWidthInPixel = 5.px.toInt()),
+                        listHeader = ListHeader.Gif(url = "https://media.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif", heightInPixel = 200.px.toInt(), imageScaleType = ImageScaleType.CENTER_CROP)
+                ),
                 cellHeightInPixel = cellHeightInPixel,
                 params = getSearchParams(),
                 configuration = getConfiguration(),
                 onButtonClickedListener = { view, photoWithImageScaleType ->
                     // TODO: you can add your business logic here
                     Toast.makeText(this, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
-                }, onPhotoClickedListener = { view, photoWithImageScaleType ->
-            // TODO: you can add your business logic here
-            ViewerActivity.launch(this, photoWithImageScaleType)
-            Toast.makeText(this, "onItemClickedListener", Toast.LENGTH_SHORT).show()
-        })
+                },
+                onPhotoClickedListener = { view, photoWithImageScaleType ->
+                    // TODO: you can add your business logic here
+                    ViewerActivity.launch(this, photoWithImageScaleType)
+                    Toast.makeText(this, "onItemClickedListener", Toast.LENGTH_SHORT).show()
+                }
+        )
     }
 
     fun getSearchParams(): PXLKtxBaseAlbum.Params {
         return PXLKtxBaseAlbum.Params(
                 searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // album images
                 //searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU), // product images
-                /*perPage = 30,*/
                 filterOptions = PXLAlbumFilterOptions().apply {
-                    /*hasPermission = true*/
                     hasProduct = true
-                    /*inStockOnly = true*/
+                    // options
+                    // - hasPermission = true
+                    // - inStockOnly = true
+                    // - .. there are more. Please check README or PXLAlbumFilterOptions class for more filter options
                 },
                 sortOptions = PXLAlbumSortOptions().apply {
                     sortType = PXLAlbumSortType.RECENCY
