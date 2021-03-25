@@ -23,9 +23,16 @@ import kotlinx.android.synthetic.main.activity_simple_demo.*
  * Created by sungjun on 3/23/21.
  */
 class SimpleListActivity : AppCompatActivity() {
+    val listHeightRatio = 0.5f
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.your_layout)
+        setContentView(R.layout.activity_simple_demo)
+        setSupportActionBar(toolbar)
+        toolbar.navigationIcon?.setColorFilter(
+                ContextCompat.getColor(this, R.color.grey_60),
+                PorterDuff.Mode.SRC_ATOP
+        )
 
         pxlPhotosView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -33,7 +40,7 @@ class SimpleListActivity : AppCompatActivity() {
                     if (pxlPhotosView == null)
                         return
 
-                    initiateList((pxlPhotosView.measuredHeight / 2).toInt())
+                    initiateList((pxlPhotosView.measuredHeight * listHeightRatio).toInt())
 
                     pxlPhotosView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
@@ -47,12 +54,12 @@ class SimpleListActivity : AppCompatActivity() {
     private fun initiateList(cellHeightInPixel: Int) {
         // you can customize color, size if you need
         pxlPhotosView.initiate(
-                widgetTypeForAnalytics = "your_widget_type",
+                widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
                 viewType = PXLPhotosView.ViewType.List(),
                 cellHeightInPixel = cellHeightInPixel,
                 params = PXLKtxBaseAlbum.Params(
                         // album images
-                        searchId = PXLKtxBaseAlbum.SearchId.Album("your album number"),
+                        searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU),
                         filterOptions = PXLAlbumFilterOptions(),
                         sortOptions = PXLAlbumSortOptions().apply {
                             sortType = PXLAlbumSortType.RECENCY
