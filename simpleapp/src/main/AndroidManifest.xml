@@ -34,9 +34,17 @@
             android:theme="@style/Theme.Androidsdk.NoActionBar"/>
 
         <activity
-            android:name=".SimpleDemoActivity"
+            android:name=".SimpleGridActivity"
             android:screenOrientation="portrait"
+            android:label="Grid"
             android:theme="@style/Theme.Androidsdk.NoActionBar"/>
+
+        <activity
+            android:name=".SimpleListActivity"
+            android:screenOrientation="portrait"
+            android:label="List"
+            android:theme="@style/Theme.Androidsdk.NoActionBar"/>
+
     </application>
 
 </manifest>

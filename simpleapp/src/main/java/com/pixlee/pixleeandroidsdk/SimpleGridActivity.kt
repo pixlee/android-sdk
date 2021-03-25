@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.activity_simple_demo.*
 /**
  * Created by sungjun on 3/23/21.
  */
-class SimpleDemoActivity : AppCompatActivity() {
+class SimpleGridActivity : AppCompatActivity() {
     val listHeightRatio = 0.5f
 
     public override fun onCreate(savedInstanceState: Bundle?) {

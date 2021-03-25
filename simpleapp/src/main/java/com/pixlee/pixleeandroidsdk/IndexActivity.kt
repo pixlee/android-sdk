@@ -13,8 +13,12 @@ class IndexActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_index)
 
-        basic.setOnClickListener {
-            startActivity(Intent(this, SimpleDemoActivity::class.java))
+        grid.setOnClickListener {
+            startActivity(Intent(this, SimpleGridActivity::class.java))
+        }
+
+        list.setOnClickListener {
+            startActivity(Intent(this, SimpleListActivity::class.java))
         }
 
         dynamic.setOnClickListener {
