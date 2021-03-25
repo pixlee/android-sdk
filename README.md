@@ -59,153 +59,153 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
     1. Load your album photos using PXLPhotosView (Similar to Widget)
         - Using PXLPhotosView, you can load your album's photos.
         - res/layout/list_layout.xml
-        ```xml
-        #!xml
-        ...
-        <com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
-            android:id="@+id/pxlPhotosView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none"
-            android:scrollingCache="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-        ...
-        ```
+            ```xml
+            #!xml
+            ...
+            <com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
+                android:id="@+id/pxlPhotosView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none"
+                android:scrollingCache="true"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            ...
+            ```
         - In Activity
-        ```kotlin
-        #!kotlin
-        class SimpleListActivity : AppCompatActivity() {
-            public override fun onCreate(savedInstanceState: Bundle?) {
-                super.onCreate(savedInstanceState)
-                setContentView(R.layout.list_layout)
+            ```kotlin
+            #!kotlin
+            class SimpleListActivity : AppCompatActivity() {
+                public override fun onCreate(savedInstanceState: Bundle?) {
+                    super.onCreate(savedInstanceState)
+                    setContentView(R.layout.list_layout)
 
-                pxlPhotosView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        try {
-                            if (pxlPhotosView == null)
-                                return
+                    pxlPhotosView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            try {
+                                if (pxlPhotosView == null)
+                                    return
 
-                            initiateList((pxlPhotosView.measuredHeight / 2).toInt())
+                                initiateList((pxlPhotosView.measuredHeight / 2).toInt())
 
-                            pxlPhotosView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        } catch (e: Exception) {
-                            e.printStackTrace()
+                                pxlPhotosView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+
                         }
+                    })
+                }
 
-                    }
-                })
-            }
-
-            private fun initiateList(cellHeightInPixel: Int) {
-                // you can customize color, size if you need
-                pxlPhotosView.initiate(
-                        widgetTypeForAnalytics = "your_widget_type",
-                        viewType = PXLPhotosView.ViewType.List(),
-                        cellHeightInPixel = cellHeightInPixel,
-                        params = PXLKtxBaseAlbum.Params(
-                                // album images
-                                searchId = PXLKtxBaseAlbum.SearchId.Album("your album number"),
-                                filterOptions = PXLAlbumFilterOptions(),
-                                sortOptions = PXLAlbumSortOptions().apply {
-                                    sortType = PXLAlbumSortType.RECENCY
-                                    descending = false
-                                }
-                        ),
-                        configuration = PXLPhotoView.Configuration().apply {
-                            pxlPhotoSize = PXLPhotoSize.MEDIUM
-                            imageScaleType = ImageScaleType.CENTER_CROP
-                        },
-                        onPhotoClickedListener = { view, photoWithImageScaleType ->
-                            // TODO: you can add your business logic here
-                            ViewerActivity.launch(this, photoWithImageScaleType)
-                            Toast.makeText(this, "onItemClickedListener", Toast.LENGTH_SHORT).show()
-                        }
-                )
-            }
-        }
-        ```
-    1. Display a photo and products (similar to Lightbox)
-        - res/layout/viewer_layout.xml
-        ```xml
-        #!xml
-        ...
-        <com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
-            android:id="@+id/pxlPhotoProductView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-        ...
-        ```
-
-        - Activity
-        ```kotlin
-        #!kotlin
-        class ViewerActivity : AppCompatActivity() {
-            override fun onCreate(savedInstanceState: Bundle?) {
-                super.onCreate(savedInstanceState)
-                setContentView(R.layout.viewer_layout)
-                // set a full screen mode
-                PXLViewUtil.expandContentAreaOverStatusBar(this)
-                val item: PhotoWithVideoInfo? = intent.getParcelableExtra("photoWithVideoInfo")
-                init(item)
-            }
-
-            fun init(item: PhotoWithVideoInfo) {
-                // this is an example of changing ImageScaleType
-                item.configuration.imageScaleType = ImageScaleType.FIT_CENTER
-
-                // give a padding to the top as much as the status bar's height
-                pxlPhotoProductView.addPaddingToHeader(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
-
-                // by passing lifecycle to pxlPhotoProductView, the SDK will automatically start and stop the video
-                pxlPhotoProductView.useLifecycleObserver(lifecycle)
-
-                // set your ui settings
-                pxlPhotoProductView
-                        .setContent(photoInfo = item,
-                                headerConfiguration = PXLPhotoProductView.Configuration().apply {
-                                    backButton = PXLPhotoProductView.CircleButton().apply {
-                                        onClickListener = {
-                                            // back button's click effect
-                                            onBackPressed()
-                                        }
+                private fun initiateList(cellHeightInPixel: Int) {
+                    // you can customize color, size if you need
+                    pxlPhotosView.initiate(
+                            widgetTypeForAnalytics = "your_widget_type",
+                            viewType = PXLPhotosView.ViewType.List(),
+                            cellHeightInPixel = cellHeightInPixel,
+                            params = PXLKtxBaseAlbum.Params(
+                                    // album images
+                                    searchId = PXLKtxBaseAlbum.SearchId.Album("your album number"),
+                                    filterOptions = PXLAlbumFilterOptions(),
+                                    sortOptions = PXLAlbumSortOptions().apply {
+                                        sortType = PXLAlbumSortType.RECENCY
+                                        descending = false
                                     }
-                                    muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
-                                        onCheckedListener = {
-
-                                        }
-                                    }
-                                },
-                                configuration = ProductViewHolder.Configuration().apply {
-                                    circleIcon = ProductViewHolder.CircleIcon().apply {
-                                        icon = R.drawable.outline_shopping_bag_black_24
-                                        iconColor = Color.DKGRAY
-                                        backgroundColor = ContextCompat.getColor(this@ViewerActivity, R.color.yellow_800)
-                                        padding = 5.px.toInt()
-                                    }
-                                    mainTextStyle = TextStyle().apply { size = 14.px }
-                                    subTextStyle = TextStyle().apply { size = 12.px }
-                                    priceTextStyle = CurrencyTextStyle().apply {
-                                        defaultCurrency = "EUR" // or null
-                                        leftText = TextStyle().apply { size = 24.px }
-                                        rightText = TextStyle().apply { size = 14.px }
-                                    }
-                                },
-                                onProductClicked = {
-                                    Toast.makeText(this, "product clicked, product id: ${it.id}", Toast.LENGTH_SHORT).show()
-                                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it.link.toString())))
-                                })
-            }
-
-            companion object {
-                // start video view with a photo data
-                fun launch(context: Context, pxlPhoto: PhotoWithVideoInfo?) {
-                    val i = Intent(context, ViewerActivity::class.java)
-                    i.putExtra("photoWithVideoInfo", pxlPhoto)
-                    context.startActivity(i)
+                            ),
+                            configuration = PXLPhotoView.Configuration().apply {
+                                pxlPhotoSize = PXLPhotoSize.MEDIUM
+                                imageScaleType = ImageScaleType.CENTER_CROP
+                            },
+                            onPhotoClickedListener = { view, photoWithImageScaleType ->
+                                // TODO: you can add your business logic here
+                                ViewerActivity.launch(this, photoWithImageScaleType)
+                                Toast.makeText(this, "onItemClickedListener", Toast.LENGTH_SHORT).show()
+                            }
+                    )
                 }
             }
-        }
-        ```
+            ```
+    1. Display a photo and products (similar to Lightbox)
+        - res/layout/viewer_layout.xml
+            ```xml
+            #!xml
+            ...
+            <com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
+                android:id="@+id/pxlPhotoProductView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            ...
+            ```
+
+        - Activity
+            ```kotlin
+            #!kotlin
+            class ViewerActivity : AppCompatActivity() {
+                override fun onCreate(savedInstanceState: Bundle?) {
+                    super.onCreate(savedInstanceState)
+                    setContentView(R.layout.viewer_layout)
+                    // set a full screen mode
+                    PXLViewUtil.expandContentAreaOverStatusBar(this)
+                    val item: PhotoWithVideoInfo? = intent.getParcelableExtra("photoWithVideoInfo")
+                    init(item)
+                }
+
+                fun init(item: PhotoWithVideoInfo) {
+                    // this is an example of changing ImageScaleType
+                    item.configuration.imageScaleType = ImageScaleType.FIT_CENTER
+
+                    // give a padding to the top as much as the status bar's height
+                    pxlPhotoProductView.addPaddingToHeader(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
+
+                    // by passing lifecycle to pxlPhotoProductView, the SDK will automatically start and stop the video
+                    pxlPhotoProductView.useLifecycleObserver(lifecycle)
+
+                    // set your ui settings
+                    pxlPhotoProductView
+                            .setContent(photoInfo = item,
+                                    headerConfiguration = PXLPhotoProductView.Configuration().apply {
+                                        backButton = PXLPhotoProductView.CircleButton().apply {
+                                            onClickListener = {
+                                                // back button's click effect
+                                                onBackPressed()
+                                            }
+                                        }
+                                        muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
+                                            onCheckedListener = {
+
+                                            }
+                                        }
+                                    },
+                                    configuration = ProductViewHolder.Configuration().apply {
+                                        circleIcon = ProductViewHolder.CircleIcon().apply {
+                                            icon = R.drawable.outline_shopping_bag_black_24
+                                            iconColor = Color.DKGRAY
+                                            backgroundColor = ContextCompat.getColor(this@ViewerActivity, R.color.yellow_800)
+                                            padding = 5.px.toInt()
+                                        }
+                                        mainTextStyle = TextStyle().apply { size = 14.px }
+                                        subTextStyle = TextStyle().apply { size = 12.px }
+                                        priceTextStyle = CurrencyTextStyle().apply {
+                                            defaultCurrency = "EUR" // or null
+                                            leftText = TextStyle().apply { size = 24.px }
+                                            rightText = TextStyle().apply { size = 14.px }
+                                        }
+                                    },
+                                    onProductClicked = {
+                                        Toast.makeText(this, "product clicked, product id: ${it.id}", Toast.LENGTH_SHORT).show()
+                                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it.link.toString())))
+                                    })
+                }
+
+                companion object {
+                    // start video view with a photo data
+                    fun launch(context: Context, pxlPhoto: PhotoWithVideoInfo?) {
+                        val i = Intent(context, ViewerActivity::class.java)
+                        i.putExtra("photoWithVideoInfo", pxlPhoto)
+                        context.startActivity(i)
+                    }
+                }
+            }
+            ```
 
 # Run the Demo App
 - The demo app included with this SDK are meant to be used in Android Studio to create a typical Android app.
