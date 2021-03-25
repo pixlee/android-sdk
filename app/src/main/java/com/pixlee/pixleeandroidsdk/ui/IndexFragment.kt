@@ -27,7 +27,7 @@ class IndexFragment : BaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.activity_index, container, false)
+        return inflater.inflate(R.layout.fragment_index, container, false)
     }
 
     private val localDataSource: LocalDataSource by lazy {
