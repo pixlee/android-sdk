@@ -58,7 +58,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
         ```
     1. Load your album photos using PXLPhotosView (Similar to Widget)
         - Using PXLPhotosView, you can load your album's photos.
-        In Xml
+        res/layout/list_layout.xml
         ```xml
         #!xml
         ...
@@ -77,7 +77,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
         class SimpleListActivity : AppCompatActivity() {
             public override fun onCreate(savedInstanceState: Bundle?) {
                 super.onCreate(savedInstanceState)
-                setContentView(R.layout.your_layout)
+                setContentView(R.layout.list_layout)
 
                 pxlPhotosView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
@@ -125,7 +125,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
         }
         ```
     1. Display a photo and products (similar to Lightbox)
-        XML layout
+        res/layout/viewer_layout.xml
         ```xml
         #!xml
         ...
@@ -142,7 +142,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
         class ViewerActivity : AppCompatActivity() {
             override fun onCreate(savedInstanceState: Bundle?) {
                 super.onCreate(savedInstanceState)
-                setContentView(R.layout.your_activity)
+                setContentView(R.layout.viewer_layout)
                 // set a full screen mode
                 PXLViewUtil.expandContentAreaOverStatusBar(this)
                 val item: PhotoWithVideoInfo? = intent.getParcelableExtra("photoWithVideoInfo")
