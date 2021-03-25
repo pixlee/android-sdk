@@ -31,8 +31,12 @@ open class ListViewModel(val pxlKtxAlbum: PXLKtxAlbum){
         class Error(val message: String?) : Command()
     }
 
-    protected val _loading = MutableLiveData<Boolean>().apply { value = false }
-    val loading: LiveData<Boolean>
+    enum class LoadState {
+        LOAD_MORE_BUTTON, LOADING, HIDE
+    }
+
+    protected val _loading = MutableLiveData<LoadState>().apply { value = LoadState.LOADING }
+    val loading: LiveData<LoadState>
         get() = _loading
 
     var cellHeightInPixel: Int = 200.px.toInt()
@@ -60,6 +64,7 @@ open class ListViewModel(val pxlKtxAlbum: PXLKtxAlbum){
 
     var customizedConfiguration:PXLPhotoView.Configuration = PXLPhotoView.Configuration()
 
+    var backUpLoadState:LoadState? = LoadState.HIDE
     /**
      * retrieve the next page from Pixlee server
      */
@@ -67,7 +72,8 @@ open class ListViewModel(val pxlKtxAlbum: PXLKtxAlbum){
         try {
             canLoadMore = false
             // show a loading UI on the mobile screen
-            _loading.value = true
+            backUpLoadState = _loading.value
+            _loading.value = LoadState.LOADING
             pxlKtxAlbum.getNextPage().let {
                 val newList = ArrayList<PhotoWithImageScaleType>()
                 if (it.photos.isNotEmpty()) {
@@ -83,14 +89,14 @@ open class ListViewModel(val pxlKtxAlbum: PXLKtxAlbum){
                 _resultEvent.value = Event(Command.Data(newList, it.page == 1))
 
                 canLoadMore = it.next
-                _loading.value = false
+                _loading.value = if(it.next) LoadState.LOAD_MORE_BUTTON else LoadState.HIDE
             }
         } catch (e: Exception) {
             // Callback for a failed call to loadNextPageOfPhotos
             Log.e("pixlee", String.format("Failed to fetch next page of photos: %s", e.message))
             _resultEvent.value = Event(Command.Error(e.message))
             canLoadMore = true
-            _loading.value = false
+            _loading.value = backUpLoadState
         }
     }
 

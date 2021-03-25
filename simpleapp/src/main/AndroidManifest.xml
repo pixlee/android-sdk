@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Androidsdk">
         <activity
-            android:name=".MainActivity"
+            android:name=".IndexActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Androidsdk.NoActionBar">
@@ -25,6 +25,16 @@
         </activity>
         <activity
             android:name=".ViewerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Androidsdk.NoActionBar"/>
+
+        <activity
+            android:name=".DynamicPhotosActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Androidsdk.NoActionBar"/>
+
+        <activity
+            android:name=".PhotosActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Androidsdk.NoActionBar"/>
     </application>

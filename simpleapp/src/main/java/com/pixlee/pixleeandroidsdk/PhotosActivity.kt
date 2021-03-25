@@ -17,32 +17,32 @@ import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
 import com.pixlee.pixleesdk.ui.widgets.list.Space
 import com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
 import com.pixlee.pixleesdk.util.px
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_photos.*
 
 /**
  * Created by sungjun on 3/23/21.
  */
-class MainActivity : AppCompatActivity() {
+class PhotosActivity : AppCompatActivity() {
     val listHeightRatio = 0.5f
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_photos)
         setSupportActionBar(toolbar)
         toolbar.navigationIcon?.setColorFilter(
                 ContextCompat.getColor(this, R.color.grey_60),
                 PorterDuff.Mode.SRC_ATOP
         )
 
-        pxlListView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        pxlPhotosView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 try {
-                    if (pxlListView == null)
+                    if (pxlPhotosView == null)
                         return
 
-                    initiateList((pxlListView.measuredHeight * listHeightRatio).toInt())
+                    initiateList((pxlPhotosView.measuredHeight * listHeightRatio).toInt())
 
-                    pxlListView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    pxlPhotosView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initiateList(cellHeightInPixel: Int) {
         // you can customize color, size if you need
-        pxlListView.initiate(
+        pxlPhotosView.initiate(
                 widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
                 viewType = getViewType(),
                 cellHeightInPixel = cellHeightInPixel,

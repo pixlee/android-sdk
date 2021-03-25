@@ -52,7 +52,7 @@ class PXLPhotoViewHolder(override val containerView: View) :
 @Parcelize
 class PhotoWithImageScaleType(override val pxlPhoto: PXLPhoto,
                               override val configuration: PXLPhotoView.Configuration,
-                              val heightInPixel: Int = 400.px.toInt(),
+                              var heightInPixel: Int = 400.px.toInt(),
                               override val isLoopingVideo: Boolean = true,
                               override var soundMuted: Boolean = false):PhotoWithVideoInfo(pxlPhoto, configuration, isLoopingVideo, soundMuted), Parcelable
 
