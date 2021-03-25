@@ -56,7 +56,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
             }
         }
         ```
-     1. Load your album photos using PXLPhotosView
+    1. Load your album photos using PXLPhotosView (Similar to Widget)
         - Using PXLPhotosView, you can load your album's photos.
         In Xml
         ```xml
@@ -121,6 +121,89 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
                             Toast.makeText(this, "onItemClickedListener", Toast.LENGTH_SHORT).show()
                         }
                 )
+            }
+        }
+        ```
+    1. Display a photo and products (similar to Lightbox)
+        XML layout
+        ```xml
+        #!xml
+        ...
+        <com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
+            android:id="@+id/pxlPhotoProductView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        ...
+        ```
+
+        Activity
+        ```kotlin
+        #!kotlin
+        class ViewerActivity : AppCompatActivity() {
+            override fun onCreate(savedInstanceState: Bundle?) {
+                super.onCreate(savedInstanceState)
+                setContentView(R.layout.your_activity)
+                // set a full screen mode
+                PXLViewUtil.expandContentAreaOverStatusBar(this)
+                val item: PhotoWithVideoInfo? = intent.getParcelableExtra("photoWithVideoInfo")
+                listenAnalyticsForInstrumentTesting()
+                init(item)
+            }
+
+            fun init(item: PhotoWithVideoInfo) {
+                // this is an example of changing ImageScaleType
+                item.configuration.imageScaleType = ImageScaleType.FIT_CENTER
+
+                // give a padding to the top as much as the status bar's height
+                pxlPhotoProductView.addPaddingToHeader(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
+
+                // by passing lifecycle to pxlPhotoProductView, the SDK will automatically start and stop the video
+                pxlPhotoProductView.useLifecycleObserver(lifecycle)
+
+                // set your ui settings
+                pxlPhotoProductView
+                        .setContent(photoInfo = item,
+                                headerConfiguration = PXLPhotoProductView.Configuration().apply {
+                                    backButton = PXLPhotoProductView.CircleButton().apply {
+                                        onClickListener = {
+                                            // back button's click effect
+                                            onBackPressed()
+                                        }
+                                    }
+                                    muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
+                                        onCheckedListener = {
+
+                                        }
+                                    }
+                                },
+                                configuration = ProductViewHolder.Configuration().apply {
+                                    circleIcon = ProductViewHolder.CircleIcon().apply {
+                                        icon = R.drawable.outline_shopping_bag_black_24
+                                        iconColor = Color.DKGRAY
+                                        backgroundColor = ContextCompat.getColor(this@ViewerActivity, R.color.yellow_800)
+                                        padding = 5.px.toInt()
+                                    }
+                                    mainTextStyle = TextStyle().apply { size = 14.px }
+                                    subTextStyle = TextStyle().apply { size = 12.px }
+                                    priceTextStyle = CurrencyTextStyle().apply {
+                                        defaultCurrency = "EUR" // or null
+                                        leftText = TextStyle().apply { size = 24.px }
+                                        rightText = TextStyle().apply { size = 14.px }
+                                    }
+                                },
+                                onProductClicked = {
+                                    Toast.makeText(this, "product clicked, product id: ${it.id}", Toast.LENGTH_SHORT).show()
+                                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it.link.toString())))
+                                })
+            }
+
+            companion object {
+                // start video view with a photo data
+                fun launch(context: Context, pxlPhoto: PhotoWithVideoInfo?) {
+                    val i = Intent(context, ViewerActivity::class.java)
+                    i.putExtra("photoWithVideoInfo", pxlPhoto)
+                    context.startActivity(i)
+                }
             }
         }
         ```
