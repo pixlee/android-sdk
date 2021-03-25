@@ -17,6 +17,8 @@
             android:layout_height="match_parent"
             android:scrollbars="none"
             android:scrollingCache="true"
+            android:clipToPadding="false"
+            android:paddingBottom="50dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <com.pixlee.pixleesdk.ui.widgets.PXLLoading
@@ -45,11 +47,11 @@
     <!--navigation drawer menu-->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="300dp"
+        android:layout_width="150dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:fitsSystemWindows="false"
-        android:alpha="0.7">
+        android:alpha="0.9">
 
         <include layout="@layout/module_search" />
 

@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.*
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -72,7 +71,7 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
     }
 
     //    lateinit var masterExoPlayerHelper: MasterExoPlayerHelper
-    var viewType: ViewType = ViewType.List()
+    var currentViewType: ViewType = ViewType.List()
         set(value) {
             Log.e("ViewType", "changed! value: $value")
             field = value
@@ -126,7 +125,7 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
                         gridLayoutManager?.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                             override fun getSpanSize(position: Int): Int {
                                 return if (pxlPhotoAdapter.list[position] is PXLPhotoAdapter.Item.Header || pxlPhotoAdapter.list[position] is PXLPhotoAdapter.Item.LoadMore) {
-                                    val viewType = viewType
+                                    val viewType = currentViewType
                                     if (viewType is ViewType.Grid) {
                                         viewType.gridSpan
                                     } else {
@@ -176,7 +175,7 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
     ) {
 
         albumForAutoAnalytics = AlbumForAutoAnalytics(viewModel.pxlKtxAlbum, widgetTypeForAnalytics)
-        this.viewType = viewType
+        this.currentViewType = viewType
 
         // Todo: must rollback (due to https://woovictory.github.io/2020/06/24/Android-RecyclerView-Attr/x)
         //setHasFixedSize(true)
@@ -198,11 +197,12 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
             }
 
             override fun onChildViewDetachedFromWindow(view: View) {
+                val viewType = currentViewType
                 when (viewType) {
                     is ViewType.List -> {
                         if (viewType.autoPlayVideo) {
                             val pxlPhotoView = view.findViewById<PXLPhotoView>(R.id.pxlPhotoView)
-                            if (pxlPhotoView.hasPlayer()) {
+                            if (pxlPhotoView!=null && pxlPhotoView.hasPlayer()) {
                                 view.alpha = viewType.alphaForStoppedVideos
                                 pxlPhotoView.pauseVideo()
                             }
@@ -217,6 +217,7 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
         addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
+                val viewType = currentViewType
                 when (viewType) {
                     is ViewType.List -> {
                         if (viewType.autoPlayVideo && newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -229,6 +230,7 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 linearLayoutManager?.let {
+                    val viewType = currentViewType
                     when (viewType) {
                         is ViewType.List -> {
                             if (viewType.autoPlayVideo && dy != 0) {
@@ -317,7 +319,7 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
     }
 
     override fun setList(type: ListAddType, list: List<PhotoWithImageScaleType>) {
-        when (val viewType = this.viewType) {
+        when (val viewType = this.currentViewType) {
             is ViewType.List -> {
                 var needToMoveScroll = false
                 if (list.isNotEmpty()) {
@@ -366,7 +368,7 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
 
     internal fun playVideoIfneeded(recyclerView: RecyclerView) {
         linearLayoutManager?.let {
-            when (val viewType = viewType) {
+            when (val viewType = currentViewType) {
                 is ViewType.List -> {
                     if (viewType.autoPlayVideo && pxlPhotoAdapter != null && pxlPhotoAdapter.list.isNotEmpty()) {
                         var muted = false
@@ -411,7 +413,7 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
         changingSoundJob?.cancel()
         playingVideo = false
         linearLayoutManager?.let {
-            when (val viewType = viewType) {
+            when (val viewType = currentViewType) {
                 is ViewType.List -> {
                     AutoPlayUtils.releaseAllVideos(this, R.id.pxlPhotoView, it.findFirstVisibleItemPosition(), it.findLastVisibleItemPosition(), viewType.alphaForStoppedVideos)
                 }
@@ -462,7 +464,7 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
 
     private fun changeVolume(muted: Boolean) {
         linearLayoutManager?.let {
-            when (val viewType = viewType) {
+            when (val viewType = currentViewType) {
                 is ViewType.List -> {
                     AutoPlayUtils.applyVolume(this, R.id.pxlPhotoView, it.findFirstVisibleItemPosition(), it.findLastVisibleItemPosition(), muted, viewType.alphaForStoppedVideos)
                 }

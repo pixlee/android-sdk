@@ -180,7 +180,7 @@
         android:background="@color/red_500"
         android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center"
-        android:text="APPLY"
+        android:text="Close"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
         android:textColor="@android:color/white"
         app:fontFamily="sans-serif-medium" />

@@ -10,9 +10,11 @@ import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
 import com.pixlee.pixleesdk.data.PXLAlbumSortOptions
@@ -56,11 +58,33 @@ class DynamicPhotosActivity : AppCompatActivity() {
     }
 
     private fun setFilters() {
+        drawerLayout.setScrimColor(Color.TRANSPARENT)
+        drawerLayout.drawerElevation = 0f
+        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(tvLineSpace.windowToken, 0)
+            }
+
+            override fun onDrawerStateChanged(newState: Int) {
+
+            }
+        })
+
         fabFilter.setOnClickListener { drawerLayout.openDrawer(GravityCompat.END) }
 
+        btnApply.setOnClickListener { drawerLayout.closeDrawer(GravityCompat.END) }
 
         radio_grid.setOnCheckedChangeListener { group, checkedId ->
-            val viewType = pxlPhotosView.viewType
+            val viewType = pxlPhotosView.currentViewType
             when (checkedId) {
                 R.id.radio_grid_2 -> {
                     changeSpan(2)
@@ -82,6 +106,16 @@ class DynamicPhotosActivity : AppCompatActivity() {
             v_list.visibility = if (R.id.radioList == checkedId) View.VISIBLE else View.GONE
             refreshViewType()
             changeSpan(getGridSpan())
+        }
+
+        radio_infiniteScroll.setOnCheckedChangeListener { group, checkedId ->
+            changeSpan(getGridSpan())
+            refreshViewType()
+        }
+
+        radio_autoPlayVideo.setOnCheckedChangeListener { group, checkedId ->
+            changeSpan(getGridSpan())
+            refreshViewType()
         }
 
         radio_header.setOnCheckedChangeListener { group, checkedId ->
@@ -106,11 +140,11 @@ class DynamicPhotosActivity : AppCompatActivity() {
     }
 
     fun changeSpan(span: Int) {
-        val viewType = pxlPhotosView.viewType
+        val viewType = pxlPhotosView.currentViewType
         if (viewType is PXLPhotosView.ViewType.Grid) {
             cellHeightInPixel = pxlPhotosView.measuredWidth / span
 
-            pxlPhotosView.viewType = viewType.copy().apply {
+            pxlPhotosView.currentViewType = viewType.copy().apply {
                 gridSpan = span
             }
 
@@ -119,19 +153,30 @@ class DynamicPhotosActivity : AppCompatActivity() {
         }
 
         pxlPhotosView.viewModel.cellHeightInPixel = cellHeightInPixel
+        pxlPhotosView.viewModel.customizedConfiguration.pxlPhotoSize = if(radioList.isChecked) PXLPhotoSize.BIG else PXLPhotoSize.MEDIUM
         pxlPhotosView.pxlPhotoAdapter.list.forEach {
             when (it) {
                 is PXLPhotoAdapter.Item.Content -> {
                     it.data.heightInPixel = pxlPhotosView.viewModel.cellHeightInPixel
+                    it.data.configuration.pxlPhotoSize = pxlPhotosView.viewModel.customizedConfiguration.pxlPhotoSize
                 }
             }
         }
 
         pxlPhotosView.pxlPhotoAdapter.notifyDataSetChanged()
+
+        if(radio_infiniteScroll_on.isChecked) {
+            var lastItem = pxlPhotosView.pxlPhotoAdapter.list.lastOrNull()
+            if(lastItem!=null && lastItem is PXLPhotoAdapter.Item.LoadMore){
+                val position = pxlPhotosView.pxlPhotoAdapter.list.count() - 1
+                pxlPhotosView.pxlPhotoAdapter.list.removeAt(position)
+                pxlPhotosView.pxlPhotoAdapter.notifyItemRemoved(position)
+            }
+        }
     }
 
     fun refreshViewType() {
-        pxlPhotosView.viewType = getViewType()
+        pxlPhotosView.currentViewType = getViewType()
     }
 
     private fun initiateList() {
@@ -163,8 +208,8 @@ class DynamicPhotosActivity : AppCompatActivity() {
             )
         } else {
             PXLPhotosView.ViewType.List(
-                    infiniteScroll = false,     // or false
-                    autoPlayVideo = false,
+                    infiniteScroll = radio_infiniteScroll_on.isChecked,     // or false
+                    autoPlayVideo = radio_autoPlayVideo_on.isChecked,
                     alphaForStoppedVideos = 1f
             )
         }
@@ -214,14 +259,15 @@ class DynamicPhotosActivity : AppCompatActivity() {
     private fun getSearchParams(): PXLKtxBaseAlbum.Params {
         return PXLKtxBaseAlbum.Params(
                 // album images
-                perPage = 10,
+                perPage = 15,
                 searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU),
                 filterOptions = PXLAlbumFilterOptions().apply {
-                    //hasProduct = true
+                    hasProduct = true
                     // more filter options
                     // - hasPermission = true
                     // - inStockOnly = true
                     // - .. there are more. Please check README or PXLAlbumFilterOptions class for more filter options
+
                 },
                 sortOptions = PXLAlbumSortOptions().apply {
                     sortType = PXLAlbumSortType.RECENCY
@@ -234,7 +280,7 @@ class DynamicPhotosActivity : AppCompatActivity() {
         return PXLPhotoView.Configuration().apply {
             // TODO: change variables values to customize the look if needed
             pxlPhotoSize = PXLPhotoSize.MEDIUM
-            imageScaleType = ImageScaleType.FIT_CENTER
+            imageScaleType = ImageScaleType.CENTER_CROP
         }
     }
 

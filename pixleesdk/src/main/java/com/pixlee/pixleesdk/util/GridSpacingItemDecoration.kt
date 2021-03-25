@@ -10,7 +10,7 @@ class GridSpacingItemDecoration(var spanCount: Int, var spacingPx: Int, var incl
         val position = parent.getChildAdapterPosition(view) // item position
         val offset = if(includingTitle) 1 else 0
 
-        if(position==0){
+        if(includingTitle && position==0){
             outRect.left = 0
             outRect.right = 0
             outRect.top = 0

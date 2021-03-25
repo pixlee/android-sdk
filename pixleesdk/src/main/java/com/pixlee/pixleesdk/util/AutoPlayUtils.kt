@@ -24,7 +24,7 @@ object AutoPlayUtils {
             val child = recyclerView.getChildAt(i)
             if (child != null) {
                 val pxlPhotoView = child.findViewById<PXLPhotoView>(pxlPhotoViewId)
-                if (playingIdx == -1 && getViewVisiblePercent(pxlPhotoView) == 100) {
+                if (pxlPhotoView!=null && playingIdx == -1 && getViewVisiblePercent(pxlPhotoView) == 100) {
                     if (positionInList != i + firstVisiblePosition) {
                         playingIdx = i
                         pxlPhotoView.playVideo()
@@ -44,7 +44,10 @@ object AutoPlayUtils {
                 val child = recyclerView.getChildAt(i)
                 if (child != null) {
                     val pxlPhotoView = child.findViewById<PXLPhotoView>(pxlPhotoViewId)
-                    pxlPhotoView.pauseVideo()
+                    if(pxlPhotoView!=null){
+                        pxlPhotoView.pauseVideo()
+                    }
+
                 }
             }
         }
