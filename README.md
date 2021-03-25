@@ -146,7 +146,6 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
                 // set a full screen mode
                 PXLViewUtil.expandContentAreaOverStatusBar(this)
                 val item: PhotoWithVideoInfo? = intent.getParcelableExtra("photoWithVideoInfo")
-                listenAnalyticsForInstrumentTesting()
                 init(item)
             }
 
