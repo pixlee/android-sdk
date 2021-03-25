@@ -7,13 +7,13 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
 - The PXLPhoto class represents a piece of content, which can be a photo or video
 
 # Table of Content
-- [Get Started](#Get-Started)
+- [Quick Start](#Quick-Start)
 - [Run the Demo App](#Run-the-Demo-App)
 - [Development Guide](#Development-Guide)
     - [Java](doc/JAVA.md)
     - [Kotlin](doc/kotlin/INDEX.md)
 
-# Get Started
+# Quick Start
 - ### Add gradle dependencies
     1. Add it in your root build.gradle at the end of repositories:
         ```gradle
