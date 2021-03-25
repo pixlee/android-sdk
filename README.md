@@ -58,7 +58,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
         ```
     1. Load your album photos using PXLPhotosView (Similar to Widget)
         - Using PXLPhotosView, you can load your album's photos.
-        res/layout/list_layout.xml
+        - res/layout/list_layout.xml
         ```xml
         #!xml
         ...
@@ -71,7 +71,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
         ...
         ```
-        In Activity
+        - In Activity
         ```kotlin
         #!kotlin
         class SimpleListActivity : AppCompatActivity() {
@@ -125,7 +125,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
         }
         ```
     1. Display a photo and products (similar to Lightbox)
-        res/layout/viewer_layout.xml
+        - res/layout/viewer_layout.xml
         ```xml
         #!xml
         ...
@@ -136,7 +136,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
         ...
         ```
 
-        Activity
+        - Activity
         ```kotlin
         #!kotlin
         class ViewerActivity : AppCompatActivity() {
