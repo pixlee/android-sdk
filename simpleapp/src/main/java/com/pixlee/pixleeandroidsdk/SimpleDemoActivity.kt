@@ -17,17 +17,17 @@ import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
 import com.pixlee.pixleesdk.ui.widgets.list.Space
 import com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
 import com.pixlee.pixleesdk.util.px
-import kotlinx.android.synthetic.main.activity_photos.*
+import kotlinx.android.synthetic.main.activity_simple_demo.*
 
 /**
  * Created by sungjun on 3/23/21.
  */
-class PhotosActivity : AppCompatActivity() {
+class SimpleDemoActivity : AppCompatActivity() {
     val listHeightRatio = 0.5f
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_photos)
+        setContentView(R.layout.activity_simple_demo)
         setSupportActionBar(toolbar)
         toolbar.navigationIcon?.setColorFilter(
                 ContextCompat.getColor(this, R.color.grey_60),
@@ -55,10 +55,23 @@ class PhotosActivity : AppCompatActivity() {
         // you can customize color, size if you need
         pxlPhotosView.initiate(
                 widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
-                viewType = getViewType(),
+                viewType = PXLPhotosView.ViewType.Grid(),
                 cellHeightInPixel = cellHeightInPixel,
-                params = getSearchParams(),
-                configuration = getConfiguration(),
+                params = PXLKtxBaseAlbum.Params(
+                        // album images
+                        searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU),
+                        filterOptions = PXLAlbumFilterOptions().apply {
+                            hasProduct = true
+                        },
+                        sortOptions = PXLAlbumSortOptions().apply {
+                            sortType = PXLAlbumSortType.RECENCY
+                            descending = true
+                        }
+                ),
+                configuration = PXLPhotoView.Configuration().apply {
+                    pxlPhotoSize = PXLPhotoSize.MEDIUM
+                    imageScaleType = ImageScaleType.CENTER_CROP
+                },
                 onButtonClickedListener = { view, photoWithImageScaleType ->
                     // TODO: you can add your business logic here
                     Toast.makeText(this, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
@@ -69,55 +82,5 @@ class PhotosActivity : AppCompatActivity() {
                     Toast.makeText(this, "onItemClickedListener", Toast.LENGTH_SHORT).show()
                 }
         )
-    }
-
-    // try changing this to see different layouts between list and grid
-    private val isGrid = false
-
-    private fun getViewType(): PXLPhotosView.ViewType {
-        return if (isGrid) {
-            PXLPhotosView.ViewType.Grid(
-                    gridSpan = 2,
-                    lineSpace = Space(lineWidthInPixel = 5.px.toInt()),
-                    listHeader = ListHeader.Gif(url = "https://media.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif", heightInPixel = 200.px.toInt(), imageScaleType = ImageScaleType.CENTER_CROP)
-            )
-        } else {
-            PXLPhotosView.ViewType.List(
-                    infiniteScroll = false,     // or false
-                    autoPlayVideo = false,
-                    alphaForStoppedVideos = 1f
-            )
-        }
-    }
-
-    private fun getSearchParams(): PXLKtxBaseAlbum.Params {
-        return PXLKtxBaseAlbum.Params(
-                // album images
-                searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU),
-                filterOptions = PXLAlbumFilterOptions().apply {
-                    hasProduct = true
-                    // more filter options
-                    // - hasPermission = true
-                    // - inStockOnly = true
-                    // - .. there are more. Please check README or PXLAlbumFilterOptions class for more filter options
-                },
-                sortOptions = PXLAlbumSortOptions().apply {
-                    sortType = PXLAlbumSortType.RECENCY
-                    descending = true
-                }
-        )
-    }
-
-    private fun getConfiguration(): PXLPhotoView.Configuration {
-        return PXLPhotoView.Configuration().apply {
-            // TODO: change variables values to customize the look if needed
-            pxlPhotoSize = PXLPhotoSize.MEDIUM
-            imageScaleType = ImageScaleType.CENTER_CROP
-        }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
     }
 }

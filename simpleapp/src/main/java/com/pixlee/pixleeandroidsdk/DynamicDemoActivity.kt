@@ -34,7 +34,7 @@ import kotlinx.android.synthetic.main.module_search.*
 /**
  * Created by sungjun on 3/23/21.
  */
-class DynamicPhotosActivity : AppCompatActivity() {
+class DynamicDemoActivity : AppCompatActivity() {
     var cellHeightInPixel = 200.px.toInt()
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,6 +111,9 @@ class DynamicPhotosActivity : AppCompatActivity() {
         radio_infiniteScroll.setOnCheckedChangeListener { group, checkedId ->
             changeSpan(getGridSpan())
             refreshViewType()
+            if(radio_infiniteScroll_on.isChecked) {
+                pxlPhotosView.scrollToPosition(Integer.MAX_VALUE / 2)
+            }
         }
 
         radio_autoPlayVideo.setOnCheckedChangeListener { group, checkedId ->
@@ -262,7 +265,7 @@ class DynamicPhotosActivity : AppCompatActivity() {
                 perPage = 15,
                 searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU),
                 filterOptions = PXLAlbumFilterOptions().apply {
-                    hasProduct = true
+//                    hasProduct = true
                     // more filter options
                     // - hasPermission = true
                     // - inStockOnly = true
@@ -271,7 +274,7 @@ class DynamicPhotosActivity : AppCompatActivity() {
                 },
                 sortOptions = PXLAlbumSortOptions().apply {
                     sortType = PXLAlbumSortType.RECENCY
-                    descending = true
+                    descending = false
                 }
         )
     }

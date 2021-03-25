@@ -14,11 +14,11 @@ class IndexActivity : AppCompatActivity() {
         setContentView(R.layout.activity_index)
 
         basic.setOnClickListener {
-            startActivity(Intent(this, PhotosActivity::class.java))
+            startActivity(Intent(this, SimpleDemoActivity::class.java))
         }
 
         dynamic.setOnClickListener {
-            startActivity(Intent(this, DynamicPhotosActivity::class.java))
+            startActivity(Intent(this, DynamicDemoActivity::class.java))
         }
     }
 }

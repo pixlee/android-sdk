@@ -29,12 +29,12 @@
             android:theme="@style/Theme.Androidsdk.NoActionBar"/>
 
         <activity
-            android:name=".DynamicPhotosActivity"
+            android:name=".DynamicDemoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Androidsdk.NoActionBar"/>
 
         <activity
-            android:name=".PhotosActivity"
+            android:name=".SimpleDemoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Androidsdk.NoActionBar"/>
     </application>
