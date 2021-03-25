@@ -72,13 +72,12 @@ class ViewerActivity : AppCompatActivity() {
                             backButton = PXLPhotoProductView.CircleButton().apply {
                                 onClickListener = {
                                     // back button's click effect
-                                    Toast.makeText(this@ViewerActivity, "Replace this with your codes, currently 'onBackPressed()'", Toast.LENGTH_LONG).show()
                                     onBackPressed()
                                 }
                             }
                             muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
                                 onCheckedListener = {
-                                    Toast.makeText(this@ViewerActivity, "is muted: $it", Toast.LENGTH_LONG).show()
+
                                 }
                             }
                         },

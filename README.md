@@ -35,6 +35,96 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
         }
         ```
 
+    1. Initalize SDK
+        - In your Application level, you need to initialize your SDK to make sure the SDK get essential data before using its features.
+        ```kotlin
+        #!kotlin
+        class AppApplication: Application() {
+            override fun onCreate() {
+                super.onCreate()
+                // set credentials for the SDK
+                PXLClient.initialize("Your Pixlee api key", Your Pixlee secret key"")
+
+                // (Optional) if you use UI components and want
+                // to let PXLPhotosView, PXLPhotoRecyclerViewInGrid, PXLPhotoRecyclerView and PXLPhotoProductView
+                // fire 'openedWidget', 'widgetVisible' and 'openedLightbox' analytics events, use this.
+                PXLClient.autoAnalyticsEnabled = true
+
+                // (Optional) if you use multi-region, you can set your region id here to get photos, a photo, and products available in the region.
+                val regionId:Int? = null // replace this value with yours
+                PXLClient.regionId = regionId
+            }
+        }
+        ```
+     1. Load your album photos using PXLPhotosView
+        - Using PXLPhotosView, you can load your album's photos.
+        In Xml
+        ```xml
+        #!xml
+        ...
+        <com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
+            android:id="@+id/pxlPhotosView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:scrollingCache="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        ...
+        ```
+        In Activity
+        ```kotlin
+        #!kotlin
+        class SimpleListActivity : AppCompatActivity() {
+            public override fun onCreate(savedInstanceState: Bundle?) {
+                super.onCreate(savedInstanceState)
+                setContentView(R.layout.your_layout)
+
+                pxlPhotosView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        try {
+                            if (pxlPhotosView == null)
+                                return
+
+                            initiateList((pxlPhotosView.measuredHeight / 2).toInt())
+
+                            pxlPhotosView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+
+                    }
+                })
+            }
+
+            private fun initiateList(cellHeightInPixel: Int) {
+                // you can customize color, size if you need
+                pxlPhotosView.initiate(
+                        widgetTypeForAnalytics = "your_widget_type",
+                        viewType = PXLPhotosView.ViewType.List(),
+                        cellHeightInPixel = cellHeightInPixel,
+                        params = PXLKtxBaseAlbum.Params(
+                                // album images
+                                searchId = PXLKtxBaseAlbum.SearchId.Album("your album number"),
+                                filterOptions = PXLAlbumFilterOptions(),
+                                sortOptions = PXLAlbumSortOptions().apply {
+                                    sortType = PXLAlbumSortType.RECENCY
+                                    descending = false
+                                }
+                        ),
+                        configuration = PXLPhotoView.Configuration().apply {
+                            pxlPhotoSize = PXLPhotoSize.MEDIUM
+                            imageScaleType = ImageScaleType.CENTER_CROP
+                        },
+                        onPhotoClickedListener = { view, photoWithImageScaleType ->
+                            // TODO: you can add your business logic here
+                            ViewerActivity.launch(this, photoWithImageScaleType)
+                            Toast.makeText(this, "onItemClickedListener", Toast.LENGTH_SHORT).show()
+                        }
+                )
+            }
+        }
+        ```
+
 # Run the Demo App
 - The demo app included with this SDK are meant to be used in Android Studio to create a typical Android app.
 - To help you get up and running quickly, we've built this demo featuring a RecyclerView with LinearLayoutManager and GridLayoutManager and a few UI components.

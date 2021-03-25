@@ -60,12 +60,10 @@ class SimpleGridActivity : AppCompatActivity() {
                 params = PXLKtxBaseAlbum.Params(
                         // album images
                         searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU),
-                        filterOptions = PXLAlbumFilterOptions().apply {
-                            hasProduct = true
-                        },
+                        filterOptions = PXLAlbumFilterOptions(),
                         sortOptions = PXLAlbumSortOptions().apply {
                             sortType = PXLAlbumSortType.RECENCY
-                            descending = true
+                            descending = false
                         }
                 ),
                 configuration = PXLPhotoView.Configuration().apply {

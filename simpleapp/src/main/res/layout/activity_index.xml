@@ -55,7 +55,7 @@
             android:textSize="14sp"
             android:paddingTop="16sp"
             android:paddingBottom="13dp"
-            android:text="Dynamic"
+            android:text="Design Utility"
             android:layout_marginLeft="@dimen/margin"
             android:layout_marginRight="@dimen/margin"
             />
