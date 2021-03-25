@@ -72,14 +72,9 @@ class SimpleGridActivity : AppCompatActivity() {
                     pxlPhotoSize = PXLPhotoSize.MEDIUM
                     imageScaleType = ImageScaleType.CENTER_CROP
                 },
-                onButtonClickedListener = { view, photoWithImageScaleType ->
-                    // TODO: you can add your business logic here
-                    Toast.makeText(this, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
-                },
                 onPhotoClickedListener = { view, photoWithImageScaleType ->
-                    // TODO: you can add your business logic here
+                    // TODO: open lightbox
                     ViewerActivity.launch(this, photoWithImageScaleType)
-                    Toast.makeText(this, "onItemClickedListener", Toast.LENGTH_SHORT).show()
                 }
         )
     }

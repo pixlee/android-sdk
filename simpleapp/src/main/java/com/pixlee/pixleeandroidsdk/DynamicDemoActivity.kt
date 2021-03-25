@@ -192,12 +192,11 @@ class DynamicDemoActivity : AppCompatActivity() {
                 configuration = getConfiguration(),
                 onButtonClickedListener = { view, photoWithImageScaleType ->
                     // TODO: you can add your business logic here
-                    Toast.makeText(this, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
+
                 },
                 onPhotoClickedListener = { view, photoWithImageScaleType ->
                     // TODO: you can add your business logic here
                     ViewerActivity.launch(this, photoWithImageScaleType)
-                    Toast.makeText(this, "onItemClickedListener", Toast.LENGTH_SHORT).show()
                 }
         )
     }
