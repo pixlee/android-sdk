@@ -53,7 +53,7 @@
             style="@style/NextButtonDefault"
             android:id="@+id/dynamic"
             android:textSize="14sp"
-            android:paddingTop="16sp"
+            android:paddingTop="16dp"
             android:paddingBottom="13dp"
             android:text="Design Utility"
             android:layout_marginLeft="@dimen/margin"

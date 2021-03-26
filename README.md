@@ -235,6 +235,8 @@ AlbumId and SKU available from the Pixlee dashboard).
     pixleeSKU=35123
     ```
 1. Run the project on an Android device
+    - /app: complex codes for thoes that want to have more control or customization options
+    - /simpleapp: simple sample codes for those looking for basic features
 
 # Development Guide
 ### [Java](doc/JAVA.md)
