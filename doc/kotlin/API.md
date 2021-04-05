@@ -9,6 +9,7 @@
     - [Get content](#Get-content)
     - [Get a PXLPhoto](#Get-a-PXLPhoto)
     - [How to get image urls](#How-to-get-image-urls)
+    - [Upload a video of a photo](#uploading-a-video-or-a-photo)
 - Analytics
     - [Album Analytics](#Album-Analytics)
         - [Opened Widget](#Opened-Widget)

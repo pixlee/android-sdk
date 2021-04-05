@@ -5,6 +5,7 @@
     - [Register Pixlee credentials](#Register-Pixlee-credentials)
 - [API: Getting Album/PDP contents](API.md)
 - [API: Getting a PXLPhoto with an album photo id](API.md#get-pxlphoto-with-an-albumphotoid)
+- [API: Upload a video of a photo](API.md##uploading-a-video-or-a-photo)
 - [API: Analytics for album/product](API.md#album-analytics)
 - [API: Analytics for Ecommerce](API.md#ecommerce-analytics)
 - [UI Components](UI.md)
