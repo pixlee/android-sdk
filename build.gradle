@@ -67,6 +67,6 @@ ext {
     checkerframeworkVersion = '3.3.0'
     //exoPlayer="2.12.1"
     exoPlayer="2.8.2"
-
     supportLibraryVersion = '27.0.0'
+    jackson = '2.10.3'
 }

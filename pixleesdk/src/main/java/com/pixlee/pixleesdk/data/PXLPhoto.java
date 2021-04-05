@@ -7,10 +7,13 @@ import com.pixlee.pixleesdk.R;
 import com.pixlee.pixleesdk.enums.PXLPhotoSize;
 import com.pixlee.pixleesdk.network.annotation.FieldDate;
 import com.pixlee.pixleesdk.network.annotation.FieldURL;
+import com.pixlee.pixleesdk.network.annotation.FieldUploadedJson;
 import com.pixlee.pixleesdk.network.annotation.NullableBoolean;
 import com.pixlee.pixleesdk.network.annotation.NullableDouble;
 import com.pixlee.pixleesdk.network.annotation.NullableInt;
 import com.squareup.moshi.Json;
+
+import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.Date;
@@ -186,6 +189,11 @@ public class PXLPhoto implements Parcelable {
 
     @Json(name = "products")
     public List<PXLProduct> products;
+
+    @FieldUploadedJson
+    @Json(name = "uploader_additional_fields")
+    public JSONObject uploaderAdditionalFields;
+
 
     @Json(name = "pixlee_cdn_photos")
     public CDNPhotos cdnPhotos;

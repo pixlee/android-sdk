@@ -123,6 +123,54 @@ result.forEach { pxlPhoto ->
 }
 ```
 
+#### Uploading a video or a photo
+- Prerequisite:
+    - prepare PXLKtxAlbum and declare a variable as 'pxlKtxAlbum'
+- Option 1: Upload an image file
+    ```kotlin
+    #!kotlin
+    pxlKtxAlbum.postMediaWithFile(
+        localMediaPath = "<local file path>",
+        title = "uploaded from SDK-" + System.currentTimeMillis() + " using a file",
+        email = "sam@pixleeturnto.com",
+        username = "jun",
+        approved = true,
+        productSKUs = listOf("productA", "productB"), // Optional
+        categoryNames = listOf("Clothing", "Shoes"),  // Optional
+        connectedUser = JSONObject().apply { // Optional
+            put("name", "Sungjun Hong")
+            put("age", 24)
+            put("userId", "jun.hong")
+            put("points", JSONArray().apply {
+                put(10)
+                put(20)
+                put(35)
+            })
+        })
+    ```
+- Option 2: Upload an image url
+    ```kotlin
+    #!kotlin
+    pxlKtxAlbum.postMediaWithURI(
+            photoURI = "<photo URI>",
+            title = "uploaded from SDK-" + System.currentTimeMillis() + " using a file",
+            email = "sam@pixleeturnto.com",
+            username = "jun",
+            approved = true,
+            productSKUs = listOf("productA", "productB"), // Optional
+            categoryNames = listOf("Clothing", "Shoes"),  // Optional
+            connectedUser = JSONObject().apply { // Optional
+                put("name", "Sungjun Hong")
+                put("age", 24)
+                put("userId", "jun.hong")
+                put("points", JSONArray().apply {
+                    put(10)
+                    put(20)
+                    put(35)
+                })
+            })
+    ```
+
 ## Album Analytics
 You can see the example codes for analytics in the demo app.
 

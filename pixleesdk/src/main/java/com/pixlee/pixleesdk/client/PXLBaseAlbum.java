@@ -14,11 +14,13 @@ import com.pixlee.pixleesdk.data.repository.BasicDataSource;
 import com.pixlee.pixleesdk.enums.PXLWidgetType;
 import com.pixlee.pixleesdk.network.NetworkModule;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -347,7 +349,7 @@ public abstract class PXLBaseAlbum {
                 );
     }
 
-    public Call<MediaResult> makePostUploadImage(String title, String email, String username, String photoURI, Boolean approved) {
+    public Call<MediaResult> makePostUploadImage(String title, String email, String username, String photoURI, Boolean approved, List<String> productSKUs, List<String> categoryNames, JSONObject connectedUser) {
         JSONObject body = new JSONObject();
         try {
             body.put("album_id", Integer.parseInt(this.album_id));
@@ -357,6 +359,23 @@ public abstract class PXLBaseAlbum {
             body.put("photo_uri", photoURI);
             body.put("approved", approved);
 
+            if(productSKUs!=null && productSKUs.size() > 0){
+                JSONArray arr = new JSONArray();
+                for (String item : productSKUs)
+                    arr.put(item);
+                body.put("product_skus", arr);
+            }
+
+            if(categoryNames!=null && categoryNames.size() > 0){
+                JSONArray arr = new JSONArray();
+                for (String item : categoryNames)
+                    arr.put(item);
+                body.put("category_names", arr);
+            }
+
+            if(connectedUser!=null && connectedUser.length() > 0) {
+                body.put("connected_user", connectedUser);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -368,16 +387,16 @@ public abstract class PXLBaseAlbum {
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
      * sort order, and filter options before calling.
      *
+     * @param photoURI - the URI of the photo being submitted (must be a public URI)
      * @param title    - title or caption of the photo being uploaded
      * @param email    - email address of the submitting user
      * @param username - username of the submitting user
-     * @param photoURI - the URI of the photo being submitted (must be a public URI)
      * @param approved - boolean specifying whether the photo should be marked as approved on upload
      * @param handlers - a callback fired after this api call is finished
      */
-    public void postMediaWithURI(String title, String email, String username, String photoURI, Boolean approved, final RequestHandlers<MediaResult> handlers) {
+    public void postMediaWithURI(String photoURI, String title, String email, String username, Boolean approved, List<String> productSKUs, List<String> categoryNames, JSONObject connectedUser, final RequestHandlers<MediaResult> handlers) {
         try {
-            makePostUploadImage(title, email, username, photoURI, approved)
+            makePostUploadImage(title, email, username, photoURI, approved, productSKUs, categoryNames, connectedUser)
                     .enqueue(new Callback<MediaResult>() {
                         @Override
                         public void onResponse(Call<MediaResult> call, Response<MediaResult> response) {
@@ -396,7 +415,7 @@ public abstract class PXLBaseAlbum {
         }
     }
 
-    Call<MediaResult> postMediaWithFile(String title, String email, String username, Boolean approved, String localPhotoPath) {
+    Call<MediaResult> postMediaWithFile(String localPhotoPath, String title, String email, String username, Boolean approved, List<String> productSKUs, List<String> categoryNames, JSONObject connectedUser) {
         JSONObject body = new JSONObject();
         try {
             body.put("album_id", Integer.parseInt(this.album_id));
@@ -405,6 +424,23 @@ public abstract class PXLBaseAlbum {
             body.put("username", username);
             body.put("approved", approved);
 
+            if(productSKUs!=null && productSKUs.size() > 0){
+                JSONArray arr = new JSONArray();
+                for (String item : productSKUs)
+                    arr.put(item);
+                body.put("product_skus", arr);
+            }
+
+            if(categoryNames!=null && categoryNames.size() > 0){
+                JSONArray arr = new JSONArray();
+                for (String item : categoryNames)
+                    arr.put(item);
+                body.put("category_names", arr);
+            }
+
+            if(connectedUser!=null && connectedUser.length() > 0) {
+                body.put("connected_user", connectedUser);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -416,16 +452,16 @@ public abstract class PXLBaseAlbum {
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
      * sort order, and filter options before calling.
      *
+     * @param localPhotoPath - local image file path
      * @param title          - title or caption of the photo being uploaded
      * @param email          - email address of the submitting user
      * @param username       - username of the submitting user
-     * @param localPhotoPath - local image file path
      * @param approved       - boolean specifying whether the photo should be marked as approved on upload
      * @param handlers       - a callback fired after this api call is finished
      */
-    public void uploadLocalImage(String title, String email, String username, Boolean approved, String localPhotoPath, final RequestHandlers<MediaResult> handlers) {
+    public void uploadLocalImage(String localPhotoPath, String title, String email, String username, Boolean approved, List<String> productSKUs, List<String> categoryNames, JSONObject connectedUser, final RequestHandlers<MediaResult> handlers) {
         try {
-            postMediaWithFile(title, email, username, approved, localPhotoPath)
+            postMediaWithFile(localPhotoPath, title, email, username, approved, productSKUs, categoryNames, connectedUser)
                     .enqueue(new Callback<MediaResult>() {
                         @Override
                         public void onResponse(Call<MediaResult> call, Response<MediaResult> response) {

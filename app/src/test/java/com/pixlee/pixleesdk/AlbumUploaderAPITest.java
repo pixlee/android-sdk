@@ -42,7 +42,10 @@ public class AlbumUploaderAPITest extends BaseTest {
                 email,
                 username,
                 photoURI,
-                approved
+                approved,
+                null,
+                null,
+                null
         ).execute();
         album.processReponse(response, handlers);
     }

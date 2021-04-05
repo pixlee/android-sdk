@@ -6,15 +6,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pixlee.pixleesdk.util.Event
 import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLPhoto
-import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextPadding
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
+import com.pixlee.pixleesdk.util.Event
 import com.pixlee.pixleesdk.util.px
 import kotlinx.coroutines.launch
 
@@ -75,8 +74,7 @@ open class BaseViewModel(val pxlKtxAlbum: PXLKtxAlbum) : ViewModel() {
                     val newList = ArrayList<PhotoWithImageScaleType>()
                     if (it.photos.isNotEmpty()) {
                         it.photos.forEach {
-                            Log.e("pxlvideo", "pxlvideo.url: ${it.videoUrl.toString()}")
-                            Log.e("pxlvideo", "pxlvideo.big: ${it.getUrlForSize(PXLPhotoSize.BIG)}")
+                            Log.e("pxlvideo", "pxlvideo.uploaderAdditionalFields: ${it.uploaderAdditionalFields}")
                             newList.add(PhotoWithImageScaleType(pxlPhoto = it,
                                     configuration = customizedConfiguration.copy().apply {
                                         mainTextViewStyle = TextViewStyle().apply {

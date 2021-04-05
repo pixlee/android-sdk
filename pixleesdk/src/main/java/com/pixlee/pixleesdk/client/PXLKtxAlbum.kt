@@ -8,9 +8,9 @@ import com.pixlee.pixleesdk.data.repository.KtxAnalyticsDataSource
 import com.pixlee.pixleesdk.data.repository.KtxBasicDataSource
 import com.pixlee.pixleesdk.enums.PXLWidgetType
 import kotlinx.coroutines.*
+import org.json.JSONArray
 import org.json.JSONObject
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 /**
  * Album and Analytics APIs supporting Kotlin.coroutines
@@ -140,41 +140,76 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
      * sort order, and filter options before calling.
      *
+     * @param photoURI - the URI of the photo/video being submitted (must be a public URI)
      * @param title    - title or caption of the photo being uploaded
      * @param email    - email address of the submitting user
      * @param username - username of the submitting user
-     * @param photoURI - the URI of the photo/video being submitted (must be a public URI)
      * @param approved - boolean specifying whether the photo should be marked as approved on upload
+     * @param productSKUs - a list of SKUs
+     * @param categoryNames - a list of category names
+     * @param connectedUser - a json of a customizable data that can be returned in PXLPhoto.uploaderAdditionalFields when you get the content
      */
-    suspend fun postMediaWithURI(title: String, email: String, username: String, photoURI: String, approved: Boolean) {
-        ktxBasicDataSource.postMediaWithURI(JSONObject().apply {
-            put("album_id", getAlbumIdParam())
-            put("title", title)
-            put("email", email)
-            put("username", username)
-            put("photo_uri", photoURI)
-            put("approved", approved)
-        })
+    suspend fun postMediaWithURI(photoURI: String, title: String, email: String, username: String, approved: Boolean, productSKUs: List<String>? = null, categoryNames: List<String>? = null, connectedUser: JSONObject? = null) {
+        postMedia(ContentSource.URL(data = photoURI), title, email, username, approved, productSKUs, categoryNames, connectedUser)
+
     }
 
     /**
      * Requests the next page of photos from the Pixlee album. Make sure to set perPage,
      * sort order, and filter options before calling.
      *
+     * @param localMediaPath - a local path of the media(photo or video)
      * @param title    - title or caption of the photo being uploaded
      * @param email    - email address of the submitting user
      * @param username - username of the submitting user
      * @param approved - boolean specifying whether the photo should be marked as approved on upload
-     * @param localMediaPath - a local path of the media(photo or video)
+     * @param productSKUs - a list of SKUs
+     * @param categoryNames - a list of category names
+     * @param connectedUser - a json of a customizable data that can be returned in PXLPhoto.uploaderAdditionalFields when you get the content
      */
-    suspend fun postMediaWithFile(title: String, email: String, username: String, approved: Boolean, localMediaPath: String) {
-        ktxBasicDataSource.postMediaWithFile(JSONObject().apply {
+    suspend fun postMediaWithFile(localMediaPath: String, title: String, email: String, username: String, approved: Boolean, productSKUs: List<String>? = null, categoryNames: List<String>? = null, connectedUser: JSONObject? = null) {
+        postMedia(ContentSource.LocalFile(data = localMediaPath), title, email, username, approved, productSKUs, categoryNames, connectedUser)
+    }
+
+    sealed class ContentSource {
+        class URL(val data: String): ContentSource()
+        class LocalFile(val data: String): ContentSource()
+    }
+
+    private suspend fun postMedia(contentSource: ContentSource, title: String, email: String, username: String, approved: Boolean, productSKUs: List<String>? = null, categoryNames: List<String>? = null, connectedUser: JSONObject? = null) {
+        val json = JSONObject().apply {
             put("album_id", getAlbumIdParam())
             put("title", title)
             put("email", email)
             put("username", username)
             put("approved", approved)
-        }, localMediaPath)
+            if (productSKUs != null && productSKUs.isNotEmpty()) {
+                val arr = JSONArray()
+                for (item in productSKUs) arr.put(item)
+                put("product_skus", arr)
+            }
+
+            if (categoryNames != null && categoryNames.isNotEmpty()) {
+                val arr = JSONArray()
+                for (item in categoryNames) arr.put(item)
+                put("category_names", arr)
+            }
+
+            if (connectedUser != null && connectedUser.length() > 0) {
+                put("connected_user", connectedUser)
+            }
+        }
+
+        when (contentSource) {
+            is ContentSource.URL -> {
+                ktxBasicDataSource.postMediaWithURI(json.apply {
+                    put("photo_uri", contentSource.data)
+                })
+            }
+            is ContentSource.LocalFile -> {
+                ktxBasicDataSource.postMediaWithFile(json, contentSource.data)
+            }
+        }
     }
 
     /**

@@ -21,9 +21,11 @@ import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
 import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.ViewerActivity
+import com.pixlee.pixleesdk.client.PXLBaseAlbum.RequestHandlers
 import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
+import com.pixlee.pixleesdk.data.MediaResult
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
 import com.pixlee.pixleesdk.data.PXLAlbumSortOptions
 import com.pixlee.pixleesdk.enums.*
@@ -38,6 +40,9 @@ import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_list.*
 import kotlinx.android.synthetic.main.module_search.*
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 
 
 /**
@@ -107,6 +112,13 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
     }
 
     fun addViewModelListeners() {
+        viewModel.toastMessage.observe(viewLifecycleOwner, EventObserver {
+            showToast(it)
+        })
+
+        viewModel.uploadStatus.observe(viewLifecycleOwner, Observer {
+            fabUpload.isEnabled = !it
+        })
 
         viewModel.loading.observe(viewLifecycleOwner, Observer {
             lottieView.visibility = if (it) View.VISIBLE else View.GONE
@@ -206,12 +218,34 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
 
     fun initFilterClickListeners() {
         // set filter buttons
+        fabUpload.setOnClickListener { setupExternalStoragePermission() }
         fabFilter.setOnClickListener { drawerLayout.openDrawer(GravityCompat.END) }
         btnCloseFilter.setOnClickListener { drawerLayout.closeDrawer(GravityCompat.END) }
         btnApply.setOnClickListener {
             drawerLayout.closeDrawer(GravityCompat.END)
             loadAlbum()
         }
+    }
+
+    override fun uploadFile(filePath: String) {
+        viewModel.uploadPhoto(
+                localMediaPath = filePath,
+                title = "uploaded from SDK-" + System.currentTimeMillis() + " using a file",
+                email = "sam@pixleeturnto.com",
+                username = "jun",
+                approved = true,
+                productSKUs = listOf("productA", "productB"), // Optional
+                categoryNames = listOf("Clothing", "Shoes"),  // Optional
+                connectedUser = JSONObject().apply { // Optional
+                    put("name", "Sungjun Hong")
+                    put("age", 24)
+                    put("userId", "jun.hong")
+                    put("points", JSONArray().apply {
+                        put(10)
+                        put(20)
+                        put(35)
+                    })
+                })
     }
 
     /***

@@ -37,7 +37,22 @@
             android:tint="@android:color/white"
             app:fabSize="normal"
             app:rippleColor="@android:color/white"
+            app:backgroundTint="@android:color/holo_blue_dark"
             android:src="@drawable/baseline_filter_alt_24" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabUpload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/spacing_smlarge"
+            android:layout_marginLeft="@dimen/spacing_smlarge"
+            android:layout_marginRight="@dimen/spacing_smlarge"
+            android:layout_marginTop="@dimen/spacing_middle"
+            android:layout_above="@+id/fabFilter"
+            android:clickable="true"
+            app:fabSize="normal"
+            android:src="@drawable/ic_baseline_cloud_upload_24" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switchSound"
