@@ -349,14 +349,14 @@ public abstract class PXLBaseAlbum {
                 );
     }
 
-    public Call<MediaResult> makePostUploadImage(String title, String email, String username, String photoURI, Boolean approved, List<String> productSKUs, List<String> categoryNames, JSONObject connectedUser) {
+    public Call<MediaResult> makePostUploadImage(String photoURI,String title, String email, String username, Boolean approved, List<String> productSKUs, List<String> categoryNames, JSONObject connectedUser) {
         JSONObject body = new JSONObject();
         try {
+            body.put("photo_uri", photoURI);
             body.put("album_id", Integer.parseInt(this.album_id));
             body.put("title", title);
             body.put("email", email);
             body.put("username", username);
-            body.put("photo_uri", photoURI);
             body.put("approved", approved);
 
             if(productSKUs!=null && productSKUs.size() > 0){
@@ -396,7 +396,7 @@ public abstract class PXLBaseAlbum {
      */
     public void postMediaWithURI(String photoURI, String title, String email, String username, Boolean approved, List<String> productSKUs, List<String> categoryNames, JSONObject connectedUser, final RequestHandlers<MediaResult> handlers) {
         try {
-            makePostUploadImage(title, email, username, photoURI, approved, productSKUs, categoryNames, connectedUser)
+            makePostUploadImage(photoURI, title, email, username, approved, productSKUs, categoryNames, connectedUser)
                     .enqueue(new Callback<MediaResult>() {
                         @Override
                         public void onResponse(Call<MediaResult> call, Response<MediaResult> response) {

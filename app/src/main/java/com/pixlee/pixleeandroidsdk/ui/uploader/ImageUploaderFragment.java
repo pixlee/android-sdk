@@ -133,7 +133,7 @@ public class ImageUploaderFragment extends BaseFragment {
 
         JSONObject json = new JSONObject();
         try {
-            json.put("name", "Donald Trump");
+            json.put("name", "Sample data");
             json.put("age", 73);
             json.put("email", "b@b.com");
             JSONArray arr = new JSONArray();
