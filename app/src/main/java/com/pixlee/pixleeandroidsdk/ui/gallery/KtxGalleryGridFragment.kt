@@ -262,8 +262,8 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         viewModel.uploadPhoto(
                 filePath,
                 "uploaded from SDK-" + System.currentTimeMillis() + " using a file",
-                "sam@pixleeturnto.com",
-                "jun",
+                "xxx@xxx.com",
+                "replace this with your user name",
                 true,
                 null,
                 null,

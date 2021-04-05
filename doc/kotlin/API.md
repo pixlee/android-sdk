@@ -133,13 +133,13 @@ result.forEach { pxlPhoto ->
     pxlKtxAlbum.postMediaWithFile(
         localMediaPath = "<local file path>",
         title = "uploaded from SDK-" + System.currentTimeMillis() + " using a file",
-        email = "sam@pixleeturnto.com",
-        username = "jun",
+        email = "xxx@xxx.com",
+        username = "replace this with your user name",
         approved = true,
         productSKUs = listOf("productA", "productB"), // Optional
         categoryNames = listOf("Clothing", "Shoes"),  // Optional
         connectedUser = JSONObject().apply { // Optional
-            put("name", "Sungjun Hong")
+            put("name", "sample name")
             put("age", 24)
             put("points", JSONArray().apply {
                 put(10)
@@ -154,13 +154,13 @@ result.forEach { pxlPhoto ->
     pxlKtxAlbum.postMediaWithURI(
             photoURI = "<photo URI>",
             title = "uploaded from SDK-" + System.currentTimeMillis() + " using a file",
-            email = "sam@pixleeturnto.com",
-            username = "jun",
+            email = "xxx@xxx.com",
+            username = "replace this with your user name",
             approved = true,
             productSKUs = listOf("productA", "productB"), // Optional
             categoryNames = listOf("Clothing", "Shoes"),  // Optional
             connectedUser = JSONObject().apply { // Optional
-                put("name", "Sungjun Hong")
+                put("name", "Sample name")
                 put("age", 24)
                 put("points", JSONArray().apply {
                     put(10)
