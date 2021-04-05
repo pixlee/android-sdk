@@ -249,7 +249,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
     override fun uploadFile(filePath: String) {
         val json = JSONObject()
         try {
-            json.put("name", "Sungjun Hong")
+            json.put("name", "Sample Name")
             json.put("age", 24)
             val arr = JSONArray()
             arr.put(10)
