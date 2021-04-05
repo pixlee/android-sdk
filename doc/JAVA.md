@@ -105,11 +105,14 @@
     ```java
     #!java
     album.uploadImage(
+                "<image URL>",
                 "<title>",
                 "<email>",
                 "<name>",
-                "<image URL>",
                 <true/false>,
+                ["productA", "productB"],
+                ["Clothing", "Shoes"],
+                {"shirt_size": "M"},
                 new PXLBaseAlbum.RequestHandlers<MediaResult>() {
                     @Override
                     public void onComplete(MediaResult result) {
@@ -125,11 +128,14 @@
 - Option 2: Upload an image file
     ```java
     album.uploadLocalImage(
+                "<local image path>",
                 "<title>",
                 "<email>",
                 "<name>",
                 <true/false>,
-                "<local image path>",
+                ["productA", "productB"],
+                ["Clothing", "Shoes"],
+                {"shirt_size": "M"},
                 new PXLBaseAlbum.RequestHandlers<MediaResult>() {
                     @Override
                     public void onComplete(MediaResult result) {
