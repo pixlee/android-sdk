@@ -251,7 +251,6 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         try {
             json.put("name", "Sungjun Hong")
             json.put("age", 24)
-            json.put("userId", "jun.hong")
             val arr = JSONArray()
             arr.put(10)
             arr.put(20)
