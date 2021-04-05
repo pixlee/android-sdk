@@ -141,7 +141,6 @@ result.forEach { pxlPhoto ->
         connectedUser = JSONObject().apply { // Optional
             put("name", "Sungjun Hong")
             put("age", 24)
-            put("userId", "jun.hong")
             put("points", JSONArray().apply {
                 put(10)
                 put(20)
@@ -163,7 +162,6 @@ result.forEach { pxlPhoto ->
             connectedUser = JSONObject().apply { // Optional
                 put("name", "Sungjun Hong")
                 put("age", 24)
-                put("userId", "jun.hong")
                 put("points", JSONArray().apply {
                     put(10)
                     put(20)
