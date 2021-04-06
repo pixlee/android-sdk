@@ -135,7 +135,6 @@ public class ImageUploaderFragment extends BaseFragment {
         try {
             json.put("name", "Sample data");
             json.put("age", 73);
-            json.put("email", "b@b.com");
             JSONArray arr = new JSONArray();
             arr.put(10);
             arr.put(20);
@@ -148,8 +147,8 @@ public class ImageUploaderFragment extends BaseFragment {
         album.uploadLocalImage(
                 filePath,
                 "uploaded from SDK-" + System.currentTimeMillis() + " using a file",
-                "sungjun@pixleeteam.com",
-                "jun",
+                "b@b.com",
+                "Sample Username",
                 true,
                 null,
                 null,
