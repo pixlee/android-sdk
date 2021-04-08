@@ -30,6 +30,10 @@ import com.pixlee.pixleesdk.client.PXLClient;
 import com.pixlee.pixleesdk.data.MediaResult;
 import com.pixlee.pixleesdk.data.PXLPhoto;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import static android.view.View.GONE;
@@ -98,11 +102,14 @@ public class ImageUploaderFragment extends BaseFragment {
     private void uploadLink() {
         setUploadingUI(true);
         album.postMediaWithURI(
-                "uploaded from SDK-" + System.currentTimeMillis() + " using a image link",
-                "sungjun@pixleeteam.com",
-                "android sdk user",
                 "https://cdn.pixabay.com/photo/2017/01/17/10/39/italy-1986418_960_720.jpg",
+                "uploaded from SDK-" + System.currentTimeMillis() + " using a image link",
+                "xxx@xxx.com",
+                "android sdk user",
                 true,
+                null,
+                null,
+                null,
                 new PXLBaseAlbum.RequestHandlers<MediaResult>() {
                     @Override
                     public void onComplete(MediaResult result) {
@@ -119,15 +126,33 @@ public class ImageUploaderFragment extends BaseFragment {
     }
 
     // Sample 2: Upload an image using a file
-    private void uploadFile(String filePath) {
+    @Override
+    public void uploadFile(String filePath) {
         showMessage("Uploading  " + filePath);
         setUploadingUI(true);
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("name", "Sample data");
+            json.put("age", 73);
+            JSONArray arr = new JSONArray();
+            arr.put(10);
+            arr.put(20);
+            arr.put(35);
+            json.put("points", arr);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         album.uploadLocalImage(
-                "uploaded from SDK-" + System.currentTimeMillis() + " using a file",
-                "sungjun@pixleeteam.com",
-                "jun",
-                true,
                 filePath,
+                "uploaded from SDK-" + System.currentTimeMillis() + " using a file",
+                "b@b.com",
+                "Sample Username",
+                true,
+                null,
+                null,
+                json,
                 new PXLBaseAlbum.RequestHandlers<MediaResult>() {
                     @Override
                     public void onComplete(MediaResult result) {
@@ -152,137 +177,5 @@ public class ImageUploaderFragment extends BaseFragment {
     private void showMessage(String message) {
         binding.tvStatus.setText(message);
         showToast(message);
-    }
-
-
-    void callMediaPicker() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/* video/*");
-        startActivityForResult(intent, REQ_MEDIA_PICKER);
-    }
-
-    private final int REQ_MEDIA_PICKER = 1314;
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            if (requestCode == REQ_MEDIA_PICKER) {
-                extractImage(data);
-            }
-        }
-    }
-
-    void extractImage(Intent data) {
-        Uri selectedImage = data.getData();
-        String[] filePathColumn = {MediaStore.Images.Media.DATA, MediaStore.Images.Media.MIME_TYPE};
-        if (selectedImage != null) {
-            Cursor cursor = null;
-            try {
-                cursor = getContext().getContentResolver().query(
-                        selectedImage,
-                        filePathColumn, null, null, null
-                );
-                if (cursor != null) {
-                    cursor.moveToFirst();
-
-                    String filePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
-                    uploadFile(filePath);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (cursor != null)
-                    cursor.close();
-            }
-        }
-    }
-
-    final String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
-
-    private void setupExternalStoragePermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(), permission) == PackageManager.PERMISSION_GRANTED) {
-            callMediaPicker();
-        } else {
-            ActivityCompat.requestPermissions(
-                    getActivity(),
-                    new String[]{permission},
-                    reqStorage
-            );
-        }
-
-    }
-
-    /**
-     * Put any random number for reqStorage in ActivityCompat.requestPermissions
-     * Example:
-     * ActivityCompat.requestPermissions(
-     * getActivity(),
-     * new String[]{permission},
-     * reqStorage
-     * );
-     * <p>
-     * Try to filter requestCode with the same number inside onRequestPermissionsResult(int requestCode).
-     * This will aloow you to receive the result about permission
-     */
-    private final int reqStorage = 1729;
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == reqStorage) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                callMediaPicker();
-            } else {
-                boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), permissions[0]);
-                if (!showRationale) {
-                    createDialogForStoragePermission();
-                }
-
-            }
-        }
-    }
-
-    private void createDialogForStoragePermission() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage(R.string.storage_permission_for_uploading);
-        builder.setPositiveButton(R.string.button_setting, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                startActivity(
-                        new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + getActivity().getPackageName()))
-                );
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-        builder.show();
-    }
-
-
-    AlertDialog loadingDialog;
-
-    void makeLoading(Boolean show) {
-        if (show) {
-            if (loadingDialog == null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                LayoutInflater inflater = getLayoutInflater();
-                View dialogLayout = inflater.inflate(R.layout.dialog_progress, null);
-                builder.setView(dialogLayout);
-                builder.setCancelable(false);
-                loadingDialog = builder.show();
-            } else {
-                loadingDialog.show();
-            }
-
-        } else {
-            if (loadingDialog != null && loadingDialog.isShowing())
-                loadingDialog.dismiss();
-        }
     }
 }

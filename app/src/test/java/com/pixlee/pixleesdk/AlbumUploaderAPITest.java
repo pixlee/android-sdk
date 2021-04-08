@@ -19,8 +19,8 @@ import retrofit2.Response;
 public class AlbumUploaderAPITest extends BaseTest {
     final String ALBUM_ID = BuildConfig.PIXLEE_ALBUM_ID;
     final String TITLE = "seoulTower";
-    final String EMAIL = "sungjun.app@gmail.com";
-    final String USERNAME = "jun";
+    final String EMAIL = "test@xxx.com";
+    final String USERNAME = "Sample Username";
     final String PHOTO_URI = "https://www.dragonhilllodge.com/application/files/3215/5479/9457/fall_DHL5.jpg";
     final Boolean APPROVED = true;
 
@@ -42,7 +42,10 @@ public class AlbumUploaderAPITest extends BaseTest {
                 email,
                 username,
                 photoURI,
-                approved
+                approved,
+                null,
+                null,
+                null
         ).execute();
         album.processReponse(response, handlers);
     }

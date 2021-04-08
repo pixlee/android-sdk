@@ -9,6 +9,7 @@
     - [Get content](#Get-content)
     - [Get a PXLPhoto](#Get-a-PXLPhoto)
     - [How to get image urls](#How-to-get-image-urls)
+    - [Upload a video of a photo](#uploading-a-video-or-a-photo)
 - Analytics
     - [Album Analytics](#Album-Analytics)
         - [Opened Widget](#Opened-Widget)
@@ -122,6 +123,52 @@ result.forEach { pxlPhoto ->
     pxlPhoto.getUrlForSize(PXLPhotoSize.THUMBNAIL)
 }
 ```
+
+#### Uploading a video or a photo
+- Prerequisite:
+    - prepare PXLKtxAlbum and declare a variable as 'pxlKtxAlbum'
+- Option 1: Upload an image file
+    ```kotlin
+    #!kotlin
+    pxlKtxAlbum.postMediaWithFile(
+        localMediaPath = "<local file path>",
+        title = "uploaded from SDK-" + System.currentTimeMillis() + " using a file",
+        email = "xxx@xxx.com",
+        username = "replace this with your user name",
+        approved = true,
+        productSKUs = listOf("productA", "productB"), // Optional
+        categoryNames = listOf("Clothing", "Shoes"),  // Optional
+        connectedUser = JSONObject().apply { // Optional
+            put("name", "sample name")
+            put("age", 24)
+            put("points", JSONArray().apply {
+                put(10)
+                put(20)
+                put(35)
+            })
+        })
+    ```
+- Option 2: Upload an image url
+    ```kotlin
+    #!kotlin
+    pxlKtxAlbum.postMediaWithURI(
+            photoURI = "<photo URI>",
+            title = "uploaded from SDK-" + System.currentTimeMillis() + " using a file",
+            email = "xxx@xxx.com",
+            username = "replace this with your user name",
+            approved = true,
+            productSKUs = listOf("productA", "productB"), // Optional
+            categoryNames = listOf("Clothing", "Shoes"),  // Optional
+            connectedUser = JSONObject().apply { // Optional
+                put("name", "Sample name")
+                put("age", 24)
+                put("points", JSONArray().apply {
+                    put(10)
+                    put(20)
+                    put(35)
+                })
+            })
+    ```
 
 ## Album Analytics
 You can see the example codes for analytics in the demo app.

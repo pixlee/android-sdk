@@ -61,11 +61,12 @@ dependencies {
      */
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20200518'
-    androidTestImplementation "com.fasterxml.jackson.core:jackson-databind:2.10.0"
+    androidTestImplementation "com.fasterxml.jackson.core:jackson-databind:$jackson"
     androidTestImplementation 'androidx.test.ext:junit-ktx:' + rootProject.extJUnitVersion
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:' + rootProject.espressoVersion
     androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:$jakeWhartonOkhttpOdlingResource"
 
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson"
 
     implementation "androidx.appcompat:appcompat:$androidxAppcompat"
     implementation "com.google.android.material:material:$material"

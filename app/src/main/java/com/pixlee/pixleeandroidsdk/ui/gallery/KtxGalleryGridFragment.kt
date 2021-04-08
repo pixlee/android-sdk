@@ -44,11 +44,15 @@ import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.*
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.drawerLayout
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.fabFilter
+import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.fabUpload
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.lottieView
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.tvDebugText
 import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.v_body
 import kotlinx.android.synthetic.main.module_search.*
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 
 /**
  * This shows how you can load photos of Pixlee using PXLAlbum.java
@@ -109,6 +113,14 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
     }
 
     fun addViewModelListeners() {
+        viewModel.toastMessage.observe(viewLifecycleOwner, EventObserver{
+            showToast(it)
+        })
+
+        viewModel.uploadStatus.observe(viewLifecycleOwner, Observer{
+            fabUpload.isEnabled = !it
+        })
+
         viewModel.loading.observe(viewLifecycleOwner, Observer {
             lottieView.visibility = if (it) View.VISIBLE else View.GONE
         })
@@ -225,12 +237,37 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
 
     fun initFilterClickListeners() {
         // set filter buttons
+        fabUpload.setOnClickListener { setupExternalStoragePermission() }
         fabFilter.setOnClickListener { drawerLayout.openDrawer(GravityCompat.END) }
         btnCloseFilter.setOnClickListener { drawerLayout.closeDrawer(GravityCompat.END) }
         btnApply.setOnClickListener {
             drawerLayout.closeDrawer(GravityCompat.END)
             loadAlbum()
         }
+    }
+
+    override fun uploadFile(filePath: String) {
+        val json = JSONObject()
+        try {
+            json.put("name", "Sample Name")
+            json.put("age", 24)
+            val arr = JSONArray()
+            arr.put(10)
+            arr.put(20)
+            arr.put(35)
+            json.put("points", arr)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        viewModel.uploadPhoto(
+                filePath,
+                "uploaded from SDK-" + System.currentTimeMillis() + " using a file",
+                "xxx@xxx.com",
+                "replace this with your user name",
+                true,
+                null,
+                null,
+                json)
     }
 
     /***

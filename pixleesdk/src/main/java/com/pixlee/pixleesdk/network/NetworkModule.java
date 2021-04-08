@@ -21,6 +21,7 @@ import com.pixlee.pixleesdk.network.adaptor.BigDecimalAdapter;
 import com.pixlee.pixleesdk.network.adaptor.DateAdapter;
 import com.pixlee.pixleesdk.network.adaptor.PrimitiveAdapter;
 import com.pixlee.pixleesdk.network.adaptor.URLAdapter;
+import com.pixlee.pixleesdk.network.adaptor.UploadedJsonAdapter;
 import com.serjltt.moshi.adapters.Wrapped;
 import com.squareup.moshi.Moshi;
 
@@ -93,6 +94,7 @@ public class NetworkModule {
                 .add(new URLAdapter())  // String -> URL
                 .add(new DateAdapter()) // String -> Date
                 .add(new BigDecimalAdapter()) //String -> BigDecimal
+                .add(new UploadedJsonAdapter())
                 .build();
     }
 
