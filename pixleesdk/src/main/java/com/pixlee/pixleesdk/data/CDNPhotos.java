@@ -25,6 +25,9 @@ public class CDNPhotos implements Parcelable {
     @Json(name = "original_url")
     public URL originalUrl;
 
+    @FieldURL
+    @Json(name = "square_medium_url")
+    public URL squareMediumUrl;
 
     @Override
     public int describeContents() {
@@ -37,6 +40,7 @@ public class CDNPhotos implements Parcelable {
         dest.writeSerializable(this.mediumUrl);
         dest.writeSerializable(this.largeUrl);
         dest.writeSerializable(this.originalUrl);
+        dest.writeSerializable(this.squareMediumUrl);
     }
 
     public CDNPhotos() {
@@ -47,6 +51,7 @@ public class CDNPhotos implements Parcelable {
         this.mediumUrl = (URL) in.readSerializable();
         this.largeUrl = (URL) in.readSerializable();
         this.originalUrl = (URL) in.readSerializable();
+        this.squareMediumUrl = (URL) in.readSerializable();
     }
 
     public static final Parcelable.Creator<CDNPhotos> CREATOR = new Parcelable.Creator<CDNPhotos>() {
