@@ -164,39 +164,51 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
 
                     // set your ui settings
                     pxlPhotoProductView
-                            .setContent(photoInfo = item,
-                                    headerConfiguration = PXLPhotoProductView.Configuration().apply {
-                                        backButton = PXLPhotoProductView.CircleButton().apply {
-                                            onClickListener = {
-                                                // back button's click effect
-                                                onBackPressed()
-                                            }
+                        .setContent(photoInfo = item,
+                                headerConfiguration = PXLPhotoProductView.Configuration().apply {
+                                    backButton = PXLPhotoProductView.CircleButton().apply {
+                                        onClickListener = {
+                                            // back button's click effect
+                                            onBackPressed()
                                         }
-                                        muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
-                                            onCheckedListener = {
+                                    }
+                                    muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
+                                        onCheckedListener = {
 
-                                            }
                                         }
-                                    },
-                                    configuration = ProductViewHolder.Configuration().apply {
-                                        circleIcon = ProductViewHolder.CircleIcon().apply {
-                                            icon = R.drawable.outline_shopping_bag_black_24
-                                            iconColor = Color.DKGRAY
-                                            backgroundColor = ContextCompat.getColor(this@ViewerActivity, R.color.yellow_800)
-                                            padding = 5.px.toInt()
+                                    }
+                                },
+                                configuration = ProductViewHolder.Configuration().apply {
+                                    circleIcon = ProductViewHolder.CircleIcon().apply {
+                                        icon = R.drawable.outline_shopping_bag_black_24
+                                        iconColor = Color.DKGRAY
+                                        backgroundColor = ContextCompat.getColor(this@ViewerActivity, R.color.yellow_800)
+                                        padding = 5.px.toInt()
+                                    }
+                                    mainTextStyle = TextStyle().apply {
+                                        color = Color.BLACK
+                                        size = 14.px
+                                    }
+                                    subTextStyle = TextStyle().apply {
+                                        color = Color.BLACK
+                                        size = 12.px
+                                    }
+                                    priceTextStyle = CurrencyTextStyle().apply {
+                                        defaultCurrency = "EUR" // or null
+                                        leftText = TextStyle().apply {
+                                            color = Color.BLACK
+                                            size = 24.px
                                         }
-                                        mainTextStyle = TextStyle().apply { size = 14.px }
-                                        subTextStyle = TextStyle().apply { size = 12.px }
-                                        priceTextStyle = CurrencyTextStyle().apply {
-                                            defaultCurrency = "EUR" // or null
-                                            leftText = TextStyle().apply { size = 24.px }
-                                            rightText = TextStyle().apply { size = 14.px }
+                                        rightText = TextStyle().apply {
+                                            color = Color.BLACK
+                                            size = 14.px
                                         }
-                                    },
-                                    onProductClicked = {
-                                        Toast.makeText(this, "product clicked, product id: ${it.id}", Toast.LENGTH_SHORT).show()
-                                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it.link.toString())))
-                                    })
+                                    }
+                                },
+                                onProductClicked = {
+                                    Toast.makeText(this, "product clicked, product id: ${it.id}", Toast.LENGTH_SHORT).show()
+                                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it.link.toString())))
+                                })
                 }
 
                 companion object {
