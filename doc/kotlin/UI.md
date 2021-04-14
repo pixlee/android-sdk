@@ -9,7 +9,7 @@ You can use these UI components after you retrive PXLPhoto data via our API [API
         - [PXLPhotoRecyclerView](#PXLPhotoRecyclerView) : A RecyclerView displaying a list of PXLPhoto (auto video playing, an infinite scroll)
         - [PXLPhotoRecyclerViewInGrid](#PXLPhotoRecyclerViewInGrid) : A RecyclerView displaying a list of PXLPhoto (grid list, no auto video playing, no infinite scroll)
     - Version 2
-        - [PXLPhotosView](#PXLPhotosView) : A RecyclerView displaying a list of PXLPhoto ([list, grid], auto video playing, an infinite scroll)
+        - [PXLPhotosView (Recommended)](#PXLPhotosView-(Recommended)) : A RecyclerView displaying a list of PXLPhoto (API, [list, grid], auto video playing, an infinite scroll)
 - Detail with Product
     - [PXLPhotoProductView](#PXLPhotoProductView) : A fullscreen view displaying PXLPhoto with a list of PXLPhoto
 - [PXLPhotoView](#PXLPhotoView) : A view to display PXLPhoto
@@ -799,12 +799,11 @@ fun getTitleGif(): ListHeader{
 }
 ```
 
-
-
-## PXLPhotosView
+## PXLPhotosView (Recommended)
 this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhotoView and PXLPhotoViewHolder. Please check DyamicDemoActivity.kt, SimpleGridActivity.kt and SimpleListActivity for example codes in the demo app.
 - you can display photos in grid or list
 - you customize the height of items.
+- this view can automatically retrieve the photos of your album or product
 ### when it is List Mode
 - infinite scroll is available here.
 - auto video playing is available.
@@ -855,7 +854,7 @@ class SimpleListActivity : AppCompatActivity() {
                 cellHeightInPixel = cellHeightInPixel,
                 params = PXLKtxBaseAlbum.Params(
                         // album images
-                        searchId = PXLKtxBaseAlbum.SearchId.Album("your album number"),
+                        searchId = PXLKtxBaseAlbum.SearchId.Album("your album number"), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product("your sku string"),
                         filterOptions = PXLAlbumFilterOptions(),
                         sortOptions = PXLAlbumSortOptions().apply {
                             sortType = PXLAlbumSortType.RECENCY
