@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
+import com.pixlee.pixleesdk.ui.widgets.setTextViewStyle
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_load_more.*
 
@@ -18,6 +19,7 @@ class LoadMoreViewHolder(override val containerView: View) :
         LayoutContainer {
 
     fun bind(loadMore: PXLPhotoAdapter.Item.LoadMore) {
+        tvLoadMore.setTextViewStyle(loadMore.loadMoreTextViewStyle)
         when(loadMore.loading){
             true -> {
                 tvLoadMore.visibility = View.INVISIBLE

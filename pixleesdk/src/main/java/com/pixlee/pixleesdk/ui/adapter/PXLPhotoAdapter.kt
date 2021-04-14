@@ -8,7 +8,7 @@ import com.pixlee.pixleesdk.ui.viewholder.LoadMoreViewHolder
 import com.pixlee.pixleesdk.ui.viewholder.PXLPhotoViewHolder
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.viewholder.TextHeaderViewHolder
-import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
 import kotlinx.android.synthetic.main.item_load_more.*
 import kotlinx.android.synthetic.main.item_pxlphoto.*
@@ -26,7 +26,7 @@ class PXLPhotoAdapter(
     sealed class Item {
         class Header(val listHeader: ListHeader) : Item()
         class Content(val data: PhotoWithImageScaleType) : Item()
-        class LoadMore(var loading:Boolean) : Item()
+        class LoadMore(var loading:Boolean, val loadMoreTextViewStyle: TextViewStyle) : Item()
     }
 
     val list: ArrayList<Item> = ArrayList()

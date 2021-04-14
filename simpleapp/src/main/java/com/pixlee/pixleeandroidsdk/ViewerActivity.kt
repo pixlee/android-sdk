@@ -5,12 +5,10 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.TypedValue
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
@@ -88,12 +86,24 @@ class ViewerActivity : AppCompatActivity() {
                                 backgroundColor = ContextCompat.getColor(this@ViewerActivity, R.color.yellow_800)
                                 padding = 5.px.toInt()
                             }
-                            mainTextStyle = TextStyle().apply { size = 14.px }
-                            subTextStyle = TextStyle().apply { size = 12.px }
+                            mainTextStyle = TextStyle().apply {
+                                color = Color.BLACK
+                                size = 14.px
+                            }
+                            subTextStyle = TextStyle().apply {
+                                color = Color.BLACK
+                                size = 12.px
+                            }
                             priceTextStyle = CurrencyTextStyle().apply {
                                 defaultCurrency = "EUR" // or null
-                                leftText = TextStyle().apply { size = 24.px }
-                                rightText = TextStyle().apply { size = 14.px }
+                                leftText = TextStyle().apply {
+                                    color = Color.BLACK
+                                    size = 24.px
+                                }
+                                rightText = TextStyle().apply {
+                                    color = Color.BLACK
+                                    size = 14.px
+                                }
                             }
                         },
                         onProductClicked = {

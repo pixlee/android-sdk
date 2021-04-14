@@ -1,9 +1,9 @@
 package com.pixlee.pixleeandroidsdk
 
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.ViewTreeObserver
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
@@ -13,8 +13,8 @@ import com.pixlee.pixleesdk.enums.PXLAlbumSortType
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
-import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
-import com.pixlee.pixleesdk.ui.widgets.list.Space
+import com.pixlee.pixleesdk.ui.widgets.TextPadding
+import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.activity_simple_demo.*
@@ -69,6 +69,12 @@ class SimpleGridActivity : AppCompatActivity() {
                 configuration = PXLPhotoView.Configuration().apply {
                     pxlPhotoSize = PXLPhotoSize.MEDIUM
                     imageScaleType = ImageScaleType.CENTER_CROP
+                },
+                loadMoreTextViewStyle = TextViewStyle().apply {
+                    text = "Load More"
+                    textPadding = TextPadding(0, 22.px.toInt(), 0, 22.px.toInt())
+                    size = 24.px
+                    color = Color.BLACK
                 },
                 onPhotoClickedListener = { view, photoWithImageScaleType ->
                     // TODO: open lightbox

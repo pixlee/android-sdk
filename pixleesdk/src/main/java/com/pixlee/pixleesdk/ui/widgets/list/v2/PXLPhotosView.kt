@@ -15,6 +15,7 @@ import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
+import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.ui.widgets.list.BaseRecyclerView
 import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
 import com.pixlee.pixleesdk.ui.widgets.list.ListViewModel
@@ -58,19 +59,14 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
     }
 
     var linearLayoutManager: LinearLayoutManager? = null
-
-    //    var gridLayoutManager: StaggeredGridLayoutManager? = null
     var gridLayoutManager: GridLayoutManager? = null
-
     var spacingDecoration: GridSpacingItemDecoration? = null
 
     fun initView() {
         this.adapter = pxlPhotoAdapter
-        //itemAnimator = DefaultItemAnimator()
         addViewModelListeners()
     }
 
-    //    lateinit var masterExoPlayerHelper: MasterExoPlayerHelper
     var currentViewType: ViewType = ViewType.List()
         set(value) {
             Log.e("ViewType", "changed! value: $value")
@@ -170,6 +166,7 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
                  cellHeightInPixel: Int = 200.px.toInt(),
                  params: PXLKtxBaseAlbum.Params,
                  configuration: PXLPhotoView.Configuration = PXLPhotoView.Configuration(),
+                 loadMoreTextViewStyle: TextViewStyle? = null, // if null, the view is gone
                  onButtonClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null, // called when a button is clicked
                  onPhotoClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null  // called when a whole view is clicked
     ) {
@@ -183,6 +180,7 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
         viewModel.init(params)
         viewModel.customizedConfiguration = configuration
         viewModel.cellHeightInPixel = cellHeightInPixel
+        viewModel.loadMoreTextViewStyle = loadMoreTextViewStyle
 
         pxlPhotoAdapter.onButtonClickedListener = onButtonClickedListener
         pxlPhotoAdapter.onPhotoClickedListener = onPhotoClickedListener
@@ -262,20 +260,21 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
                 ?: throw Exception("androidx.lifecycle.LifecycleOwner is required. Please make sure your Activity or Fragment provides androidx.lifecycle.LifecycleOwner")
         lifecycleOwner.lifecycle.addObserver(this)
         viewModel.loading.observe(lifecycleOwner, Observer {
-            //lottieView.visibility = if (it) View.VISIBLE else View.GONE
-
-
             when (it) {
-                ListViewModel.LoadState.HIDE -> {
-                    if (pxlPhotoAdapter.list.isNotEmpty()) {
-                        pxlPhotoAdapter.list.removeAt(pxlPhotoAdapter.list.count() - 1)
+                is ListViewModel.LoadState.Hide -> {
+                    val lastItem = pxlPhotoAdapter.list.lastOrNull()
+                    if (lastItem != null && lastItem is PXLPhotoAdapter.Item.LoadMore) {
+                        val index = pxlPhotoAdapter.list.count() - 1
+                        pxlPhotoAdapter.list.removeAt(index)
+                        pxlPhotoAdapter.notifyItemRemoved(index)
                     }
                 }
-                ListViewModel.LoadState.LOAD_MORE_BUTTON -> {
+                is ListViewModel.LoadState.LoadMoreButton -> {
                     val lastPosition = pxlPhotoAdapter.list.count() - 1
                     val lastItem = pxlPhotoAdapter.list.lastOrNull()
                     if (lastItem == null || lastItem !is PXLPhotoAdapter.Item.LoadMore) {
-                        pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.LoadMore(loading = false))
+                        pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.LoadMore(loading = false, loadMoreTextViewStyle = it.loadMoreTextViewStyle))
+                        pxlPhotoAdapter.notifyItemInserted(pxlPhotoAdapter.list.size - 1)
                     } else {
                         if(lastItem.loading){
                             lastItem.loading = false
@@ -283,11 +282,12 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
                         }
                     }
                 }
-                ListViewModel.LoadState.LOADING -> {
+                is ListViewModel.LoadState.Loading -> {
                     val lastPosition = pxlPhotoAdapter.list.count() - 1
                     val lastItem = pxlPhotoAdapter.list.lastOrNull()
                     if (lastItem == null || lastItem !is PXLPhotoAdapter.Item.LoadMore) {
-                        pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.LoadMore(loading = true))
+                        pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.LoadMore(loading = true, loadMoreTextViewStyle = it.loadMoreTextViewStyle))
+                        pxlPhotoAdapter.notifyItemInserted(pxlPhotoAdapter.list.size - 1)
                     } else {
                         if(!lastItem.loading){
                             lastItem.loading = true

@@ -14,11 +14,12 @@ import com.pixlee.pixleesdk.ui.widgets.TextPadding
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.util.Event
 import com.pixlee.pixleesdk.util.px
+import kotlinx.coroutines.delay
 
 /**
  * Created by sungjun on 9/18/20.
  */
-open class ListViewModel(val pxlKtxAlbum: PXLKtxAlbum){
+open class ListViewModel(val pxlKtxAlbum: PXLKtxAlbum) {
 
     protected val _resultEvent = MutableLiveData<Event<Command>>()
 
@@ -31,14 +32,17 @@ open class ListViewModel(val pxlKtxAlbum: PXLKtxAlbum){
         class Error(val message: String?) : Command()
     }
 
-    enum class LoadState {
-        LOAD_MORE_BUTTON, LOADING, HIDE
+    sealed class LoadState {
+        class LoadMoreButton(val loadMoreTextViewStyle: TextViewStyle) : LoadState()
+        class Loading(val loadMoreTextViewStyle: TextViewStyle) : LoadState()
+        object Hide : LoadState()
     }
 
-    protected val _loading = MutableLiveData<LoadState>().apply { value = LoadState.LOADING }
+    protected val _loading = MutableLiveData<LoadState>()
     val loading: LiveData<LoadState>
         get() = _loading
 
+    var loadMoreTextViewStyle: TextViewStyle? = null
     var cellHeightInPixel: Int = 200.px.toInt()
     val allPXLPhotos = ArrayList<PXLPhoto>()
     var canLoadMore = true
@@ -62,9 +66,10 @@ open class ListViewModel(val pxlKtxAlbum: PXLKtxAlbum){
         // viewModelScope.launch(..) { pxlKtxAlbum.getFirstPage() }
     }
 
-    var customizedConfiguration:PXLPhotoView.Configuration = PXLPhotoView.Configuration()
+    var customizedConfiguration: PXLPhotoView.Configuration = PXLPhotoView.Configuration()
 
-    var backUpLoadState:LoadState? = LoadState.HIDE
+    var backUpLoadState: LoadState? = LoadState.Hide
+
     /**
      * retrieve the next page from Pixlee server
      */
@@ -73,7 +78,11 @@ open class ListViewModel(val pxlKtxAlbum: PXLKtxAlbum){
             canLoadMore = false
             // show a loading UI on the mobile screen
             backUpLoadState = _loading.value
-            _loading.value = LoadState.LOADING
+            if (loadMoreTextViewStyle != null) {
+                _loading.value = LoadState.Loading(loadMoreTextViewStyle!!)
+                delay(2000)
+            }
+
             pxlKtxAlbum.getNextPage().let {
                 val newList = ArrayList<PhotoWithImageScaleType>()
                 if (it.photos.isNotEmpty()) {
@@ -89,7 +98,7 @@ open class ListViewModel(val pxlKtxAlbum: PXLKtxAlbum){
                 _resultEvent.value = Event(Command.Data(newList, it.page == 1))
 
                 canLoadMore = it.next
-                _loading.value = if(it.next) LoadState.LOAD_MORE_BUTTON else LoadState.HIDE
+                _loading.value = if (it.next && loadMoreTextViewStyle != null) LoadState.LoadMoreButton(loadMoreTextViewStyle!!) else LoadState.Hide
             }
         } catch (e: Exception) {
             // Callback for a failed call to loadNextPageOfPhotos
@@ -99,14 +108,4 @@ open class ListViewModel(val pxlKtxAlbum: PXLKtxAlbum){
             _loading.value = backUpLoadState
         }
     }
-
-//    val LIST_VISIBLE_THRESHOLD = 5
-//    fun listScrolled(visibleItemCount: Int, lastVisibleItemPosition: Int, totalItemCount: Int) {
-//        val canScroll = visibleItemCount + lastVisibleItemPosition + LIST_VISIBLE_THRESHOLD >= totalItemCount
-//        if (visibleItemCount + lastVisibleItemPosition + LIST_VISIBLE_THRESHOLD >= totalItemCount) {
-//            if (canLoadMore) {
-//                getNextPage()
-//            }
-//        }
-//    }
 }

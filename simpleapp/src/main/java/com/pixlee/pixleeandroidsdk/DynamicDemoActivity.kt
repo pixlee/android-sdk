@@ -24,6 +24,7 @@ import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextPadding
+import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
 import com.pixlee.pixleesdk.ui.widgets.list.Space
 import com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
@@ -55,6 +56,75 @@ class DynamicDemoActivity : AppCompatActivity() {
 
             }
         })
+    }
+
+    private fun initiateList() {
+        // you can customize color, size if you need
+        pxlPhotosView.initiate(
+                widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
+                viewType = getViewType(),
+                cellHeightInPixel = cellHeightInPixel,
+                params = getSearchParams(),
+                configuration = getConfiguration(),
+                loadMoreTextViewStyle = TextViewStyle().apply {
+                    text = "Load More"
+                    textPadding = TextPadding(0, 22.px.toInt(), 0, 22.px.toInt())
+                    size = 18.px
+                    color = Color.BLACK
+                },
+                onButtonClickedListener = { view, photoWithImageScaleType ->
+                    // TODO: you can add your business logic here
+
+                },
+                onPhotoClickedListener = { view, photoWithImageScaleType ->
+                    // TODO: you can add your business logic here
+                    ViewerActivity.launch(this, photoWithImageScaleType)
+                }
+        )
+    }
+
+    private fun getConfiguration(): PXLPhotoView.Configuration {
+        return PXLPhotoView.Configuration().apply {
+            // TODO: change variables values to customize the look if needed
+            pxlPhotoSize = PXLPhotoSize.MEDIUM
+            imageScaleType = ImageScaleType.CENTER_CROP
+        }
+    }
+
+    private fun getViewType(): PXLPhotosView.ViewType {
+        return if (radioGrid.isChecked) {
+            PXLPhotosView.ViewType.Grid(
+                    gridSpan = getGridSpan(),
+                    lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt()),
+                    listHeader = getHeader()
+            )
+        } else {
+            PXLPhotosView.ViewType.List(
+                    infiniteScroll = radio_infiniteScroll_on.isChecked,     // or false
+                    autoPlayVideo = radio_autoPlayVideo_on.isChecked,
+                    alphaForStoppedVideos = 1f
+            )
+        }
+    }
+
+    private fun getSearchParams(): PXLKtxBaseAlbum.Params {
+        return PXLKtxBaseAlbum.Params(
+                // album images
+                perPage = 15,
+                searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU),
+                filterOptions = PXLAlbumFilterOptions().apply {
+//                    hasProduct = true
+                    // more filter options
+                    // - hasPermission = true
+                    // - inStockOnly = true
+                    // - .. there are more. Please check README or PXLAlbumFilterOptions class for more filter options
+
+                },
+                sortOptions = PXLAlbumSortOptions().apply {
+                    sortType = PXLAlbumSortType.RECENCY
+                    descending = false
+                }
+        )
     }
 
     private fun setFilters() {
@@ -138,6 +208,7 @@ class DynamicDemoActivity : AppCompatActivity() {
                 Log.e("text change", "changed text: ${tvLineSpace.text}")
                 tvLineSpace.text
                 refreshViewType()
+                changeSpan(getGridSpan())
             }
         })
     }
@@ -145,7 +216,8 @@ class DynamicDemoActivity : AppCompatActivity() {
     fun changeSpan(span: Int) {
         val viewType = pxlPhotosView.currentViewType
         if (viewType is PXLPhotosView.ViewType.Grid) {
-            cellHeightInPixel = pxlPhotosView.measuredWidth / span
+            val allLineSpace = getLineSpace().px.toInt() * (span - 1)
+            cellHeightInPixel = (pxlPhotosView.measuredWidth - allLineSpace) / span
 
             pxlPhotosView.currentViewType = viewType.copy().apply {
                 gridSpan = span
@@ -180,41 +252,6 @@ class DynamicDemoActivity : AppCompatActivity() {
 
     fun refreshViewType() {
         pxlPhotosView.currentViewType = getViewType()
-    }
-
-    private fun initiateList() {
-        // you can customize color, size if you need
-        pxlPhotosView.initiate(
-                widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
-                viewType = getViewType(),
-                cellHeightInPixel = cellHeightInPixel,
-                params = getSearchParams(),
-                configuration = getConfiguration(),
-                onButtonClickedListener = { view, photoWithImageScaleType ->
-                    // TODO: you can add your business logic here
-
-                },
-                onPhotoClickedListener = { view, photoWithImageScaleType ->
-                    // TODO: you can add your business logic here
-                    ViewerActivity.launch(this, photoWithImageScaleType)
-                }
-        )
-    }
-
-    private fun getViewType(): PXLPhotosView.ViewType {
-        return if (radioGrid.isChecked) {
-            PXLPhotosView.ViewType.Grid(
-                    gridSpan = getGridSpan(),
-                    lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt()),
-                    listHeader = getHeader()
-            )
-        } else {
-            PXLPhotosView.ViewType.List(
-                    infiniteScroll = radio_infiniteScroll_on.isChecked,     // or false
-                    autoPlayVideo = radio_autoPlayVideo_on.isChecked,
-                    alphaForStoppedVideos = 1f
-            )
-        }
     }
 
     fun getGridSpan(): Int {
@@ -256,34 +293,6 @@ class DynamicDemoActivity : AppCompatActivity() {
         val padding = 20.px.toInt()
         return ListHeader.SpannableText(spannable = spannable,
                 padding = TextPadding(left = padding, top = padding, right = padding, bottom = padding))
-    }
-
-    private fun getSearchParams(): PXLKtxBaseAlbum.Params {
-        return PXLKtxBaseAlbum.Params(
-                // album images
-                perPage = 15,
-                searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU),
-                filterOptions = PXLAlbumFilterOptions().apply {
-//                    hasProduct = true
-                    // more filter options
-                    // - hasPermission = true
-                    // - inStockOnly = true
-                    // - .. there are more. Please check README or PXLAlbumFilterOptions class for more filter options
-
-                },
-                sortOptions = PXLAlbumSortOptions().apply {
-                    sortType = PXLAlbumSortType.RECENCY
-                    descending = false
-                }
-        )
-    }
-
-    private fun getConfiguration(): PXLPhotoView.Configuration {
-        return PXLPhotoView.Configuration().apply {
-            // TODO: change variables values to customize the look if needed
-            pxlPhotoSize = PXLPhotoSize.MEDIUM
-            imageScaleType = ImageScaleType.CENTER_CROP
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

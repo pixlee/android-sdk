@@ -1,5 +1,6 @@
 package com.pixlee.pixleeandroidsdk
 
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.ViewTreeObserver
@@ -13,8 +14,8 @@ import com.pixlee.pixleesdk.enums.PXLAlbumSortType
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
-import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
-import com.pixlee.pixleesdk.ui.widgets.list.Space
+import com.pixlee.pixleesdk.ui.widgets.TextPadding
+import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.activity_simple_demo.*
@@ -69,6 +70,12 @@ class SimpleListActivity : AppCompatActivity() {
                 configuration = PXLPhotoView.Configuration().apply {
                     pxlPhotoSize = PXLPhotoSize.MEDIUM
                     imageScaleType = ImageScaleType.CENTER_CROP
+                },
+                loadMoreTextViewStyle = TextViewStyle().apply {
+                    text = "Tap to load more"
+                    textPadding = TextPadding(10.px.toInt(), 10.px.toInt(), 10.px.toInt(), 10.px.toInt())
+                    size = 30.px
+                    color = Color.BLUE
                 },
                 onPhotoClickedListener = { view, photoWithImageScaleType ->
                     // TODO: you can add your business logic here
