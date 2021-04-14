@@ -48,11 +48,23 @@ open class BaseRecyclerView : RecyclerView {
     internal open fun setList(type: ListAddType, list: List<PhotoWithImageScaleType>) {
         clearOldList(type)
 
+        var lastItem = pxlPhotoAdapter.list.lastOrNull()
+        if(lastItem!=null && lastItem is PXLPhotoAdapter.Item.LoadMore){
+            val position = pxlPhotoAdapter.list.count() - 1
+            pxlPhotoAdapter.list.removeAt(position)
+            pxlPhotoAdapter.notifyItemRemoved(position)
+        } else {
+            lastItem = null
+        }
         if (list.isNotEmpty()) {
+            val position = pxlPhotoAdapter.list.count()
             list.forEach {
                 pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.Content(it))
             }
-            pxlPhotoAdapter.notifyDataSetChanged()
+            lastItem?.also {
+                pxlPhotoAdapter.list.add(it)
+            }
+            pxlPhotoAdapter.notifyItemRangeInserted(position, pxlPhotoAdapter.list.count() - position)
         }
         fireOpenAndVisible()
     }
@@ -116,9 +128,13 @@ open class BaseRecyclerView : RecyclerView {
         fireAnalyticsWidgetVisible()
     }
 
+    private fun isAutoAnalyticsNeeded(): Boolean {
+        return PXLClient.autoAnalyticsEnabled
+    }
+
     private var isAnalyticsOpenedWidgetFired: Boolean = false
     private fun fireAnalyticsOpenedWidget() {
-        if (PXLClient.autoAnalyticsEnabled && !isAnalyticsOpenedWidgetFired) {
+        if (isAutoAnalyticsNeeded() && !isAnalyticsOpenedWidgetFired) {
             if (albumForAutoAnalytics == null) {
                 Log.e(PXLAnalytics.TAG, "can't fire OpenedWidget analytics event because albumForAutoAnalytics is null. Please pass your own AlbumForAutoAnalytics to albumForAutoAnalytics.")
                 return
@@ -141,7 +157,7 @@ open class BaseRecyclerView : RecyclerView {
 
     private var isAnalyticsWidgetVisibleFired: Boolean = false
     private fun fireAnalyticsWidgetVisible() {
-        if (PXLClient.autoAnalyticsEnabled && !isAnalyticsWidgetVisibleFired) {
+        if (isAutoAnalyticsNeeded() && !isAnalyticsWidgetVisibleFired) {
             if (albumForAutoAnalytics == null) {
                 Log.e(PXLAnalytics.TAG, "can't fire WidgetVisible analytics event because albumForAutoAnalytics is null. Please pass your own AlbumForAutoAnalytics to albumForAutoAnalytics.")
                 return

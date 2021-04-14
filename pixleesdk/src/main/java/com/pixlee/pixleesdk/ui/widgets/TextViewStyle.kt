@@ -30,7 +30,7 @@ open class CurrencyTextStyle(var defaultCurrency: String? = null,
  */
 open class TextStyle(var size: Float = 18.px,
                      var sizeUnit: Int = TypedValue.COMPLEX_UNIT_PX,
-                     @ColorInt var color: Int = Color.WHITE,
+                     @ColorInt var color: Int = Color.BLACK,
                      var typeface: Typeface? = null)
 
 

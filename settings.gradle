@@ -1,2 +1,3 @@
+include ':simpleapp'
 include ':app'
 include ':pixleesdk'

@@ -39,19 +39,19 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
     )
 
     class CircleButton(
-            @DrawableRes var icon: Int = R.drawable.round_close_black_24,
-            @ColorInt var iconColor: Int = Color.WHITE,
-            @ColorInt var backgroundColor: Int = Color.YELLOW,
-            var padding: Int = 20.px.toInt(),
+            @DrawableRes var icon: Int = R.drawable.round_close_black_18,
+            @ColorInt var iconColor: Int = Color.BLACK,
+            @ColorInt var backgroundColor: Int = Color.WHITE,
+            var padding: Int = 10.px.toInt(),
             var onClickListener: (() -> Unit)? = null
     )
 
     class MuteCheckBox(
-            @DrawableRes var mutedIcon: Int = R.drawable.outline_volume_off_black_24,
-            @DrawableRes var unmutedIcon: Int = R.drawable.outline_volume_up_black_24,
-            @ColorInt var iconColor: Int = Color.WHITE,
-            @ColorInt var backgroundColor: Int = Color.YELLOW,
-            var padding: Int = 20.px.toInt(),
+            @DrawableRes var mutedIcon: Int = R.drawable.outline_volume_off_black_18,
+            @DrawableRes var unmutedIcon: Int = R.drawable.outline_volume_up_black_18,
+            @ColorInt var iconColor: Int = Color.BLACK,
+            @ColorInt var backgroundColor: Int = Color.WHITE,
+            var padding: Int = 10.px.toInt(),
             var onCheckedListener: ((isChecked: Boolean) -> Unit)? = null
     )
 
