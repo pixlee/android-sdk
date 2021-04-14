@@ -65,10 +65,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
             <com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
                 android:id="@+id/pxlPhotosView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="none"
-                android:scrollingCache="true"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+                android:layout_height="match_parent"/>
             ...
             ```
         - In Activity
@@ -111,6 +108,12 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
                                         descending = false
                                     }
                             ),
+                            loadMoreTextViewStyle = TextViewStyle().apply {
+                                text = "Load More"
+                                textPadding = TextPadding(0, 22.px.toInt(), 0, 22.px.toInt())
+                                size = 18.px
+                                color = Color.BLACK
+                            },
                             configuration = PXLPhotoView.Configuration().apply {
                                 pxlPhotoSize = PXLPhotoSize.MEDIUM
                                 imageScaleType = ImageScaleType.CENTER_CROP

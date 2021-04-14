@@ -4,9 +4,14 @@ You can use these UI components after you retrive PXLPhoto data via our API [API
 ##### Notice: Due to the limitations of hardware specs on some android devices, this SDK only for now doesn't play 2 movies concurrently to make the SDK stable. But, playing multiple videos simultaneously will be availble soon.
 
 ## Index
-- [PXLPhotoProductView](#PXLPhotoProductView) : A fullscreen view displaying PXLPhoto with a list of PXLPhoto
-- [PXLPhotoRecyclerView](#PXLPhotoRecyclerView) : A RecyclerView displaying a list of PXLPhoto (auto video playing, an infinite scroll) 
-- [PXLPhotoRecyclerViewInGrid](#PXLPhotoRecyclerViewInGrid) : A RecyclerView displaying a list of PXLPhoto (grid list, no auto video playing, no infinite scroll)
+- List
+    - Version 1
+        - [PXLPhotoRecyclerView](#PXLPhotoRecyclerView) : A RecyclerView displaying a list of PXLPhoto (auto video playing, an infinite scroll)
+        - [PXLPhotoRecyclerViewInGrid](#PXLPhotoRecyclerViewInGrid) : A RecyclerView displaying a list of PXLPhoto (grid list, no auto video playing, no infinite scroll)
+    - Version 2
+        - [PXLPhotosView](#PXLPhotosView) : A RecyclerView displaying a list of PXLPhoto ([list, grid], auto video playing, an infinite scroll)
+- Detail with Product
+    - [PXLPhotoProductView](#PXLPhotoProductView) : A fullscreen view displaying PXLPhoto with a list of PXLPhoto
 - [PXLPhotoView](#PXLPhotoView) : A view to display PXLPhoto
 
 ## Automatic Analytics with UI Components
@@ -14,6 +19,8 @@ We support that you can delegate firing certain analytics events to UI component
 - [Guide of PXLPhotoProductView](#automatic-analytics-of-pxlphotoproductview) : `OpenLightbox` event
 - [Guide of PXLPhotoRecyclerView](#automatic-analytics-of-pxlPhotoRecyclerView) : 'VisibleWidget' and 'OpenedWidget' events
 - [Guide of PXLPhotoRecyclerViewInGrid](#automatic-analytics-of-pxlphotorecyclerviewingrid) : 'VisibleWidget' and 'OpenedWidget' events
+- [Guide of PXLPhotosView](#automatic-analytics-of-PXLPhotosView) : 'VisibleWidget' and 'OpenedWidget' events
+
 
 ### PXLPhotoProductView
 This shows a fullscreen PXLPhoto with its PXLProduct list. There is an example in ViewerActivity.kt
@@ -791,6 +798,92 @@ fun getTitleGif(): ListHeader{
     return ListHeader.Gif(url = "https://media.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif", heightInPixel = 200.px.toInt(), imageScaleType = ImageScaleType.FIT_CENTER)
 }
 ```
+
+
+
+## PXLPhotosView
+this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhotoView and PXLPhotoViewHolder. Please check DyamicDemoActivity.kt, SimpleGridActivity.kt and SimpleListActivity for example codes in the demo app.
+- you can display photos in grid or list
+- you customize the height of items.
+### when it is List Mode
+- infinite scroll is available here.
+- auto video playing is available.
+### when it is Grid Mode
+- you can customize most of ui elements if needed.
+- you can add a header text to the list.
+- you set a header to the grid list.
+
+#### Add View to your xml
+```xml
+#!xml
+<com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
+    android:id="@+id/pxlPhotosView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
+```
+
+#### Add codes to your Fragment or Activity
+```kotlin
+#!kotlin
+class SimpleListActivity : AppCompatActivity() {
+    public override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.list_layout)
+
+        pxlPhotosView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                try {
+                    if (pxlPhotosView == null)
+                        return
+
+                    initiateList((pxlPhotosView.measuredHeight / 2).toInt())
+
+                    pxlPhotosView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+            }
+        })
+    }
+
+    private fun initiateList(cellHeightInPixel: Int) {
+        // you can customize color, size if you need
+        pxlPhotosView.initiate(
+                widgetTypeForAnalytics = "your_widget_type",
+                viewType = PXLPhotosView.ViewType.List(),
+                cellHeightInPixel = cellHeightInPixel,
+                params = PXLKtxBaseAlbum.Params(
+                        // album images
+                        searchId = PXLKtxBaseAlbum.SearchId.Album("your album number"),
+                        filterOptions = PXLAlbumFilterOptions(),
+                        sortOptions = PXLAlbumSortOptions().apply {
+                            sortType = PXLAlbumSortType.RECENCY
+                            descending = false
+                        }
+                ),
+                loadMoreTextViewStyle = TextViewStyle().apply {
+                    text = "Load More"
+                    textPadding = TextPadding(0, 22.px.toInt(), 0, 22.px.toInt())
+                    size = 18.px
+                    color = Color.BLACK
+                },
+                configuration = PXLPhotoView.Configuration().apply {
+                    pxlPhotoSize = PXLPhotoSize.MEDIUM
+                    imageScaleType = ImageScaleType.CENTER_CROP
+                },
+                onPhotoClickedListener = { view, photoWithImageScaleType ->
+                    // TODO: you can add your business logic here
+                    ViewerActivity.launch(this, photoWithImageScaleType)
+                    Toast.makeText(this, "onItemClickedListener", Toast.LENGTH_SHORT).show()
+                }
+        )
+    }
+}
+```
+
+#### isLoopingVideo and soundMuted will be ignored in PXLPhotoRecyclerViewInGrid because PXLPhotoRecyclerViewInGrid does not support playing videos in the list
+
 
 ## PXLPhotoView
 If you want to display your a PXLPhoto without a list of PXLProduct in your layout, you can use this codes.
