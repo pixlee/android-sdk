@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -64,7 +63,7 @@ class DynamicDemoActivity : AppCompatActivity() {
                 widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
                 viewType = getViewType(),
                 cellHeightInPixel = cellHeightInPixel,
-                params = getSearchParams(),
+                apiParameters = getAPIParametersToGetPhotos(),
                 configuration = getConfiguration(),
                 loadMoreTextViewStyle = TextViewStyle().apply {
                     text = "Load More"
@@ -107,18 +106,21 @@ class DynamicDemoActivity : AppCompatActivity() {
         }
     }
 
-    private fun getSearchParams(): PXLKtxBaseAlbum.Params {
+    private fun getAPIParametersToGetPhotos(): PXLKtxBaseAlbum.Params {
         return PXLKtxBaseAlbum.Params(
                 // album images
                 perPage = 15,
                 searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU),
                 filterOptions = PXLAlbumFilterOptions().apply {
-//                    hasProduct = true
+                    // hasProduct and hasPermission are often used together for displaying photos with tagged products and gotten the permission from their creators
+                    // if you don't see any photos after the loading is done, go to https://app.pixlee.com/app#albums/{your album id} and make sure your photos have the same filter conditions as your filterOptions.
+                    hasProduct = true
+                    hasPermission = true
+
                     // more filter options
                     // - hasPermission = true
                     // - inStockOnly = true
                     // - .. there are more. Please check README or PXLAlbumFilterOptions class for more filter options
-
                 },
                 sortOptions = PXLAlbumSortOptions().apply {
                     sortType = PXLAlbumSortType.RECENCY
@@ -181,7 +183,7 @@ class DynamicDemoActivity : AppCompatActivity() {
         radio_infiniteScroll.setOnCheckedChangeListener { group, checkedId ->
             changeSpan(getGridSpan())
             refreshViewType()
-            if(radio_infiniteScroll_on.isChecked) {
+            if (radio_infiniteScroll_on.isChecked) {
                 pxlPhotosView.scrollToPosition(Integer.MAX_VALUE / 2)
             }
         }
@@ -223,12 +225,12 @@ class DynamicDemoActivity : AppCompatActivity() {
                 gridSpan = span
             }
 
-        }else {
+        } else {
             cellHeightInPixel = pxlPhotosView.measuredHeight / 2
         }
 
         pxlPhotosView.viewModel.cellHeightInPixel = cellHeightInPixel
-        pxlPhotosView.viewModel.customizedConfiguration.pxlPhotoSize = if(radioList.isChecked) PXLPhotoSize.BIG else PXLPhotoSize.MEDIUM
+        pxlPhotosView.viewModel.customizedConfiguration.pxlPhotoSize = if (radioList.isChecked) PXLPhotoSize.BIG else PXLPhotoSize.MEDIUM
         pxlPhotosView.pxlPhotoAdapter.list.forEach {
             when (it) {
                 is PXLPhotoAdapter.Item.Content -> {
@@ -240,9 +242,9 @@ class DynamicDemoActivity : AppCompatActivity() {
 
         pxlPhotosView.pxlPhotoAdapter.notifyDataSetChanged()
 
-        if(radio_infiniteScroll_on.isChecked) {
+        if (radio_infiniteScroll_on.isChecked) {
             var lastItem = pxlPhotosView.pxlPhotoAdapter.list.lastOrNull()
-            if(lastItem!=null && lastItem is PXLPhotoAdapter.Item.LoadMore){
+            if (lastItem != null && lastItem is PXLPhotoAdapter.Item.LoadMore) {
                 val position = pxlPhotosView.pxlPhotoAdapter.list.count() - 1
                 pxlPhotosView.pxlPhotoAdapter.list.removeAt(position)
                 pxlPhotosView.pxlPhotoAdapter.notifyItemRemoved(position)

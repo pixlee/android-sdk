@@ -57,10 +57,20 @@ class SimpleGridActivity : AppCompatActivity() {
                 widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
                 viewType = PXLPhotosView.ViewType.Grid(),
                 cellHeightInPixel = cellHeightInPixel,
-                params = PXLKtxBaseAlbum.Params(
+                apiParameters = PXLKtxBaseAlbum.Params(
                         // album images
                         searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU),
-                        filterOptions = PXLAlbumFilterOptions(),
+                        filterOptions = PXLAlbumFilterOptions().apply {
+                            // hasProduct and hasPermission are often used together for displaying photos with tagged products and gotten the permission from their creators
+                            // if you don't see any photos after the loading is done, go to https://app.pixlee.com/app#albums/{your album id} and make sure your photos have the same filter conditions as your filterOptions.
+                            hasProduct = true
+                            hasPermission = true
+
+                            // more filter options
+                            // - hasPermission = true
+                            // - inStockOnly = true
+                            // - .. there are more. Please check README or PXLAlbumFilterOptions class for more filter options
+                        },
                         sortOptions = PXLAlbumSortOptions().apply {
                             sortType = PXLAlbumSortType.RECENCY
                             descending = false

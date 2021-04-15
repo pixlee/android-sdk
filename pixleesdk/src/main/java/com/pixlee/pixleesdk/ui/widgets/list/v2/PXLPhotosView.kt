@@ -162,9 +162,8 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
 
     fun initiate(widgetTypeForAnalytics: String,
                  viewType: ViewType,
-                 showingDebugView: Boolean = false,   // false: for production, true: development only when you want to see the debug info
                  cellHeightInPixel: Int = 200.px.toInt(),
-                 params: PXLKtxBaseAlbum.Params,
+                 apiParameters: PXLKtxBaseAlbum.Params,
                  configuration: PXLPhotoView.Configuration = PXLPhotoView.Configuration(),
                  loadMoreTextViewStyle: TextViewStyle? = null, // if null, the view is gone
                  onButtonClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null, // called when a button is clicked
@@ -174,10 +173,9 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
         albumForAutoAnalytics = AlbumForAutoAnalytics(viewModel.pxlKtxAlbum, widgetTypeForAnalytics)
         this.currentViewType = viewType
 
-        // Todo: must rollback (due to https://woovictory.github.io/2020/06/24/Android-RecyclerView-Attr/x)
-        //setHasFixedSize(true)
+        setHasFixedSize(true)
 
-        viewModel.init(params)
+        viewModel.init(apiParameters)
         viewModel.customizedConfiguration = configuration
         viewModel.cellHeightInPixel = cellHeightInPixel
         viewModel.loadMoreTextViewStyle = loadMoreTextViewStyle
@@ -242,7 +240,6 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
             }
         })
 
-        pxlPhotoAdapter.showingDebugView = showingDebugView
         pxlPhotoAdapter.notifyDataSetChanged()
 
         loadAlbum()
@@ -259,6 +256,7 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
         val lifecycleOwner = context as? LifecycleOwner
                 ?: throw Exception("androidx.lifecycle.LifecycleOwner is required. Please make sure your Activity or Fragment provides androidx.lifecycle.LifecycleOwner")
         lifecycleOwner.lifecycle.addObserver(this)
+        print("lifecycleOwner is found $lifecycleOwner")
         viewModel.loading.observe(lifecycleOwner, Observer {
             when (it) {
                 is ListViewModel.LoadState.Hide -> {
