@@ -14,7 +14,7 @@ class AppApplication: Application() {
         PXLClient.initialize(BuildConfig.PIXLEE_API_KEY, BuildConfig.PIXLEE_SECRET_KEY)
 
         // (Optional) if you use UI components and want
-        // to let PXLPhotosView, PXLPhotoRecyclerViewInGrid, PXLPhotoRecyclerView and PXLPhotoProductView
+        // to let PXLWidgetView, PXLPhotoRecyclerViewInGrid, PXLPhotoRecyclerView and PXLPhotoProductView
         // fire 'openedWidget', 'widgetVisible' and 'openedLightbox' analytics events, use this.
         PXLClient.autoAnalyticsEnabled = true
 

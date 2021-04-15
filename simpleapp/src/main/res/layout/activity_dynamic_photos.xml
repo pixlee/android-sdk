@@ -12,7 +12,7 @@
         android:layout_height="match_parent">
 
         <com.pixlee.pixleesdk.ui.widgets.list.PXLWidgetView
-            android:id="@+id/pxlPhotosView"
+            android:id="@+id/widget"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"

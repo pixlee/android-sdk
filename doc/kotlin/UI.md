@@ -9,7 +9,7 @@ You can use these UI components after you retrive PXLPhoto data via our API [API
         - [PXLPhotoRecyclerView](#PXLPhotoRecyclerView) : A RecyclerView displaying a list of PXLPhoto (auto video playing, an infinite scroll)
         - [PXLPhotoRecyclerViewInGrid](#PXLPhotoRecyclerViewInGrid) : A RecyclerView displaying a list of PXLPhoto (grid list, no auto video playing, no infinite scroll)
     - Version 2
-        - [PXLPhotosView (Recommended)](#PXLPhotosView-(Recommended)) : A RecyclerView displaying a list of PXLPhoto (API, [list, grid], auto video playing, an infinite scroll)
+        - [PXLWidgetView (Recommended)](#PXLWidgetView-(Recommended)) : A RecyclerView displaying a list of PXLPhoto (API, [list, grid], auto video playing, an infinite scroll)
 - Detail with Product
     - [PXLPhotoProductView](#PXLPhotoProductView) : A fullscreen view displaying PXLPhoto with a list of PXLPhoto
 - [PXLPhotoView](#PXLPhotoView) : A view to display PXLPhoto
@@ -19,7 +19,7 @@ We support that you can delegate firing certain analytics events to UI component
 - [Guide of PXLPhotoProductView](#automatic-analytics-of-pxlphotoproductview) : `OpenLightbox` event
 - [Guide of PXLPhotoRecyclerView](#automatic-analytics-of-pxlPhotoRecyclerView) : 'VisibleWidget' and 'OpenedWidget' events
 - [Guide of PXLPhotoRecyclerViewInGrid](#automatic-analytics-of-pxlphotorecyclerviewingrid) : 'VisibleWidget' and 'OpenedWidget' events
-- [Guide of PXLPhotosView](#automatic-analytics-of-PXLPhotosView) : 'VisibleWidget' and 'OpenedWidget' events
+- [Guide of PXLWidgetView](#automatic-analytics-of-PXLWidgetView) : 'VisibleWidget' and 'OpenedWidget' events
 
 
 ### PXLPhotoProductView
@@ -784,7 +784,7 @@ fun getTitleGif(): ListHeader{
 }
 ```
 
-## PXLPhotosView (Recommended)
+## PXLWidgetView (Recommended)
 this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhotoView and PXLPhotoViewHolder. Please check DyamicDemoActivity.kt, SimpleGridActivity.kt and SimpleListActivity for example codes in the demo app.
 - you can display photos in grid or list
 - you customize the height of items.
@@ -800,8 +800,8 @@ this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhoto
 #### Add View to your xml
 ```xml
 #!xml
-<com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
-    android:id="@+id/pxlPhotosView"
+<com.pixlee.pixleesdk.ui.widgets.list.PXLWidgetView
+    android:id="@+id/widget"
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>
 ```
@@ -814,15 +814,15 @@ class SimpleListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.list_layout)
 
-        pxlPhotosView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        widget.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 try {
-                    if (pxlPhotosView == null)
+                    if (widget == null)
                         return
 
-                    initiateList((pxlPhotosView.measuredHeight / 2).toInt())
+                    initiateList((widget.measuredHeight / 2).toInt())
 
-                    pxlPhotosView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    widget.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -833,9 +833,9 @@ class SimpleListActivity : AppCompatActivity() {
 
     private fun initiateList(cellHeightInPixel: Int) {
         // you can customize color, size if you need
-        pxlPhotosView.initiate(
+        widget.initiate(
                 widgetTypeForAnalytics = "your_widget_type",
-                viewType = PXLPhotosView.ViewType.List(),
+                viewType = PXLWidgetView.ViewType.List(),
                 cellHeightInPixel = cellHeightInPixel,
                 apiParameters = PXLKtxBaseAlbum.Params(
                         // album images

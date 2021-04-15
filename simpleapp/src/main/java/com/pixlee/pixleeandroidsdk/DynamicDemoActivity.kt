@@ -40,15 +40,15 @@ class DynamicDemoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dynamic_photos)
         setFilters()
-        pxlPhotosView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        widget.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 try {
-                    if (pxlPhotosView == null)
+                    if (widget == null)
                         return
 
-                    cellHeightInPixel = pxlPhotosView.measuredHeight / 2
+                    cellHeightInPixel = widget.measuredHeight / 2
                     initiateList()
-                    pxlPhotosView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    widget.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -59,7 +59,7 @@ class DynamicDemoActivity : AppCompatActivity() {
 
     private fun initiateList() {
         // you can customize color, size if you need
-        pxlPhotosView.initiate(
+        widget.initiate(
                 widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
                 viewType = getViewType(),
                 cellHeightInPixel = cellHeightInPixel,
@@ -156,7 +156,7 @@ class DynamicDemoActivity : AppCompatActivity() {
         btnApply.setOnClickListener { drawerLayout.closeDrawer(GravityCompat.END) }
 
         radio_grid.setOnCheckedChangeListener { group, checkedId ->
-            val viewType = pxlPhotosView.currentViewType
+            val viewType = widget.currentViewType
             when (checkedId) {
                 R.id.radio_grid_2 -> {
                     changeSpan(2)
@@ -184,7 +184,7 @@ class DynamicDemoActivity : AppCompatActivity() {
             changeSpan(getGridSpan())
             refreshViewType()
             if (radio_infiniteScroll_on.isChecked) {
-                pxlPhotosView.scrollToPosition(Integer.MAX_VALUE / 2)
+                widget.scrollToPosition(Integer.MAX_VALUE / 2)
             }
         }
 
@@ -216,44 +216,44 @@ class DynamicDemoActivity : AppCompatActivity() {
     }
 
     fun changeSpan(span: Int) {
-        val viewType = pxlPhotosView.currentViewType
+        val viewType = widget.currentViewType
         if (viewType is PXLWidgetView.ViewType.Grid) {
             val allLineSpace = getLineSpace().px.toInt() * (span - 1)
-            cellHeightInPixel = (pxlPhotosView.measuredWidth - allLineSpace) / span
+            cellHeightInPixel = (widget.measuredWidth - allLineSpace) / span
 
-            pxlPhotosView.currentViewType = viewType.copy().apply {
+            widget.currentViewType = viewType.copy().apply {
                 gridSpan = span
             }
 
         } else {
-            cellHeightInPixel = pxlPhotosView.measuredHeight / 2
+            cellHeightInPixel = widget.measuredHeight / 2
         }
 
-        pxlPhotosView.viewModel.cellHeightInPixel = cellHeightInPixel
-        pxlPhotosView.viewModel.customizedConfiguration.pxlPhotoSize = if (radioList.isChecked) PXLPhotoSize.BIG else PXLPhotoSize.MEDIUM
-        pxlPhotosView.pxlPhotoAdapter.list.forEach {
+        widget.viewModel.cellHeightInPixel = cellHeightInPixel
+        widget.viewModel.customizedConfiguration.pxlPhotoSize = if (radioList.isChecked) PXLPhotoSize.BIG else PXLPhotoSize.MEDIUM
+        widget.pxlPhotoAdapter.list.forEach {
             when (it) {
                 is PXLPhotoAdapter.Item.Content -> {
-                    it.data.heightInPixel = pxlPhotosView.viewModel.cellHeightInPixel
-                    it.data.configuration.pxlPhotoSize = pxlPhotosView.viewModel.customizedConfiguration.pxlPhotoSize
+                    it.data.heightInPixel = widget.viewModel.cellHeightInPixel
+                    it.data.configuration.pxlPhotoSize = widget.viewModel.customizedConfiguration.pxlPhotoSize
                 }
             }
         }
 
-        pxlPhotosView.pxlPhotoAdapter.notifyDataSetChanged()
+        widget.pxlPhotoAdapter.notifyDataSetChanged()
 
         if (radio_infiniteScroll_on.isChecked) {
-            var lastItem = pxlPhotosView.pxlPhotoAdapter.list.lastOrNull()
+            var lastItem = widget.pxlPhotoAdapter.list.lastOrNull()
             if (lastItem != null && lastItem is PXLPhotoAdapter.Item.LoadMore) {
-                val position = pxlPhotosView.pxlPhotoAdapter.list.count() - 1
-                pxlPhotosView.pxlPhotoAdapter.list.removeAt(position)
-                pxlPhotosView.pxlPhotoAdapter.notifyItemRemoved(position)
+                val position = widget.pxlPhotoAdapter.list.count() - 1
+                widget.pxlPhotoAdapter.list.removeAt(position)
+                widget.pxlPhotoAdapter.notifyItemRemoved(position)
             }
         }
     }
 
     fun refreshViewType() {
-        pxlPhotosView.currentViewType = getViewType()
+        widget.currentViewType = getViewType()
     }
 
     fun getGridSpan(): Int {

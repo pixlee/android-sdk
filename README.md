@@ -43,7 +43,7 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
                 PXLClient.initialize("Your Pixlee api key", Your Pixlee secret key"")
 
                 // (Optional) if you use UI components and want
-                // to let PXLPhotosView, PXLPhotoRecyclerViewInGrid, PXLPhotoRecyclerView and PXLPhotoProductView
+                // to let PXLWidgetView, PXLPhotoRecyclerViewInGrid, PXLPhotoRecyclerView and PXLPhotoProductView
                 // fire 'openedWidget', 'widgetVisible' and 'openedLightbox' analytics events, use this.
                 PXLClient.autoAnalyticsEnabled = true
 
@@ -53,14 +53,14 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
             }
         }
         ```
-    1. Load your album photos using PXLPhotosView (Similar to Widget)
-        - Using PXLPhotosView, you can load your album's photos.
+    1. Load your album photos using PXLWidgetView (Similar to Widget)
+        - Using PXLWidgetView, you can load your album's photos.
         - res/layout/list_layout.xml
             ```xml
             #!xml
             ...
-            <com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
-                android:id="@+id/pxlPhotosView"
+            <com.pixlee.pixleesdk.ui.widgets.list.PXLWidgetView
+                android:id="@+id/widget"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
             ...
@@ -73,15 +73,15 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
                     super.onCreate(savedInstanceState)
                     setContentView(R.layout.list_layout)
 
-                    pxlPhotosView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    widget.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                         override fun onGlobalLayout() {
                             try {
-                                if (pxlPhotosView == null)
+                                if (widget == null)
                                     return
 
-                                initiateList((pxlPhotosView.measuredHeight / 2).toInt())
+                                initiateList((widget.measuredHeight / 2).toInt())
 
-                                pxlPhotosView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                widget.viewTreeObserver.removeOnGlobalLayoutListener(this)
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
@@ -92,9 +92,9 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
 
                 private fun initiateList(cellHeightInPixel: Int) {
                     // you can customize color, size if you need
-                    pxlPhotosView.initiate(
+                    widget.initiate(
                             widgetTypeForAnalytics = "your_widget_type",
-                            viewType = PXLPhotosView.ViewType.List(),
+                            viewType = widget.ViewType.List(),
                             cellHeightInPixel = cellHeightInPixel,
                             params = PXLKtxBaseAlbum.Params(
                                     // album images

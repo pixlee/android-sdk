@@ -35,15 +35,15 @@ class SimpleListActivity : AppCompatActivity() {
                 PorterDuff.Mode.SRC_ATOP
         )
 
-        pxlPhotosView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        widget.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 try {
-                    if (pxlPhotosView == null)
+                    if (widget == null)
                         return
 
-                    initPXLPhotosView((pxlPhotosView.measuredHeight * listHeightRatio).toInt())
+                    initwidget((widget.measuredHeight * listHeightRatio).toInt())
 
-                    pxlPhotosView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    widget.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -52,9 +52,9 @@ class SimpleListActivity : AppCompatActivity() {
         })
     }
 
-    private fun initPXLPhotosView(cellHeightInPixel: Int) {
+    private fun initwidget(cellHeightInPixel: Int) {
         // you can customize color, size if you need
-        pxlPhotosView.initiate(
+        widget.initiate(
                 widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
                 viewType = PXLWidgetView.ViewType.List(),
                 cellHeightInPixel = cellHeightInPixel,
