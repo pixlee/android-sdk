@@ -23,7 +23,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
+    <com.pixlee.pixleesdk.ui.widgets.list.PXLWidgetView
         android:id="@+id/pxlPhotosView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

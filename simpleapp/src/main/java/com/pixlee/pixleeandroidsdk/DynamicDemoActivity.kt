@@ -26,7 +26,7 @@ import com.pixlee.pixleesdk.ui.widgets.TextPadding
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
 import com.pixlee.pixleesdk.ui.widgets.list.Space
-import com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
+import com.pixlee.pixleesdk.ui.widgets.list.PXLWidgetView
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.activity_dynamic_photos.*
 import kotlinx.android.synthetic.main.module_search.*
@@ -90,16 +90,16 @@ class DynamicDemoActivity : AppCompatActivity() {
         }
     }
 
-    private fun getViewType(): PXLPhotosView.ViewType {
+    private fun getViewType(): PXLWidgetView.ViewType {
         return if (radioGrid.isChecked) {
-            PXLPhotosView.ViewType.Grid(
+            PXLWidgetView.ViewType.Grid(
                     gridSpan = getGridSpan(),
                     lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt()),
                     listHeader = getHeader()
             )
         } else {
-            PXLPhotosView.ViewType.List(
-                    infiniteScroll = radio_infiniteScroll_on.isChecked,     // or false
+            PXLWidgetView.ViewType.List(
+                    infiniteScroll = radio_infiniteScroll_on.isChecked,
                     autoPlayVideo = radio_autoPlayVideo_on.isChecked,
                     alphaForStoppedVideos = 1f
             )
@@ -217,7 +217,7 @@ class DynamicDemoActivity : AppCompatActivity() {
 
     fun changeSpan(span: Int) {
         val viewType = pxlPhotosView.currentViewType
-        if (viewType is PXLPhotosView.ViewType.Grid) {
+        if (viewType is PXLWidgetView.ViewType.Grid) {
             val allLineSpace = getLineSpace().px.toInt() * (span - 1)
             cellHeightInPixel = (pxlPhotosView.measuredWidth - allLineSpace) / span
 

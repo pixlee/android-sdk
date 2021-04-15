@@ -16,7 +16,7 @@ import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextPadding
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
-import com.pixlee.pixleesdk.ui.widgets.list.v2.PXLPhotosView
+import com.pixlee.pixleesdk.ui.widgets.list.PXLWidgetView
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.activity_simple_demo.*
 
@@ -56,7 +56,7 @@ class SimpleListActivity : AppCompatActivity() {
         // you can customize color, size if you need
         pxlPhotosView.initiate(
                 widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
-                viewType = PXLPhotosView.ViewType.List(),
+                viewType = PXLWidgetView.ViewType.List(),
                 cellHeightInPixel = cellHeightInPixel,
                 apiParameters = PXLKtxBaseAlbum.Params(
                         // album images
