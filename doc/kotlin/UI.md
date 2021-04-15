@@ -261,22 +261,7 @@ pxlPhotoProductView.loadContent(...
     ...
 )
 ```
-#### Play and stop the video
-- Option 1: Automatic using androidx.lifecycle.Lifecycle(Jetpack)
-  - Prerequisite: add the dependencies in the doc (https://developer.android.com/jetpack/androidx/releases/lifecycle) to your app gradle. You can also see the sample on app/build.gradle in the demo app.   
-  - Add the codes 
-    ```kotlin
-    #!kotlin
-    class YourActivity : AppCompatActivity() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            ...
-            pxlPhotoProductView.useLifecycleObserver(lifecycle)
-        }
-    }
-    ```   
-- Option 2: Manual (use this if you want to play, stop and release the video when you need)
-```kotlin
+
 #!kotlin
 class YourActivity : AppCompatActivity() {
     

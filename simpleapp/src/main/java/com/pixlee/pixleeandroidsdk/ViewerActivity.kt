@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-//import androidx.lifecycle.lifecycleScope
-import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
@@ -19,7 +17,6 @@ import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.activity_viewer.*
-//import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -52,15 +49,11 @@ class ViewerActivity : AppCompatActivity() {
     }
 
     fun init(item: PhotoWithVideoInfo) {
-
         // this is an example of changing ImageScaleType
         item.configuration.imageScaleType = ImageScaleType.FIT_CENTER
 
         // give a padding to the top as much as the status bar's height
         pxlPhotoProductView.addPaddingToHeader(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
-
-        // by passing lifecycle to pxlPhotoProductView, the SDK will automatically start and stop the video
-        pxlPhotoProductView.useLifecycleObserver(lifecycle)
 
         // set your ui settings
         pxlPhotoProductView

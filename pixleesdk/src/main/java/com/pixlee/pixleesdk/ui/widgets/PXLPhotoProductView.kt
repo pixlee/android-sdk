@@ -12,12 +12,12 @@ import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.client.PXLAnalytics
 import com.pixlee.pixleesdk.client.PXLClient
-import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.data.PXLProduct
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
@@ -25,7 +25,8 @@ import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.util.px
 import com.pixlee.pixleesdk.util.setCompatIconWithColor
 import kotlinx.android.synthetic.main.widget_viewer.view.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -73,6 +74,10 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = li.inflate(R.layout.widget_viewer, this, false)
         addView(view)
+
+        val lifecycleOwner = context as? LifecycleOwner
+                ?: throw Exception("androidx.lifecycle.LifecycleOwner is required. Please make sure your Activity or Fragment provides androidx.lifecycle.LifecycleOwner")
+        lifecycleOwner.lifecycle.addObserver(this)
     }
 
     /**
@@ -197,16 +202,6 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         headerConfiguration?.muteCheckBox?.apply {
             ivMute.setCompatIconWithColor(iconColor, if (muted) mutedIcon else unmutedIcon)
         }
-    }
-
-    /**
-     * This will play the video on onResume and stop the video on onPause.
-     *   - when ON_RESUME, this will call playVideo()
-     *   - when ON_PAUSE, this will call stopVideo()
-     * If you want to manually play and stop the video, don't use this and do use playVideo() and stopVideo() when you want
-     */
-    fun useLifecycleObserver(lifecycle: Lifecycle) {
-        lifecycle.addObserver(this)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)

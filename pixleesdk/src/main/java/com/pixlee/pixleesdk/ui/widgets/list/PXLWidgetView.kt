@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk.ui.widgets.list.v2
+package com.pixlee.pixleesdk.ui.widgets.list
 
 import android.content.Context
 import android.util.AttributeSet
@@ -16,10 +16,6 @@ import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
-import com.pixlee.pixleesdk.ui.widgets.list.BaseRecyclerView
-import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
-import com.pixlee.pixleesdk.ui.widgets.list.ListViewModel
-import com.pixlee.pixleesdk.ui.widgets.list.Space
 import com.pixlee.pixleesdk.util.AutoPlayUtils
 import com.pixlee.pixleesdk.util.EventObserver
 import com.pixlee.pixleesdk.util.GridSpacingItemDecoration
@@ -31,7 +27,7 @@ import kotlinx.coroutines.*
  * Created by sungjun on 9/17/20.
  */
 
-class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
+class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
     sealed class ViewType {
         data class List(val infiniteScroll: Boolean = false,     // or false
                         val autoPlayVideo: Boolean = false,
@@ -256,7 +252,7 @@ class PXLPhotosView : BaseRecyclerView, LifecycleObserver {
         val lifecycleOwner = context as? LifecycleOwner
                 ?: throw Exception("androidx.lifecycle.LifecycleOwner is required. Please make sure your Activity or Fragment provides androidx.lifecycle.LifecycleOwner")
         lifecycleOwner.lifecycle.addObserver(this)
-        print("lifecycleOwner is found $lifecycleOwner")
+
         viewModel.loading.observe(lifecycleOwner, Observer {
             when (it) {
                 is ListViewModel.LoadState.Hide -> {
