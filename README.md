@@ -259,6 +259,9 @@ AlbumId and SKU available from the Pixlee dashboard).
 1. Run the project on an Android device
     - /app: complex codes for thoes that want to have more control or customization options
     - /simpleapp: simple sample codes for those looking for basic features
+      |Grid Mode|ListMode|
+      |------|---|
+      |<img src="https://i.ibb.co/80gWSvL/ezgif-com-gif-maker-2.gif" width="200">|<img src="https://i.ibb.co/5rwSKcx/ezgif-com-gif-maker-1.gif" width="200">|
 
 # Development Guide
 ### [Java](doc/JAVA.md)
