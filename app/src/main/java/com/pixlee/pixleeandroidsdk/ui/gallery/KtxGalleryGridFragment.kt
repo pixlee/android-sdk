@@ -156,7 +156,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
     }
 
     fun getTitleSpannable(): ListHeader {
-        val top = "PXLEE\nSHOPPERS"
+        val top = "PIXLEE\nSHOPPERS"
         val tv = "\nTV"
         val total = top + tv
         val spannable = SpannableString(total)
