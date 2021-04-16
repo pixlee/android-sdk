@@ -17,6 +17,8 @@ sealed class ListHeader {
     class Gif(val url: String, val heightInPixel: Int, val imageScaleType: ImageScaleType) : ListHeader()
 }
 
+class Space(var lineWidthInPixel: Int = 4.px.toInt(), var includingEdge: Boolean = false)
+
 /**
  * Created by sungjun on 9/17/20.
  */
@@ -62,5 +64,3 @@ open class PXLPhotoRecyclerViewInGrid : BaseRecyclerView {
         fireOpenAndVisible()
     }
 }
-
-class Space(var lineWidthInPixel: Int = 4.px.toInt(), var includingEdge: Boolean = true)

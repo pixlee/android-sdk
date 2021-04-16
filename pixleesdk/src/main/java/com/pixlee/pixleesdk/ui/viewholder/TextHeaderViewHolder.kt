@@ -28,10 +28,11 @@ class TextHeaderViewHolder(override val containerView: View) :
 
                 var builder = Glide.with(ivHeader)
                         .load(listHeader.url)
-                builder = when(listHeader.imageScaleType){
+                builder = when (listHeader.imageScaleType) {
                     ImageScaleType.FIT_CENTER -> builder.fitCenter()
                     ImageScaleType.CENTER_CROP -> builder.centerCrop()
                 }
+                vHeader.setPadding(0, 0, 0, 0)
                 builder.into(ivHeader)
             }
             is ListHeader.SpannableText -> {

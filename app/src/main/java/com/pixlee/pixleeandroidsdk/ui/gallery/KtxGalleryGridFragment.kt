@@ -156,7 +156,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
     }
 
     fun getTitleSpannable(): ListHeader {
-        val top = "PXLEE\nSHOPPERS"
+        val top = "PIXLEE\nSHOPPERS"
         val tv = "\nTV"
         val total = top + tv
         val spannable = SpannableString(total)
@@ -305,11 +305,6 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
 
                 // Please be aware that the right place you implement to set PXLClient.regionId is in your Application level. please check AppApplication.kt
                 PXLClient.regionId = readRegionIdFromUI()
-
-                PXLAlbumSortOptions().apply {
-                    sortType = PXLAlbumSortType.RECENCY
-                    descending = true
-                }
 
                 // retrieve the first page
                 viewModel.getFirstPage()

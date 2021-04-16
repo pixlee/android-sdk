@@ -44,7 +44,6 @@ class PXLPhotoRecyclerView : BaseRecyclerView, LifecycleObserver {
         this.adapter = pxlPhotoAdapter
     }
 
-    //    lateinit var masterExoPlayerHelper: MasterExoPlayerHelper
     internal var alphaForStoppedVideos: Float = 1f
     fun initiate(infiniteScroll: Boolean = false,     // or false
                  showingDebugView: Boolean = false,   // false: for production, true: development only when you want to see the debug info

@@ -1,0 +1,87 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+}
+
+androidExtensions {
+    experimental = true
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        multiDexEnabled true
+        applicationId "com.pixlee.pixleeandroidsdk.simple"
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "PIXLEE_API_KEY", "\"" + PIXLEE_API_KEY + "\""
+        buildConfigField "String", "PIXLEE_SECRET_KEY", "\"" + PIXLEE_SECRET_KEY + "\""
+        buildConfigField "String", "PIXLEE_ALBUM_ID", "\"" + PIXLEE_ALBUM_ID + "\""
+        buildConfigField "String", "PIXLEE_SKU", "\"" + PIXLEE_SKU + "\""
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    viewBinding {
+        enabled = true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    testOptions {
+        testOptions {
+            unitTests.all {
+                testLogging {
+                    events "passed", "skipped", "failed", "standardOut", "standardError"
+                    outputs.upToDateWhen {false}
+                    showStandardStreams = true
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    /**
+     * libraries for app. you don't need to use these
+     */
+    testImplementation 'junit:junit:4.13'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.ext:junit:' + rootProject.extJUnitVersion
+    implementation "androidx.appcompat:appcompat:$androidxAppcompat"
+    implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"
+    implementation "com.google.android.material:material:$material"
+    implementation "androidx.multidex:multidex:2.0.1"
+
+    /**
+     * Kotlin
+     */
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    /**
+     * Pixlee SDK
+     */
+    implementation project(':pixleesdk')
+}

@@ -89,7 +89,7 @@ dependencies {
     /**
      * Architecture Component
      */
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+//    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
