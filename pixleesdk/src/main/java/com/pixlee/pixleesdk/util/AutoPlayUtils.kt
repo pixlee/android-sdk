@@ -44,10 +44,7 @@ object AutoPlayUtils {
                 val child = recyclerView.getChildAt(i)
                 if (child != null) {
                     val pxlPhotoView = child.findViewById<PXLPhotoView>(pxlPhotoViewId)
-                    if(pxlPhotoView!=null){
-                        pxlPhotoView.pauseVideo()
-                    }
-
+                    pxlPhotoView?.pauseVideo()
                 }
             }
         }
