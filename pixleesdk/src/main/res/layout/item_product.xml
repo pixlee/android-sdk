@@ -59,42 +59,27 @@
             app:layout_constraintTop_toBottomOf="@+id/tvMain"
 
             />
-        <RelativeLayout
-            android:id="@+id/vPriceBox"
+
+        <TextView
+            android:id="@+id/tvPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            tools:text="100"
+            android:textStyle="bold"
             android:paddingTop="10dp"
             android:paddingLeft="@dimen/product_center"
             android:paddingRight="@dimen/product_left"
             android:paddingBottom="5dp"
             app:layout_constraintLeft_toRightOf="@+id/imageView"
             app:layout_constraintTop_toBottomOf="@+id/tvSub"
-            app:layout_constraintBottom_toBottomOf="parent">
-            <TextView
-                android:id="@+id/tvPriceLeft"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="100"
-                android:textStyle="bold"
-                />
-            <TextView
-                android:id="@+id/tvPriceRight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:singleLine="false"
-                tools:text=".99 $"
-                android:textStyle="bold"
-                android:layout_alignBaseline="@+id/tvPriceLeft"
-                android:layout_toRightOf="@+id/tvPriceLeft"
-                />
-        </RelativeLayout>
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="tvMain,tvSub,vPriceBox"
+            app:constraint_referenced_ids="tvMain,tvSub,tvPrice"
             app:barrierDirection="end"
             />
         <ImageView

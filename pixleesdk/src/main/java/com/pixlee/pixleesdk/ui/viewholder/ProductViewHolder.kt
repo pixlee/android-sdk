@@ -3,6 +3,11 @@ package com.pixlee.pixleesdk.ui.viewholder
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.icu.math.BigDecimal
+import android.text.SpannableString
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
+import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,8 +43,7 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
     )
 
     /**
-     * Out of Stock & Discount Badges
-     * In order to get the badges for either Out of Stock or Discount to show up, new displayOption keys have to be set on the widget. (This is manually done for Phase 1).
+     * Discount Badges
      */
     class DiscountPrice(var discountLayout: DiscountLayout)
 
@@ -66,47 +70,55 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
 
     var formatter = DecimalFormat("#,##0.##")
     fun bind(product: PXLProduct, isBookmarked: Boolean?, configuration: Configuration) {
+        // product image UI
         Glide.with(imageView.context)
                 .load(product.imageThumb)
                 .fitCenter()
                 .into(imageView)
 
+        // main text UI
         configuration.mainTextStyle?.also { tvMain.setTextStyle(it) }
         tvMain.text = product.title
 
+        // sub text UI
         configuration.subTextStyle?.also { tvMain.setTextStyle(it) }
         tvSub.visibility = if (product.description != null && product.description.isNotEmpty()) View.VISIBLE else View.GONE
         tvSub.text = product.description
 
-
-        configuration.priceTextStyle?.leftText?.also { tvPriceLeft.setTextStyle(it) }
-        configuration.priceTextStyle?.rightText?.also { tvPriceRight.setTextStyle(it) }
-        val price = product.price ?: 0.toBigDecimal()
-        tvPriceLeft.text = formatter.format(price.setScale(0, BigDecimal.ROUND_FLOOR))
-        tvPriceRight.text = if (price == null) {
-            ""
-        } else {
+        // price UI
+        product.price ?: 0.toBigDecimal().let { price ->
+            val integerPrice = formatter.format(price.setScale(0, BigDecimal.ROUND_FLOOR))
             val symbol = product.getCurrencySymbol(configuration.priceTextStyle?.defaultCurrency)
-            if (symbol != null) {
+            val decimalPrice = if (symbol != null) {
                 price.getFractionalPart() + " " + symbol
             } else {
                 price.getFractionalPart()
             }
+
+            val total = "$integerPrice$decimalPrice"
+            tvPrice.text = SpannableString(total).apply {
+                val metrics = tvSub.context.resources.displayMetrics
+                configuration.priceTextStyle?.leftText?.also { textStyle ->
+                    applyTextStyle(total, integerPrice, textStyle, metrics)
+                }
+                configuration.priceTextStyle?.rightText?.also { textStyle ->
+                    applyTextStyle(total, decimalPrice, textStyle, metrics)
+                }
+            }
         }
 
+        // bookmark UI
         bookmark.visibility = if (configuration.bookmarkDrawable.isVisible) View.VISIBLE else View.GONE
-
         if (isBookmarked != null) {
             changeBookmarkUI(isBookmarked, configuration)
         }
 
+        // shop image UI
         iconBox.visibility = if (configuration.circleIcon.isVisible) View.VISIBLE else View.GONE
         iconBox.background = getDrawable(configuration)
         iconBox.setPadding(configuration.circleIcon.padding, configuration.circleIcon.padding, configuration.circleIcon.padding, configuration.circleIcon.padding)
-
         ivIcon.setBackgroundResource(configuration.circleIcon.icon)
         ivIcon.setCompatColorFilter(configuration.circleIcon.iconColor)
-
     }
 
     var drawable: GradientDrawable = GradientDrawable()
@@ -138,6 +150,17 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
     companion object {
         fun create(parent: ViewGroup): ProductViewHolder {
             return ProductViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_product, parent, false))
+        }
+    }
+}
+
+fun SpannableString.applyTextStyle(total:String, targetText: String, targetTextStyle: TextStyle, metrics: DisplayMetrics) {
+    total.indexOf(targetText).let { index ->
+        val textLength = targetText.length
+        targetTextStyle?.also {
+            val fontSize = TypedValue.applyDimension(it.sizeUnit, it.size, metrics).toInt()
+            setSpan(AbsoluteSizeSpan(fontSize), index, index + textLength, 0); // set size
+            setSpan(ForegroundColorSpan(it.color), index, index + textLength, 0);// set color
         }
     }
 }
