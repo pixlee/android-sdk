@@ -13,6 +13,7 @@ import com.pixlee.pixleesdk.network.annotation.NullableDouble;
 import com.pixlee.pixleesdk.network.annotation.NullableInt;
 import com.squareup.moshi.Json;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -297,6 +298,9 @@ public class PXLPhoto implements Parcelable {
     }
 
 
+    public PXLPhoto() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -326,6 +330,7 @@ public class PXLPhoto implements Parcelable {
         dest.writeInt(this.existIn);
         dest.writeString(this.collectTerm);
         dest.writeString(this.albumPhotoId);
+        dest.writeInt(this.albumId);
         dest.writeInt(this.likeCount);
         dest.writeInt(this.shareCount);
         dest.writeSerializable(this.actionLink);
@@ -346,11 +351,11 @@ public class PXLPhoto implements Parcelable {
         dest.writeByte(this.instUserHasLiked ? (byte) 1 : (byte) 0);
         dest.writeSerializable(this.platformLink);
         dest.writeTypedList(this.products);
+        dest.writeString(this.uploaderAdditionalFields!=null ? this.uploaderAdditionalFields.toString() : "{}");
         dest.writeParcelable(this.cdnPhotos, flags);
     }
 
-    public PXLPhoto() {
-    }
+
 
     protected PXLPhoto(Parcel in) {
         this.id = in.readString();
@@ -376,6 +381,7 @@ public class PXLPhoto implements Parcelable {
         this.existIn = in.readInt();
         this.collectTerm = in.readString();
         this.albumPhotoId = in.readString();
+        this.albumId = in.readInt();
         this.likeCount = in.readInt();
         this.shareCount = in.readInt();
         this.actionLink = (URL) in.readSerializable();
@@ -397,10 +403,15 @@ public class PXLPhoto implements Parcelable {
         this.instUserHasLiked = in.readByte() != 0;
         this.platformLink = (URL) in.readSerializable();
         this.products = in.createTypedArrayList(PXLProduct.CREATOR);
+        try {
+            this.uploaderAdditionalFields = new JSONObject(in.readString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         this.cdnPhotos = in.readParcelable(CDNPhotos.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<PXLPhoto> CREATOR = new Parcelable.Creator<PXLPhoto>() {
+    public static final Creator<PXLPhoto> CREATOR = new Creator<PXLPhoto>() {
         @Override
         public PXLPhoto createFromParcel(Parcel source) {
             return new PXLPhoto(source);
