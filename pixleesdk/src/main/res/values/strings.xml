@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Pixlee SDK</string>
+    <string name="was_old_price">war %s</string>
+    <string name="percent_off">%s\%% Aus</string>
 </resources>

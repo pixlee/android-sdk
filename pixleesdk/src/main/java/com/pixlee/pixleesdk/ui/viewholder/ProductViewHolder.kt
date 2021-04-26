@@ -33,8 +33,19 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
             var subTextStyle: TextStyle? = null,
             var priceTextStyle: CurrencyTextStyle? = null,
             var bookmarkDrawable: Bookmark = Bookmark(),
-            var circleIcon: CircleIcon = CircleIcon()
+            var circleIcon: CircleIcon = CircleIcon(),
+            var discountPrice: DiscountPrice? = null
     )
+
+    /**
+     * Out of Stock & Discount Badges
+     * In order to get the badges for either Out of Stock or Discount to show up, new displayOption keys have to be set on the widget. (This is manually done for Phase 1).
+     */
+    class DiscountPrice(var discountLayout: DiscountLayout)
+
+    enum class DiscountLayout {
+        CROSS_THROUGH, WAS_OLD_PRICE, WITH_DISCOUNT_LABEL
+    }
 
     class Bookmark(var isVisible: Boolean = true,
                    @DrawableRes var selectedIcon: Int = R.drawable.baseline_bookmark_black_36,

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Pixlee SDK</string>
+    <string name="was_old_price">adalah %s</string>
+    <string name="percent_off">%s\%% Off</string>
+</resources>
