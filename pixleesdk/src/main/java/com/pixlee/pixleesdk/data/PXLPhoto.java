@@ -13,7 +13,6 @@ import com.pixlee.pixleesdk.network.annotation.NullableDouble;
 import com.pixlee.pixleesdk.network.annotation.NullableInt;
 import com.squareup.moshi.Json;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -405,7 +404,7 @@ public class PXLPhoto implements Parcelable {
         this.products = in.createTypedArrayList(PXLProduct.CREATOR);
         try {
             this.uploaderAdditionalFields = new JSONObject(in.readString());
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         this.cdnPhotos = in.readParcelable(CDNPhotos.class.getClassLoader());
