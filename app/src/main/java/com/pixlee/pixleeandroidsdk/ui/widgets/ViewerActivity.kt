@@ -111,7 +111,7 @@ class ViewerActivity : AppCompatActivity() {
                                 unselectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_border_black_36
                             }
                             priceTextStyle = CurrencyTextStyle().apply {
-                                isCurrencyLeading = false
+                                isCurrencyLeading = true
                                 defaultCurrency = "EUR" // or null
                                 leftText = TextStyle().apply {
                                     color = Color.DKGRAY
