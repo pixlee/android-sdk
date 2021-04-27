@@ -6,7 +6,7 @@ import java.math.BigDecimal
 
 fun PXLProduct.getCurrencySymbol(defaultCurrency: String?): String? {
     val extendedCurrency: ExtendedCurrency? = ExtendedCurrency
-            .getCurrencyByISO(currency ?: defaultCurrency)
+            .getCurrencyByISO(currency ?: defaultCurrency ?: "")
     return extendedCurrency?.symbol ?: currency
 }
 

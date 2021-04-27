@@ -53,16 +53,24 @@ public class PXLProduct implements Parcelable {
 
     @FieldDate
     @Json(name = "sales_start_date")
-    public Date sales_start_date;
+    public Date salesStartDate;
 
     @FieldDate
     @Json(name = "sales_end_date")
-    public Date sales_end_date;
+    public Date salesEndDate;
 
     @FieldBigDecimal
     @Json(name = "sales_price")
-    public BigDecimal sales_price;
+    public BigDecimal salesPrice;
 
+    public boolean hasAvailableSalesPrice() {
+        Date today = new Date();
+        return salesPrice!=null &&
+                salesStartDate != null &&
+                salesEndDate != null &&
+                salesStartDate.before(today) &&
+                today.before(salesEndDate);
+    }
 
     public PXLProduct() {
     }
@@ -85,9 +93,9 @@ public class PXLProduct implements Parcelable {
         dest.writeString(this.description);
         dest.writeString(this.currency);
         dest.writeSerializable(this.price);
-        dest.writeLong(this.sales_start_date != null ? this.sales_start_date.getTime() : -1);
-        dest.writeLong(this.sales_end_date != null ? this.sales_end_date.getTime() : -1);
-        dest.writeSerializable(this.sales_price);
+        dest.writeLong(this.salesStartDate != null ? this.salesStartDate.getTime() : -1);
+        dest.writeLong(this.salesEndDate != null ? this.salesEndDate.getTime() : -1);
+        dest.writeSerializable(this.salesPrice);
     }
 
     public void readFromParcel(Parcel source) {
@@ -103,10 +111,10 @@ public class PXLProduct implements Parcelable {
         this.currency = source.readString();
         this.price = (BigDecimal) source.readSerializable();
         long tmpSales_start_date = source.readLong();
-        this.sales_start_date = tmpSales_start_date == -1 ? null : new Date(tmpSales_start_date);
+        this.salesStartDate = tmpSales_start_date == -1 ? null : new Date(tmpSales_start_date);
         long tmpSales_end_date = source.readLong();
-        this.sales_end_date = tmpSales_end_date == -1 ? null : new Date(tmpSales_end_date);
-        this.sales_price = (BigDecimal) source.readSerializable();
+        this.salesEndDate = tmpSales_end_date == -1 ? null : new Date(tmpSales_end_date);
+        this.salesPrice = (BigDecimal) source.readSerializable();
     }
 
     protected PXLProduct(Parcel in) {
@@ -122,10 +130,10 @@ public class PXLProduct implements Parcelable {
         this.currency = in.readString();
         this.price = (BigDecimal) in.readSerializable();
         long tmpSales_start_date = in.readLong();
-        this.sales_start_date = tmpSales_start_date == -1 ? null : new Date(tmpSales_start_date);
+        this.salesStartDate = tmpSales_start_date == -1 ? null : new Date(tmpSales_start_date);
         long tmpSales_end_date = in.readLong();
-        this.sales_end_date = tmpSales_end_date == -1 ? null : new Date(tmpSales_end_date);
-        this.sales_price = (BigDecimal) in.readSerializable();
+        this.salesEndDate = tmpSales_end_date == -1 ? null : new Date(tmpSales_end_date);
+        this.salesPrice = (BigDecimal) in.readSerializable();
     }
 
     public static final Creator<PXLProduct> CREATOR = new Creator<PXLProduct>() {

@@ -59,83 +59,104 @@ class ViewerActivity : AppCompatActivity() {
         init(item)
     }
 
-    fun init(item: PhotoWithVideoInfo){
+    fun init(item: PhotoWithVideoInfo) {
         // set your ui settings
         pxlPhotoProductView
                 .setContent(photoInfo = item,
-                headerConfiguration = PXLPhotoProductView.Configuration().apply {
-                    backButton = PXLPhotoProductView.CircleButton().apply {
-                        icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18
-                        iconColor = Color.BLACK
-                        backgroundColor = Color.WHITE
-                        padding = 10.px.toInt()
-                        onClickListener = {
-                            // back button's click effect
-                            Toast.makeText(this@ViewerActivity, "Replace this with your codes, currently 'onBackPressed()'", Toast.LENGTH_LONG).show()
-                            onBackPressed()
-                        }
-                    }
-                    muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
-                        mutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_up_black_18
-                        unmutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_off_black_18
-                        iconColor = Color.BLACK
-                        backgroundColor = Color.WHITE
-                        padding = 10.px.toInt()
-                        onCheckedListener = {
-                            Toast.makeText(this@ViewerActivity, "is muted: $it", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                },
-                configuration = ProductViewHolder.Configuration().apply {
-                    circleIcon = ProductViewHolder.CircleIcon().apply {
-                        icon = R.drawable.outline_shopping_bag_black_24
-                        iconColor = Color.DKGRAY
-                        backgroundColor = ContextCompat.getColor(this@ViewerActivity, R.color.yellow_800)
-                        padding = 5.px.toInt()
-                    }
-                    mainTextStyle = TextStyle().apply {
-                        color = Color.BLACK
-                        size = 14.px
-                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                        typeface = null
-                    }
-                    subTextStyle = TextStyle().apply {
-                        color = Color.BLACK
-                        size = 12.px
-                        sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                        typeface = null
-                    }
-                    bookmarkDrawable = ProductViewHolder.Bookmark().apply {
-                        isVisible = true
-                        selectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_black_36
-                        unselectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_border_black_36
-                    }
-                    priceTextStyle = CurrencyTextStyle().apply {
-                        defaultCurrency = "EUR" // or null
-                        leftText = TextStyle().apply {
-                            color = Color.BLACK
-                            size = 24.px
-                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                            typeface = null
-                        }
+                        headerConfiguration = PXLPhotoProductView.Configuration().apply {
+                            backButton = PXLPhotoProductView.CircleButton().apply {
+                                icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18
+                                iconColor = Color.BLACK
+                                backgroundColor = Color.WHITE
+                                padding = 10.px.toInt()
+                                onClickListener = {
+                                    // back button's click effect
+                                    Toast.makeText(this@ViewerActivity, "Replace this with your codes, currently 'onBackPressed()'", Toast.LENGTH_LONG).show()
+                                    onBackPressed()
+                                }
+                            }
+                            muteCheckBox = PXLPhotoProductView.MuteCheckBox().apply {
+                                mutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_up_black_18
+                                unmutedIcon = com.pixlee.pixleesdk.R.drawable.outline_volume_off_black_18
+                                iconColor = Color.BLACK
+                                backgroundColor = Color.WHITE
+                                padding = 10.px.toInt()
+                                onCheckedListener = {
+                                    Toast.makeText(this@ViewerActivity, "is muted: $it", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        },
+                        configuration = ProductViewHolder.Configuration().apply {
+                            circleIcon = ProductViewHolder.CircleIcon().apply {
+                                icon = R.drawable.outline_shopping_bag_black_24
+                                iconColor = Color.DKGRAY
+                                backgroundColor = ContextCompat.getColor(this@ViewerActivity, R.color.yellow_800)
+                                padding = 5.px.toInt()
+                            }
+                            mainTextStyle = TextStyle().apply {
+                                color = Color.BLACK
+                                size = 14.px
+                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                typeface = null
+                            }
+                            subTextStyle = TextStyle().apply {
+                                color = Color.BLACK
+                                size = 12.px
+                                sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                typeface = null
+                            }
+                            bookmarkDrawable = ProductViewHolder.Bookmark().apply {
+                                isVisible = true
+                                selectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_black_36
+                                unselectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_border_black_36
+                            }
+                            priceTextStyle = CurrencyTextStyle().apply {
+                                isCurrencyLeading = false
+                                defaultCurrency = "EUR" // or null
+                                leftText = TextStyle().apply {
+                                    color = Color.DKGRAY
+                                    size = 24.px
+                                    sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                    typeface = null
+                                }
 
-                        rightText = TextStyle().apply {
-                            color = Color.BLACK
-                            size = 14.px
-                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
-                            typeface = null
-                        }
-                    }
-                },
-                bookmarkMap = readBookmarks(item.pxlPhoto),
-                onBookmarkClicked = { productId, isBookmarkChecked ->
-                    Toast.makeText(this, "productId: $productId\nisBookmarkChecked: $isBookmarkChecked", Toast.LENGTH_SHORT).show()
-                },
-                onProductClicked = {
-                    Toast.makeText(this, "product clicked, product id: ${it.id}", Toast.LENGTH_SHORT).show()
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it.link.toString()))
-                    startActivity(browserIntent)
-                })
+                                rightText = TextStyle().apply {
+                                    color = Color.DKGRAY
+                                    size = 14.px
+                                    sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                    typeface = null
+                                }
+                            }
+                            discountPriceTextStyle = ProductViewHolder.DiscountPrice(
+                                    discountLayout = ProductViewHolder.DiscountLayout.WITH_DISCOUNT_LABEL,
+                                    priceTextStyle = CurrencyTextStyle().apply {
+                                        isCurrencyLeading = true
+                                        defaultCurrency = "EUR" // or null
+                                        leftText = TextStyle().apply {
+                                            color = Color.RED
+                                            size = 24.px
+                                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                            typeface = null
+                                        }
+
+                                        rightText = TextStyle().apply {
+                                            color = Color.RED
+                                            size = 14.px
+                                            sizeUnit = TypedValue.COMPLEX_UNIT_PX
+                                            typeface = null
+                                        }
+                                    }
+                            )
+                        },
+                        bookmarkMap = readBookmarks(item.pxlPhoto),
+                        onBookmarkClicked = { productId, isBookmarkChecked ->
+                            Toast.makeText(this, "productId: $productId\nisBookmarkChecked: $isBookmarkChecked", Toast.LENGTH_SHORT).show()
+                        },
+                        onProductClicked = {
+                            Toast.makeText(this, "product clicked, product id: ${it.id}", Toast.LENGTH_SHORT).show()
+                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it.link.toString()))
+                            startActivity(browserIntent)
+                        })
     }
 
     /**

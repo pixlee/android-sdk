@@ -22,6 +22,7 @@ open class TextPadding(var left: Int = 0, var top: Int = 0, var right: Int = 0, 
  * this is for a view with price and currency
  */
 open class CurrencyTextStyle(var defaultCurrency: String? = null,
+                             var isCurrencyLeading: Boolean = false,
                              var leftText: TextStyle = TextStyle(),
                              var rightText: TextStyle = TextStyle())
 
