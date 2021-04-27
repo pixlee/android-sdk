@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Pixlee SDK</string>
     <string name="was_old_price">曾是 %s</string>
-    <string name="percent_off">%s\%% 離開</string>
+    <string name="percent_off">%s%% 離開</string>
 </resources>

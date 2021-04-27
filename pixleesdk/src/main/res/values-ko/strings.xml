@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Pixlee SDK</string>
     <string name="was_old_price">, 기존가: %s</string>
-    <string name="percent_off">%s\%% 할인</string>
+    <string name="percent_off">%s%% 할인</string>
 </resources>
