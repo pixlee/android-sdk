@@ -46,15 +46,7 @@ import org.junit.Assert
  */
 class ProductViewFragment : BaseFragment() {
     override fun getTitleResource(): Int {
-        return R.string.title_java_album
-    }
-
-    private var photoList: ArrayList<PXLPhoto>? = null
-    private var lastImg = R.drawable.grid_2x
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-        photoList = ArrayList()
+        return R.string.title_product_view
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
