@@ -196,10 +196,10 @@ class ProductViewFragment : BaseFragment() {
                 list = products,
                 bookmarkMap = HashMap(),
                 onBookmarkChanged = { productId, isBookmarkChecked ->
-                    //onBookmarkClicked?.let { it -> it(productId, isBookmarkChecked) }
+                    // write your own codes
                 },
                 onItemClicked = { product ->
-                    //onProductClicked?.let { it -> it(product) }
+                    // write your own codes
                 }
         )
     }

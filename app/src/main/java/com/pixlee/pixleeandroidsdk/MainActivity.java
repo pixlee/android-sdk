@@ -37,8 +37,6 @@ public class MainActivity extends BaseActivity {
                     PorterDuff.Mode.SRC_ATOP
             );
         }
-        Log.e("ma", "getString(R.string.was_old_price, \"10\"): " + getString(R.string.was_old_price, "10"));
-        Log.e("ma", "getString(R.string.was_old_price, \"10\"): " + getString(R.string.percent_off, "10"));
 
         setConfig(LocalRepository.Companion.getInstance(this).getConfig());
 
