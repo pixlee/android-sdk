@@ -68,4 +68,13 @@
         <item name="android:layout_marginLeft">@dimen/margin</item>
         <item name="android:layout_marginRight">@dimen/margin</item>
     </style>
+
+    <style name="lineView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?attr/colorOnSurface</item>
+        <item name="android:layout_marginTop">@dimen/margin</item>
+        <item name="android:layout_marginBottom">3dp</item>
+        <item name="android:alpha">0.1</item>
+    </style>
 </resources>

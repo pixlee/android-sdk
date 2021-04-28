@@ -27,16 +27,19 @@ class ProductAdapter(
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = list[position]
-        holder.bind(product, bookmarkMap?.get(product.id), configuration)
+        if (bookmarkMap!=null) {
+            holder.bind(product, bookmarkMap[product.id] ?: false, configuration)
+        }else{
+            holder.bind(product, null, configuration)
+        }
         holder.bookmark.setOnClickListener {
             val productId = list[holder.adapterPosition].id
             bookmarkMap?.also {
                 val bookmarked = it[productId] ?: false
                 it[productId] = !bookmarked
                 onBookmarkChanged(list[holder.adapterPosition].id, !bookmarked)
-                holder.changeBookmarkUI(!bookmarked, configuration)
+                holder.changeBookmarkUI(!bookmarked, configuration.bookmarkDrawable)
             }
-
         }
 
         holder.itemView.setOnClickListener {

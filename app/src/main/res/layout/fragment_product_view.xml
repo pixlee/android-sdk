@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:clipToPadding="false"
+    android:paddingBottom="50dp"
+    android:background="#efefef">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/padding"
+            android:text="Discount price"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginRight="@dimen/margin" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="If you proactively save discount prices to your products va our Product Feed, you can display them instead of the default prices of your products with following commands."
+            android:textColor="?attr/colorOnSurface"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Tooltip"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginRight="@dimen/margin" />
+
+        <View style="@style/lineView"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DiscountLayout.WITH_DISCOUNT_LABEL"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginRight="@dimen/margin" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOption1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOption1Icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOption1All"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"/>
+
+        <View style="@style/lineView"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DiscountLayout.WAS_OLD_PRICE"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginRight="@dimen/margin" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOption2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOption2Icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOption2All"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"/>
+
+        <View style="@style/lineView"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DiscountLayout.CROSS_THROUGH"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginRight="@dimen/margin" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOption3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOption3Icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOption3All"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"/>
+
+        <View style="@style/lineView"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No DiscountLayout is set"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginRight="@dimen/margin" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOption4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOption4Icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOption4All"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"/>
+
+        <View style="@style/lineView"/>
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/NextButtonDefault"
+            android:id="@+id/btnProductView"
+            android:layout_marginTop="20dp"
+            android:paddingTop="16sp"
+            android:paddingBottom="13dp"
+            android:text="PXLPhotoProductView"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginRight="@dimen/margin"
+            />
+    </LinearLayout>
+</ScrollView>

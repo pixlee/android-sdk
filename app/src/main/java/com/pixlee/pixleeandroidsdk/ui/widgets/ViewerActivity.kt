@@ -106,7 +106,6 @@ class ViewerActivity : AppCompatActivity() {
                                 typeface = null
                             }
                             bookmarkDrawable = ProductViewHolder.Bookmark().apply {
-                                isVisible = true
                                 selectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_black_36
                                 unselectedIcon = com.pixlee.pixleesdk.R.drawable.baseline_bookmark_border_black_36
                             }

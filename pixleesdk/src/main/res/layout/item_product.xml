@@ -6,8 +6,10 @@
     android:layout_height="wrap_content"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="5dp"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp">
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,13 +49,13 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/product_center"
-            android:paddingRight="@dimen/product_left"
             android:maxLines="2"
             android:minLines="2"
             android:ellipsize="end"
             android:singleLine="false"
             android:text="Support Text1"
             android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
             app:layout_constraintLeft_toRightOf="@+id/imageView"
             app:layout_constraintTop_toBottomOf="@+id/tvMain"
@@ -65,8 +67,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="100"
-            android:textStyle="bold"
-            android:paddingTop="10dp"
+            tools:textSize="30sp"
+            android:paddingTop="5dp"
             android:paddingLeft="@dimen/product_center"
             android:paddingRight="@dimen/product_left"
             android:paddingBottom="5dp"
@@ -91,7 +93,6 @@
             app:layout_constraintLeft_toRightOf="@+id/barrier"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvMain"
-            app:layout_constraintBottom_toTopOf="@+id/iconBox"
             app:layout_constraintVertical_chainStyle="spread_inside"
             />
 
@@ -102,13 +103,13 @@
             android:paddingBottom="5dp"
             app:layout_constraintLeft_toRightOf="@+id/barrier"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bookmark"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPrice"
             app:layout_constraintVertical_chainStyle="spread_inside">
             <ImageView
                 android:id="@+id/ivIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                tools:src="@drawable/outline_shopping_bag_black_24"
                 />
         </RelativeLayout>
 
