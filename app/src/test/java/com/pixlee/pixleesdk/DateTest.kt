@@ -10,17 +10,34 @@ import java.util.*
  */
 class DateTest {
     @Test
-    fun hasProduct() {
+    fun onlyHasPrice() {
         val product = PXLProduct()
+        product.price = 200.toBigDecimal()
+        Assert.assertEquals(false, product.hasAvailableSalesPrice())
+    }
+
+    @Test
+    fun hasProductWithSalesStartDate() {
+        val product = PXLProduct()
+        product.price = 200.toBigDecimal()
         product.salesPrice = 14.92.toBigDecimal()
-        product.salesStartDate = Date(1619305336000)
-        product.salesEndDate =   Date(1619823736000)
+        product.salesStartDate = Date(System.currentTimeMillis() - 10000)
+        Assert.assertEquals(true, product.hasAvailableSalesPrice())
+    }
+
+    @Test
+    fun hasProductWithSalesEndDate() {
+        val product = PXLProduct()
+        product.price = 200.toBigDecimal()
+        product.salesPrice = 14.92.toBigDecimal()
+        product.salesEndDate =   Date(System.currentTimeMillis() + 20000)
         Assert.assertEquals(true, product.hasAvailableSalesPrice())
     }
 
     @Test
     fun hasProductWithFuture() {
         val product = PXLProduct()
+        product.price = 200.toBigDecimal()
         product.salesPrice = 14.92.toBigDecimal()
         product.salesStartDate = Date(System.currentTimeMillis() + 10000)
         product.salesEndDate =   Date(System.currentTimeMillis() + 20000)
@@ -30,6 +47,7 @@ class DateTest {
     @Test
     fun hasProductNotPreviousDate() {
         val product = PXLProduct()
+        product.price = 200.toBigDecimal()
         product.salesPrice = 14.92.toBigDecimal()
         product.salesStartDate = Date(System.currentTimeMillis() - 10000)
         product.salesEndDate =   Date(System.currentTimeMillis() - 20000)
@@ -39,8 +57,9 @@ class DateTest {
     @Test
     fun noSalesPriceWithDate() {
         val product = PXLProduct()
-        product.salesStartDate = Date(1619305336000)
-        product.salesEndDate =   Date(1619823736000)
+        product.price = 200.toBigDecimal()
+        product.salesStartDate = Date(System.currentTimeMillis() - 10000)
+        product.salesEndDate =   Date(System.currentTimeMillis() - 20000)
         Assert.assertEquals(false, product.hasAvailableSalesPrice())
     }
 
@@ -49,7 +68,16 @@ class DateTest {
     @Test
     fun hasProductNoDate() {
         val product = PXLProduct()
+        product.price = 200.toBigDecimal()
         product.salesPrice = 14.92.toBigDecimal()
+        Assert.assertEquals(true, product.hasAvailableSalesPrice())
+    }
+
+    @Test
+    fun salesPriceIsHigherThanPrice() {
+        val product = PXLProduct()
+        product.price = 100.toBigDecimal()
+        product.salesPrice = 400.toBigDecimal()
         Assert.assertEquals(false, product.hasAvailableSalesPrice())
     }
 

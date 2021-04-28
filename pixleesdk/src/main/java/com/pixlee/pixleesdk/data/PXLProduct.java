@@ -64,12 +64,21 @@ public class PXLProduct implements Parcelable {
     public BigDecimal salesPrice;
 
     public boolean hasAvailableSalesPrice() {
+        // we show price if the displayOptions has productPrice true, and the product actually has an actual price > 0
+        boolean salesPriceLessThanStandard = price != null && salesPrice != null && price.compareTo(salesPrice) > 0;
+
         Date today = new Date();
-        return salesPrice!=null &&
-                salesStartDate != null &&
-                salesEndDate != null &&
-                salesStartDate.before(today) &&
-                today.before(salesEndDate);
+        // Assume by default its true, because more often than naught, its more likely we dont get the start or end date atm
+        boolean isWithinSalesDateRange = true;
+        if (salesStartDate != null && salesEndDate == null) {
+            isWithinSalesDateRange = salesStartDate.getTime() <= today.getTime();
+        } else if (salesStartDate == null && salesEndDate != null) {
+            isWithinSalesDateRange = salesEndDate.getTime() >= today.getTime();
+        } else if (salesEndDate != null && salesEndDate != null) {
+            isWithinSalesDateRange = salesStartDate.getTime() <= today.getTime() && salesEndDate.getTime() >= today.getTime();
+        }
+
+        return salesPriceLessThanStandard && isWithinSalesDateRange;
     }
 
     public PXLProduct() {

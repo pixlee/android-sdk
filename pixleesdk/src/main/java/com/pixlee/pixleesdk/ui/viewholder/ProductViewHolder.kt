@@ -51,6 +51,13 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
      */
     class DiscountPrice(var discountLayout: DiscountLayout, var priceTextStyle: CurrencyTextStyle? = null)
 
+    /**
+     * Only show the sales price if its acceptable in case:
+     *  - its a time based sale
+     *  - the sales price is less than the standard price
+     *  - theres actually a sales price > 0
+     *  - we're also showing the price as well
+     */
     enum class DiscountLayout {
         CROSS_THROUGH, // screenshot: https://xd.adobe.com/view/af65a724-66c0-4d78-bf8c-7e860a2b7595-fa36/screen/c5fad7cd-a861-415f-8916-cabf8b50f32b/
         WAS_OLD_PRICE, // screenshot: https://xd.adobe.com/view/af65a724-66c0-4d78-bf8c-7e860a2b7595-fa36/screen/21486793-b111-47ab-8029-038ee1544818/
@@ -129,7 +136,7 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
                 defaultPrice.integerPrice = tvPrice.context.getString(R.string.was_old_price, defaultPrice.integerPrice)
             }
 
-            val defaultPrinceString = "${defaultPrice.integerPrice}${defaultPrice.decimalPrice}"
+            val defaultPriceString = "${defaultPrice.integerPrice}${defaultPrice.decimalPrice}"
 
             // make the whole string
             val total = if (!noSalesPrice && discountLayout != null) {
@@ -139,9 +146,9 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
                 } else {
                     ""
                 }
-                "$salesIntegerPrice$salesDecimalPrice $defaultPrinceString$offLable"
+                "$salesIntegerPrice$salesDecimalPrice $defaultPriceString$offLable"
             } else {
-                defaultPrinceString
+                defaultPriceString
             }
 
             // set the string with customized size and color
