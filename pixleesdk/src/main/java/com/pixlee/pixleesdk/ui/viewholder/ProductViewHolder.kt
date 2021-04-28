@@ -133,8 +133,12 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
 
             // make the whole string
             val total = if (!noSalesPrice && discountLayout != null) {
-                val discountPercentage = ((1.toBigDecimal() - (product.salesPrice / price)) * 100.toBigDecimal()).setScale(0, BigDecimal.ROUND_HALF_UP)
-                offLable = if (discountLayout == DiscountLayout.WITH_DISCOUNT_LABEL) " ${tvSub.context.getString(R.string.percent_off, "$discountPercentage")}" else ""
+                val discountPercentage = product.getDiscountPercentage()
+                offLable = if (discountLayout == DiscountLayout.WITH_DISCOUNT_LABEL && discountPercentage != null) {
+                    " ${tvSub.context.getString(R.string.percent_off, "$discountPercentage")}"
+                } else {
+                    ""
+                }
                 "$salesIntegerPrice$salesDecimalPrice $defaultPrinceString$offLable"
             } else {
                 defaultPrinceString
@@ -249,6 +253,13 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
             return ProductViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_product, parent, false))
         }
     }
+}
+
+fun PXLProduct.getDiscountPercentage(): BigDecimal? {
+    return if (salesPrice != null && price != null)
+        ((1.toBigDecimal() - (salesPrice / price)) * 100.toBigDecimal()).setScale(0, BigDecimal.ROUND_HALF_UP)
+    else
+        null
 }
 
 /**
