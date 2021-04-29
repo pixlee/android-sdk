@@ -129,7 +129,7 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
             val salesDecimalPrice = salesPrice?.decimalPrice ?: ""
             val discountLayout = configuration.discountPriceTextStyle?.discountLayout
             val noSalesPrice = salesIntegerPrice.isEmpty() && salesDecimalPrice.isEmpty()
-            var offLable = ""
+            var offLabel = ""
 
             // add was_old_price if needed
             if (!noSalesPrice && discountLayout != null && discountLayout == DiscountLayout.WAS_OLD_PRICE) {
@@ -141,12 +141,12 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
             // make the whole string
             val total = if (!noSalesPrice && discountLayout != null) {
                 val discountPercentage = product.getDiscountPercentage()
-                offLable = if (discountLayout == DiscountLayout.WITH_DISCOUNT_LABEL && discountPercentage != null) {
+                offLabel = if (discountLayout == DiscountLayout.WITH_DISCOUNT_LABEL && discountPercentage != null) {
                     " ${tvSub.context.getString(R.string.percent_off, "$discountPercentage")}"
                 } else {
                     ""
                 }
-                "$salesIntegerPrice$salesDecimalPrice $defaultPriceString$offLable"
+                "$salesIntegerPrice$salesDecimalPrice $defaultPriceString$offLabel"
             } else {
                 defaultPriceString
             }
@@ -191,12 +191,12 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
                     else applyDisabledTextStyle(configuration.discountPriceTextStyle?.discountLayout, oldIndex, newIndex, textStyle, metrics)
                 }
 
-                // Draw off lable
-                if (offLable.isNotEmpty()) {
+                // Draw off label
+                if (offLabel.isNotEmpty()) {
                     configuration.priceTextStyle?.leftText?.also { mainTextStyle ->
                         configuration.discountPriceTextStyle?.priceTextStyle?.rightText?.also { discountTextStyle ->
                             val oldIndex = newIndex
-                            newIndex += offLable.length
+                            newIndex += offLabel.length
                             val disabledTextSizeRatio = getDisabledTextSizeRatio(configuration.discountPriceTextStyle?.discountLayout)
                             val fontSize = (TypedValue.applyDimension(mainTextStyle.sizeUnit, mainTextStyle.size, metrics) * disabledTextSizeRatio).toInt()
                             setSpan(AbsoluteSizeSpan(fontSize), oldIndex, newIndex, 0) // font size
