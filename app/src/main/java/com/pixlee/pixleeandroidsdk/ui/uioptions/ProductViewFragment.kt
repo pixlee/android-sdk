@@ -62,11 +62,11 @@ class ProductViewFragment : BaseFragment() {
 
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
-                setupMockedWebServer()
-                intMockServer(getJson("pxl_product.json"))
+                mockAlbumUtil.setupMockedWebServer()
+                mockAlbumUtil.intMockServer(context, "pxl_product.json")
             }
 
-            val result = album.getFirstPage()
+            val result = mockAlbumUtil.album.getFirstPage()
             val products = result.photos.firstOrNull()?.products ?: emptyList()
             rvOption1.adapter = makeProducts(ProductViewHolder.DiscountLayout.CROSS_THROUGH, products)
             rvOption2.adapter = makeProducts(ProductViewHolder.DiscountLayout.WAS_OLD_PRICE, products)
@@ -80,31 +80,6 @@ class ProductViewFragment : BaseFragment() {
             rvOption2All.adapter = makeProducts(ProductViewHolder.DiscountLayout.WAS_OLD_PRICE, products, showBookmarkIcon = true, showShopIcon = true)
             rvOption3All.adapter = makeProducts(ProductViewHolder.DiscountLayout.WITH_DISCOUNT_LABEL, products, showBookmarkIcon = true, showShopIcon = true)
             rvOption4All.adapter = makeProducts(null, products, showBookmarkIcon = true, showShopIcon = true)
-        }
-    }
-
-    val album by lazy {
-        PXLKtxAlbum(basicDS, analyticsDS).apply {
-            params = PXLKtxBaseAlbum.Params(
-                    // album images
-                    perPage = 15,
-                    searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU),
-                    filterOptions = PXLAlbumFilterOptions().apply {
-                        // hasProduct and hasPermission are often used together for displaying photos with tagged products and gotten the permission from their creators
-                        // if you don't see any photos after the loading is done, go to https://app.pixlee.com/app#albums/{your album id} and make sure your photos have the same filter conditions as your filterOptions.
-                        hasProduct = true
-                        hasPermission = true
-
-                        // more filter options
-                        // - hasPermission = true
-                        // - inStockOnly = true
-                        // - .. there are more. Please check README or PXLAlbumFilterOptions class for more filter options
-                    },
-                    sortOptions = PXLAlbumSortOptions().apply {
-                        sortType = PXLAlbumSortType.RECENCY
-                        descending = false
-                    }
-            )
         }
     }
 
@@ -199,10 +174,10 @@ class ProductViewFragment : BaseFragment() {
     fun openViwerActivity() {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
-                intMockServer(getJson("pxl_product.json"))
+                mockAlbumUtil.intMockServer(context, "pxl_product.json")
             }
 
-            val result = album.getFirstPage()
+            val result = mockAlbumUtil.album.getFirstPage()
             val info = PhotoWithVideoInfo(pxlPhoto = result.photos.first()!!,
                     configuration = PXLPhotoView.Configuration().apply {
                         // Customize image size, not a video
@@ -248,45 +223,12 @@ class ProductViewFragment : BaseFragment() {
         }
     }
 
-    fun getJson(fileName: String): String {
-        return context?.assets?.open("json/$fileName")?.bufferedReader()?.use { it.readText() }
-                ?: ""
+    val mockAlbumUtil by lazy {
+        MockAlbumUtil()
     }
-
-    val mockWebServer: MockWebServer by lazy {
-        MockWebServer()
-    }
-
-    lateinit var basicDS: KtxBasicDataSource
-    lateinit var analyticsDS: KtxAnalyticsDataSource
-    fun setupMockedWebServer() {
-        mockWebServer.start()
-
-        basicDS = KtxBasicRepository(
-                NetworkModule.provideRetrofit(
-                        mockWebServer.url("/").toString(),
-                        NetworkModule.provideOkHttpClient()
-                ).create(KtxBasicAPI::class.java)
-        )
-
-        analyticsDS = KtxAnalyticsRepository(
-                NetworkModule.provideRetrofit(
-                        mockWebServer.url("/").toString(),
-                        NetworkModule.provideOkHttpClient()
-                ).create(KtxAnalyticsAPI::class.java)
-        )
-    }
-
-    fun intMockServer(bodyResponse: String) {
-        val mock = MockResponse().setResponseCode(200)
-        mock.setBody(bodyResponse)
-        mockWebServer.enqueue(mock)
-    }
-
-
     override fun onDestroyView() {
         super.onDestroyView()
-        mockWebServer.shutdown()
+        mockAlbumUtil.release()
 
     }
 
