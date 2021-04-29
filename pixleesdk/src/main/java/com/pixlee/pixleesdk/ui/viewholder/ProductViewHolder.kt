@@ -151,7 +151,7 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
                 defaultPriceString
             }
 
-            // set the string with customized size and color
+            // set the string to the UI with customized size and color
             tvPrice.text = SpannableString(total).apply {
                 val metrics = tvSub.context.resources.displayMetrics
                 var newIndex = 0
