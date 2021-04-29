@@ -9,25 +9,11 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.ViewerActivity
-import com.pixlee.pixleesdk.client.PXLAlbum
-import com.pixlee.pixleesdk.client.PXLBaseAlbum
-import com.pixlee.pixleesdk.client.PXLBaseAlbum.RequestHandlers
-import com.pixlee.pixleesdk.client.PXLKtxAlbum
-import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
-import com.pixlee.pixleesdk.data.*
-import com.pixlee.pixleesdk.data.api.AnalyticsAPI
-import com.pixlee.pixleesdk.data.api.BasicAPI
-import com.pixlee.pixleesdk.data.api.KtxAnalyticsAPI
-import com.pixlee.pixleesdk.data.api.KtxBasicAPI
-import com.pixlee.pixleesdk.data.repository.*
-import com.pixlee.pixleesdk.enums.PXLAlbumSortType
+import com.pixlee.pixleesdk.data.PXLProduct
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
-import com.pixlee.pixleesdk.network.NetworkModule
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
@@ -37,14 +23,20 @@ import kotlinx.android.synthetic.main.fragment_product_view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.Assert
 
 /**
- * This shows how you can load photos of Pixlee using PXLAlbum.java
+ * To show you snapshot response data, this uses a mocked server and the content of the photos and the products in this demo is from a json file stored in this project.
  */
 class ProductViewFragment : BaseFragment() {
+    val mockAlbumUtil by lazy {
+        MockAlbumUtil()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mockAlbumUtil.release()
+    }
+
     override fun getTitleResource(): Int {
         return R.string.title_product_view
     }
@@ -221,15 +213,6 @@ class ProductViewFragment : BaseFragment() {
                     soundMuted = true)
             ViewerActivity.launch(context!!, info)
         }
-    }
-
-    val mockAlbumUtil by lazy {
-        MockAlbumUtil()
-    }
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mockAlbumUtil.release()
-
     }
 
     companion object {
