@@ -74,7 +74,7 @@ public class PXLProduct implements Parcelable {
             isWithinSalesDateRange = salesStartDate.getTime() <= today.getTime();
         } else if (salesStartDate == null && salesEndDate != null) {
             isWithinSalesDateRange = salesEndDate.getTime() >= today.getTime();
-        } else if (salesEndDate != null && salesEndDate != null) {
+        } else if (salesStartDate != null && salesEndDate != null) {
             isWithinSalesDateRange = salesStartDate.getTime() <= today.getTime() && salesEndDate.getTime() >= today.getTime();
         }
 
