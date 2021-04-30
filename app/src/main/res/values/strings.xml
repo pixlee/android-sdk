@@ -15,6 +15,7 @@
     <string name="title_pxlphoto_activity">PXLPhoto in Activity</string>
     <string name="title_pxlphotoview">PXLPhotoView</string>
     <string name="title_pxlphotoview_in_recyclerview">PXLPhotoView in RecyclerView</string>
+    <string name="title_product_view">Product View</string>
 
     <string name="title_widgets">Widgets</string>
     <string name="title_photo_on_list">PXLPhoto on RecyclerView</string>
@@ -22,6 +23,7 @@
     <string name="index_java_apis">How to use Java APIs</string>
     <string name="index_ktx_apis">How to use Ktx.coroutines APIs</string>
     <string name="index_components">How to use UI components</string>
+    <string name="index_ui_options">UI Options</string>
 
     <!-- Album -->
     <string name="album_loading_ing">Album loading..</string>

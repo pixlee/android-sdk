@@ -13,6 +13,7 @@ import com.pixlee.pixleeandroidsdk.ui.analytics.KtxAnalyticsFragment
 import com.pixlee.pixleeandroidsdk.ui.gallery.GalleryFragment
 import com.pixlee.pixleeandroidsdk.ui.gallery.KtxGalleryGridFragment
 import com.pixlee.pixleeandroidsdk.ui.gallery.KtxGalleryListFragment
+import com.pixlee.pixleeandroidsdk.ui.uioptions.ProductViewFragment
 import com.pixlee.pixleeandroidsdk.ui.uploader.ImageUploaderFragment
 import kotlinx.android.synthetic.main.fragment_index.*
 
@@ -52,6 +53,10 @@ class IndexFragment : BaseFragment() {
 
         btKtxAnalytics.setOnClickListener {
             addFragmentToActivity(KtxAnalyticsFragment())
+        }
+
+        btnProductView.setOnClickListener {
+            addFragmentToActivity(ProductViewFragment())
         }
     }
 
