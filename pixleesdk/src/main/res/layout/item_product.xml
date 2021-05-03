@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@+id/tvMain"
-            android:layout_width="200dp"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:paddingTop="5dp"
             android:paddingLeft="@dimen/product_center"
@@ -46,7 +46,7 @@
             />
         <TextView
             android:id="@+id/tvSub"
-            android:layout_width="200dp"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/product_center"
             android:maxLines="2"
@@ -64,8 +64,9 @@
 
         <TextView
             android:id="@+id/tvPrice"
-            android:layout_width="match_parent"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
+            android:includeFontPadding="false"
             tools:text="100"
             tools:textSize="30sp"
             android:paddingTop="5dp"
