@@ -310,8 +310,10 @@ fun SpannableString.applyDisabledTextStyle(discountLayout: ProductViewHolder.Dis
         val fontSize = (TypedValue.applyDimension(it.sizeUnit, it.size, metrics) * disabledTextSizeRatio).toInt()
         setSpan(AbsoluteSizeSpan(fontSize), startIndex, endIndex, 0) // font size
         setSpan(ForegroundColorSpan(lighten(it.color, lightenFriction)), startIndex, endIndex, 0) // font color
-        setSpan(StrikethroughSpan(), startIndex, endIndex, 0) // font size
-
+        if (discountLayout == null ||
+                (discountLayout == ProductViewHolder.DiscountLayout.WITH_DISCOUNT_LABEL || discountLayout == ProductViewHolder.DiscountLayout.CROSS_THROUGH) ) {
+            setSpan(StrikethroughSpan(), startIndex, endIndex, 0) // font size
+        }
     }
 }
 
