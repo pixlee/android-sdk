@@ -13,8 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp">
+
+<!--        android:name=".MainActivity"-->
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.widgets.HotspotsActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -24,6 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.widgets.ViewerActivity" android:screenOrientation="portrait"/>
+<!--        <activity android:name=".ui.widgets.HotspotsActivity" android:screenOrientation="portrait"/>-->
     </application>
 
 </manifest>

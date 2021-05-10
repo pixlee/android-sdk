@@ -61,7 +61,8 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
     var bookmarkMap: HashMap<String, Boolean>? = null
     var onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null
     var onProductClicked: ((pxlProduct: PXLProduct) -> Unit)? = null
-
+    var isMutted: Boolean = false
+    var useHotspots: Boolean = false
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initView(context)
     }
@@ -89,12 +90,14 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
      * @param onBookmarkClicked {productId: String, isBookmarkChecked: Boolean -> ... }
      */
     fun setContent(photoInfo: PhotoWithVideoInfo,
+                   useHotspots: Boolean = false,
                    headerConfiguration: Configuration = Configuration(),
                    configuration: ProductViewHolder.Configuration = ProductViewHolder.Configuration(),
                    bookmarkMap: HashMap<String, Boolean>? = null,
                    onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null,
                    onProductClicked: ((pxlProduct: PXLProduct) -> Unit)? = null): PXLPhotoProductView {
         this.photoInfo = photoInfo
+        this.useHotspots = useHotspots
         this.bookmarkMap = bookmarkMap
         this.onBookmarkClicked = onBookmarkClicked
         this.onProductClicked = onProductClicked
@@ -175,8 +178,6 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
             }
         }
     }
-
-    var isMutted: Boolean = false
 
     /**
      * mute the sound

@@ -15,6 +15,7 @@ import com.pixlee.pixleeandroidsdk.ui.gallery.KtxGalleryGridFragment
 import com.pixlee.pixleeandroidsdk.ui.gallery.KtxGalleryListFragment
 import com.pixlee.pixleeandroidsdk.ui.uioptions.ProductViewFragment
 import com.pixlee.pixleeandroidsdk.ui.uploader.ImageUploaderFragment
+import com.pixlee.pixleeandroidsdk.ui.widgets.HotspotsActivity
 import kotlinx.android.synthetic.main.fragment_index.*
 
 /**
@@ -57,6 +58,10 @@ class IndexFragment : BaseFragment() {
 
         btnProductView.setOnClickListener {
             addFragmentToActivity(ProductViewFragment())
+        }
+
+        btnHotspots.setOnClickListener {
+            context?.let { HotspotsActivity.launch(it) }
         }
     }
 
