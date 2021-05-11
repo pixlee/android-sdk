@@ -199,7 +199,7 @@ public class PXLPhoto implements Parcelable {
     public CDNPhotos cdnPhotos;
 
     @Json(name = "bounding_box_products")
-    public PXLBoundingBoxProduct boundingBoxProducts;
+    public List<PXLBoundingBoxProduct> boundingBoxProducts;
 
     @Override
     public String toString() {
@@ -355,7 +355,7 @@ public class PXLPhoto implements Parcelable {
         dest.writeTypedList(this.products);
         dest.writeString(this.uploaderAdditionalFields!=null ? this.uploaderAdditionalFields.toString() : "{}");
         dest.writeParcelable(this.cdnPhotos, flags);
-        dest.writeParcelable(this.boundingBoxProducts, flags);
+        dest.writeTypedList(this.boundingBoxProducts);
     }
 
 
@@ -412,7 +412,7 @@ public class PXLPhoto implements Parcelable {
             e.printStackTrace();
         }
         this.cdnPhotos = in.readParcelable(CDNPhotos.class.getClassLoader());
-        this.boundingBoxProducts = in.readParcelable(PXLBoundingBoxProduct.class.getClassLoader());
+        this.boundingBoxProducts = in.createTypedArrayList(PXLBoundingBoxProduct.CREATOR);
     }
 
     public static final Creator<PXLPhoto> CREATOR = new Creator<PXLPhoto>() {
