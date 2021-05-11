@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
+
 /**
  * Created by sungjun on 9/11/20.
  */
@@ -40,6 +41,7 @@ class HotspotsActivity : AppCompatActivity() {
         super.onDestroy()
         mockAlbumUtil.release()
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_viewer)
@@ -57,12 +59,12 @@ class HotspotsActivity : AppCompatActivity() {
             }
 
             val result = mockAlbumUtil.album.getFirstPage()
-            val item = PhotoWithVideoInfo(pxlPhoto = result.photos.first(),
+            val item = PhotoWithVideoInfo(pxlPhoto = result.photos.last(),
                     configuration = PXLPhotoView.Configuration().apply {
                         // Customize image size, not a video
                         pxlPhotoSize = PXLPhotoSize.ORIGINAL
                         // Cystomize scale type
-                        imageScaleType = ImageScaleType.CENTER_CROP
+                        imageScaleType = ImageScaleType.FIT_CENTER
                     },
                     isLoopingVideo = true,
                     soundMuted = true)

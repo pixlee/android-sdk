@@ -12,27 +12,27 @@ import com.squareup.moshi.Json;
  */
 public class PXLBoundingBoxProduct implements Parcelable {
     @Json(name = "id")
-    String id;
+    public String id;
 
     @Json(name = "x")
     @NullableInt
-    int x;
+    public int x;
 
     @Json(name = "y")
     @NullableInt
-    int y;
+    public int y;
 
     @Json(name = "width")
     @NullableInt
-    int width;
+    public int width;
 
     @Json(name = "height")
     @NullableInt
-    int height;
+    public int height;
 
     @Json(name = "aspect_ratio")
     @NullableDouble
-    double aspectRatio;
+    public double aspectRatio;
 
     protected PXLBoundingBoxProduct(Parcel in) {
         id = in.readString();

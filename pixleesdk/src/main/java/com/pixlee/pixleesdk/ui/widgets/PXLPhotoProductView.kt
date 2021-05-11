@@ -1,6 +1,8 @@
 package com.pixlee.pixleesdk.ui.widgets
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
@@ -8,26 +10,39 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.core.view.ViewCompat
+import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.Options
+import com.bumptech.glide.load.engine.Resource
+import com.bumptech.glide.load.resource.SimpleResource
+import com.bumptech.glide.load.resource.transcode.ResourceTranscoder
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.client.PXLAnalytics
 import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.data.PXLProduct
+import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
+import com.pixlee.pixleesdk.util.HotspotsReader
 import com.pixlee.pixleesdk.util.px
 import com.pixlee.pixleesdk.util.setCompatIconWithColor
 import kotlinx.android.synthetic.main.widget_viewer.view.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
+
 
 /**
  * this view is supposed to be used in a fullscreen.
@@ -56,6 +71,8 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
             var onCheckedListener: ((isChecked: Boolean) -> Unit)? = null
     )
 
+    protected val scope = CoroutineScope(Job() + Dispatchers.Main)
+
     private var adapter: ProductAdapter? = null
     private var photoInfo: PhotoWithVideoInfo? = null
     var bookmarkMap: HashMap<String, Boolean>? = null
@@ -63,6 +80,13 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
     var onProductClicked: ((pxlProduct: PXLProduct) -> Unit)? = null
     var isMutted: Boolean = false
     var useHotspots: Boolean = false
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        hotspotsJob?.cancel()
+        scope.cancel()
+    }
+
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initView(context)
     }
@@ -109,6 +133,8 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         pxlPhotoView.setContent(photoInfo.pxlPhoto, photoInfo.configuration.imageScaleType)
         pxlPhotoView.setLooping(photoInfo.isLoopingVideo)
         pxlPhotoView.changeVolume(if (photoInfo.soundMuted) 0f else 1f)
+
+        addHotspotds()
 
         fireAnalyticsOpenLightbox()
         return this
@@ -176,6 +202,106 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                 list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 list.adapter = adapter
             }
+        }
+    }
+
+    var hotspotsJob: Job? = null
+    private fun addHotspotds() {
+        hotspotsJob?.cancel()
+        hotspotsJob = scope.launch {
+            withContext(Dispatchers.IO) {
+                delay(1000)
+            }
+
+            photoInfo?.pxlPhoto?.boundingBoxProducts?.let { boundingBoxProducts ->
+                context?.let { context ->
+
+                    Glide.with(getContext().applicationContext)
+                            .asBitmap()
+                            .load(photoInfo?.pxlPhoto?.getUrlForSize(PXLPhotoSize.MEDIUM).toString())
+                            .into(object:SimpleTarget<Bitmap>() {
+                                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                    photoInfo?.configuration?.imageScaleType?.let{ imageScaleType ->
+                                        val reader = HotspotsReader(imageScaleType,
+                                                pxlPhotoView.measuredWidth, pxlPhotoView.measuredHeight,
+                                                resource.width, resource.height
+                                        )
+
+                                        boundingBoxProducts.forEach {
+                                            val imageView = ImageView(context).apply {
+                                                layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT).apply {
+                                                    //addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
+                                                }
+                                                setImageResource(R.drawable.outline_local_offer_black_24)
+                                                background = GradientDrawable().apply {
+                                                    shape = android.graphics.drawable.GradientDrawable.OVAL
+                                                    setColor(Color.WHITE)
+                                                }
+                                                val padding = 10.px.toInt()
+                                                setPadding(padding, padding, padding, padding)
+                                                ViewCompat.setElevation(this, 20f)
+                                                val position = reader.getHotspotsPosition(it)
+                                                x = position.x
+                                                y = position.y
+
+                                                apply {
+                                                    this.doOnPreDraw {
+                                                        Log.e("PXLPPV", "hotspots doOnPreDraw w: ${width}, h: ${height}")
+                                                        pivotX = width.toFloat() / 2f
+                                                        pivotY = height.toFloat() / 2f
+                                                    }
+                                                }
+                                            }
+
+
+                                            v_body.addView(imageView)
+                                        }
+
+                                    }
+
+                                    Log.e("PXLPPV", "hotspots mainview w: ${pxlPhotoView.measuredWidth}, h: ${pxlPhotoView.measuredHeight}")
+                                    Log.e("PXLPPV", "hotspots w: ${resource.width}, h: ${resource.height}")
+                                }
+                            });
+
+                    boundingBoxProducts.forEach {
+//                        val imageView = ImageView(context).apply {
+//                            layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT).apply {
+//                                //addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
+//                            }
+//                            setImageResource(R.drawable.outline_local_offer_black_24)
+//                            background = GradientDrawable().apply {
+//                                shape = android.graphics.drawable.GradientDrawable.OVAL
+//                                setColor(Color.WHITE)
+//                            }
+//                            val padding = 10.px.toInt()
+//                            setPadding(padding, padding, padding, padding)
+//                            ViewCompat.setElevation(this, 20f)
+//                            x = 200f
+//                            y = 200f
+//                        }
+
+                        //v_body.addView(imageView)
+                    }
+
+
+
+                }
+
+            }
+
+        }
+    }
+
+    class Size(val width: Int, val height: Int)
+    class OptionsSizeResourceTranscoder : ResourceTranscoder<BitmapFactory.Options, Size> {
+        val id: String
+            get() = javaClass.name
+
+        override fun transcode(toTranscode: Resource<BitmapFactory.Options>, options: Options): Resource<Size>? {
+            val options: BitmapFactory.Options = toTranscode.get()
+            val size = Size(options.outWidth, options.outHeight)
+            return SimpleResource<Size>(size)
         }
     }
 
