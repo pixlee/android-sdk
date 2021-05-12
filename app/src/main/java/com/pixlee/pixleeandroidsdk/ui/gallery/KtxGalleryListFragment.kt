@@ -200,7 +200,6 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
         // you can customize color, size if you need
         pxlPhotoRecyclerView.initiate(infiniteScroll = false,
                 showingDebugView = false,
-                alphaForStoppedVideos = 0.5f,
                 onButtonClickedListener = { view, photoWithImageScaleType ->
                     context?.also { ctx ->
                         // you can add your business logic here

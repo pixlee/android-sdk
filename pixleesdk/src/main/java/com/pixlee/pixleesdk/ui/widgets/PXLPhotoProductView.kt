@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.*
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -117,14 +118,14 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
      * @param onBookmarkClicked {productId: String, isBookmarkChecked: Boolean -> ... }
      */
     fun setContent(photoInfo: PhotoWithVideoInfo,
-                   useHotspots: Boolean = false,
+                   showHotspots: Boolean = false,
                    headerConfiguration: Configuration = Configuration(),
                    configuration: ProductViewHolder.Configuration = ProductViewHolder.Configuration(),
                    bookmarkMap: HashMap<String, Boolean>? = null,
                    onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null,
                    onProductClicked: ((pxlProduct: PXLProduct) -> Unit)? = null): PXLPhotoProductView {
         this.photoInfo = photoInfo
-        this.useHotspots = useHotspots
+        this.useHotspots = showHotspots
         this.bookmarkMap = bookmarkMap
         this.onBookmarkClicked = onBookmarkClicked
         this.onProductClicked = onProductClicked
@@ -208,15 +209,28 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         }
     }
 
-    var hotspotsJob: Job? = null
+    private var hiddenHotspots = false
+    private var hotspotsJob: Job? = null
     private fun addHotspots() {
         // video does not have hotspots.
-        if(!useHotspots || photoInfo?.pxlPhoto?.isVideo == true) return
+        if (!useHotspots || photoInfo?.pxlPhoto?.isVideo == true) return
 
         hotspotsJob?.cancel()
         hotspotsJob = scope.launch {
             withContext(Dispatchers.IO) {
+                // delay below for other elements like products, and the main content to be loaded with the maximum resources
                 delay(1000)
+            }
+
+            v_hotspots.setOnClickListener {
+                hiddenHotspots = !hiddenHotspots
+                val visibility = if (hiddenHotspots) GONE else VISIBLE
+                val childCount = v_hotspots.childCount
+                if (childCount > 0) {
+                    for (i in 0 until childCount) {
+                        v_hotspots.getChildAt(i).visibility = visibility
+                    }
+                }
             }
 
             photoInfo?.pxlPhoto?.products?.forEachIndexed { index, pxlProduct ->
@@ -224,26 +238,23 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
             }
             photoInfo?.pxlPhoto?.boundingBoxProducts?.let { boundingBoxProducts ->
                 context?.let { context ->
-
                     Glide.with(getContext().applicationContext)
                             .asBitmap()
                             .load(photoInfo?.pxlPhoto?.getUrlForSize(PXLPhotoSize.ORIGINAL).toString())
-                            .into(object:SimpleTarget<Bitmap>() {
+                            .into(object : SimpleTarget<Bitmap>() {
                                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                                    Log.e("PXLPPV", "hotspots onResourceReady list: ${recyclerView}")
-                                    if(recyclerView == null) return
+                                    if (recyclerView == null) return
 
-                                    photoInfo?.configuration?.imageScaleType?.let{ imageScaleType ->
+                                    photoInfo?.configuration?.imageScaleType?.let { imageScaleType ->
                                         val reader = HotspotsReader(imageScaleType,
                                                 pxlPhotoView.measuredWidth, pxlPhotoView.measuredHeight,
                                                 resource.width, resource.height
                                         )
 
+                                        // draw all hotspots
                                         boundingBoxProducts.forEach { boundingBoxProduct ->
                                             val imageView = ImageView(context).apply {
-                                                layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT).apply {
-                                                    //addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
-                                                }
+                                                layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
                                                 setImageResource(R.drawable.outline_local_offer_black_24)
                                                 background = GradientDrawable().apply {
                                                     shape = android.graphics.drawable.GradientDrawable.OVAL
@@ -252,53 +263,29 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                                                 val padding = 10.px.toInt()
                                                 setPadding(padding, padding, padding, padding)
                                                 ViewCompat.setElevation(this, 20f)
-
                                                 val position = reader.getHotspotsPosition(boundingBoxProduct)
                                                 apply {
-                                                    this.doOnPreDraw {
+                                                    doOnPreDraw {
                                                         x = position.x - (width.toFloat() / 2f)
                                                         y = position.y - (height.toFloat() / 2f)
                                                     }
                                                 }
                                             }
+
+                                            v_hotspots.addView(imageView)
+
+                                            // on hotspot clicked
                                             imageView.setOnClickListener {
                                                 hotspotMap[boundingBoxProduct.productId]?.let { position ->
-                                                    Log.e("PXLPPV", "hotspots list: ${recyclerView}, position: ${position}")
                                                     recyclerView.smoothScrollToPosition(position)
                                                 }
                                             }
-                                            v_hotspots.addView(imageView)
                                         }
 
                                     }
-
-                                    Log.e("PXLPPV", "hotspots mainview w: ${pxlPhotoView.measuredWidth}, h: ${pxlPhotoView.measuredHeight}")
-                                    Log.e("PXLPPV", "hotspots w: ${resource.width}, h: ${resource.height}")
                                 }
-                            });
-
-                    boundingBoxProducts.forEach {
-//                        val imageView = ImageView(context).apply {
-//                            layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT).apply {
-//                                //addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
-//                            }
-//                            setImageResource(R.drawable.outline_local_offer_black_24)
-//                            background = GradientDrawable().apply {
-//                                shape = android.graphics.drawable.GradientDrawable.OVAL
-//                                setColor(Color.WHITE)
-//                            }
-//                            val padding = 10.px.toInt()
-//                            setPadding(padding, padding, padding, padding)
-//                            ViewCompat.setElevation(this, 20f)
-//                            x = 200f
-//                            y = 200f
-//                        }
-
-                        //v_body.addView(imageView)
-                    }
-
-
-
+                            })
+                    Log.e("PXLPPV", "start loading image")
                 }
 
             }

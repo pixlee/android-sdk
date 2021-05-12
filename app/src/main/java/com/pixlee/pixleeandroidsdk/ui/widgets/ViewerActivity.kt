@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,13 +16,11 @@ import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
-import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
 import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.activity_viewer.*
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -65,7 +62,7 @@ class ViewerActivity : AppCompatActivity() {
         // set your ui settings
         pxlPhotoProductView
                 .setContent(photoInfo = item,
-                        useHotspots = true,
+                        showHotspots = true,
                         headerConfiguration = PXLPhotoProductView.Configuration().apply {
                             backButton = PXLPhotoProductView.CircleButton().apply {
                                 icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18

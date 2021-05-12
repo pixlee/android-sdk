@@ -77,7 +77,7 @@ class HotspotsActivity : AppCompatActivity() {
         // set your ui settings
         pxlPhotoProductView
                 .setContent(photoInfo = item,
-                        useHotspots = true,
+                        showHotspots = true,
                         headerConfiguration = PXLPhotoProductView.Configuration().apply {
                             backButton = PXLPhotoProductView.CircleButton().apply {
                                 icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18

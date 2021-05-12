@@ -14,7 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp">
 
-<!--        android:name=".MainActivity"-->
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -26,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.widgets.ViewerActivity" android:screenOrientation="portrait"/>
-<!--        <activity android:name=".ui.widgets.HotspotsActivity" android:screenOrientation="portrait"/>-->
+        <activity android:name=".ui.widgets.HotspotsActivity" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
