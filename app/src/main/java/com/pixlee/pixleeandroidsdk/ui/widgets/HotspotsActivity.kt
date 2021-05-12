@@ -59,7 +59,7 @@ class HotspotsActivity : AppCompatActivity() {
             }
 
             val result = mockAlbumUtil.album.getFirstPage()
-            val item = PhotoWithVideoInfo(pxlPhoto = result.photos.filter { it.albumPhotoId=="381042897" }.first(),
+            val item = PhotoWithVideoInfo(pxlPhoto = result.photos.filter { !it.isVideo }[4],
                     configuration = PXLPhotoView.Configuration().apply {
                         // Customize image size, not a video
                         pxlPhotoSize = PXLPhotoSize.ORIGINAL

@@ -105,6 +105,9 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
+    // HashMap <productId: the position of product list>
+    val hotspotMap = HashMap<String, Int>()
+
     /**
      * Start the UI
      * @param photoInfo: PhotoWithVideoInfo
@@ -134,7 +137,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         pxlPhotoView.setLooping(photoInfo.isLoopingVideo)
         pxlPhotoView.changeVolume(if (photoInfo.soundMuted) 0f else 1f)
 
-        addHotspotds()
+        addHotspots()
 
         fireAnalyticsOpenLightbox()
         return this
@@ -199,14 +202,14 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
 
 
 
-                list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                list.adapter = adapter
+                recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                recyclerView.adapter = adapter
             }
         }
     }
 
     var hotspotsJob: Job? = null
-    private fun addHotspotds() {
+    private fun addHotspots() {
         // video does not have hotspots.
         if(!useHotspots || photoInfo?.pxlPhoto?.isVideo == true) return
 
@@ -216,6 +219,9 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                 delay(1000)
             }
 
+            photoInfo?.pxlPhoto?.products?.forEachIndexed { index, pxlProduct ->
+                hotspotMap[pxlProduct.id] = index
+            }
             photoInfo?.pxlPhoto?.boundingBoxProducts?.let { boundingBoxProducts ->
                 context?.let { context ->
 
@@ -224,13 +230,16 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                             .load(photoInfo?.pxlPhoto?.getUrlForSize(PXLPhotoSize.ORIGINAL).toString())
                             .into(object:SimpleTarget<Bitmap>() {
                                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                    Log.e("PXLPPV", "hotspots onResourceReady list: ${recyclerView}")
+                                    if(recyclerView == null) return
+
                                     photoInfo?.configuration?.imageScaleType?.let{ imageScaleType ->
                                         val reader = HotspotsReader(imageScaleType,
                                                 pxlPhotoView.measuredWidth, pxlPhotoView.measuredHeight,
                                                 resource.width, resource.height
                                         )
 
-                                        boundingBoxProducts.forEach {
+                                        boundingBoxProducts.forEach { boundingBoxProduct ->
                                             val imageView = ImageView(context).apply {
                                                 layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT).apply {
                                                     //addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
@@ -244,7 +253,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                                                 setPadding(padding, padding, padding, padding)
                                                 ViewCompat.setElevation(this, 20f)
 
-                                                val position = reader.getHotspotsPosition(it)
+                                                val position = reader.getHotspotsPosition(boundingBoxProduct)
                                                 apply {
                                                     this.doOnPreDraw {
                                                         x = position.x - (width.toFloat() / 2f)
@@ -252,7 +261,13 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                                                     }
                                                 }
                                             }
-                                            v_body.addView(imageView)
+                                            imageView.setOnClickListener {
+                                                hotspotMap[boundingBoxProduct.productId]?.let { position ->
+                                                    Log.e("PXLPPV", "hotspots list: ${recyclerView}, position: ${position}")
+                                                    recyclerView.smoothScrollToPosition(position)
+                                                }
+                                            }
+                                            v_hotspots.addView(imageView)
                                         }
 
                                     }
