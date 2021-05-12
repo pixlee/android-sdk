@@ -259,7 +259,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                             .load(originalImageUrl)
                             .into(object : SimpleTarget<Bitmap>() {
                                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                                    if (recyclerView == null) return
+                                    if (v_hotspots == null) return
 
                                     photoInfo?.configuration?.imageScaleType?.let { imageScaleType ->
                                         val reader = HotspotsReader(imageScaleType,
@@ -292,6 +292,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
 
                                             // on hotspot clicked
                                             imageView.setOnClickListener {
+                                                if (recyclerView == null) return@setOnClickListener
                                                 hotspotMap[boundingBoxProduct.productId]?.let { position ->
                                                     recyclerView.smoothScrollToPosition(position)
                                                 }
