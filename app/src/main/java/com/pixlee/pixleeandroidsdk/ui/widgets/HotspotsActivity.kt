@@ -55,16 +55,17 @@ class HotspotsActivity : AppCompatActivity() {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
                 mockAlbumUtil.setupMockedWebServer()
-                mockAlbumUtil.intMockServer(this@HotspotsActivity, "pxl_product_with_hotspots.json")
+                mockAlbumUtil.intMockServer(this@HotspotsActivity, "pxl_product_with_hotspots_and_video.json")
             }
 
             val result = mockAlbumUtil.album.getFirstPage()
-            val item = PhotoWithVideoInfo(pxlPhoto = result.photos.last(),
+            val item = PhotoWithVideoInfo(pxlPhoto = result.photos.filter { it.albumPhotoId=="381042897" }.first(),
                     configuration = PXLPhotoView.Configuration().apply {
                         // Customize image size, not a video
                         pxlPhotoSize = PXLPhotoSize.ORIGINAL
                         // Cystomize scale type
-                        imageScaleType = ImageScaleType.FIT_CENTER
+                        imageScaleType = ImageScaleType.CENTER_CROP
+//                        imageScaleType = ImageScaleType.FIT_CENTER
                     },
                     isLoopingVideo = true,
                     soundMuted = true)
@@ -76,6 +77,7 @@ class HotspotsActivity : AppCompatActivity() {
         // set your ui settings
         pxlPhotoProductView
                 .setContent(photoInfo = item,
+                        useHotspots = true,
                         headerConfiguration = PXLPhotoProductView.Configuration().apply {
                             backButton = PXLPhotoProductView.CircleButton().apply {
                                 icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18

@@ -317,7 +317,7 @@
       unread_count: 0,
       is_starred: false,
       approved: true,
-      updated_at: 1620703076672,
+      updated_at: 1620783295879,
       album_photo_id: 381305357,
       album_id: 12598895,
       action_link_title: null,
@@ -354,6 +354,14 @@
           height: 473,
           aspect_ratio: 1,
           product_id: 20097267
+        },
+        {
+          x: 15,
+          y: 12,
+          width: 1065,
+          height: 1338,
+          aspect_ratio: 1,
+          product_id: 20124495
         }
       ],
       approved_by_username: null,
@@ -452,7 +460,41 @@
             reviews: [ ]
           },
           product_region_links: [ ],
-          product_tagged_at: 1620703076465
+          product_tagged_at: 1620711416943
+        },
+        {
+          product_album_photo_id: 496234137,
+          image: "https://pelemalls3-b20a.kxcdn.com/product/pmpl_28120_1.jpg",
+          photo_id: 332969279,
+          link_valid: null,
+          extra_urls: { },
+          link: "https://www.pelemall.com/products/29448/navy-blue-mascara-true-color-wide-awake-mascara-navy-7-ml-8681298933953/index.html",
+          description: "",
+          average_rating: null,
+          image_thumb_square: "https://static.pxlecdn.com/products/20124495/primary/thumb_square/a99051ae6b186d59cfb19dcb8a945495.jpg",
+          title: "changed title- 1594002335329",
+          image_thumb: "https://static.pxlecdn.com/products/20124495/primary/thumb/a99051ae6b186d59cfb19dcb8a945495.jpg",
+          price: 55,
+          total_reviews: null,
+          custom_cta_photo: "",
+          album_id: 20447235,
+          currency: "USD",
+          id: 20124495,
+          stock: null,
+          sku: "8681298933953",
+          category: null,
+          link_text: "",
+          sales_start_date: null,
+          sales_price: null,
+          sales_end_date: null,
+          datc_override: null,
+          reviews_info: {
+            num_reviews: 0,
+            average_rating: 0,
+            reviews: [ ]
+          },
+          product_region_links: [ ],
+          product_tagged_at: 1620783295755
         }
       ],
       pixlee_cdn_photos: {

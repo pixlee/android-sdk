@@ -17,6 +17,7 @@ import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
+import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
 import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.util.PXLViewUtil
@@ -60,9 +61,11 @@ class ViewerActivity : AppCompatActivity() {
     }
 
     fun init(item: PhotoWithVideoInfo) {
+        //item.configuration.imageScaleType = ImageScaleType.FIT_CENTER
         // set your ui settings
         pxlPhotoProductView
                 .setContent(photoInfo = item,
+                        useHotspots = true,
                         headerConfiguration = PXLPhotoProductView.Configuration().apply {
                             backButton = PXLPhotoProductView.CircleButton().apply {
                                 icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18

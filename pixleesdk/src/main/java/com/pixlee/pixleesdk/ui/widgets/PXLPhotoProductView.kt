@@ -207,6 +207,9 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
 
     var hotspotsJob: Job? = null
     private fun addHotspotds() {
+        // video does not have hotspots.
+        if(!useHotspots || photoInfo?.pxlPhoto?.isVideo == true) return
+
         hotspotsJob?.cancel()
         hotspotsJob = scope.launch {
             withContext(Dispatchers.IO) {
@@ -218,7 +221,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
 
                     Glide.with(getContext().applicationContext)
                             .asBitmap()
-                            .load(photoInfo?.pxlPhoto?.getUrlForSize(PXLPhotoSize.MEDIUM).toString())
+                            .load(photoInfo?.pxlPhoto?.getUrlForSize(PXLPhotoSize.ORIGINAL).toString())
                             .into(object:SimpleTarget<Bitmap>() {
                                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                     photoInfo?.configuration?.imageScaleType?.let{ imageScaleType ->
@@ -240,20 +243,15 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                                                 val padding = 10.px.toInt()
                                                 setPadding(padding, padding, padding, padding)
                                                 ViewCompat.setElevation(this, 20f)
-                                                val position = reader.getHotspotsPosition(it)
-                                                x = position.x
-                                                y = position.y
 
+                                                val position = reader.getHotspotsPosition(it)
                                                 apply {
                                                     this.doOnPreDraw {
-                                                        Log.e("PXLPPV", "hotspots doOnPreDraw w: ${width}, h: ${height}")
-                                                        pivotX = width.toFloat() / 2f
-                                                        pivotY = height.toFloat() / 2f
+                                                        x = position.x - (width.toFloat() / 2f)
+                                                        y = position.y - (height.toFloat() / 2f)
                                                     }
                                                 }
                                             }
-
-
                                             v_body.addView(imageView)
                                         }
 
