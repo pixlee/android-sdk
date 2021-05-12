@@ -64,8 +64,7 @@ class HotspotsActivity : AppCompatActivity() {
                         // Customize image size, not a video
                         pxlPhotoSize = PXLPhotoSize.ORIGINAL
                         // Cystomize scale type
-                        imageScaleType = ImageScaleType.CENTER_CROP
-//                        imageScaleType = ImageScaleType.FIT_CENTER
+                        imageScaleType = ImageScaleType.FIT_CENTER
                     },
                     isLoopingVideo = true,
                     soundMuted = true)
