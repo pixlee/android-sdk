@@ -222,6 +222,14 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                 delay(1000)
             }
 
+            // since this is run after the delay run on a background thread, v_hotspots could be null. so null check is essential.
+            if (v_hotspots == null) return@launch
+
+            if (v_hotspots.childCount > 0) {
+                // remove all child views if this is not the first trial
+                v_hotspots.removeAllViews()
+            }
+
             v_hotspots.setOnClickListener {
                 hiddenHotspots = !hiddenHotspots
                 val visibility = if (hiddenHotspots) GONE else VISIBLE
