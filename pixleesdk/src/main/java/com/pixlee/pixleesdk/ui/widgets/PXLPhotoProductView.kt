@@ -243,7 +243,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                        Always read original url to get content's width and height
                        for calculating the positions of hotspots on the screen
                        because bounding_box_products's x, y, with, height are generated
-                       ased on the original content's width height.
+                       ased on the original content's width height from Control Panel.
                      */
                     val originalImageUrl = photoInfo?.pxlPhoto?.getUrlForSize(PXLPhotoSize.ORIGINAL).toString()
                     Glide.with(getContext().applicationContext)
