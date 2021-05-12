@@ -118,7 +118,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
      * @param onBookmarkClicked {productId: String, isBookmarkChecked: Boolean -> ... }
      */
     fun setContent(photoInfo: PhotoWithVideoInfo,
-                   showHotspots: Boolean = false,
+                   showHotspots: Boolean = true,
                    headerConfiguration: Configuration = Configuration(),
                    configuration: ProductViewHolder.Configuration = ProductViewHolder.Configuration(),
                    bookmarkMap: HashMap<String, Boolean>? = null,

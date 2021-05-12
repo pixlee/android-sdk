@@ -47,7 +47,8 @@ override fun onCreate(savedInstanceState: Bundle?) {
         finish()
         return
     }
-    pxlPhotoProductView.loadContent(photoInfo = item,
+    pxlPhotoProductView.setContent(photoInfo = item,
+        showHotspots = true,
         headerConfiguration = PXLPhotoProductView.Configuration().apply {
             backButton = PXLPhotoProductView.CircleButton().apply {
                 icon = com.pixlee.pixleesdk.R.drawable.round_close_black_18
