@@ -238,9 +238,17 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
             }
             photoInfo?.pxlPhoto?.boundingBoxProducts?.let { boundingBoxProducts ->
                 context?.let { context ->
+
+                    /*
+                       Always read original url to get content's width and height
+                       for calculating the positions of hotspots on the screen
+                       because bounding_box_products's x, y, with, height are generated
+                       ased on the original content's width height.
+                     */
+                    val originalImageUrl = photoInfo?.pxlPhoto?.getUrlForSize(PXLPhotoSize.ORIGINAL).toString()
                     Glide.with(getContext().applicationContext)
                             .asBitmap()
-                            .load(photoInfo?.pxlPhoto?.getUrlForSize(PXLPhotoSize.ORIGINAL).toString())
+                            .load(originalImageUrl)
                             .into(object : SimpleTarget<Bitmap>() {
                                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                     if (recyclerView == null) return
