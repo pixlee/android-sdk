@@ -269,34 +269,35 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
 
                                         // draw all hotspots
                                         boundingBoxProducts.forEach { boundingBoxProduct ->
-                                            val imageView = ImageView(context).apply {
-                                                layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
-                                                setImageResource(R.drawable.outline_local_offer_black_24)
-                                                background = GradientDrawable().apply {
-                                                    shape = android.graphics.drawable.GradientDrawable.OVAL
-                                                    setColor(Color.WHITE)
-                                                }
-                                                val padding = 10.px.toInt()
-                                                setPadding(padding, padding, padding, padding)
-                                                ViewCompat.setElevation(this, 20f)
-                                                val position = reader.getHotspotsPosition(boundingBoxProduct)
-                                                apply {
-                                                    doOnPreDraw {
-                                                        x = position.x - (width.toFloat() / 2f)
-                                                        y = position.y - (height.toFloat() / 2f)
+                                            hotspotMap[boundingBoxProduct.productId]?.let { productPosition ->
+                                                val imageView = ImageView(context).apply {
+                                                    layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
+                                                    setImageResource(R.drawable.outline_local_offer_black_24)
+                                                    background = GradientDrawable().apply {
+                                                        shape = android.graphics.drawable.GradientDrawable.OVAL
+                                                        setColor(Color.WHITE)
+                                                    }
+                                                    val padding = 10.px.toInt()
+                                                    setPadding(padding, padding, padding, padding)
+                                                    ViewCompat.setElevation(this, 20f)
+                                                    val position = reader.getHotspotsPosition(boundingBoxProduct)
+                                                    apply {
+                                                        doOnPreDraw {
+                                                            x = position.x - (width.toFloat() / 2f)
+                                                            y = position.y - (height.toFloat() / 2f)
+                                                        }
                                                     }
                                                 }
-                                            }
 
-                                            v_hotspots.addView(imageView)
+                                                v_hotspots.addView(imageView)
 
-                                            // on hotspot clicked
-                                            imageView.setOnClickListener {
-                                                if (recyclerView == null) return@setOnClickListener
-                                                hotspotMap[boundingBoxProduct.productId]?.let { position ->
-                                                    recyclerView.smoothScrollToPosition(position)
+                                                // on hotspot clicked
+                                                imageView.setOnClickListener {
+                                                    if (recyclerView == null) return@setOnClickListener
+                                                    recyclerView.smoothScrollToPosition(productPosition)
                                                 }
                                             }
+
                                         }
 
                                     }
