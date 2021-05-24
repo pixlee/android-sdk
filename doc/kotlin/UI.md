@@ -202,6 +202,15 @@ pxlPhotoProductView.loadContent(...
 )
 ```
 
+#### If you want to show hotspots if available
+```kotlin
+#!kotlin
+pxlPhotoProductView.loadContent(...
+    showHotspots = true,
+    ...
+)
+```
+
 #### If you want to change the bookmark
 ```kotlin
 #!kotlin
