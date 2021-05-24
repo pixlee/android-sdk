@@ -1,33 +1,49 @@
 package com.pixlee.pixleesdk.ui.widgets
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.*
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.core.view.ViewCompat
+import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.Options
+import com.bumptech.glide.load.engine.Resource
+import com.bumptech.glide.load.resource.SimpleResource
+import com.bumptech.glide.load.resource.transcode.ResourceTranscoder
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.client.PXLAnalytics
 import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.data.PXLProduct
+import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
+import com.pixlee.pixleesdk.util.HotspotsReader
 import com.pixlee.pixleesdk.util.px
 import com.pixlee.pixleesdk.util.setCompatIconWithColor
 import kotlinx.android.synthetic.main.widget_viewer.view.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
+
 
 /**
  * this view is supposed to be used in a fullscreen.
@@ -56,11 +72,21 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
             var onCheckedListener: ((isChecked: Boolean) -> Unit)? = null
     )
 
+    protected val scope = CoroutineScope(Job() + Dispatchers.Main)
+
     private var adapter: ProductAdapter? = null
     private var photoInfo: PhotoWithVideoInfo? = null
     var bookmarkMap: HashMap<String, Boolean>? = null
     var onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null
     var onProductClicked: ((pxlProduct: PXLProduct) -> Unit)? = null
+    var isMutted: Boolean = false
+    var useHotspots: Boolean = false
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        hotspotsJob?.cancel()
+        scope.cancel()
+    }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initView(context)
@@ -80,6 +106,9 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
+    // HashMap <productId: the position of product list>
+    val hotspotMap = HashMap<String, Int>()
+
     /**
      * Start the UI
      * @param photoInfo: PhotoWithVideoInfo
@@ -89,12 +118,14 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
      * @param onBookmarkClicked {productId: String, isBookmarkChecked: Boolean -> ... }
      */
     fun setContent(photoInfo: PhotoWithVideoInfo,
+                   showHotspots: Boolean = true,
                    headerConfiguration: Configuration = Configuration(),
                    configuration: ProductViewHolder.Configuration = ProductViewHolder.Configuration(),
                    bookmarkMap: HashMap<String, Boolean>? = null,
                    onBookmarkClicked: ((productId: String, isBookmarkChecked: Boolean) -> Unit)? = null,
                    onProductClicked: ((pxlProduct: PXLProduct) -> Unit)? = null): PXLPhotoProductView {
         this.photoInfo = photoInfo
+        this.useHotspots = showHotspots
         this.bookmarkMap = bookmarkMap
         this.onBookmarkClicked = onBookmarkClicked
         this.onProductClicked = onProductClicked
@@ -106,6 +137,8 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         pxlPhotoView.setContent(photoInfo.pxlPhoto, photoInfo.configuration.imageScaleType)
         pxlPhotoView.setLooping(photoInfo.isLoopingVideo)
         pxlPhotoView.changeVolume(if (photoInfo.soundMuted) 0f else 1f)
+
+        addHotspots()
 
         fireAnalyticsOpenLightbox()
         return this
@@ -170,13 +203,125 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
 
 
 
-                list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                list.adapter = adapter
+                recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                recyclerView.adapter = adapter
             }
         }
     }
 
-    var isMutted: Boolean = false
+    private var hiddenHotspots = false
+    private var hotspotsJob: Job? = null
+    private fun addHotspots() {
+        // video does not have hotspots.
+        if (!useHotspots || photoInfo?.pxlPhoto?.isVideo == true) return
+
+        hotspotsJob?.cancel()
+        hotspotsJob = scope.launch {
+            withContext(Dispatchers.IO) {
+                // delay below for other elements like products, and the main content to be loaded with the maximum resources
+                delay(1000)
+            }
+
+            // since this is run after the delay run on a background thread, v_hotspots could be null. so null check is essential.
+            if (v_hotspots == null) return@launch
+
+            if (v_hotspots.childCount > 0) {
+                // remove all child views if this is not the first trial
+                v_hotspots.removeAllViews()
+            }
+
+            v_hotspots.setOnClickListener {
+                hiddenHotspots = !hiddenHotspots
+                val visibility = if (hiddenHotspots) GONE else VISIBLE
+                val childCount = v_hotspots.childCount
+                if (childCount > 0) {
+                    for (i in 0 until childCount) {
+                        v_hotspots.getChildAt(i).visibility = visibility
+                    }
+                }
+            }
+
+            photoInfo?.pxlPhoto?.products?.forEachIndexed { index, pxlProduct ->
+                hotspotMap[pxlProduct.id] = index
+            }
+            photoInfo?.pxlPhoto?.boundingBoxProducts?.let { boundingBoxProducts ->
+                context?.let { context ->
+
+                    /*
+                       Always read original url to get content's width and height
+                       for calculating the positions of hotspots on the screen
+                       because bounding_box_products's x, y, with, height are generated
+                       ased on the original content's width height from Control Panel.
+                     */
+                    val originalImageUrl = photoInfo?.pxlPhoto?.getUrlForSize(PXLPhotoSize.ORIGINAL).toString()
+                    Glide.with(getContext().applicationContext)
+                            .asBitmap()
+                            .load(originalImageUrl)
+                            .into(object : SimpleTarget<Bitmap>() {
+                                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                    if (v_hotspots == null) return
+
+                                    photoInfo?.configuration?.imageScaleType?.let { imageScaleType ->
+                                        val reader = HotspotsReader(imageScaleType,
+                                                pxlPhotoView.measuredWidth, pxlPhotoView.measuredHeight,
+                                                resource.width, resource.height
+                                        )
+
+                                        // draw all hotspots
+                                        boundingBoxProducts.forEach { boundingBoxProduct ->
+                                            hotspotMap[boundingBoxProduct.productId]?.let { productPosition ->
+                                                val imageView = ImageView(context).apply {
+                                                    layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
+                                                    setImageResource(R.drawable.outline_local_offer_black_24)
+                                                    background = GradientDrawable().apply {
+                                                        shape = android.graphics.drawable.GradientDrawable.OVAL
+                                                        setColor(Color.WHITE)
+                                                    }
+                                                    val padding = 10.px.toInt()
+                                                    setPadding(padding, padding, padding, padding)
+                                                    ViewCompat.setElevation(this, 20f)
+                                                    val position = reader.getHotspotsPosition(boundingBoxProduct)
+                                                    apply {
+                                                        doOnPreDraw {
+                                                            x = position.x - (width.toFloat() / 2f)
+                                                            y = position.y - (height.toFloat() / 2f)
+                                                        }
+                                                    }
+                                                }
+
+                                                v_hotspots.addView(imageView)
+
+                                                // on hotspot clicked
+                                                imageView.setOnClickListener {
+                                                    if (recyclerView == null) return@setOnClickListener
+                                                    recyclerView.smoothScrollToPosition(productPosition)
+                                                }
+                                            }
+
+                                        }
+
+                                    }
+                                }
+                            })
+                    Log.e("PXLPPV", "start loading image")
+                }
+
+            }
+
+        }
+    }
+
+    class Size(val width: Int, val height: Int)
+    class OptionsSizeResourceTranscoder : ResourceTranscoder<BitmapFactory.Options, Size> {
+        val id: String
+            get() = javaClass.name
+
+        override fun transcode(toTranscode: Resource<BitmapFactory.Options>, options: Options): Resource<Size>? {
+            val options: BitmapFactory.Options = toTranscode.get()
+            val size = Size(options.outWidth, options.outHeight)
+            return SimpleResource<Size>(size)
+        }
+    }
 
     /**
      * mute the sound

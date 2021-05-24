@@ -16,6 +16,7 @@
     <string name="title_pxlphotoview">PXLPhotoView</string>
     <string name="title_pxlphotoview_in_recyclerview">PXLPhotoView in RecyclerView</string>
     <string name="title_product_view">Product View</string>
+    <string name="title_hot_spots">Hot spots in PXLPhotoProductView</string>
 
     <string name="title_widgets">Widgets</string>
     <string name="title_photo_on_list">PXLPhoto on RecyclerView</string>

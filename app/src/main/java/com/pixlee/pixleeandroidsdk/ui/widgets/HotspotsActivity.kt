@@ -11,19 +11,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.pixlee.pixleeandroidsdk.R
+import com.pixlee.pixleeandroidsdk.ui.uioptions.MockAlbumUtil
 import com.pixlee.pixleesdk.data.PXLPhoto
-import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
+import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
-import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
-import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
-import com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
-import com.pixlee.pixleesdk.ui.widgets.TextStyle
+import com.pixlee.pixleesdk.ui.widgets.*
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.synthetic.main.activity_viewer.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
+
 
 /**
  * Created by sungjun on 9/11/20.
@@ -31,7 +32,16 @@ import java.util.*
 /**
  * This shows how to play the video and its product list
  */
-class ViewerActivity : AppCompatActivity() {
+class HotspotsActivity : AppCompatActivity() {
+    val mockAlbumUtil by lazy {
+        MockAlbumUtil()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mockAlbumUtil.release()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_viewer)
@@ -42,24 +52,27 @@ class ViewerActivity : AppCompatActivity() {
         // give a padding to the top as much as the status bar's height
         pxlPhotoProductView.addPaddingToHeader(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
 
-        val i = intent
-        if (i == null) {
-            finish()
-            return
-        }
-        val item: PhotoWithVideoInfo? = i.getParcelableExtra("photoWithVideoInfo")
-        // if the photo is null, close this image view
-        if (item == null) {
-            finish()
-            return
-        }
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                mockAlbumUtil.setupMockedWebServer()
+                mockAlbumUtil.intMockServer(this@HotspotsActivity, "pxl_product_with_hotspots_and_video.json")
+            }
 
-        listenAnalyticsForInstrumentTesting()
-        init(item)
+            val result = mockAlbumUtil.album.getFirstPage()
+            val item = PhotoWithVideoInfo(pxlPhoto = result.photos.filter { !it.isVideo }[4],
+                    configuration = PXLPhotoView.Configuration().apply {
+                        // Customize image size, not a video
+                        pxlPhotoSize = PXLPhotoSize.ORIGINAL
+                        // Cystomize scale type
+                        imageScaleType = ImageScaleType.FIT_CENTER
+                    },
+                    isLoopingVideo = true,
+                    soundMuted = true)
+            init(item)
+        }
     }
 
     fun init(item: PhotoWithVideoInfo) {
-        item.configuration.imageScaleType = ImageScaleType.FIT_CENTER
         // set your ui settings
         pxlPhotoProductView
                 .setContent(photoInfo = item,
@@ -72,7 +85,7 @@ class ViewerActivity : AppCompatActivity() {
                                 padding = 10.px.toInt()
                                 onClickListener = {
                                     // back button's click effect
-                                    Toast.makeText(this@ViewerActivity, "Replace this with your codes, currently 'onBackPressed()'", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(this@HotspotsActivity, "Replace this with your codes, currently 'onBackPressed()'", Toast.LENGTH_LONG).show()
                                     onBackPressed()
                                 }
                             }
@@ -83,7 +96,7 @@ class ViewerActivity : AppCompatActivity() {
                                 backgroundColor = Color.WHITE
                                 padding = 10.px.toInt()
                                 onCheckedListener = {
-                                    Toast.makeText(this@ViewerActivity, "is muted: $it", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(this@HotspotsActivity, "is muted: $it", Toast.LENGTH_LONG).show()
                                 }
                             }
                         },
@@ -91,12 +104,12 @@ class ViewerActivity : AppCompatActivity() {
                             circleIcon = ProductViewHolder.CircleIcon().apply {
                                 icon = R.drawable.outline_shopping_bag_black_24
                                 iconColor = Color.DKGRAY
-                                backgroundColor = ContextCompat.getColor(this@ViewerActivity, R.color.yellow_800)
+                                backgroundColor = ContextCompat.getColor(this@HotspotsActivity, R.color.yellow_800)
                                 padding = 5.px.toInt()
                             }
                             mainTextStyle = TextStyle().apply {
                                 color = Color.BLACK
-                                size = 14.px
+                                size = 16.px
                                 sizeUnit = TypedValue.COMPLEX_UNIT_PX
                                 typeface = null
                             }
@@ -173,17 +186,11 @@ class ViewerActivity : AppCompatActivity() {
         return bookmarkMap
     }
 
-    fun listenAnalyticsForInstrumentTesting() {
-        lifecycleScope.launch {
-            AnalyticsObserver.observe("Obsev.ViewerActivity", tvDebugTextViewer)
-        }
-    }
 
     companion object {
         // start video view with a photo data
-        fun launch(context: Context, pxlPhoto: PhotoWithVideoInfo?) {
-            val i = Intent(context, ViewerActivity::class.java)
-            i.putExtra("photoWithVideoInfo", pxlPhoto)
+        fun launch(context: Context) {
+            val i = Intent(context, HotspotsActivity::class.java)
             context.startActivity(i)
         }
     }
