@@ -50,6 +50,11 @@ This SDK makes it easy for Pixlee customers to find and download Pixlee images a
                 // (Optional) if you use multi-region, you can set your region id here to get photos, a photo, and products available in the region.
                 val regionId:Int? = null // replace this value with yours
                 PXLClient.regionId = regionId
+
+                // (Optional) if you need to change timeouts of APIs, you can do it with these.
+                PXLClient.apiTimeoutRead = null // the default is 60 seconds
+                PXLClient.apiTimeoutConnect = null // the default is 60 seconds
+                PXLClient.apiTimeoutWrite = null // the default is 180 seconds
             }
         }
         ```

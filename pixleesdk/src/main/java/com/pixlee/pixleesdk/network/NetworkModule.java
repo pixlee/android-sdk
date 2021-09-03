@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.orhanobut.logger.Logger;
 import com.pixlee.pixleesdk.BuildConfig;
+import com.pixlee.pixleesdk.client.PXLClient;
 import com.pixlee.pixleesdk.data.api.AnalyticsAPI;
 import com.pixlee.pixleesdk.data.api.BasicAPI;
 import com.pixlee.pixleesdk.data.api.KtxAnalyticsAPI;
@@ -83,10 +84,6 @@ public class NetworkModule {
     public static final String url = "https://distillery.pixlee.com/";
     public static final String analyticsUrl = "https://inbound-analytics.pixlee.com/events/";
 
-    private static final Long timeout_read = 60L;
-    private static final Long timeout_connect = 60L;
-    private static final Long timeout_write = 180L;
-
     public static Moshi provideMoshi() {
         return new Moshi.Builder()
                 .add(Wrapped.ADAPTER_FACTORY)
@@ -111,10 +108,17 @@ public class NetworkModule {
 
     public static synchronized OkHttpClient provideOkHttpClient() {
         if (okHttpClient == null) {
+            Long timeoutConnect = 60L;
+            Long timeoutRead = 60L;
+            Long timeoutWrite = 180L;
+            if (PXLClient.Companion.getApiTimeoutConnect() != null) timeoutConnect = PXLClient.Companion.getApiTimeoutConnect();
+            if (PXLClient.Companion.getApiTimeoutRead() != null) timeoutRead = PXLClient.Companion.getApiTimeoutRead();
+            if (PXLClient.Companion.getApiTimeoutWrite() != null) timeoutWrite = PXLClient.Companion.getApiTimeoutWrite();
+
             OkHttpClient.Builder ok = new OkHttpClient.Builder()
-                    .connectTimeout(timeout_connect, TimeUnit.SECONDS)
-                    .readTimeout(timeout_read, TimeUnit.SECONDS)
-                    .writeTimeout(timeout_write, TimeUnit.SECONDS);
+                    .connectTimeout(timeoutConnect, TimeUnit.SECONDS)
+                    .readTimeout(timeoutRead, TimeUnit.SECONDS)
+                    .writeTimeout(timeoutWrite, TimeUnit.SECONDS);
 
             // enable Tls12 on Pre Lollipop
             try {

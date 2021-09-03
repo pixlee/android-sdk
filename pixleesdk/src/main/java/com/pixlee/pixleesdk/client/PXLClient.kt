@@ -22,6 +22,10 @@ class PXLClient(val context: Context) {
         var secretKey: String? = null
         var android_id: String? = null
 
+        var apiTimeoutRead: Long? = null
+        var apiTimeoutConnect: Long? = null
+        var apiTimeoutWrite: Long? = null
+
         // region id differentiates analytics events by region
         var regionId: Int? = null
 

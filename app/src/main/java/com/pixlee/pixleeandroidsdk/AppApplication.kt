@@ -20,5 +20,10 @@ class AppApplication: Application() {
         // (Optional) if you use multi-region, you can set your region id here to get photos, a photo, and products available in the region.
         val regionId:Int? = null
         PXLClient.regionId = regionId
+
+        // (Optional) if you need to change timeouts of APIs, you can do it with these.
+        PXLClient.apiTimeoutRead = null // null will use 60 seconds
+        PXLClient.apiTimeoutConnect = null // null will use 60 seconds
+        PXLClient.apiTimeoutWrite = null // null will use 180 seconds
     }
 }

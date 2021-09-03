@@ -90,9 +90,14 @@ class YourApplication: Application {
         super.onCreate()
         ... // initializing SDK
 
-        // if you have multi-region, give the right region id. If you don't know about your region ids, Please reach out your Customer Success Manager.
-        // if you don't use multi-region, just ignore this line or give it null (ex: PXLClient.regionId = null)
-        PXLClient.regionId = your region id
+        // (Optional) if you use multi-region, you can set your region id here to get photos, a photo, and products available in the region.
+        val regionId:Int? = null // replace this value with yours
+        PXLClient.regionId = regionId
+
+        // (Optional) if you need to change timeouts of APIs, you can do it with these.
+        PXLClient.apiTimeoutRead = null // the default is 60 seconds
+        PXLClient.apiTimeoutConnect = null // the default is 60 seconds
+        PXLClient.apiTimeoutWrite = null // the default is 180 seconds
         ...
     }
 }

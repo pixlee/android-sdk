@@ -34,6 +34,16 @@ You must do this before using this SDK!!
 PXLClient.regionId = your region id <--- set it if you use multi-region.
 ```
 
+### (Optional) API timeouts
+- if you need to change timeouts for connecting to our server, you can do it with these.
+```kotlin
+#!kotlin
+PXLClient.apiTimeoutRead = <yours> // the default is 60 seconds
+PXLClient.apiTimeoutConnect = <yours> // the default is 60 seconds
+PXLClient.apiTimeoutWrite = <yours> // the default is 180 seconds
+```
+
+
 ### (Optional) Automatic Analytics
 ```swift
 #!swift
