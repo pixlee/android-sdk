@@ -54,6 +54,13 @@ class PXLClient(val context: Context) {
             }
             return mInstance!!
         }
+
+        /**
+         * PXLClient can be reset if you need.
+         */
+        fun reset() {
+            mInstance = null
+        }
     }
 
     init {
