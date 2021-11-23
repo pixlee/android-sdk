@@ -42,7 +42,6 @@ jobs:
       - copy-pixlee-credentials
       - ui-tests
   refresh-documentation:
-    executor: default
     steps:
       - deploy:
           name: Refresh eng-docs
