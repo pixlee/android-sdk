@@ -42,7 +42,6 @@ jobs:
       - copy-pixlee-credentials
       - ui-tests
   refresh-documentation:
-    executor: docker-aws-git
     steps:
       - deploy:
           name: Refresh eng-docs
