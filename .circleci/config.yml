@@ -14,7 +14,12 @@ workflows:
               only: /.*/
             branches:
               only: /.*/
-
+      - refresh-documentation:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
 jobs:
   unit:
     docker:
@@ -36,6 +41,15 @@ jobs:
       - checkout
       - copy-pixlee-credentials
       - ui-tests
+  refresh-documentation:
+    executor: docker-aws-git
+    steps:
+      - deploy:
+          name: Refresh eng-docs
+          command: |
+            curl --user ${CIRCLECI_TOKEN}: \
+              --data 'build_parameters[CIRCLE_JOB]=build-deploy' \
+              https://circleci.com/api/v1.1/project/github/pixlee/eng-docs/tree/master
 commands:
   copy-pixlee-credentials:
     steps:
