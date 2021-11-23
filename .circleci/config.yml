@@ -42,7 +42,7 @@ jobs:
       - copy-pixlee-credentials
       - ui-tests
   refresh-documentation:
-    executor: cimg/base:2021.04
+    executor: default
     steps:
       - deploy:
           name: Refresh eng-docs
