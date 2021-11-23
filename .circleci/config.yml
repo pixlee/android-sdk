@@ -1,4 +1,8 @@
 version: 2.1
+executors:
+  default:
+    docker:
+      - image: cimg/base:2020.01
 workflows:
   testing:
     jobs:
@@ -42,6 +46,7 @@ jobs:
       - copy-pixlee-credentials
       - ui-tests
   refresh-documentation:
+    executor: default
     steps:
       - deploy:
           name: Refresh eng-docs
