@@ -20,7 +20,8 @@ workflows:
               only: /.*/
       - refresh-documentation:
           requires:
-            - build
+            - unit
+            - ui
           filters:
             branches:
               only: master
