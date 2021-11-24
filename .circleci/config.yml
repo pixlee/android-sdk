@@ -6,25 +6,25 @@ executors:
 workflows:
   testing:
     jobs:
-      - unit:
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              only: /.*/
-      - ui:
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              only: /.*/
+#      - unit:
+#          filters:
+#            tags:
+#              only: /.*/
+#            branches:
+#              only: /.*/
+#      - ui:
+#          filters:
+#            tags:
+#              only: /.*/
+#            branches:
+#              only: /.*/
       - refresh-documentation:
-          requires:
-            - unit
-            - ui
+#          requires:
+#            - unit
+#            - ui
           filters:
             branches:
-              only: master
+              only: feature/add_jekyll
 jobs:
   unit:
     docker:
@@ -52,7 +52,7 @@ jobs:
       - deploy:
           name: Refresh eng-docs
           command: |
-            curl --user ${CIRCLECI_TOKEN}: \
+            curl --user ${CIRCLECI_ENG_DOCS_PROJECT_API_TOKEN}: \
               --data 'build_parameters[CIRCLE_JOB]=build-deploy' \
               https://circleci.com/api/v1.1/project/github/pixlee/eng-docs/tree/master
 commands:
