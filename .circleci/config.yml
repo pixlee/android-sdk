@@ -1,4 +1,8 @@
 version: 2.1
+executors:
+  default:
+    docker:
+      - image: cimg/base:2020.01
 workflows:
   testing:
     jobs:
@@ -14,7 +18,13 @@ workflows:
               only: /.*/
             branches:
               only: /.*/
-
+      - refresh-documentation:
+          requires:
+            - unit
+            - ui
+          filters:
+            branches:
+              only: master
 jobs:
   unit:
     docker:
@@ -36,6 +46,15 @@ jobs:
       - checkout
       - copy-pixlee-credentials
       - ui-tests
+  refresh-documentation:
+    executor: default
+    steps:
+      - deploy:
+          name: Refresh eng-docs
+          command: |
+            curl --user ${CIRCLECI_ENG_DOCS_PROJECT_API_TOKEN}: \
+              --data 'build_parameters[CIRCLE_JOB]=build-deploy' \
+              https://circleci.com/api/v1.1/project/github/pixlee/eng-docs/tree/master
 commands:
   copy-pixlee-credentials:
     steps:
