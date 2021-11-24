@@ -6,25 +6,25 @@ executors:
 workflows:
   testing:
     jobs:
-#      - unit:
-#          filters:
-#            tags:
-#              only: /.*/
-#            branches:
-#              only: /.*/
-#      - ui:
-#          filters:
-#            tags:
-#              only: /.*/
-#            branches:
-#              only: /.*/
+      - unit:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: /.*/
+      - ui:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: /.*/
       - refresh-documentation:
-#          requires:
-#            - unit
-#            - ui
+          requires:
+            - unit
+            - ui
           filters:
             branches:
-              only: feature/add_jekyll
+              only: master
 jobs:
   unit:
     docker:
