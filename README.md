@@ -1,7 +1,7 @@
 ---
 layout: default
 permalink: /android-sdk
-currentPage: Android-SDK
+currentPage: Android SDK
 githubLink: https://github.com/pixlee/android-sdk
 ---
 
