@@ -13,8 +13,6 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 32
-        versionCode 1
-        versionName "1.2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -108,6 +106,7 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-dash:$exoPlayer"
     implementation "com.google.android.exoplayer:exoplayer-ui:$exoPlayer"
     implementation "com.google.android.exoplayer:extension-ima:$exoPlayer"
+    implementation "com.google.android.exoplayer:extension-cronet:$exoPlayer"
 
     implementation 'androidx.annotation:annotation:1.1.0'
 }
