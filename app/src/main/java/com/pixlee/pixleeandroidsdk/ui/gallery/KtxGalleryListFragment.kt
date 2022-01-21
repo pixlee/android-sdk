@@ -468,10 +468,8 @@ class KtxGalleryListFragment : BaseFragment(), LifecycleObserver {
                             PhotoLauncher.PXLPhotoView -> addFragmentToActivity(PXLPhotoViewFragment.getInstance(photo))
                         }
                     }
-                    //.setNegativeButton(getString(R.string.dialog_cancel), null)
                     .show()
         }
-        //PXLPhotoViewerActivity.launch(context!!, photo)
     }
 
     fun isGrid(): Boolean {
