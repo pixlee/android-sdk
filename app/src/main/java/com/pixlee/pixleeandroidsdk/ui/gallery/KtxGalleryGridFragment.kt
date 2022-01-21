@@ -64,7 +64,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
 
     val viewModel: KtxGalleryViewModel by lazy {
         // get PXLKtxAlbum
-        KtxGalleryViewModel(PXLKtxAlbum(context!!))
+        KtxGalleryViewModel(PXLKtxAlbum(requireContext()))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -147,7 +147,7 @@ class ProductViewFragment : BaseFragment() {
                         circleIcon = ProductViewHolder.CircleIcon().apply {
                             icon = R.drawable.outline_shopping_bag_black_24
                             iconColor = Color.DKGRAY
-                            backgroundColor = ContextCompat.getColor(context!!, R.color.yellow_800)
+                            backgroundColor = ContextCompat.getColor(requireContext(), R.color.yellow_800)
                             padding = 5.px.toInt()
                         }
                     }
@@ -211,7 +211,7 @@ class ProductViewFragment : BaseFragment() {
                     },
                     isLoopingVideo = true,
                     soundMuted = true)
-            ViewerActivity.launch(context!!, info)
+            ViewerActivity.launch(requireContext(), info)
         }
     }
 

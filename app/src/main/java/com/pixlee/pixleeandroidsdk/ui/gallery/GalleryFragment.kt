@@ -268,14 +268,14 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
     private fun configureViews() {
         gridView.setHasFixedSize(true)
         listView.setHasFixedSize(true)
-        val gridLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(context!!.applicationContext, 2)
-        val listLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(context!!.applicationContext, 1)
+        val gridLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(requireContext().applicationContext, 2)
+        val listLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(requireContext().applicationContext, 1)
         gridView.layoutManager = gridLayoutManager
         listView.layoutManager = listLayoutManager
         val li = GalleryClickListener { view, photo -> moveToViewer(view, photo) }
         if (gridAdapter == null) {
-            gridAdapter = GridAdapter(context!!.applicationContext, photoList, li)
-            listAdapter = ListAdapter(context!!.applicationContext, photoList, li)
+            gridAdapter = GridAdapter(requireContext().applicationContext, photoList, li)
+            listAdapter = ListAdapter(requireContext().applicationContext, photoList, li)
             menuList?.apply { findItem(R.id.action_live_list).isVisible = false }
         }else{
             menuList?.apply { findItem(R.id.action_live_list).isVisible = true }
@@ -386,7 +386,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
                         },
                         isLoopingVideo = true,
                         soundMuted = true)
-                ViewerActivity.launch(context!!, info)
+                ViewerActivity.launch(requireContext(), info)
             }
         }
     }

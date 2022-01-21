@@ -115,7 +115,7 @@ abstract public class BaseFragment extends Fragment {
                 if (cursor != null) {
                     cursor.moveToFirst();
 
-                    String filePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
+                    String filePath = cursor.getString(cursor.getColumnIndexOrThrow(filePathColumn[0]));
                     uploadFile(filePath);
                 }
             } catch (Exception e) {
