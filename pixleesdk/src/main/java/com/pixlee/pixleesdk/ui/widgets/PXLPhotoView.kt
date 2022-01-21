@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
-import android.net.Uri
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.Log
@@ -24,13 +23,13 @@ import com.bumptech.glide.signature.ObjectKey
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer.DecoderInitializationException
 import com.google.android.exoplayer2.mediacodec.MediaCodecUtil.DecoderQueryException
-import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector.ParametersBuilder
-import com.google.android.exoplayer2.trackselection.TrackSelection
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.util.ErrorMessageProvider
 import com.google.android.exoplayer2.util.EventLogger
@@ -84,7 +83,7 @@ class PXLPhotoView : RelativeLayout {
     private var startAutoPlay = true
     // Fields used only for ad playback.
     private var dataSourceFactory: DataSource.Factory? = null
-    protected var player: SimpleExoPlayer? = null
+    protected var player: ExoPlayer? = null
     // ###################################
     // ######### End: ExoPlayer ##########
     // ###################################
@@ -116,7 +115,7 @@ class PXLPhotoView : RelativeLayout {
             id = ViewCompat.generateViewId()
             useController = false
             setErrorMessageProvider(PlayerErrorMessageProvider())
-            dataSourceFactory = ExoPlayerUtil.buildDataSourceFactory(context, true)
+            dataSourceFactory = ExoPlayerUtil.getDataSourceFactory(context)
 
             trackSelectorParameters = ParametersBuilder().build()
 
@@ -430,56 +429,64 @@ class PXLPhotoView : RelativeLayout {
                 return
             }
             val preferExtensionDecoders = false
-            val renderersFactory: RenderersFactory = ExoPlayerUtil.buildRenderersFactory( /* context= */context, preferExtensionDecoders)
+            val renderersFactory: RenderersFactory = ExoPlayerUtil.buildRenderersFactory(context, preferExtensionDecoders)
+            val mediaSourceFactory = DefaultMediaSourceFactory(dataSourceFactory!!)
 
-            var trackSelectionFactory: TrackSelection.Factory = AdaptiveTrackSelection.Factory(ExoPlayerUtil.BANDWIDTH_METER)
-            trackSelector = DefaultTrackSelector(trackSelectionFactory)
+            trackSelector = DefaultTrackSelector(context)
             trackSelector!!.parameters = trackSelectorParameters!!
 
-            player = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector)
+            player = ExoPlayer.Builder(context)
+                .setRenderersFactory(renderersFactory)
+                .setMediaSourceFactory(mediaSourceFactory)
+                .setTrackSelector(trackSelector!!)
+                .build()
+
             player?.addAnalyticsListener(EventLogger(trackSelector))
 
             player!!.playWhenReady = startAutoPlay
             videoView.setPlayer(player)
-            videoView.setPlaybackPreparer {
-                initVideoPlayer()
+//            videoView.setPlaybackPreparer {
+//                initVideoPlayer()
+//            }
+        }
+
+        if (mediaSource != null) {
+            val haveStartPosition = startWindow != C.INDEX_UNSET
+            if (haveStartPosition) {
+                player?.seekTo(startWindow, startPosition)
             }
+            player?.setMediaSource(mediaSource, false)
+            player?.prepare()
         }
-        val haveStartPosition = startWindow != C.INDEX_UNSET
-        if (haveStartPosition) {
-            player?.seekTo(startWindow, startPosition)
-        }
-        player?.prepare(mediaSource, !haveStartPosition, false)
+
         Log.e("PXLPhotoViewVP", "## initVideoPlayer() done player: $player")
         return
     }
 
     private fun createMediaSource(): MediaSource? {
-        if(pxlPhoto?.videoUrl==null)
+        if(pxlPhoto?.videoUrl==null || dataSourceFactory==null)
             return null
 
-        return ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(pxlPhoto?.videoUrl))
+        return ProgressiveMediaSource.Factory(dataSourceFactory!!).createMediaSource(MediaItem.fromUri(pxlPhoto?.videoUrl!!))
     }
 
-    private class PlayerErrorMessageProvider : ErrorMessageProvider<ExoPlaybackException> {
-        override fun getErrorMessage(e: ExoPlaybackException): Pair<Int, String>? {
+    private class PlayerErrorMessageProvider : ErrorMessageProvider<PlaybackException> {
+        override fun getErrorMessage(e: PlaybackException): Pair<Int, String> {
             var errorString: String = "error_generic"
-            if (e.type == ExoPlaybackException.TYPE_RENDERER) {
-                val cause = e.rendererException
-                if (cause is DecoderInitializationException) {
-                    // Special case for decoder initialization failures.
-                    val decoderInitializationException = cause
-                    if (decoderInitializationException.decoderName == null) {
-                        if (decoderInitializationException.cause is DecoderQueryException) {
-                            errorString = "error_querying_decoders"
-                        } else if (decoderInitializationException.secureDecoderRequired) {
-                            errorString = "error_no_secure_decoder " + decoderInitializationException.mimeType
-                        } else {
-                            errorString = "error_no_decoder " + decoderInitializationException.mimeType
-                        }
+            val cause = e.cause
+            if (cause is DecoderInitializationException) {
+                // Special case for decoder initialization failures.
+                val decoderInitializationException = cause
+                if (decoderInitializationException.codecInfo == null) {
+                    if (decoderInitializationException.cause is DecoderQueryException) {
+                        errorString = "error_querying_decoders"
+                    } else if (decoderInitializationException.secureDecoderRequired) {
+                        errorString = "error_no_secure_decoder " + decoderInitializationException.mimeType
                     } else {
-                        errorString = "error_instantiating_decoder " + decoderInitializationException.decoderName
+                        errorString = "error_no_decoder " + decoderInitializationException.mimeType
                     }
+                } else {
+                    errorString = "error_instantiating_decoder " + decoderInitializationException.codecInfo!!.name
                 }
             }
             return Pair.create(0, errorString)
