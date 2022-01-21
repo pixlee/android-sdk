@@ -5,11 +5,11 @@ androidExtensions {
     experimental = true
 }
 android {
-    compileSdkVersion 30
+    compileSdkVersion 32
     defaultConfig {
         applicationId "com.pixlee.pixleeandroidsdk"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 32
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -29,8 +29,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     testOptions {
@@ -54,7 +54,7 @@ repositories {
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 }
 
