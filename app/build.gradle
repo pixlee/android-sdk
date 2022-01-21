@@ -18,9 +18,6 @@ android {
         buildConfigField "String", "PIXLEE_ALBUM_ID", "\"" + PIXLEE_ALBUM_ID + "\""
         buildConfigField "String", "PIXLEE_SKU", "\"" + PIXLEE_SKU + "\""
     }
-    viewBinding {
-        enabled = true
-    }
     buildTypes {
         release {
             minifyEnabled false
@@ -29,8 +26,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     testOptions {
@@ -49,12 +46,13 @@ android {
 }
 
 repositories {
-    jcenter()
+    google()
+    mavenCentral()
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
 }
 
