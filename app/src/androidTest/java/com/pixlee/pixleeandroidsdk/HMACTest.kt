@@ -1,13 +1,10 @@
 package com.pixlee.pixleeandroidsdk
 
-import android.util.Log
-import androidx.test.runner.AndroidJUnit4
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.pixlee.pixleesdk.network.HMAC
 import org.json.JSONException
 import org.junit.Assert
 import org.junit.Test
-import org.junit.runner.RunWith
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 
