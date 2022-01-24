@@ -33,7 +33,7 @@ class IndexFragment : BaseFragment() {
     }
 
     private val localDataSource: LocalDataSource by lazy {
-        getInstance(context!!)
+        getInstance(requireContext())
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

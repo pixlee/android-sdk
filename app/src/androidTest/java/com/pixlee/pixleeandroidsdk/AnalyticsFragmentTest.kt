@@ -12,7 +12,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.activityScenarioRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.pixlee.pixleeandroidsdk.tool.MyViewAction
 import com.pixlee.pixleeandroidsdk.tool.OkHttpIdlingResourceRule
@@ -26,7 +25,6 @@ import org.hamcrest.StringDescription
 import org.hamcrest.core.StringContains
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 
 /**

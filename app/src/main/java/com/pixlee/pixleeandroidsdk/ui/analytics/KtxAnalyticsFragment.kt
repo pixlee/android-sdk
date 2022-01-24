@@ -49,7 +49,7 @@ class KtxAnalyticsFragment : BaseFragment() {
 
     val viewModel: KtxAnalyticsViewModel by lazy {
         // get PXLClient
-        val album = PXLKtxAlbum(context!!)
+        val album = PXLKtxAlbum(requireContext())
         KtxAnalyticsViewModel(album)
     }
 
