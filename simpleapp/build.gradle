@@ -1,12 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
+    id 'kotlin-parcelize'
 }
 
-androidExtensions {
-    experimental = true
-}
 
 android {
     compileSdkVersion 31
@@ -38,9 +35,10 @@ android {
     kotlinOptions {
         jvmTarget = '11'
     }
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding true
     }
+
     buildTypes {
         release {
             minifyEnabled false

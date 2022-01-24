@@ -7,9 +7,6 @@ import android.os.Build
 import android.widget.ImageView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
-import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
-import kotlinx.android.synthetic.main.item_product.*
-
 
 /**
  * Created by sungjun on 9/18/20.

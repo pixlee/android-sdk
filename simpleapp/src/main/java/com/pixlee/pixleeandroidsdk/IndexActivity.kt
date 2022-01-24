@@ -3,25 +3,33 @@ package com.pixlee.pixleeandroidsdk
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_index.*
+import com.pixlee.pixleeandroidsdk.databinding.ActivityIndexBinding
 
 /**
  * Created by sungjun on 3/23/21.
  */
 class IndexActivity : AppCompatActivity() {
+    private var _binding: ActivityIndexBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_index)
+        _binding = ActivityIndexBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        grid.setOnClickListener {
+        binding.grid.setOnClickListener {
             startActivity(Intent(this, SimpleGridActivity::class.java))
         }
 
-        list.setOnClickListener {
+        binding.list.setOnClickListener {
             startActivity(Intent(this, SimpleListActivity::class.java))
         }
 
-        dynamic.setOnClickListener {
+        binding.dynamic.setOnClickListener {
             startActivity(Intent(this, DynamicDemoActivity::class.java))
         }
     }

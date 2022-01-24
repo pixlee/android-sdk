@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.pixlee.pixleeandroidsdk.R
+import com.pixlee.pixleeandroidsdk.databinding.ActivityViewerBinding
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
@@ -21,7 +22,6 @@ import com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
 import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import com.pixlee.pixleesdk.util.px
-import kotlinx.android.synthetic.main.activity_viewer.*
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -32,15 +32,23 @@ import java.util.*
  * This shows how to play the video and its product list
  */
 class ViewerActivity : AppCompatActivity() {
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+    private var _binding: ActivityViewerBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_viewer)
+        _binding = ActivityViewerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // set a full screen mode
         PXLViewUtil.expandContentAreaOverStatusBar(this)
 
         // give a padding to the top as much as the status bar's height
-        pxlPhotoProductView.addPaddingToHeader(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
+        binding.pxlPhotoProductView.addPaddingToHeader(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
 
         val i = intent
         if (i == null) {
@@ -61,7 +69,7 @@ class ViewerActivity : AppCompatActivity() {
     fun init(item: PhotoWithVideoInfo) {
         item.configuration.imageScaleType = ImageScaleType.FIT_CENTER
         // set your ui settings
-        pxlPhotoProductView
+        binding.pxlPhotoProductView
                 .setContent(photoInfo = item,
                         showHotspots = true,
                         headerConfiguration = PXLPhotoProductView.Configuration().apply {
@@ -175,7 +183,7 @@ class ViewerActivity : AppCompatActivity() {
 
     fun listenAnalyticsForInstrumentTesting() {
         lifecycleScope.launch {
-            AnalyticsObserver.observe("Obsev.ViewerActivity", tvDebugTextViewer)
+            AnalyticsObserver.observe("Obsev.ViewerActivity", binding.tvDebugTextViewer)
         }
     }
 

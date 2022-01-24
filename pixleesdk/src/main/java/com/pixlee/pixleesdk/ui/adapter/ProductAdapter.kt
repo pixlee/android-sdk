@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pixlee.pixleesdk.data.PXLProduct
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder.Companion.create
-import kotlinx.android.synthetic.main.item_product.*
 import java.util.*
 
 /**
@@ -32,7 +31,7 @@ class ProductAdapter(
         }else{
             holder.bind(product, null, configuration)
         }
-        holder.bookmark.setOnClickListener {
+        holder.binding.bookmark.setOnClickListener {
             val productId = list[holder.adapterPosition].id
             bookmarkMap?.also {
                 val bookmarked = it[productId] ?: false

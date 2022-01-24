@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.pixlee.pixleeandroidsdk.databinding.ActivityViewerBinding
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
@@ -16,7 +17,6 @@ import com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
 import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import com.pixlee.pixleesdk.util.px
-import kotlinx.android.synthetic.main.activity_viewer.*
 import java.util.*
 
 /**
@@ -26,9 +26,18 @@ import java.util.*
  * This shows how to play the video and its product list
  */
 class ViewerActivity : AppCompatActivity() {
+    private var _binding: ActivityViewerBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_viewer)
+        _binding = ActivityViewerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // set a full screen mode
         PXLViewUtil.expandContentAreaOverStatusBar(this)
@@ -53,10 +62,10 @@ class ViewerActivity : AppCompatActivity() {
         item.configuration.imageScaleType = ImageScaleType.FIT_CENTER
 
         // give a padding to the top as much as the status bar's height
-        pxlPhotoProductView.addPaddingToHeader(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
+        binding.pxlPhotoProductView.addPaddingToHeader(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
 
         // set your ui settings
-        pxlPhotoProductView
+        binding.pxlPhotoProductView
                 .setContent(photoInfo = item,
                         headerConfiguration = PXLPhotoProductView.Configuration().apply {
                             backButton = PXLPhotoProductView.CircleButton().apply {

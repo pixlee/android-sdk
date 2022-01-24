@@ -7,6 +7,7 @@ import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.pixlee.pixleeandroidsdk.databinding.ActivitySimpleDemoBinding
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
 import com.pixlee.pixleesdk.data.PXLAlbumSortOptions
@@ -18,7 +19,6 @@ import com.pixlee.pixleesdk.ui.widgets.TextPadding
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.ui.widgets.list.PXLWidgetView
 import com.pixlee.pixleesdk.util.px
-import kotlinx.android.synthetic.main.activity_simple_demo.*
 
 /**
  * Created by sungjun on 3/23/21.
@@ -26,24 +26,33 @@ import kotlinx.android.synthetic.main.activity_simple_demo.*
 class SimpleListActivity : AppCompatActivity() {
     val listHeightRatio = 0.5f
 
+    private var _binding: ActivitySimpleDemoBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_simple_demo)
-        setSupportActionBar(toolbar)
-        toolbar.navigationIcon?.setColorFilter(
+        _binding = ActivitySimpleDemoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+        binding.toolbar.navigationIcon?.setColorFilter(
                 ContextCompat.getColor(this, R.color.grey_60),
                 PorterDuff.Mode.SRC_ATOP
         )
 
-        widget.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        binding.widget.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 try {
-                    if (widget == null)
+                    if (binding.widget == null)
                         return
 
-                    initwidget((widget.measuredHeight * listHeightRatio).toInt())
+                    initwidget((binding.widget.measuredHeight * listHeightRatio).toInt())
 
-                    widget.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    binding.widget.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -54,7 +63,7 @@ class SimpleListActivity : AppCompatActivity() {
 
     private fun initwidget(cellHeightInPixel: Int) {
         // you can customize color, size if you need
-        widget.initiate(
+        binding.widget.initiate(
                 widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
                 viewType = PXLWidgetView.ViewType.List(),
                 cellHeightInPixel = cellHeightInPixel,

@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleeandroidsdk.R
+import com.pixlee.pixleeandroidsdk.databinding.FragmentGalleryBinding
+import com.pixlee.pixleeandroidsdk.databinding.ModuleSearchBinding
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewInRecyclerViewFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.ViewerActivity
@@ -33,8 +35,6 @@ import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.util.px
-import kotlinx.android.synthetic.main.fragment_gallery.*
-import kotlinx.android.synthetic.main.module_search.*
 
 /**
  * This shows how you can load photos of Pixlee using PXLAlbum.java
@@ -53,30 +53,38 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
         photoList = ArrayList()
     }
 
+    private var _binding: FragmentGalleryBinding? = null
+    private val binding get() = _binding!!
+
+    private var _menuBinding: ModuleSearchBinding? = null
+    private val menuBinding get() = _menuBinding!!
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_gallery, container, false)
+        _binding = FragmentGalleryBinding.inflate(inflater, container, false)
+        _menuBinding = ModuleSearchBinding.bind(binding.root)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         // set filter buttons
-        radioGroupContentTypeVideo.isChecked = false
+        menuBinding.radioGroupContentTypeVideo.isChecked = false
 
-        fabFilter.setOnClickListener { drawerLayout.openDrawer(GravityCompat.END) }
-        btnCloseFilter.setOnClickListener { drawerLayout.closeDrawer(GravityCompat.END) }
-        btnApply.setOnClickListener {
-            drawerLayout.closeDrawer(GravityCompat.END)
+        binding.fabFilter.setOnClickListener { binding.drawerLayout.openDrawer(GravityCompat.END) }
+        menuBinding.btnCloseFilter.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
+        menuBinding.btnApply.setOnClickListener {
+            binding.drawerLayout.closeDrawer(GravityCompat.END)
             loadAlbum()
         }
-        gridToggleButton.setImageResource(lastImg)
-        gridToggleButton.setOnClickListener {
-            viewSwitcher.showNext()
+        binding.gridToggleButton.setImageResource(lastImg)
+        binding.gridToggleButton.setOnClickListener {
+            binding.viewSwitcher.showNext()
             lastImg = if (lastImg == R.drawable.grid_2x) {
                 R.drawable.column_2x
             } else {
                 R.drawable.grid_2x
             }
-            gridToggleButton.setImageResource(lastImg)
+            binding.gridToggleButton.setImageResource(lastImg)
         }
         if (gridAdapter == null) {
             loadAlbum()
@@ -96,9 +104,9 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
             val client = PXLClient.getInstance(it)
 
             // initiate album
-            for (i in 0 until radioGroupAlbum.childCount) {
-                val rb = radioGroupAlbum.getChildAt(i) as MaterialRadioButton
-                if (radioGroupAlbum.checkedRadioButtonId == rb.id) {
+            for (i in 0 until menuBinding.radioGroupAlbum.childCount) {
+                val rb = menuBinding.radioGroupAlbum.getChildAt(i) as MaterialRadioButton
+                if (menuBinding.radioGroupAlbum.checkedRadioButtonId == rb.id) {
                     val text = rb.text.toString()
                     if (text == getString(R.string.radio_album)) album = PXLAlbum(BuildConfig.PIXLEE_ALBUM_ID, client) else if (text == getString(R.string.radio_pdp)) album = PXLPdpAlbum(BuildConfig.PIXLEE_SKU, client.basicDataSource, client.analyticsDataSource)
                     break
@@ -128,7 +136,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
 
     fun readPerPage(): Int {
         // Set textViewPerPage filter if text is not empty
-        val minTwitterFollowers = textViewPerPage.text.toString()
+        val minTwitterFollowers = menuBinding.textViewPerPage.text.toString()
         return if (!minTwitterFollowers.isEmpty()) {
             Integer.valueOf(minTwitterFollowers)
         } else 20
@@ -137,7 +145,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
     }
 
     fun readRegionIdFromUI(): Int?{
-        val data = textViewRegionId.text.toString()
+        val data = menuBinding.textViewRegionId.text.toString()
         return if (data.isNotEmpty()) {
             Integer.valueOf(data)
         } else null
@@ -146,9 +154,9 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
     fun readSortOptionsFromUI(): PXLAlbumSortOptions {
         val sortOptions = PXLAlbumSortOptions()
         // Set sortType filter if a radio button is selected
-        for (i in 0 until radioGroupSortType.childCount) {
-            val rb = radioGroupSortType.getChildAt(i) as MaterialRadioButton
-            if (radioGroupSortType.checkedRadioButtonId == rb.id) {
+        for (i in 0 until menuBinding.radioGroupSortType.childCount) {
+            val rb = menuBinding.radioGroupSortType.getChildAt(i) as MaterialRadioButton
+            if (menuBinding.radioGroupSortType.checkedRadioButtonId == rb.id) {
                 val text = rb.text.toString()
                 if (text == PXLAlbumSortType.RECENCY.value) sortOptions.sortType = PXLAlbumSortType.RECENCY else if (text == PXLAlbumSortType.APPROVED_TIME.value) sortOptions.sortType = PXLAlbumSortType.APPROVED_TIME else if (text == PXLAlbumSortType.RANDOM.value) sortOptions.sortType = PXLAlbumSortType.RANDOM else if (text == PXLAlbumSortType.PIXLEE_SHARES.value) sortOptions.sortType = PXLAlbumSortType.PIXLEE_SHARES else if (text == PXLAlbumSortType.PIXLEE_LIKES.value) sortOptions.sortType = PXLAlbumSortType.PIXLEE_LIKES else if (text == PXLAlbumSortType.POPULARITY.value) sortOptions.sortType = PXLAlbumSortType.POPULARITY else if (text == PXLAlbumSortType.DYNAMIC.value) sortOptions.sortType = PXLAlbumSortType.DYNAMIC
                 break
@@ -156,7 +164,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
         }
 
         // Set sorting direction
-        if (radioGroupSortDirection.checkedRadioButtonId == radioGroupSortDirectionASC.id) sortOptions.descending = false else if (radioGroupSortDirection.checkedRadioButtonId == radioGroupSortDirectionDESC.id) sortOptions.descending = true
+        if (menuBinding.radioGroupSortDirection.checkedRadioButtonId == menuBinding.radioGroupSortDirectionASC.id) sortOptions.descending = false else if (menuBinding.radioGroupSortDirection.checkedRadioButtonId == menuBinding.radioGroupSortDirectionDESC.id) sortOptions.descending = true
         return sortOptions
     }
 
@@ -164,21 +172,21 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
         val filterOptions = PXLAlbumFilterOptions()
 
         // Set minTwitterFollowers filter if text is not empty
-        val minTwitterFollowers = textViewMinTwitterFollowers.text.toString()
+        val minTwitterFollowers = menuBinding.textViewMinTwitterFollowers.text.toString()
         if (!minTwitterFollowers.isEmpty()) {
             filterOptions.minTwitterFollowers = Integer.valueOf(minTwitterFollowers)
         }
 
         // Set minInstagramFollowers filter if text is not empty
-        val minInstagramFollowers = textViewMinInstagramFollowers.text.toString()
+        val minInstagramFollowers = menuBinding.textViewMinInstagramFollowers.text.toString()
         if (!minInstagramFollowers.isEmpty()) {
             filterOptions.minInstagramFollowers = Integer.valueOf(minInstagramFollowers)
         }
 
         // Set hasProduct filter if false or not true is set
-        for (i in 0 until radioGroupHasPermission.childCount) {
-            val rb = radioGroupHasPermission.getChildAt(i) as MaterialRadioButton
-            if (radioGroupHasPermission.checkedRadioButtonId == rb.id) {
+        for (i in 0 until menuBinding.radioGroupHasPermission.childCount) {
+            val rb = menuBinding.radioGroupHasPermission.getChildAt(i) as MaterialRadioButton
+            if (menuBinding.radioGroupHasPermission.checkedRadioButtonId == rb.id) {
                 val text = rb.text.toString()
                 if (text == getString(R.string.radio_false)) filterOptions.hasPermission = false else if (text == getString(R.string.radio_true)) filterOptions.hasPermission = true
                 break
@@ -186,9 +194,9 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
         }
 
         // Set hasProduct filter if false or not true is set
-        for (i in 0 until radioGroupHasProduct.childCount) {
-            val rb = radioGroupHasProduct.getChildAt(i) as MaterialRadioButton
-            if (radioGroupHasProduct.checkedRadioButtonId == rb.id) {
+        for (i in 0 until menuBinding.radioGroupHasProduct.childCount) {
+            val rb = menuBinding.radioGroupHasProduct.getChildAt(i) as MaterialRadioButton
+            if (menuBinding.radioGroupHasProduct.checkedRadioButtonId == rb.id) {
                 val text = rb.text.toString()
                 if (text == getString(R.string.radio_false)) filterOptions.hasProduct = false else if (text == getString(R.string.radio_true)) filterOptions.hasProduct = true
                 break
@@ -196,9 +204,9 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
         }
 
         // Set inStockOnly filter if false or not true is set
-        for (i in 0 until radioGroupInStockOnly.childCount) {
-            val rb = radioGroupInStockOnly.getChildAt(i) as MaterialRadioButton
-            if (radioGroupInStockOnly.checkedRadioButtonId == rb.id) {
+        for (i in 0 until menuBinding.radioGroupInStockOnly.childCount) {
+            val rb = menuBinding.radioGroupInStockOnly.getChildAt(i) as MaterialRadioButton
+            if (menuBinding.radioGroupInStockOnly.checkedRadioButtonId == rb.id) {
                 val text = rb.text.toString()
                 if (text == getString(R.string.radio_false)) filterOptions.inStockOnly = false else if (text == getString(R.string.radio_true)) filterOptions.inStockOnly = true
                 break
@@ -207,19 +215,19 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
 
         // Set contentSource filter if any of its check boxes is selected
         val contentSource: ArrayList<PXLContentSource> = ArrayList()
-        if (radioGroupContentSourceInstagramFeed.isChecked) contentSource.add(PXLContentSource.INSTAGRAM_FEED)
-        if (radioGroupContentSourceInstagramStory.isChecked) contentSource.add(PXLContentSource.INSTAGRAM_STORY)
-        if (radioGroupContentSourceTwitter.isChecked) contentSource.add(PXLContentSource.TWITTER)
-        if (radioGroupContentSourceFacebook.isChecked) contentSource.add(PXLContentSource.FACEBOOK)
-        if (radioGroupContentSourceApi.isChecked) contentSource.add(PXLContentSource.API)
-        if (radioGroupContentSourceDesktop.isChecked) contentSource.add(PXLContentSource.DESKTOP)
-        if (radioGroupContentSourceEmail.isChecked) contentSource.add(PXLContentSource.EMAIL)
+        if (menuBinding.radioGroupContentSourceInstagramFeed.isChecked) contentSource.add(PXLContentSource.INSTAGRAM_FEED)
+        if (menuBinding.radioGroupContentSourceInstagramStory.isChecked) contentSource.add(PXLContentSource.INSTAGRAM_STORY)
+        if (menuBinding.radioGroupContentSourceTwitter.isChecked) contentSource.add(PXLContentSource.TWITTER)
+        if (menuBinding.radioGroupContentSourceFacebook.isChecked) contentSource.add(PXLContentSource.FACEBOOK)
+        if (menuBinding.radioGroupContentSourceApi.isChecked) contentSource.add(PXLContentSource.API)
+        if (menuBinding.radioGroupContentSourceDesktop.isChecked) contentSource.add(PXLContentSource.DESKTOP)
+        if (menuBinding.radioGroupContentSourceEmail.isChecked) contentSource.add(PXLContentSource.EMAIL)
         if (contentSource.isNotEmpty()) filterOptions.contentSource = contentSource
 
         // Set contentType filter if any of its check boxes is selected
         val contentType: ArrayList<PXLContentType> = ArrayList()
-        if (radioGroupContentTypeImage.isChecked) contentType.add(PXLContentType.IMAGE)
-        if (radioGroupContentTypeVideo.isChecked) contentType.add(PXLContentType.VIDEO)
+        if (menuBinding.radioGroupContentTypeImage.isChecked) contentType.add(PXLContentType.IMAGE)
+        if (menuBinding.radioGroupContentTypeVideo.isChecked) contentType.add(PXLContentType.VIDEO)
         if (contentType.isNotEmpty()) filterOptions.contentType = contentType
 
         // Apart from the examples above, there are more filters you can implement in you app.
@@ -249,7 +257,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
     }
 
     fun setLoading(visible: Boolean) {
-        lottieView?.also{
+        binding.lottieView?.also{
             if (visible) {
                 it.visibility = View.VISIBLE
             } else {
@@ -266,12 +274,12 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
     var gridAdapter: GridAdapter? = null
     var listAdapter: ListAdapter? = null
     private fun configureViews() {
-        gridView.setHasFixedSize(true)
-        listView.setHasFixedSize(true)
+        binding.gridView.setHasFixedSize(true)
+        binding.listView.setHasFixedSize(true)
         val gridLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(requireContext().applicationContext, 2)
         val listLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(requireContext().applicationContext, 1)
-        gridView.layoutManager = gridLayoutManager
-        listView.layoutManager = listLayoutManager
+        binding.gridView.layoutManager = gridLayoutManager
+        binding.listView.layoutManager = listLayoutManager
         val li = GalleryClickListener { view, photo -> moveToViewer(view, photo) }
         if (gridAdapter == null) {
             gridAdapter = GridAdapter(requireContext().applicationContext, photoList, li)
@@ -280,8 +288,8 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
         }else{
             menuList?.apply { findItem(R.id.action_live_list).isVisible = true }
         }
-        gridView.adapter = gridAdapter
-        listView.adapter = listAdapter
+        binding.gridView.adapter = gridAdapter
+        binding.listView.adapter = listAdapter
         val gridScrollListener: RecyclerViewEndlessScrollListener = object : RecyclerViewEndlessScrollListener(gridLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
                 loadMorePhotos()
@@ -292,10 +300,10 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
                 loadMorePhotos()
             }
         }
-        gridView.addOnScrollListener(gridScrollListener)
-        listView.addOnScrollListener(listScrollListener)
+        binding.gridView.addOnScrollListener(gridScrollListener)
+        binding.listView.addOnScrollListener(listScrollListener)
         listMode.also {
-            if (!it.isGridMode) viewSwitcher.showNext()
+            if (!it.isGridMode) binding.viewSwitcher.showNext()
         }
     }
 
@@ -430,8 +438,8 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
         //album.loadMore();
         photoList!!.clear()
         photoList!!.addAll(photos)
-        gridView.adapter!!.notifyDataSetChanged()
-        listView.adapter!!.notifyDataSetChanged()
+        binding.gridView.adapter!!.notifyDataSetChanged()
+        binding.listView.adapter!!.notifyDataSetChanged()
         if (photos.size > 0) {
             samplePhotoLoad(photos[0])
         }
@@ -456,7 +464,7 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        viewSwitcher.showNext()
+        binding.viewSwitcher.showNext()
         when (item.itemId) {
             R.id.action_grid -> {
                 changeMenuForList(false)
@@ -490,6 +498,8 @@ class GalleryFragment : BaseFragment(), RequestHandlers<ArrayList<PXLPhoto>?> {
     override fun onDestroyView() {
         super.onDestroyView()
         menuList = null
+        _menuBinding = null
+        _binding = null
     }
 
     companion object {

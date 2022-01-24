@@ -257,7 +257,8 @@
         android:layout_gravity="end"
         android:fitsSystemWindows="false">
 
-        <include layout="@layout/module_search" />
+        <include
+            layout="@layout/module_search" />
 
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

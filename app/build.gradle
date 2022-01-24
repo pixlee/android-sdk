@@ -1,9 +1,9 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-androidExtensions {
-    experimental = true
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
 }
+
 android {
     compileSdkVersion 31
     defaultConfig {
@@ -18,8 +18,8 @@ android {
         buildConfigField "String", "PIXLEE_ALBUM_ID", "\"" + PIXLEE_ALBUM_ID + "\""
         buildConfigField "String", "PIXLEE_SKU", "\"" + PIXLEE_SKU + "\""
     }
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding true
     }
     buildTypes {
         release {

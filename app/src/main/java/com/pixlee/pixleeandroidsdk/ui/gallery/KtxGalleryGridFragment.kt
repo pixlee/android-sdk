@@ -19,8 +19,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.pixlee.pixleeandroidsdk.BuildConfig
-import com.pixlee.pixleesdk.util.EventObserver
 import com.pixlee.pixleeandroidsdk.R
+import com.pixlee.pixleeandroidsdk.databinding.FragmentKtxGalleryGridBinding
+import com.pixlee.pixleeandroidsdk.databinding.ModuleSearchBinding
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
 import com.pixlee.pixleeandroidsdk.ui.widgets.PXLPhotoViewFragment
@@ -40,15 +41,8 @@ import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.ui.widgets.list.BaseRecyclerView
 import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
 import com.pixlee.pixleesdk.ui.widgets.list.Space
+import com.pixlee.pixleesdk.util.EventObserver
 import com.pixlee.pixleesdk.util.px
-import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.*
-import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.drawerLayout
-import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.fabFilter
-import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.fabUpload
-import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.lottieView
-import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.tvDebugText
-import kotlinx.android.synthetic.main.fragment_ktx_gallery_grid.v_body
-import kotlinx.android.synthetic.main.module_search.*
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONException
@@ -67,29 +61,43 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         KtxGalleryViewModel(PXLKtxAlbum(requireContext()))
     }
 
+    private var _binding: FragmentKtxGalleryGridBinding? = null
+    private val binding get() = _binding!!
+
+    private var _menuBinding: ModuleSearchBinding? = null
+    private val menuBinding get() = _menuBinding!!
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _menuBinding = null
+        _binding = null
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_ktx_gallery_grid, container, false)
+        _binding = FragmentKtxGalleryGridBinding.inflate(inflater, container, false)
+        _menuBinding = ModuleSearchBinding.bind(binding.root)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         listenAnalyticsForInstrumentTesting()
         setDataForAutoAnalytics()
-        radioGroupContentTypeVideo.isChecked = true
+        menuBinding.radioGroupContentTypeVideo.isChecked = true
         initRecyclerView()
         addViewModelListeners()
         initFilterClickListeners()
 
-        v_body.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        binding.vBody.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 try {
-                    if (v_body == null)
+                    if (binding.vBody == null)
                         return
 
-                    val cellHeightInPixel = v_body.measuredHeight * 0.5f
+                    val cellHeightInPixel = binding.vBody.measuredHeight * 0.5f
                     viewModel.cellHeightInPixel = cellHeightInPixel.toInt()
                     loadAlbum()
-                    v_body.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    binding.vBody.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -100,14 +108,14 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
 
     fun listenAnalyticsForInstrumentTesting(){
         viewLifecycleOwner.lifecycleScope.launch {
-            AnalyticsObserver.observe("Obsev.GalleryGrid", tvDebugText)
+            AnalyticsObserver.observe("Obsev.GalleryGrid", binding.tvDebugText)
         }
     }
 
     fun setDataForAutoAnalytics() {
         // if you want to delegate firing 'VisibleWidget' and 'OpenedWidget' analytics event to PXLPhotoRecyclerViewInGrid, use this code.
         // Prerequisite: PXLClient.autoAnalyticsEnabled = true located in in your application level. please check AppApplication.kt
-        pxlPhotoRecyclerViewInGrid.albumForAutoAnalytics = BaseRecyclerView.AlbumForAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall.type)
+        binding.pxlPhotoRecyclerViewInGrid.albumForAutoAnalytics = BaseRecyclerView.AlbumForAutoAnalytics(viewModel.pxlKtxAlbum, PXLWidgetType.photowall.type)
 
         // if you want to manually fire the two events, you don't use this and do need to implement our own analytics codes. Please check out KtxAnalyticsFragment.kt to get the sample codes.
     }
@@ -118,18 +126,18 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         })
 
         viewModel.uploadStatus.observe(viewLifecycleOwner, Observer{
-            fabUpload.isEnabled = !it
+            binding.fabUpload.isEnabled = !it
         })
 
         viewModel.loading.observe(viewLifecycleOwner, Observer {
-            lottieView.visibility = if (it) View.VISIBLE else View.GONE
+            binding.lottieView.visibility = if (it) View.VISIBLE else View.GONE
         })
 
         viewModel.searchResultEvent.observe(viewLifecycleOwner, EventObserver {
             when (it) {
                 is BaseViewModel.Command.Data -> {
                     if (it.isFirstPage) {
-                        pxlPhotoRecyclerViewInGrid.replaceList(it.list)
+                        binding.pxlPhotoRecyclerViewInGrid.replaceList(it.list)
                         if (it.list.isNotEmpty()) {
                             it.list.firstOrNull()?.pxlPhoto?.also {
                                 viewModel.getPhotoWithId(it)  // add your own region id
@@ -139,11 +147,11 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
                         // if no result in the first page, open search panel so that the SDK developers will try out different filters
                         if (it.list.isEmpty()) {
                             Toast.makeText(context, "success!! but you got an empty list.\nwhat about trying different searching options here?", Toast.LENGTH_LONG).show()
-                            drawerLayout.openDrawer(GravityCompat.END)
+                            binding.drawerLayout.openDrawer(GravityCompat.END)
                         }
 
                     } else {
-                        pxlPhotoRecyclerViewInGrid.addList(it.list)
+                        binding.pxlPhotoRecyclerViewInGrid.addList(it.list)
                     }
 
                 }
@@ -214,7 +222,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
             }
         }
         // you can customize color, size if you need
-        pxlPhotoRecyclerViewInGrid.initiate(gridSpan = 2, // the number of cells in a row in the grid list
+        binding.pxlPhotoRecyclerViewInGrid.initiate(gridSpan = 2, // the number of cells in a row in the grid list
                 lineSpace = Space().apply {
                     lineWidthInPixel = 4.px.toInt() // space in pixel between cells
                     includingEdge = false           // true: if you want to have the space out side of the list, false: no space out side of the list
@@ -237,11 +245,11 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
 
     fun initFilterClickListeners() {
         // set filter buttons
-        fabUpload.setOnClickListener { setupExternalStoragePermission() }
-        fabFilter.setOnClickListener { drawerLayout.openDrawer(GravityCompat.END) }
-        btnCloseFilter.setOnClickListener { drawerLayout.closeDrawer(GravityCompat.END) }
-        btnApply.setOnClickListener {
-            drawerLayout.closeDrawer(GravityCompat.END)
+        binding.fabUpload.setOnClickListener { setupExternalStoragePermission() }
+        binding.fabFilter.setOnClickListener { binding.drawerLayout.openDrawer(GravityCompat.END) }
+        menuBinding.btnCloseFilter.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
+        menuBinding.btnApply.setOnClickListener {
+            binding.drawerLayout.closeDrawer(GravityCompat.END)
             loadAlbum()
         }
     }
@@ -278,9 +286,9 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         context?.also {
             var searchId: PXLKtxBaseAlbum.SearchId? = null
             // initiate album
-            for (i in 0 until radioGroupAlbum.childCount) {
-                val rb = radioGroupAlbum.getChildAt(i) as MaterialRadioButton
-                if (radioGroupAlbum.checkedRadioButtonId == rb.id) {
+            for (i in 0 until menuBinding.radioGroupAlbum.childCount) {
+                val rb = menuBinding.radioGroupAlbum.getChildAt(i) as MaterialRadioButton
+                if (menuBinding.radioGroupAlbum.checkedRadioButtonId == rb.id) {
                     val text = rb.text.toString()
                     if (text == getString(R.string.radio_album)) {
                         searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID)
@@ -314,7 +322,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
 
     fun readPerPage(): Int {
         // Set textViewPerPage filter if text is not empty
-        val minTwitterFollowers = textViewPerPage.text.toString()
+        val minTwitterFollowers = menuBinding.textViewPerPage.text.toString()
         return if (!minTwitterFollowers.isEmpty()) {
             Integer.valueOf(minTwitterFollowers)
         } else 20
@@ -323,7 +331,7 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
     }
 
     fun readRegionIdFromUI(): Int? {
-        val data = textViewRegionId.text.toString()
+        val data = menuBinding.textViewRegionId.text.toString()
         return if (data.isNotEmpty()) {
             Integer.valueOf(data)
         } else null
@@ -332,9 +340,9 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
     fun readSortOptionsFromUI(): PXLAlbumSortOptions {
         val sortOptions = PXLAlbumSortOptions()
         // Set sortType filter if a radio button is selected
-        for (i in 0 until radioGroupSortType.childCount) {
-            val rb = radioGroupSortType.getChildAt(i) as MaterialRadioButton
-            if (radioGroupSortType.checkedRadioButtonId == rb.id) {
+        for (i in 0 until menuBinding.radioGroupSortType.childCount) {
+            val rb = menuBinding.radioGroupSortType.getChildAt(i) as MaterialRadioButton
+            if (menuBinding.radioGroupSortType.checkedRadioButtonId == rb.id) {
                 val text = rb.text.toString()
                 if (text == PXLAlbumSortType.RECENCY.value) sortOptions.sortType = PXLAlbumSortType.RECENCY
                 else if (text == PXLAlbumSortType.APPROVED_TIME.value) sortOptions.sortType = PXLAlbumSortType.APPROVED_TIME
@@ -348,8 +356,8 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         }
 
         // Set sorting direction
-        if (radioGroupSortDirection.checkedRadioButtonId == radioGroupSortDirectionASC.id) sortOptions.descending = false
-        else if (radioGroupSortDirection.checkedRadioButtonId == radioGroupSortDirectionDESC.id) sortOptions.descending = true
+        if (menuBinding.radioGroupSortDirection.checkedRadioButtonId == menuBinding.radioGroupSortDirectionASC.id) sortOptions.descending = false
+        else if (menuBinding.radioGroupSortDirection.checkedRadioButtonId == menuBinding.radioGroupSortDirectionDESC.id) sortOptions.descending = true
         return sortOptions
     }
 
@@ -357,21 +365,21 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         val filterOptions = PXLAlbumFilterOptions()
 
         // Set minTwitterFollowers filter if text is not empty
-        val minTwitterFollowers = textViewMinTwitterFollowers.text.toString()
+        val minTwitterFollowers = menuBinding.textViewMinTwitterFollowers.text.toString()
         if (!minTwitterFollowers.isEmpty()) {
             filterOptions.minTwitterFollowers = Integer.valueOf(minTwitterFollowers)
         }
 
         // Set minInstagramFollowers filter if text is not empty
-        val minInstagramFollowers = textViewMinInstagramFollowers.text.toString()
+        val minInstagramFollowers = menuBinding.textViewMinInstagramFollowers.text.toString()
         if (!minInstagramFollowers.isEmpty()) {
             filterOptions.minInstagramFollowers = Integer.valueOf(minInstagramFollowers)
         }
 
         // Set hasProduct filter if false or not true is set
-        for (i in 0 until radioGroupHasPermission.childCount) {
-            val rb = radioGroupHasPermission.getChildAt(i) as MaterialRadioButton
-            if (radioGroupHasPermission.checkedRadioButtonId == rb.id) {
+        for (i in 0 until menuBinding.radioGroupHasPermission.childCount) {
+            val rb = menuBinding.radioGroupHasPermission.getChildAt(i) as MaterialRadioButton
+            if (menuBinding.radioGroupHasPermission.checkedRadioButtonId == rb.id) {
                 val text = rb.text.toString()
                 if (text == getString(R.string.radio_false)) filterOptions.hasPermission = false else if (text == getString(R.string.radio_true)) filterOptions.hasPermission = true
                 break
@@ -379,9 +387,9 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         }
 
         // Set hasProduct filter if false or not true is set
-        for (i in 0 until radioGroupHasProduct.childCount) {
-            val rb = radioGroupHasProduct.getChildAt(i) as MaterialRadioButton
-            if (radioGroupHasProduct.checkedRadioButtonId == rb.id) {
+        for (i in 0 until menuBinding.radioGroupHasProduct.childCount) {
+            val rb = menuBinding.radioGroupHasProduct.getChildAt(i) as MaterialRadioButton
+            if (menuBinding.radioGroupHasProduct.checkedRadioButtonId == rb.id) {
                 val text = rb.text.toString()
                 if (text == getString(R.string.radio_false)) filterOptions.hasProduct = false else if (text == getString(R.string.radio_true)) filterOptions.hasProduct = true
                 break
@@ -389,9 +397,9 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
         }
 
         // Set inStockOnly filter if false or not true is set
-        for (i in 0 until radioGroupInStockOnly.childCount) {
-            val rb = radioGroupInStockOnly.getChildAt(i) as MaterialRadioButton
-            if (radioGroupInStockOnly.checkedRadioButtonId == rb.id) {
+        for (i in 0 until menuBinding.radioGroupInStockOnly.childCount) {
+            val rb = menuBinding.radioGroupInStockOnly.getChildAt(i) as MaterialRadioButton
+            if (menuBinding.radioGroupInStockOnly.checkedRadioButtonId == rb.id) {
                 val text = rb.text.toString()
                 if (text == getString(R.string.radio_false)) filterOptions.inStockOnly = false else if (text == getString(R.string.radio_true)) filterOptions.inStockOnly = true
                 break
@@ -400,19 +408,19 @@ class KtxGalleryGridFragment : BaseFragment(), LifecycleObserver {
 
         // Set contentSource filter if any of its check boxes is selected
         val contentSource: ArrayList<PXLContentSource> = ArrayList()
-        if (radioGroupContentSourceInstagramFeed.isChecked) contentSource.add(PXLContentSource.INSTAGRAM_FEED)
-        if (radioGroupContentSourceInstagramStory.isChecked) contentSource.add(PXLContentSource.INSTAGRAM_STORY)
-        if (radioGroupContentSourceTwitter.isChecked) contentSource.add(PXLContentSource.TWITTER)
-        if (radioGroupContentSourceFacebook.isChecked) contentSource.add(PXLContentSource.FACEBOOK)
-        if (radioGroupContentSourceApi.isChecked) contentSource.add(PXLContentSource.API)
-        if (radioGroupContentSourceDesktop.isChecked) contentSource.add(PXLContentSource.DESKTOP)
-        if (radioGroupContentSourceEmail.isChecked) contentSource.add(PXLContentSource.EMAIL)
+        if (menuBinding.radioGroupContentSourceInstagramFeed.isChecked) contentSource.add(PXLContentSource.INSTAGRAM_FEED)
+        if (menuBinding.radioGroupContentSourceInstagramStory.isChecked) contentSource.add(PXLContentSource.INSTAGRAM_STORY)
+        if (menuBinding.radioGroupContentSourceTwitter.isChecked) contentSource.add(PXLContentSource.TWITTER)
+        if (menuBinding.radioGroupContentSourceFacebook.isChecked) contentSource.add(PXLContentSource.FACEBOOK)
+        if (menuBinding.radioGroupContentSourceApi.isChecked) contentSource.add(PXLContentSource.API)
+        if (menuBinding.radioGroupContentSourceDesktop.isChecked) contentSource.add(PXLContentSource.DESKTOP)
+        if (menuBinding.radioGroupContentSourceEmail.isChecked) contentSource.add(PXLContentSource.EMAIL)
         if (contentSource.isNotEmpty()) filterOptions.contentSource = contentSource
 
         // Set contentType filter if any of its check boxes is selected
         val contentType: ArrayList<PXLContentType> = ArrayList()
-        if (radioGroupContentTypeImage.isChecked) contentType.add(PXLContentType.IMAGE)
-        if (radioGroupContentTypeVideo.isChecked) contentType.add(PXLContentType.VIDEO)
+        if (menuBinding.radioGroupContentTypeImage.isChecked) contentType.add(PXLContentType.IMAGE)
+        if (menuBinding.radioGroupContentTypeVideo.isChecked) contentType.add(PXLContentType.VIDEO)
         if (contentType.isNotEmpty()) filterOptions.contentType = contentType
 
         // Apart from the examples above, there are more filters you can implement in you app.
