@@ -1,5 +1,6 @@
 package com.pixlee.pixleesdk.ui.viewholder
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -32,7 +33,8 @@ class LoadMoreViewHolder(val binding: ItemLoadMoreBinding) :
 
     companion object {
         fun create(parent: ViewGroup): LoadMoreViewHolder {
-            return LoadMoreViewHolder(ItemLoadMoreBinding.bind(parent))
+//            return LoadMoreViewHolder(ItemLoadMoreBinding.bind(parent))
+            return LoadMoreViewHolder(ItemLoadMoreBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 }

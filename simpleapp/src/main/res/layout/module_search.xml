@@ -80,23 +80,23 @@
                 android:orientation="vertical">
                 <TextView style="@style/filterHeaderTextView" android:text="Grid Options" android:layout_marginTop="10dp"/>
                 <TextView style="@style/filterBulletTextView" android:text="gridSpan" />
-                <RadioGroup style="@style/filterContentView" android:id="@+id/radio_grid">
+                <RadioGroup style="@style/filterContentView" android:id="@+id/radioGridCount">
                     <com.google.android.material.radiobutton.MaterialRadioButton
                         style="@style/filterRadioButton"
-                        android:id="@+id/radio_grid_2"
+                        android:id="@+id/radioGridCount2"
                         android:checked="true"
                         android:text="2" />
                     <com.google.android.material.radiobutton.MaterialRadioButton
                         style="@style/filterRadioButton"
-                        android:id="@+id/radio_grid_3"
+                        android:id="@+id/radioGridCount3"
                         android:text="3" />
                     <com.google.android.material.radiobutton.MaterialRadioButton
                         style="@style/filterRadioButton"
-                        android:id="@+id/radio_grid_4"
+                        android:id="@+id/radioGridCount4"
                         android:text="4" />
                     <com.google.android.material.radiobutton.MaterialRadioButton
                         style="@style/filterRadioButton"
-                        android:id="@+id/radio_grid_5"
+                        android:id="@+id/radioGridCount5"
                         android:text="5" />
                 </RadioGroup>
 

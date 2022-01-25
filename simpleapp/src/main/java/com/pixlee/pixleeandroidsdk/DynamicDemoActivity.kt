@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
+import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -38,12 +39,8 @@ class DynamicDemoActivity : AppCompatActivity() {
     private var _binding: ActivityDynamicPhotosBinding? = null
     private val binding get() = _binding!!
 
-    private var _menuBinding: ModuleSearchBinding? = null
-    private val menuBinding get() = _menuBinding!!
-
     override fun onDestroy() {
         super.onDestroy()
-        _menuBinding = null
         _binding = null
     }
 
@@ -51,7 +48,6 @@ class DynamicDemoActivity : AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityDynamicPhotosBinding.inflate(layoutInflater)
-        _menuBinding = ModuleSearchBinding.bind(binding.root)
         setContentView(binding.root)
 
         setFilters()
@@ -106,7 +102,7 @@ class DynamicDemoActivity : AppCompatActivity() {
     }
 
     private fun getViewType(): PXLWidgetView.ViewType {
-        return if (menuBinding.radioGrid.isSelected) {
+        return if (binding.leftLayout.radioGrid.isChecked) {
             PXLWidgetView.ViewType.Grid(
                     gridSpan = getGridSpan(),
                     lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt()),
@@ -114,8 +110,8 @@ class DynamicDemoActivity : AppCompatActivity() {
             )
         } else {
             PXLWidgetView.ViewType.List(
-                    infiniteScroll = menuBinding.radioInfiniteScrollOn.isChecked,
-                    autoPlayVideo = menuBinding.radioAutoPlayVideoOn.isChecked,
+                    infiniteScroll = binding.leftLayout.radioInfiniteScrollOn.isChecked,
+                    autoPlayVideo = binding.leftLayout.radioAutoPlayVideoOn.isChecked,
                     alphaForStoppedVideos = 1f
             )
         }
@@ -158,7 +154,7 @@ class DynamicDemoActivity : AppCompatActivity() {
 
             override fun onDrawerClosed(drawerView: View) {
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(menuBinding.tvLineSpace.windowToken, 0)
+                imm.hideSoftInputFromWindow(binding.leftLayout.tvLineSpace.windowToken, 0)
             }
 
             override fun onDrawerStateChanged(newState: Int) {
@@ -168,51 +164,52 @@ class DynamicDemoActivity : AppCompatActivity() {
 
         binding.fabFilter.setOnClickListener { binding.drawerLayout.openDrawer(GravityCompat.END) }
 
-        menuBinding.btnApply.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
+        binding.leftLayout.btnApply.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
 
-        menuBinding.radioGrid.setOnCheckedChangeListener { group, checkedId ->
-            val viewType = binding.widget.currentViewType
+
+
+        binding.leftLayout.radioGridCount.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
-                R.id.radio_grid_2 -> {
+                binding.leftLayout.radioGridCount2.id -> {
                     changeSpan(2)
                 }
-                R.id.radio_grid_3 -> {
+                binding.leftLayout.radioGridCount3.id -> {
                     changeSpan(3)
                 }
-                R.id.radio_grid_4 -> {
+                binding.leftLayout.radioGridCount4.id -> {
                     changeSpan(4)
                 }
-                R.id.radio_grid_5 -> {
+                binding.leftLayout.radioGridCount5.id -> {
                     changeSpan(5)
                 }
             }
         }
 
-        menuBinding.radioViewType.setOnCheckedChangeListener { group, checkedId ->
-            menuBinding.vGrid.visibility = if (R.id.radioGrid == checkedId) View.VISIBLE else View.GONE
-            menuBinding.vList.visibility = if (R.id.radioList == checkedId) View.VISIBLE else View.GONE
+        binding.leftLayout.radioViewType.setOnCheckedChangeListener { group, checkedId ->
+            binding.leftLayout.vGrid.visibility = if (R.id.radioGrid == checkedId) View.VISIBLE else View.GONE
+            binding.leftLayout.vList.visibility = if (R.id.radioList == checkedId) View.VISIBLE else View.GONE
             refreshViewType()
             changeSpan(getGridSpan())
         }
 
-        menuBinding.radioInfiniteScroll.setOnCheckedChangeListener { group, checkedId ->
+        binding.leftLayout.radioInfiniteScroll.setOnCheckedChangeListener { group, checkedId ->
             changeSpan(getGridSpan())
             refreshViewType()
-            if (menuBinding.radioInfiniteScrollOn.isChecked) {
+            if (binding.leftLayout.radioInfiniteScrollOn.isChecked) {
                 binding.widget.scrollToPosition(Integer.MAX_VALUE / 2)
             }
         }
 
-        menuBinding.radioAutoPlayVideo.setOnCheckedChangeListener { group, checkedId ->
+        binding.leftLayout.radioAutoPlayVideo.setOnCheckedChangeListener { group, checkedId ->
             changeSpan(getGridSpan())
             refreshViewType()
         }
 
-        menuBinding.radioHeader.setOnCheckedChangeListener { group, checkedId ->
+        binding.leftLayout.radioHeader.setOnCheckedChangeListener { group, checkedId ->
             refreshViewType()
         }
 
-        menuBinding.tvLineSpace.addTextChangedListener(object : TextWatcher {
+        binding.leftLayout.tvLineSpace.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -222,8 +219,8 @@ class DynamicDemoActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                Log.e("text change", "changed text: ${menuBinding.tvLineSpace.text}")
-                menuBinding.tvLineSpace.text
+                Log.e("text change", "changed text: ${binding.leftLayout.tvLineSpace.text}")
+                binding.leftLayout.tvLineSpace.text
                 refreshViewType()
                 changeSpan(getGridSpan())
             }
@@ -245,7 +242,7 @@ class DynamicDemoActivity : AppCompatActivity() {
         }
 
         binding.widget.viewModel.cellHeightInPixel = cellHeightInPixel
-        binding.widget.viewModel.customizedConfiguration.pxlPhotoSize = if (menuBinding.radioList.isChecked) PXLPhotoSize.BIG else PXLPhotoSize.MEDIUM
+        binding.widget.viewModel.customizedConfiguration.pxlPhotoSize = if (binding.leftLayout.radioList.isChecked) PXLPhotoSize.BIG else PXLPhotoSize.MEDIUM
         binding.widget.pxlPhotoAdapter.list.forEach {
             when (it) {
                 is PXLPhotoAdapter.Item.Content -> {
@@ -257,7 +254,7 @@ class DynamicDemoActivity : AppCompatActivity() {
 
         binding.widget.pxlPhotoAdapter.notifyDataSetChanged()
 
-        if (menuBinding.radioInfiniteScrollOn.isChecked) {
+        if (binding.leftLayout.radioInfiniteScrollOn.isChecked) {
             var lastItem = binding.widget.pxlPhotoAdapter.list.lastOrNull()
             if (lastItem != null && lastItem is PXLPhotoAdapter.Item.LoadMore) {
                 val position = binding.widget.pxlPhotoAdapter.list.count() - 1
@@ -272,22 +269,22 @@ class DynamicDemoActivity : AppCompatActivity() {
     }
 
     fun getGridSpan(): Int {
-        return if (menuBinding.radioGrid2.isChecked) 2
-        else if (menuBinding.radioGrid3.isChecked) 3
-        else if (menuBinding.radioGrid4.isChecked) 4
-        else if (menuBinding.radioGrid5.isChecked) 5
+        return if (binding.leftLayout.radioGridCount2.isChecked) 2
+        else if (binding.leftLayout.radioGridCount3.isChecked) 3
+        else if (binding.leftLayout.radioGridCount4.isChecked) 4
+        else if (binding.leftLayout.radioGridCount5.isChecked) 5
         else 2
     }
 
     fun getLineSpace(): Int {
-        val text = menuBinding.tvLineSpace.text.toString()
+        val text = binding.leftLayout.tvLineSpace.text.toString()
         return if (text.isEmpty()) 0 else text.toInt()
     }
 
     fun getHeader(): ListHeader? {
-        return if (menuBinding.radioHeaderImage.isChecked)
+        return if (binding.leftLayout.radioHeaderImage.isChecked)
             ListHeader.Gif(url = "https://media.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif", heightInPixel = 200.px.toInt(), imageScaleType = ImageScaleType.CENTER_CROP)
-        else if (menuBinding.radioHeaderText.isChecked)
+        else if (binding.leftLayout.radioHeaderText.isChecked)
             getTitleSpannable()
         else
             null

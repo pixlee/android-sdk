@@ -11,6 +11,7 @@ import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.util.DisplayMetrics
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.ColorInt
@@ -20,6 +21,7 @@ import com.bumptech.glide.Glide
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.data.PXLProduct
 import com.pixlee.pixleesdk.databinding.ItemProductBinding
+import com.pixlee.pixleesdk.databinding.ItemPxlphotoBinding
 import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
 import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.ui.widgets.setTextStyle
@@ -255,8 +257,7 @@ class ProductViewHolder(val binding: ItemProductBinding) : RecyclerView.ViewHold
 
     companion object {
         fun create(parent: ViewGroup): ProductViewHolder {
-
-            return ProductViewHolder(ItemProductBinding.bind(parent))
+            return ProductViewHolder(ItemProductBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 }

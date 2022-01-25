@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pixlee.pixleesdk.data.PXLPhoto
+import com.pixlee.pixleesdk.databinding.ItemLoadMoreBinding
 import com.pixlee.pixleesdk.databinding.ItemPxlphotoBinding
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.px
@@ -32,7 +33,7 @@ class PXLPhotoViewHolder(val binding: ItemPxlphotoBinding) :
 
     companion object {
         fun create(parent: ViewGroup): PXLPhotoViewHolder {
-            val binding = ItemPxlphotoBinding.bind(parent)
+            val binding = ItemPxlphotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             val holder = PXLPhotoViewHolder(binding)
             //binding.root.setTag(holder)
             return holder

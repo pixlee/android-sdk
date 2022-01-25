@@ -1,5 +1,6 @@
 package com.pixlee.pixleesdk.ui.viewholder
 
+import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
@@ -43,7 +44,7 @@ class TextHeaderViewHolder(val binding: ItemHeaderBinding) : RecyclerView.ViewHo
 
     companion object {
         fun create(parent: ViewGroup): TextHeaderViewHolder {
-            return TextHeaderViewHolder(ItemHeaderBinding.bind(parent))
+            return TextHeaderViewHolder(ItemHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 }

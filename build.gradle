@@ -45,9 +45,9 @@ ext {
 
     jakeWhartonOkhttpOdlingResource = "1.0.0"
 
-    androidxAppcompat = "1.2.0"
-    androidxConstraint = "2.0.1"
-    material = "1.2.1"
+    androidxAppcompat = "1.4.1"
+    androidxConstraint = "2.1.3"
+    material = "1.5.0"
 
     lifecycle = "2.2.0"
     retrofit2 = "2.9.0"
