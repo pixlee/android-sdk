@@ -61,7 +61,7 @@ ext {
     lottie = "3.4.1"
     androidJZVideo="1.0.8"
 
-    checkerframeworkVersion = '3.3.0'
+    checkerframeworkVersion = '3.13.0'
     exoPlayer="2.16.1"
     supportLibraryVersion = '27.0.0'
     jackson = '2.10.3'
