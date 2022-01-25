@@ -2,6 +2,7 @@ package com.pixlee.pixleesdk.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.pixlee.pixleesdk.network.annotation.FieldBigDecimal;
 import com.pixlee.pixleesdk.network.annotation.FieldDate;
@@ -77,6 +78,10 @@ public class PXLProduct implements Parcelable {
         } else if (salesStartDate != null && salesEndDate != null) {
             isWithinSalesDateRange = salesStartDate.getTime() <= today.getTime() && salesEndDate.getTime() >= today.getTime();
         }
+
+        Log.e("hong test", "[salesPrice] price: " + price + ", salesPrice: " + salesPrice);
+        Log.e("hong test", "[salesPrice] salesStartDate: " + salesStartDate + ", salesEndDate: " + salesEndDate);
+        Log.e("hong test", "[salesPrice] salesPriceLessThanStandard: " + salesPriceLessThanStandard + ", isWithinSalesDateRange: " + isWithinSalesDateRange);
 
         return salesPriceLessThanStandard && isWithinSalesDateRange;
     }

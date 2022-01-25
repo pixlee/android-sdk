@@ -13,7 +13,6 @@ import com.google.android.material.radiobutton.MaterialRadioButton
 import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.databinding.FragmentAnalyticsBinding
-import com.pixlee.pixleeandroidsdk.databinding.ModuleSearchBinding
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.BaseViewModel
 import com.pixlee.pixleesdk.client.PXLClient
@@ -55,19 +54,14 @@ class KtxAnalyticsFragment : BaseFragment() {
 
     private var _binding: FragmentAnalyticsBinding? = null
     private val binding get() = _binding!!
-
-    private var _menuBinding: ModuleSearchBinding? = null
-    private val menuBinding get() = _menuBinding!!
-
+    
     override fun onDestroyView() {
         super.onDestroyView()
-        _menuBinding = null
         _binding = null
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentAnalyticsBinding.inflate(inflater, container, false)
-        _menuBinding = ModuleSearchBinding.bind(binding.root)
         return binding.root
     }
 
@@ -87,8 +81,8 @@ class KtxAnalyticsFragment : BaseFragment() {
     fun initFilterClickListeners() {
         // set filter buttons
         binding.fabFilter.setOnClickListener { binding.drawerLayout.openDrawer(GravityCompat.END) }
-        menuBinding.btnCloseFilter.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
-        menuBinding.btnApply.setOnClickListener {
+        binding.moduleSearchLayout.btnCloseFilter.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
+        binding.moduleSearchLayout.btnApply.setOnClickListener {
             binding.drawerLayout.closeDrawer(GravityCompat.END)
             loadPixleeAlbum()
         }
@@ -129,9 +123,9 @@ class KtxAnalyticsFragment : BaseFragment() {
         context?.also {
             var searchId: PXLKtxBaseAlbum.SearchId? = null
             // initiate album
-            for (i in 0 until menuBinding.radioGroupAlbum.childCount) {
-                val rb = menuBinding.radioGroupAlbum.getChildAt(i) as MaterialRadioButton
-                if (menuBinding.radioGroupAlbum.checkedRadioButtonId == rb.id) {
+            for (i in 0 until binding.moduleSearchLayout.radioGroupAlbum.childCount) {
+                val rb = binding.moduleSearchLayout.radioGroupAlbum.getChildAt(i) as MaterialRadioButton
+                if (binding.moduleSearchLayout.radioGroupAlbum.checkedRadioButtonId == rb.id) {
                     val text = rb.text.toString()
                     if (text == getString(R.string.radio_album)) {
                         searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID)
@@ -292,7 +286,7 @@ class KtxAnalyticsFragment : BaseFragment() {
 
     fun readPerPage(): Int {
         // Set textViewPerPage filter if text is not empty
-        val minTwitterFollowers = menuBinding.textViewPerPage.text.toString()
+        val minTwitterFollowers = binding.moduleSearchLayout.textViewPerPage.text.toString()
         return if (!minTwitterFollowers.isEmpty()) {
             Integer.valueOf(minTwitterFollowers)
         } else 20
@@ -301,7 +295,7 @@ class KtxAnalyticsFragment : BaseFragment() {
     }
 
     fun readRegionIdFromUI(): Int?{
-        val data = menuBinding.textViewRegionId.text.toString()
+        val data = binding.moduleSearchLayout.textViewRegionId.text.toString()
         return if (data.isNotEmpty()) {
             Integer.valueOf(data)
         } else null
@@ -310,9 +304,9 @@ class KtxAnalyticsFragment : BaseFragment() {
     fun readSortOptionsFromUI(): PXLAlbumSortOptions {
         val sortOptions = PXLAlbumSortOptions()
         // Set sortType filter if a radio button is selected
-        for (i in 0 until menuBinding.radioGroupSortType.childCount) {
-            val rb = menuBinding.radioGroupSortType.getChildAt(i) as MaterialRadioButton
-            if (menuBinding.radioGroupSortType.checkedRadioButtonId == rb.id) {
+        for (i in 0 until binding.moduleSearchLayout.radioGroupSortType.childCount) {
+            val rb = binding.moduleSearchLayout.radioGroupSortType.getChildAt(i) as MaterialRadioButton
+            if (binding.moduleSearchLayout.radioGroupSortType.checkedRadioButtonId == rb.id) {
                 val text = rb.text.toString()
                 if (text == PXLAlbumSortType.RECENCY.value) sortOptions.sortType = PXLAlbumSortType.RECENCY
                 else if (text == PXLAlbumSortType.APPROVED_TIME.value) sortOptions.sortType = PXLAlbumSortType.APPROVED_TIME
@@ -326,8 +320,8 @@ class KtxAnalyticsFragment : BaseFragment() {
         }
 
         // Set sorting direction
-        if (menuBinding.radioGroupSortDirection.checkedRadioButtonId == menuBinding.radioGroupSortDirectionASC.id) sortOptions.descending = false
-        else if (menuBinding.radioGroupSortDirection.checkedRadioButtonId == menuBinding.radioGroupSortDirectionDESC.id) sortOptions.descending = true
+        if (binding.moduleSearchLayout.radioGroupSortDirection.checkedRadioButtonId == binding.moduleSearchLayout.radioGroupSortDirectionASC.id) sortOptions.descending = false
+        else if (binding.moduleSearchLayout.radioGroupSortDirection.checkedRadioButtonId == binding.moduleSearchLayout.radioGroupSortDirectionDESC.id) sortOptions.descending = true
         return sortOptions
     }
 
@@ -335,21 +329,21 @@ class KtxAnalyticsFragment : BaseFragment() {
         val filterOptions = PXLAlbumFilterOptions()
 
         // Set minTwitterFollowers filter if text is not empty
-        val minTwitterFollowers = menuBinding.textViewMinTwitterFollowers.text.toString()
+        val minTwitterFollowers = binding.moduleSearchLayout.textViewMinTwitterFollowers.text.toString()
         if (!minTwitterFollowers.isEmpty()) {
             filterOptions.minTwitterFollowers = Integer.valueOf(minTwitterFollowers)
         }
 
         // Set minInstagramFollowers filter if text is not empty
-        val minInstagramFollowers = menuBinding.textViewMinInstagramFollowers.text.toString()
+        val minInstagramFollowers = binding.moduleSearchLayout.textViewMinInstagramFollowers.text.toString()
         if (!minInstagramFollowers.isEmpty()) {
             filterOptions.minInstagramFollowers = Integer.valueOf(minInstagramFollowers)
         }
 
         // Set hasProduct filter if false or not true is set
-        for (i in 0 until menuBinding.radioGroupHasPermission.childCount) {
-            val rb = menuBinding.radioGroupHasPermission.getChildAt(i) as MaterialRadioButton
-            if (menuBinding.radioGroupHasPermission.checkedRadioButtonId == rb.id) {
+        for (i in 0 until binding.moduleSearchLayout.radioGroupHasPermission.childCount) {
+            val rb = binding.moduleSearchLayout.radioGroupHasPermission.getChildAt(i) as MaterialRadioButton
+            if (binding.moduleSearchLayout.radioGroupHasPermission.checkedRadioButtonId == rb.id) {
                 val text = rb.text.toString()
                 if (text == getString(R.string.radio_false)) filterOptions.hasPermission = false else if (text == getString(R.string.radio_true)) filterOptions.hasPermission = true
                 break
@@ -357,9 +351,9 @@ class KtxAnalyticsFragment : BaseFragment() {
         }
 
         // Set hasProduct filter if false or not true is set
-        for (i in 0 until menuBinding.radioGroupHasProduct.childCount) {
-            val rb = menuBinding.radioGroupHasProduct.getChildAt(i) as MaterialRadioButton
-            if (menuBinding.radioGroupHasProduct.checkedRadioButtonId == rb.id) {
+        for (i in 0 until binding.moduleSearchLayout.radioGroupHasProduct.childCount) {
+            val rb = binding.moduleSearchLayout.radioGroupHasProduct.getChildAt(i) as MaterialRadioButton
+            if (binding.moduleSearchLayout.radioGroupHasProduct.checkedRadioButtonId == rb.id) {
                 val text = rb.text.toString()
                 if (text == getString(R.string.radio_false)) filterOptions.hasProduct = false else if (text == getString(R.string.radio_true)) filterOptions.hasProduct = true
                 break
@@ -367,9 +361,9 @@ class KtxAnalyticsFragment : BaseFragment() {
         }
 
         // Set inStockOnly filter if false or not true is set
-        for (i in 0 until menuBinding.radioGroupInStockOnly.childCount) {
-            val rb = menuBinding.radioGroupInStockOnly.getChildAt(i) as MaterialRadioButton
-            if (menuBinding.radioGroupInStockOnly.checkedRadioButtonId == rb.id) {
+        for (i in 0 until binding.moduleSearchLayout.radioGroupInStockOnly.childCount) {
+            val rb = binding.moduleSearchLayout.radioGroupInStockOnly.getChildAt(i) as MaterialRadioButton
+            if (binding.moduleSearchLayout.radioGroupInStockOnly.checkedRadioButtonId == rb.id) {
                 val text = rb.text.toString()
                 if (text == getString(R.string.radio_false)) filterOptions.inStockOnly = false else if (text == getString(R.string.radio_true)) filterOptions.inStockOnly = true
                 break
@@ -378,19 +372,19 @@ class KtxAnalyticsFragment : BaseFragment() {
 
         // Set contentSource filter if any of its check boxes is selected
         val contentSource: ArrayList<PXLContentSource> = ArrayList()
-        if (menuBinding.radioGroupContentSourceInstagramFeed.isChecked) contentSource.add(PXLContentSource.INSTAGRAM_FEED)
-        if (menuBinding.radioGroupContentSourceInstagramStory.isChecked) contentSource.add(PXLContentSource.INSTAGRAM_STORY)
-        if (menuBinding.radioGroupContentSourceTwitter.isChecked) contentSource.add(PXLContentSource.TWITTER)
-        if (menuBinding.radioGroupContentSourceFacebook.isChecked) contentSource.add(PXLContentSource.FACEBOOK)
-        if (menuBinding.radioGroupContentSourceApi.isChecked) contentSource.add(PXLContentSource.API)
-        if (menuBinding.radioGroupContentSourceDesktop.isChecked) contentSource.add(PXLContentSource.DESKTOP)
-        if (menuBinding.radioGroupContentSourceEmail.isChecked) contentSource.add(PXLContentSource.EMAIL)
+        if (binding.moduleSearchLayout.radioGroupContentSourceInstagramFeed.isChecked) contentSource.add(PXLContentSource.INSTAGRAM_FEED)
+        if (binding.moduleSearchLayout.radioGroupContentSourceInstagramStory.isChecked) contentSource.add(PXLContentSource.INSTAGRAM_STORY)
+        if (binding.moduleSearchLayout.radioGroupContentSourceTwitter.isChecked) contentSource.add(PXLContentSource.TWITTER)
+        if (binding.moduleSearchLayout.radioGroupContentSourceFacebook.isChecked) contentSource.add(PXLContentSource.FACEBOOK)
+        if (binding.moduleSearchLayout.radioGroupContentSourceApi.isChecked) contentSource.add(PXLContentSource.API)
+        if (binding.moduleSearchLayout.radioGroupContentSourceDesktop.isChecked) contentSource.add(PXLContentSource.DESKTOP)
+        if (binding.moduleSearchLayout.radioGroupContentSourceEmail.isChecked) contentSource.add(PXLContentSource.EMAIL)
         if (contentSource.isNotEmpty()) filterOptions.contentSource = contentSource
 
         // Set contentType filter if any of its check boxes is selected
         val contentType: ArrayList<PXLContentType> = ArrayList()
-        if (menuBinding.radioGroupContentTypeImage.isChecked) contentType.add(PXLContentType.IMAGE)
-        if (menuBinding.radioGroupContentTypeVideo.isChecked) contentType.add(PXLContentType.VIDEO)
+        if (binding.moduleSearchLayout.radioGroupContentTypeImage.isChecked) contentType.add(PXLContentType.IMAGE)
+        if (binding.moduleSearchLayout.radioGroupContentTypeVideo.isChecked) contentType.add(PXLContentType.VIDEO)
         if (contentType.isNotEmpty()) filterOptions.contentType = contentType
 
         // Apart from the examples above, there are more filters you can implement in you app.

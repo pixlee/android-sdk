@@ -33,7 +33,6 @@ class LoadMoreViewHolder(val binding: ItemLoadMoreBinding) :
 
     companion object {
         fun create(parent: ViewGroup): LoadMoreViewHolder {
-//            return LoadMoreViewHolder(ItemLoadMoreBinding.bind(parent))
             return LoadMoreViewHolder(ItemLoadMoreBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
