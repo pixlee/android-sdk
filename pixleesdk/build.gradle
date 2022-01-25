@@ -103,6 +103,7 @@ dependencies {
 
     implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"
 
+    compileOnly "org.checkerframework:checker-qual:$checkerframeworkVersion"
     implementation "com.google.android.exoplayer:exoplayer-core:$exoPlayer"
     implementation "com.google.android.exoplayer:exoplayer-dash:$exoPlayer"
     implementation "com.google.android.exoplayer:exoplayer-ui:$exoPlayer"
