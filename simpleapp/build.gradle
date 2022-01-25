@@ -63,9 +63,9 @@ dependencies {
     /**
      * libraries for app. you don't need to use these
      */
-    testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test:runner:1.3.0'
-    androidTestImplementation 'androidx.test.ext:junit:' + rootProject.extJUnitVersion
+    testImplementation "junit:junit:$junit"
+    androidTestImplementation "androidx.test:runner:$androidxRunner"
+    androidTestImplementation "androidx.test.ext:junit:$extJUnitVersion"
     implementation "androidx.appcompat:appcompat:$androidxAppcompat"
     implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"
     implementation "com.google.android.material:material:$material"
