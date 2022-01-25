@@ -40,8 +40,8 @@
                 android:layout_width="?attr/actionBarSize"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:tint="@color/red_500"
-                android:src="@drawable/ic_close" />
+                android:src="@drawable/ic_close"
+                app:tint="@color/red_500" />
 
         </LinearLayout>
 
