@@ -33,11 +33,11 @@ plugins {
 //}
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion COMPILE_SDK_VERSION as int
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 30
+        minSdkVersion MIN_SDK_VERSION as int
+        targetSdkVersion TARGET_SDK_VERSION as int
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
@@ -69,6 +69,11 @@ android {
                 }
             }
         }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/AL2.0'
+        exclude 'META-INF/LGPL2.1'
     }
 }
 
