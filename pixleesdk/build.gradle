@@ -49,17 +49,6 @@ android {
         exclude 'META-INF/AL2.0'
         exclude 'META-INF/LGPL2.1'
     }
-
-    afterEvaluate {
-        publishing {
-            publications {
-                release(MavenPublication) {
-                    from components.release
-
-                }
-            }
-        }
-    }
 }
 
 dependencies {
@@ -128,4 +117,15 @@ dependencies {
     implementation "com.google.android.exoplayer:extension-cronet:$exoPlayer"
 
     implementation 'androidx.annotation:annotation:1.3.0'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+            }
+        }
+    }
 }
