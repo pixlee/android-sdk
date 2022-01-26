@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.data.PXLProduct
+import com.pixlee.pixleesdk.databinding.ItemProductBinding
+import com.pixlee.pixleesdk.databinding.ItemPxlphotoBinding
 import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
 import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.ui.widgets.setTextStyle
@@ -27,8 +29,6 @@ import com.pixlee.pixleesdk.util.ExtendedCurrency
 import com.pixlee.pixleesdk.util.getFractionalPart
 import com.pixlee.pixleesdk.util.px
 import com.pixlee.pixleesdk.util.setCompatColorFilter
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.item_product.*
 import java.math.BigDecimal
 import java.text.DecimalFormat
 
@@ -36,7 +36,7 @@ import java.text.DecimalFormat
 /**
  * This is to display PXLProduct as a RecyclerView.ViewHolder
  */
-class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+class ProductViewHolder(val binding: ItemProductBinding) : RecyclerView.ViewHolder(binding.root) {
     data class Configuration(
             var mainTextStyle: TextStyle? = null,
             var subTextStyle: TextStyle? = null,
@@ -82,19 +82,19 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
     var formatter = DecimalFormat("#,##0.##")
     fun bind(product: PXLProduct, isBookmarked: Boolean?, configuration: Configuration) {
         // product image UI
-        Glide.with(imageView.context)
+        Glide.with(binding.imageView.context)
                 .load(product.imageThumb)
                 .fitCenter()
-                .into(imageView)
+                .into(binding.imageView)
 
         // main text UI
-        configuration.mainTextStyle?.also { tvMain.setTextStyle(it) }
-        tvMain.text = product.title
+        configuration.mainTextStyle?.also { binding.tvMain.setTextStyle(it) }
+        binding.tvMain.text = product.title
 
         // sub text UI
-        configuration.subTextStyle?.also { tvMain.setTextStyle(it) }
-        tvSub.visibility = if (product.description != null && product.description.isNotEmpty()) View.VISIBLE else View.INVISIBLE
-        tvSub.text = product.description
+        configuration.subTextStyle?.also { binding.tvMain.setTextStyle(it) }
+        binding.tvSub.visibility = if (product.description != null && product.description.isNotEmpty()) View.VISIBLE else View.INVISIBLE
+        binding.tvSub.text = product.description
 
         // price UI
         (product.price ?: 0.toBigDecimal()).let { price ->
@@ -133,7 +133,7 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
 
             // add was_old_price if needed
             if (!noSalesPrice && discountLayout != null && discountLayout == DiscountLayout.WAS_OLD_PRICE) {
-                defaultPrice.integerPrice = tvPrice.context.getString(R.string.was_old_price, defaultPrice.integerPrice)
+                defaultPrice.integerPrice = binding.tvPrice.context.getString(R.string.was_old_price, defaultPrice.integerPrice)
             }
 
             val defaultPriceString = "${defaultPrice.integerPrice}${defaultPrice.decimalPrice}"
@@ -142,7 +142,7 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
             val total = if (!noSalesPrice && discountLayout != null) {
                 val discountPercentage = product.getDiscountPercentage()
                 offLabel = if (discountLayout == DiscountLayout.WITH_DISCOUNT_LABEL && discountPercentage != null) {
-                    " ${tvSub.context.getString(R.string.percent_off, "$discountPercentage")}"
+                    " ${binding.tvSub.context.getString(R.string.percent_off, "$discountPercentage")}"
                 } else {
                     ""
                 }
@@ -152,8 +152,8 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
             }
 
             // set the string to the UI with customized size and color
-            tvPrice.text = SpannableString(total).apply {
-                val metrics = tvSub.context.resources.displayMetrics
+            binding.tvPrice.text = SpannableString(total).apply {
+                val metrics = binding.tvSub.context.resources.displayMetrics
                 var newIndex = 0
 
                 // Draw integer sales price
@@ -210,19 +210,19 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
         }
 
         // bookmark UI
-        bookmark.visibility = if (configuration.bookmarkDrawable != null) View.VISIBLE else View.GONE
+        binding.bookmark.visibility = if (configuration.bookmarkDrawable != null) View.VISIBLE else View.GONE
         if (isBookmarked != null && configuration.bookmarkDrawable != null) {
             changeBookmarkUI(isBookmarked, configuration.bookmarkDrawable)
         }
 
         // shop image UI
-        iconBox.visibility = if (configuration.circleIcon != null) View.VISIBLE else View.GONE
+        binding.iconBox.visibility = if (configuration.circleIcon != null) View.VISIBLE else View.GONE
 
         configuration.circleIcon?.let {
-            iconBox.background = getDrawable(it)
-            iconBox.setPadding(it.padding, it.padding, it.padding, it.padding)
-            ivIcon.setBackgroundResource(it.icon)
-            ivIcon.setCompatColorFilter(it.iconColor)
+            binding.iconBox.background = getDrawable(it)
+            binding.iconBox.setPadding(it.padding, it.padding, it.padding, it.padding)
+            binding.ivIcon.setBackgroundResource(it.icon)
+            binding.ivIcon.setCompatColorFilter(it.iconColor)
         }
     }
 
@@ -237,16 +237,16 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
 
     fun changeBookmarkUI(isBookmarked: Boolean, bookmarkDrawable: Bookmark?) {
         bookmarkDrawable?.let {
-            bookmark.setBackgroundResource(when (isBookmarked) {
+            binding.bookmark.setBackgroundResource(when (isBookmarked) {
                 false -> it.unselectedIcon
                 true -> it.selectedIcon
             })
 
             val filter = it.filterColor
             if (filter == null) {
-                bookmark.setCompatColorFilter(null)
+                binding.bookmark.setCompatColorFilter(null)
             } else {
-                bookmark.setCompatColorFilter(when (isBookmarked) {
+                binding.bookmark.setCompatColorFilter(when (isBookmarked) {
                     false -> filter.unselectedColor
                     true -> filter.selectedColor
                 })
@@ -257,7 +257,7 @@ class ProductViewHolder(override val containerView: View) : RecyclerView.ViewHol
 
     companion object {
         fun create(parent: ViewGroup): ProductViewHolder {
-            return ProductViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_product, parent, false))
+            return ProductViewHolder(ItemProductBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 }

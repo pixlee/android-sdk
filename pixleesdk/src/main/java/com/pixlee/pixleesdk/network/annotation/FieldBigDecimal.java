@@ -9,5 +9,5 @@ import java.math.BigDecimal;
 @Retention(RetentionPolicy.RUNTIME)
 @JsonQualifier
 public @interface FieldBigDecimal {
-    BigDecimal NONE = new BigDecimal(0);
+    BigDecimal NONE = null;
 }

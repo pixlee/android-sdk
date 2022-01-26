@@ -10,8 +10,6 @@ import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.viewholder.TextHeaderViewHolder
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.ui.widgets.list.ListHeader
-import kotlinx.android.synthetic.main.item_load_more.*
-import kotlinx.android.synthetic.main.item_pxlphoto.*
 
 /**
  * This is to display PhotoWithImageScaleType having PXLPhoto in a RecyclerView.
@@ -61,7 +59,7 @@ class PXLPhotoAdapter(
                 }
 
                 val data = item as Item.Header
-                holder.bind(data.listHeader)
+                holder.setData(data.listHeader)
                 holder.itemView.setOnClickListener(null)
             }
             is PXLPhotoViewHolder -> {
@@ -70,7 +68,7 @@ class PXLPhotoAdapter(
                 }
 
                 val data = item as Item.Content
-                holder.bind(data.data, showingDebugView)
+                holder.setData(data.data, showingDebugView)
                 holder.itemView.setOnClickListener {
                     onPhotoClickedListener?.also {
                         it(holder.itemView, data.data)
@@ -78,9 +76,9 @@ class PXLPhotoAdapter(
                 }
 
                 if (onButtonClickedListener == null) {
-                    holder.pxlPhotoView.setButtonClickListener(null)
+                    holder.binding.pxlPhotoView.setButtonClickListener(null)
                 } else {
-                    holder.pxlPhotoView.setButtonClickListener(View.OnClickListener {
+                    holder.binding.pxlPhotoView.setButtonClickListener(View.OnClickListener {
                         onButtonClickedListener?.also {
                             it(holder.itemView, data.data)
                         }
@@ -89,8 +87,8 @@ class PXLPhotoAdapter(
             }
             is LoadMoreViewHolder -> {
                 val data = item as Item.LoadMore
-                holder.bind(data)
-                holder.tvLoadMore.setOnClickListener {
+                holder.setData(data)
+                holder.binding.tvLoadMore.setOnClickListener {
                     onLoadMoreClickedListener?.also {
                         it()
                     }

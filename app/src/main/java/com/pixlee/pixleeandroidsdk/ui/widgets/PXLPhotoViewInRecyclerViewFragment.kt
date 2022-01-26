@@ -10,6 +10,7 @@ import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.pixlee.pixleeandroidsdk.R
+import com.pixlee.pixleeandroidsdk.databinding.FragmentPxlphotoviewInRecyclerviewBinding
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
@@ -18,7 +19,6 @@ import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.util.px
-import kotlinx.android.synthetic.main.fragment_pxlphotoview_in_recyclerview.*
 
 /**
  * This is to display a photo with texts of PXLPhoto in RecyclerView
@@ -28,13 +28,17 @@ class PXLPhotoViewInRecyclerViewFragment : BaseFragment() {
         return R.string.title_pxlphotoview_in_recyclerview
     }
 
+    private var _binding: FragmentPxlphotoviewInRecyclerviewBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_pxlphotoview_in_recyclerview, container, false)
+        _binding = FragmentPxlphotoviewInRecyclerviewBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        pxlPhotoRecyclerView.initiate(infiniteScroll = false,
+        binding.pxlPhotoRecyclerView.initiate(infiniteScroll = false,
                 onButtonClickedListener = { view, pxlPhoto ->
                     context?.also { ctx ->
                         Toast.makeText(ctx, "onButtonClickedListener", Toast.LENGTH_SHORT).show()
@@ -46,15 +50,15 @@ class PXLPhotoViewInRecyclerViewFragment : BaseFragment() {
             }
         })
 
-        pxlPhotoRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        binding.pxlPhotoRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 try {
-                    if (pxlPhotoRecyclerView == null)
+                    if (binding.pxlPhotoRecyclerView == null)
                         return
 
-                    val cellSize = pxlPhotoRecyclerView.measuredHeight / 2
+                    val cellSize = binding.pxlPhotoRecyclerView.measuredHeight / 2
                     startList(cellSize)
-                    pxlPhotoRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    binding.pxlPhotoRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -126,7 +130,7 @@ class PXLPhotoViewInRecyclerViewFragment : BaseFragment() {
                 list.add(PhotoWithImageScaleType(pxlPhoto, generateConfiguration(ImageScaleType.FIT_CENTER), 600.px.toInt()))
             }
 
-            pxlPhotoRecyclerView.replaceList(list)
+            binding.pxlPhotoRecyclerView.replaceList(list)
         } else {
             val pxlPhotos = arguments?.getParcelableArrayList<PXLPhoto>("pxlPhotos")
             pxlPhotos?.also {
@@ -139,7 +143,7 @@ class PXLPhotoViewInRecyclerViewFragment : BaseFragment() {
                     list.add(PhotoWithImageScaleType(it, generateConfiguration(ImageScaleType.CENTER_CROP), cellSize))
                 }
 
-                pxlPhotoRecyclerView.replaceList(list)
+                binding.pxlPhotoRecyclerView.replaceList(list)
 
                 // customize the cell height
                 // pxlPhotoRecyclerView.replaceList(it.toList(), ImageScaleType.FIT_CENTER, 600.px.toInt())
@@ -150,12 +154,12 @@ class PXLPhotoViewInRecyclerViewFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        pxlPhotoRecyclerView.playVideoOnResume()
+        binding.pxlPhotoRecyclerView.playVideoOnResume()
     }
 
     override fun onStop() {
         super.onStop()
-        pxlPhotoRecyclerView.stopVideoOnPause()
+        binding.pxlPhotoRecyclerView.stopVideoOnPause()
     }
 
     companion object {

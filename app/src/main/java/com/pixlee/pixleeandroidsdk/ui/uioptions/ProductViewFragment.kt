@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.pixlee.pixleeandroidsdk.R
+import com.pixlee.pixleeandroidsdk.databinding.FragmentProductViewBinding
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleeandroidsdk.ui.widgets.ViewerActivity
 import com.pixlee.pixleesdk.data.PXLProduct
@@ -19,7 +20,6 @@ import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.ui.widgets.*
 import com.pixlee.pixleesdk.util.px
-import kotlinx.android.synthetic.main.fragment_product_view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,14 +41,18 @@ class ProductViewFragment : BaseFragment() {
         return R.string.title_product_view
     }
 
+    private var _binding: FragmentProductViewBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_product_view, container, false)
+        _binding = FragmentProductViewBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        btnProductView.setOnClickListener {
+        binding.btnProductView.setOnClickListener {
             openViwerActivity()
         }
 
@@ -60,18 +64,18 @@ class ProductViewFragment : BaseFragment() {
 
             val result = mockAlbumUtil.album.getFirstPage()
             val products = result.photos.firstOrNull()?.products ?: emptyList()
-            rvOption1.adapter = makeProducts(ProductViewHolder.DiscountLayout.CROSS_THROUGH, products)
-            rvOption2.adapter = makeProducts(ProductViewHolder.DiscountLayout.WAS_OLD_PRICE, products)
-            rvOption3.adapter = makeProducts(ProductViewHolder.DiscountLayout.WITH_DISCOUNT_LABEL, products)
-            rvOption4.adapter = makeProducts(null, products)
-            rvOption1Icon.adapter = makeProducts(ProductViewHolder.DiscountLayout.CROSS_THROUGH, products, showShopIcon = true)
-            rvOption2Icon.adapter = makeProducts(ProductViewHolder.DiscountLayout.WAS_OLD_PRICE, products, showShopIcon = true)
-            rvOption3Icon.adapter = makeProducts(ProductViewHolder.DiscountLayout.WITH_DISCOUNT_LABEL, products, showShopIcon = true)
-            rvOption4Icon.adapter = makeProducts(null, products, showShopIcon = true)
-            rvOption1All.adapter = makeProducts(ProductViewHolder.DiscountLayout.CROSS_THROUGH, products, showBookmarkIcon = true, showShopIcon = true)
-            rvOption2All.adapter = makeProducts(ProductViewHolder.DiscountLayout.WAS_OLD_PRICE, products, showBookmarkIcon = true, showShopIcon = true)
-            rvOption3All.adapter = makeProducts(ProductViewHolder.DiscountLayout.WITH_DISCOUNT_LABEL, products, showBookmarkIcon = true, showShopIcon = true)
-            rvOption4All.adapter = makeProducts(null, products, showBookmarkIcon = true, showShopIcon = true)
+            binding.rvOption1.adapter = makeProducts(ProductViewHolder.DiscountLayout.CROSS_THROUGH, products)
+            binding.rvOption2.adapter = makeProducts(ProductViewHolder.DiscountLayout.WAS_OLD_PRICE, products)
+            binding.rvOption3.adapter = makeProducts(ProductViewHolder.DiscountLayout.WITH_DISCOUNT_LABEL, products)
+            binding.rvOption4.adapter = makeProducts(null, products)
+            binding.rvOption1Icon.adapter = makeProducts(ProductViewHolder.DiscountLayout.CROSS_THROUGH, products, showShopIcon = true)
+            binding.rvOption2Icon.adapter = makeProducts(ProductViewHolder.DiscountLayout.WAS_OLD_PRICE, products, showShopIcon = true)
+            binding.rvOption3Icon.adapter = makeProducts(ProductViewHolder.DiscountLayout.WITH_DISCOUNT_LABEL, products, showShopIcon = true)
+            binding.rvOption4Icon.adapter = makeProducts(null, products, showShopIcon = true)
+            binding.rvOption1All.adapter = makeProducts(ProductViewHolder.DiscountLayout.CROSS_THROUGH, products, showBookmarkIcon = true, showShopIcon = true)
+            binding.rvOption2All.adapter = makeProducts(ProductViewHolder.DiscountLayout.WAS_OLD_PRICE, products, showBookmarkIcon = true, showShopIcon = true)
+            binding.rvOption3All.adapter = makeProducts(ProductViewHolder.DiscountLayout.WITH_DISCOUNT_LABEL, products, showBookmarkIcon = true, showShopIcon = true)
+            binding.rvOption4All.adapter = makeProducts(null, products, showBookmarkIcon = true, showShopIcon = true)
         }
     }
 

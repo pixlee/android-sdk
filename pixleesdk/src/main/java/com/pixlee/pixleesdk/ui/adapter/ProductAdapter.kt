@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pixlee.pixleesdk.data.PXLProduct
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder.Companion.create
-import kotlinx.android.synthetic.main.item_product.*
 import java.util.*
 
 /**
@@ -32,18 +31,18 @@ class ProductAdapter(
         }else{
             holder.bind(product, null, configuration)
         }
-        holder.bookmark.setOnClickListener {
-            val productId = list[holder.adapterPosition].id
+        holder.binding.bookmark.setOnClickListener {
+            val productId = list[holder.bindingAdapterPosition].id
             bookmarkMap?.also {
                 val bookmarked = it[productId] ?: false
                 it[productId] = !bookmarked
-                onBookmarkChanged(list[holder.adapterPosition].id, !bookmarked)
+                onBookmarkChanged(list[holder.bindingAdapterPosition].id, !bookmarked)
                 holder.changeBookmarkUI(!bookmarked, configuration.bookmarkDrawable)
             }
         }
 
         holder.itemView.setOnClickListener {
-            onItemClicked(list[holder.adapterPosition])
+            onItemClicked(list[holder.bindingAdapterPosition])
         }
     }
 

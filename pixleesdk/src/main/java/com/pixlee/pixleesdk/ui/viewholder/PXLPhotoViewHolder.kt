@@ -5,40 +5,36 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.data.PXLPhoto
-import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
+import com.pixlee.pixleesdk.databinding.ItemPxlphotoBinding
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.px
-import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.synthetic.main.item_pxlphoto.*
 
 /**
  * This is to display PhotoWithImageScaleType having PXLPhoto as a RecyclerView.ViewHolder.
  * This shows its content(photo/video). Via PXLPhotoView.Configuration, you can custom TextViews and a Button.
  */
-class PXLPhotoViewHolder(override val containerView: View) :
-        RecyclerView.ViewHolder(containerView),
-        LayoutContainer {
+class PXLPhotoViewHolder(val binding: ItemPxlphotoBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(data: PhotoWithImageScaleType, showingDebugView: Boolean = false) {
-        pxlPhotoView.layoutParams.height = data.heightInPixel
-        pxlPhotoView.setConfiguration(configuration = data.configuration)
-        pxlPhotoView.setContent(data.pxlPhoto, data.configuration.imageScaleType)
-        pxlPhotoView.setLooping(data.isLoopingVideo)
-        pxlPhotoView.changeVolume(if(data.soundMuted) 0f else 1f)
+    fun setData(data: PhotoWithImageScaleType, showingDebugView: Boolean = false) {
+        binding.pxlPhotoView.layoutParams.height = data.heightInPixel
+        binding.pxlPhotoView.setConfiguration(configuration = data.configuration)
+        binding.pxlPhotoView.setContent(data.pxlPhoto, data.configuration.imageScaleType)
+        binding.pxlPhotoView.setLooping(data.isLoopingVideo)
+        binding.pxlPhotoView.changeVolume(if(data.soundMuted) 0f else 1f)
 
-        tv.visibility = if (showingDebugView) View.VISIBLE else View.GONE
-        tvPercent.visibility = if (showingDebugView) View.VISIBLE else View.GONE
-        tv.text = "ScaleType: ${data.configuration.imageScaleType.name}\nwidth: ${pxlPhotoView.layoutParams.width}, height: ${pxlPhotoView.layoutParams.height}\nid: ${data.pxlPhoto.id}"
+        binding.tv.visibility = if (showingDebugView) View.VISIBLE else View.GONE
+        binding.tvPercent.visibility = if (showingDebugView) View.VISIBLE else View.GONE
+        binding.tv.text = "ScaleType: ${data.configuration.imageScaleType.name}\nwidth: ${binding.pxlPhotoView.layoutParams.width}, height: ${binding.pxlPhotoView.layoutParams.height}\nid: ${data.pxlPhoto.id}"
     }
 
     companion object {
         fun create(parent: ViewGroup): PXLPhotoViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_pxlphoto, parent, false)
-            val holder = PXLPhotoViewHolder(view)
-            view.setTag(holder)
+            val binding = ItemPxlphotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val holder = PXLPhotoViewHolder(binding)
+            //binding.root.setTag(holder)
             return holder
         }
     }

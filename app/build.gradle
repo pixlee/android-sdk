@@ -1,15 +1,15 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-androidExtensions {
-    experimental = true
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
 }
+
 android {
-    compileSdkVersion 31
+    compileSdkVersion COMPILE_SDK_VERSION as int
     defaultConfig {
         applicationId "com.pixlee.pixleeandroidsdk"
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdkVersion MIN_SDK_VERSION as int
+        targetSdkVersion TARGET_SDK_VERSION as int
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -18,8 +18,8 @@ android {
         buildConfigField "String", "PIXLEE_ALBUM_ID", "\"" + PIXLEE_ALBUM_ID + "\""
         buildConfigField "String", "PIXLEE_SKU", "\"" + PIXLEE_SKU + "\""
     }
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding true
     }
     buildTypes {
         release {
@@ -29,8 +29,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     testOptions {
@@ -46,18 +46,22 @@ android {
             }
         }
     }
+    packagingOptions {
+        exclude 'META-INF/AL2.0'
+        exclude 'META-INF/LGPL2.1'
+    }
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    testImplementation 'junit:junit:4.13'
+    testImplementation "junit:junit:$junit"
 
     /**
      * testing
@@ -68,8 +72,8 @@ dependencies {
     //testImplementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8"
     testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp3"
 
-    androidTestImplementation 'androidx.test:runner:1.3.0'
-    androidTestImplementation 'androidx.test:rules:1.3.0'
+    androidTestImplementation "androidx.test:runner:$androidxRunner"
+    androidTestImplementation "androidx.test:rules:$androidXrules"
 
     androidTestImplementation 'androidx.test.ext:junit:' + rootProject.extJUnitVersion
     androidTestImplementation "androidx.test.ext:junit-ktx:" + rootProject.extJUnitVersion
@@ -99,7 +103,7 @@ dependencies {
     implementation "com.github.bumptech.glide:okhttp3-integration:$glide"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide"
 
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation "androidx.recyclerview:recyclerview:$recyclerview"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit2"
 
     implementation project(':pixleesdk')

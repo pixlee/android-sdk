@@ -15,6 +15,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.pixlee.pixleeandroidsdk.R
+import com.pixlee.pixleeandroidsdk.databinding.FragmentKtxGalleryListBinding
+import com.pixlee.pixleeandroidsdk.databinding.FragmentPxlphotoViewBinding
+import com.pixlee.pixleeandroidsdk.databinding.ModuleSearchBinding
 import com.pixlee.pixleeandroidsdk.ui.BaseFragment
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
@@ -22,7 +25,6 @@ import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.util.px
-import kotlinx.android.synthetic.main.fragment_pxlphoto_view.*
 
 /**
  * This is to display a photo with texts of PXLPhoto
@@ -32,23 +34,32 @@ class PXLPhotoViewFragment : BaseFragment(), LifecycleObserver {
         return R.string.title_pxlphotoview
     }
 
+    private var _binding: FragmentPxlphotoViewBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_pxlphoto_view, container, false)
+        _binding = FragmentPxlphotoViewBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        switchSound.setOnClickListener {
-            pxlPhotoViewFitWrapLandscape.apply {
-                if(switchSound.isChecked) unmute() else mute()
+        binding.switchSound.setOnClickListener {
+            binding.pxlPhotoViewFitWrapLandscape.apply {
+                if(binding.switchSound.isChecked) unmute() else mute()
             }
 
-            pxlPhotoViewFitPortrait.apply {
-                if(switchSound.isChecked) unmute() else mute()
+            binding.pxlPhotoViewFitPortrait.apply {
+                if(binding.switchSound.isChecked) unmute() else mute()
             }
 
-            pxlPhotoViewCrop.apply {
-                if(switchSound.isChecked) unmute() else mute()
+            binding.pxlPhotoViewCrop.apply {
+                if(binding.switchSound.isChecked) unmute() else mute()
             }
         }
 
@@ -98,18 +109,18 @@ class PXLPhotoViewFragment : BaseFragment(), LifecycleObserver {
 
             }
 
-            initPXLPhotoView(pxlPhotoViewFitWrapLandscape, configuration.copy(), it, ImageScaleType.FIT_CENTER)
-            initPXLPhotoView(pxlPhotoViewFitPortrait, configuration.copy(), it, ImageScaleType.FIT_CENTER)
-            initPXLPhotoView(pxlPhotoViewCrop, configuration.copy(), it, ImageScaleType.CENTER_CROP)
+            initPXLPhotoView(binding.pxlPhotoViewFitWrapLandscape, configuration.copy(), it, ImageScaleType.FIT_CENTER)
+            initPXLPhotoView(binding.pxlPhotoViewFitPortrait, configuration.copy(), it, ImageScaleType.FIT_CENTER)
+            initPXLPhotoView(binding.pxlPhotoViewCrop, configuration.copy(), it, ImageScaleType.CENTER_CROP)
 
-            scrollView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            binding.scrollView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     try {
-                        if (scrollView == null)
+                        if (binding.scrollView == null)
                             return
 
                         startScrollListener()
-                        scrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        binding.scrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -127,11 +138,11 @@ class PXLPhotoViewFragment : BaseFragment(), LifecycleObserver {
     }
 
     fun startScrollListener() {
-        pxlPhotoViewFitWrapLandscape.playVideo()
+        binding.pxlPhotoViewFitWrapLandscape.playVideo()
 
         val scrollBounds = Rect()
-        scrollView.getHitRect(scrollBounds)
-        scrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+        binding.scrollView.getHitRect(scrollBounds)
+        binding.scrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
             playRelevantVideo(scrollBounds)
         }
     }
@@ -146,14 +157,14 @@ class PXLPhotoViewFragment : BaseFragment(), LifecycleObserver {
             }
         }
         
-        if (pxlPhotoViewFitWrapLandscape.getLocalVisibleRect(scrollBounds)) {
-            stopExistingAndPlayNew(pxlPhotoViewFitWrapLandscape, 1)
+        if (binding.pxlPhotoViewFitWrapLandscape.getLocalVisibleRect(scrollBounds)) {
+            stopExistingAndPlayNew(binding.pxlPhotoViewFitWrapLandscape, 1)
 
-        } else if (pxlPhotoViewCrop.getLocalVisibleRect(scrollBounds)) {
-            stopExistingAndPlayNew(pxlPhotoViewCrop, 2)
+        } else if (binding.pxlPhotoViewCrop.getLocalVisibleRect(scrollBounds)) {
+            stopExistingAndPlayNew(binding.pxlPhotoViewCrop, 2)
 
-        }else if (pxlPhotoViewFitPortrait.getLocalVisibleRect(scrollBounds)) {
-            stopExistingAndPlayNew(pxlPhotoViewFitPortrait, 3)
+        }else if (binding.pxlPhotoViewFitPortrait.getLocalVisibleRect(scrollBounds)) {
+            stopExistingAndPlayNew(binding.pxlPhotoViewFitPortrait, 3)
 
         }
     }
@@ -180,14 +191,14 @@ class PXLPhotoViewFragment : BaseFragment(), LifecycleObserver {
 
     fun playVideo(){
         val scrollBounds = Rect()
-        scrollView.getHitRect(scrollBounds)
+        binding.scrollView.getHitRect(scrollBounds)
         playRelevantVideo(scrollBounds)
     }
 
     fun stopVideo() {
-        pxlPhotoViewFitWrapLandscape.pauseVideo()
-        pxlPhotoViewCrop.pauseVideo()
-        pxlPhotoViewFitPortrait.pauseVideo()
+        binding.pxlPhotoViewFitWrapLandscape.pauseVideo()
+        binding.pxlPhotoViewCrop.pauseVideo()
+        binding.pxlPhotoViewFitPortrait.pauseVideo()
     }
 
     override fun onStop() {

@@ -33,6 +33,7 @@ import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.client.PXLAnalytics
 import com.pixlee.pixleesdk.client.PXLClient
 import com.pixlee.pixleesdk.data.PXLProduct
+import com.pixlee.pixleesdk.databinding.WidgetViewerBinding
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
 import com.pixlee.pixleesdk.ui.adapter.ProductAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
@@ -40,7 +41,6 @@ import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.util.HotspotsReader
 import com.pixlee.pixleesdk.util.px
 import com.pixlee.pixleesdk.util.setCompatIconWithColor
-import kotlinx.android.synthetic.main.widget_viewer.view.*
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -96,10 +96,12 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         initView(context)
     }
 
+    lateinit var binding: WidgetViewerBinding
     private fun initView(context: Context) {
         val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = li.inflate(R.layout.widget_viewer, this, false)
-        addView(view)
+        val binding = WidgetViewerBinding.inflate(li, this, false)
+        this.binding = binding
+        addView(binding.root)
 
         val lifecycleOwner = context as? LifecycleOwner
                 ?: throw Exception("androidx.lifecycle.LifecycleOwner is required. Please make sure your Activity or Fragment provides androidx.lifecycle.LifecycleOwner")
@@ -133,10 +135,10 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         initHeader(headerConfiguration)
         loadProducts(configuration)
 
-        pxlPhotoView.setConfiguration(configuration = PXLPhotoView.Configuration(pxlPhotoSize = photoInfo.configuration.pxlPhotoSize))
-        pxlPhotoView.setContent(photoInfo.pxlPhoto, photoInfo.configuration.imageScaleType)
-        pxlPhotoView.setLooping(photoInfo.isLoopingVideo)
-        pxlPhotoView.changeVolume(if (photoInfo.soundMuted) 0f else 1f)
+        binding.pxlPhotoView.setConfiguration(configuration = PXLPhotoView.Configuration(pxlPhotoSize = photoInfo.configuration.pxlPhotoSize))
+        binding.pxlPhotoView.setContent(photoInfo.pxlPhoto, photoInfo.configuration.imageScaleType)
+        binding.pxlPhotoView.setLooping(photoInfo.isLoopingVideo)
+        binding.pxlPhotoView.changeVolume(if (photoInfo.soundMuted) 0f else 1f)
 
         addHotspots()
 
@@ -147,20 +149,20 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
     private var headerConfiguration: Configuration? = null
     private fun initHeader(headerConfiguration: Configuration) {
         this.headerConfiguration = headerConfiguration
-        vBack.visibility = if (headerConfiguration.backButton != null) View.VISIBLE else View.GONE
+        binding.vBack.visibility = if (headerConfiguration.backButton != null) View.VISIBLE else View.GONE
         headerConfiguration.backButton?.apply {
-            vBack.setOnClickListener { onClickListener?.let { it() } }
-            vBack.background = GradientDrawable().apply {
+            binding.vBack.setOnClickListener { onClickListener?.let { it() } }
+            binding.vBack.background = GradientDrawable().apply {
                 shape = android.graphics.drawable.GradientDrawable.OVAL
                 setColor(backgroundColor)
             }
-            vBack.setPadding(padding, padding, padding, padding)
-            ivBack.setCompatIconWithColor(iconColor, icon)
+            binding.vBack.setPadding(padding, padding, padding, padding)
+            binding.ivBack.setCompatIconWithColor(iconColor, icon)
         }
 
-        vMute.visibility = if (headerConfiguration.muteCheckBox != null && photoInfo?.pxlPhoto?.isVideo ?: false) View.VISIBLE else View.GONE
+        binding.vMute.visibility = if (headerConfiguration.muteCheckBox != null && photoInfo?.pxlPhoto?.isVideo ?: false) View.VISIBLE else View.GONE
         headerConfiguration.muteCheckBox?.apply {
-            vMute.setOnClickListener {
+            binding.vMute.setOnClickListener {
                 if (isMutted) {
                     unmute()
                 } else {
@@ -168,11 +170,11 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                 }
                 onCheckedListener?.let { it1 -> it1(isMutted) }
             }
-            vMute.background = GradientDrawable().apply {
+            binding.vMute.background = GradientDrawable().apply {
                 shape = android.graphics.drawable.GradientDrawable.OVAL
                 setColor(backgroundColor)
             }
-            vMute.setPadding(padding, padding, padding, padding)
+            binding.vMute.setPadding(padding, padding, padding, padding)
             setMuteIcon(isMutted)
         }
     }
@@ -182,7 +184,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
      * The content will not be affected by this padding because the header area and the content are not related in a ViewGroup.
      */
     fun addPaddingToHeader(left: Int, top: Int, right: Int, bottom: Int) {
-        headerView.setPadding(left, top, right, bottom)
+        binding.headerView.setPadding(left, top, right, bottom)
     }
 
     private fun loadProducts(configuration: ProductViewHolder.Configuration) {
@@ -203,8 +205,8 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
 
 
 
-                recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                recyclerView.adapter = adapter
+                binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                binding.recyclerView.adapter = adapter
             }
         }
     }
@@ -223,20 +225,20 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
             }
 
             // since this is run after the delay run on a background thread, v_hotspots could be null. so null check is essential.
-            if (v_hotspots == null) return@launch
+            if (binding.vHotspots == null) return@launch
 
-            if (v_hotspots.childCount > 0) {
+            if (binding.vHotspots.childCount > 0) {
                 // remove all child views if this is not the first trial
-                v_hotspots.removeAllViews()
+                binding.vHotspots.removeAllViews()
             }
 
-            v_hotspots.setOnClickListener {
+            binding.vHotspots.setOnClickListener {
                 hiddenHotspots = !hiddenHotspots
                 val visibility = if (hiddenHotspots) GONE else VISIBLE
-                val childCount = v_hotspots.childCount
+                val childCount = binding.vHotspots.childCount
                 if (childCount > 0) {
                     for (i in 0 until childCount) {
-                        v_hotspots.getChildAt(i).visibility = visibility
+                        binding.vHotspots.getChildAt(i).visibility = visibility
                     }
                 }
             }
@@ -259,11 +261,11 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                             .load(originalImageUrl)
                             .into(object : SimpleTarget<Bitmap>() {
                                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                                    if (v_hotspots == null) return
+                                    if (binding.vHotspots == null) return
 
                                     photoInfo?.configuration?.imageScaleType?.let { imageScaleType ->
                                         val reader = HotspotsReader(imageScaleType,
-                                                pxlPhotoView.measuredWidth, pxlPhotoView.measuredHeight,
+                                            binding.pxlPhotoView.measuredWidth, binding.pxlPhotoView.measuredHeight,
                                                 resource.width, resource.height
                                         )
 
@@ -289,12 +291,12 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                                                     }
                                                 }
 
-                                                v_hotspots.addView(imageView)
+                                                binding.vHotspots.addView(imageView)
 
                                                 // on hotspot clicked
                                                 imageView.setOnClickListener {
-                                                    if (recyclerView == null) return@setOnClickListener
-                                                    recyclerView.smoothScrollToPosition(productPosition)
+                                                    if (binding.recyclerView == null) return@setOnClickListener
+                                                    binding.recyclerView.smoothScrollToPosition(productPosition)
                                                 }
                                             }
 
@@ -339,13 +341,13 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
 
     private fun changeMute(muted: Boolean) {
         isMutted = muted
-        pxlPhotoView.changeVolume(if (muted) 0f else 1f)
+        binding.pxlPhotoView.changeVolume(if (muted) 0f else 1f)
         setMuteIcon(muted)
     }
 
     private fun setMuteIcon(muted: Boolean) {
         headerConfiguration?.muteCheckBox?.apply {
-            ivMute.setCompatIconWithColor(iconColor, if (muted) mutedIcon else unmutedIcon)
+            binding.ivMute.setCompatIconWithColor(iconColor, if (muted) mutedIcon else unmutedIcon)
         }
     }
 
@@ -357,12 +359,12 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun playVideoOnResume() {
         fireAnalyticsOpenLightbox()
-        pxlPhotoView.playVideo()
+        binding.pxlPhotoView.playVideo()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun stopVideoOnPause() {
-        pxlPhotoView.pauseVideo()
+        binding.pxlPhotoView.pauseVideo()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)

@@ -47,7 +47,10 @@
         android:fitsSystemWindows="false"
         android:alpha="0.9">
 
-        <include layout="@layout/module_search" />
+        <include
+            android:id="@+id/left_layout"
+            layout="@layout/module_search"
+            />
 
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -1,21 +1,18 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
+    id 'kotlin-parcelize'
 }
 
-androidExtensions {
-    experimental = true
-}
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion COMPILE_SDK_VERSION as int
 
     defaultConfig {
         multiDexEnabled true
         applicationId "com.pixlee.pixleeandroidsdk.simple"
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdkVersion MIN_SDK_VERSION as int
+        targetSdkVersion TARGET_SDK_VERSION as int
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -32,15 +29,16 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding true
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -59,15 +57,20 @@ android {
             }
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/AL2.0'
+        exclude 'META-INF/LGPL2.1'
+    }
 }
 
 dependencies {
     /**
      * libraries for app. you don't need to use these
      */
-    testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test:runner:1.3.0'
-    androidTestImplementation 'androidx.test.ext:junit:' + rootProject.extJUnitVersion
+    testImplementation "junit:junit:$junit"
+    androidTestImplementation "androidx.test:runner:$androidxRunner"
+    androidTestImplementation "androidx.test.ext:junit:$extJUnitVersion"
     implementation "androidx.appcompat:appcompat:$androidxAppcompat"
     implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"
     implementation "com.google.android.material:material:$material"
