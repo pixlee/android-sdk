@@ -59,7 +59,7 @@
             <!-- load from album or sku-->
             <TextView style="@style/filterHeaderTextView" android:text="View Type" />
             <TextView style="@style/filterBulletTextView" android:text="Choose" />
-            <RadioGroup style="@style/filterContentView" android:orientation="horizontal" android:id="@+id/radioViewType">
+            <RadioGroup style="@style/filterContentView" android:orientation="vertical" android:id="@+id/radioViewType">
                 <com.google.android.material.radiobutton.MaterialRadioButton
                     style="@style/filterRadioButton"
                     android:id="@+id/radioList"
@@ -69,6 +69,11 @@
                     style="@style/filterRadioButton"
                     android:id="@+id/radioGrid"
                     android:text="Grid" />
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    style="@style/filterRadioButton"
+                    android:id="@+id/radioMosaic"
+                    android:text="Mosaic" />
+
             </RadioGroup>
 
             <!-- Grid -->

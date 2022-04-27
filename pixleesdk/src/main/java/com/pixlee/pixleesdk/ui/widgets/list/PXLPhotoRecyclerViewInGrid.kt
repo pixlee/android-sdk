@@ -57,7 +57,7 @@ open class PXLPhotoRecyclerViewInGrid : BaseRecyclerView {
         }
         if (list.isNotEmpty()) {
             list.forEach {
-                pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.Content(it))
+                pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.Content(it, PXLPhotoAdapter.ItemType.Grid))
             }
             pxlPhotoAdapter.notifyDataSetChanged()
         }

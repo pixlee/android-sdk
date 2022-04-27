@@ -59,7 +59,7 @@ open class BaseRecyclerView : RecyclerView {
         if (list.isNotEmpty()) {
             val position = pxlPhotoAdapter.list.count()
             list.forEach {
-                pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.Content(it))
+                pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.Content(it, PXLPhotoAdapter.ItemType.List))
             }
             lastItem?.also {
                 pxlPhotoAdapter.list.add(it)

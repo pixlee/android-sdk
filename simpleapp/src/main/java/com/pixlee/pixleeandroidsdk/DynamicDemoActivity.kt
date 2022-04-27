@@ -102,15 +102,17 @@ class DynamicDemoActivity : AppCompatActivity() {
     private fun getViewType(): PXLWidgetView.ViewType {
         return if (binding.leftLayout.radioGrid.isChecked) {
             PXLWidgetView.ViewType.Grid(
-                    gridSpan = getGridSpan(),
-                    lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt()),
-                    listHeader = getHeader()
+                gridSpan = getGridSpan(),
+                lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt()),
+                listHeader = getHeader()
             )
+        } else if (binding.leftLayout.radioMosaic.isChecked) {
+            PXLWidgetView.ViewType.Mosaic(lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt()))
         } else {
             PXLWidgetView.ViewType.List(
-                    infiniteScroll = binding.leftLayout.radioInfiniteScrollOn.isChecked,
-                    autoPlayVideo = binding.leftLayout.radioAutoPlayVideoOn.isChecked,
-                    alphaForStoppedVideos = 1f
+                infiniteScroll = binding.leftLayout.radioInfiniteScrollOn.isChecked,
+                autoPlayVideo = binding.leftLayout.radioAutoPlayVideoOn.isChecked,
+                alphaForStoppedVideos = 1f
             )
         }
     }
@@ -133,7 +135,7 @@ class DynamicDemoActivity : AppCompatActivity() {
                 },
                 sortOptions = PXLAlbumSortOptions().apply {
                     sortType = PXLAlbumSortType.RECENCY
-                    descending = false
+                    descending = true
                 }
         )
     }
@@ -234,6 +236,9 @@ class DynamicDemoActivity : AppCompatActivity() {
             binding.widget.currentViewType = viewType.copy().apply {
                 gridSpan = span
             }
+        } else if (viewType is PXLWidgetView.ViewType.Mosaic) {
+            val allLineSpace = getLineSpace().px.toInt() * (2 - 1)
+            cellHeightInPixel = (binding.widget.measuredWidth - allLineSpace) / 2
 
         } else {
             cellHeightInPixel = binding.widget.measuredHeight / 2

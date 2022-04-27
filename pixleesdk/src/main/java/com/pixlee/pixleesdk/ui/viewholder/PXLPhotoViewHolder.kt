@@ -4,9 +4,13 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.databinding.ItemPxlphotoBinding
+import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.px
 import kotlinx.android.parcel.Parcelize
@@ -18,8 +22,16 @@ import kotlinx.android.parcel.Parcelize
 class PXLPhotoViewHolder(val binding: ItemPxlphotoBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-    fun setData(data: PhotoWithImageScaleType, showingDebugView: Boolean = false) {
-        binding.pxlPhotoView.layoutParams.height = data.heightInPixel
+    fun setData(data: PhotoWithImageScaleType, itemType: PXLPhotoAdapter.ItemType, showingDebugView: Boolean = false) {
+        when (itemType) {
+            is PXLPhotoAdapter.ItemType.Mosaic -> {
+                binding.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                binding.root.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+            else -> {
+                binding.pxlPhotoView.layoutParams.height = data.heightInPixel
+            }
+        }
         binding.pxlPhotoView.setConfiguration(configuration = data.configuration)
         binding.pxlPhotoView.setContent(data.pxlPhoto, data.configuration.imageScaleType)
         binding.pxlPhotoView.setLooping(data.isLoopingVideo)

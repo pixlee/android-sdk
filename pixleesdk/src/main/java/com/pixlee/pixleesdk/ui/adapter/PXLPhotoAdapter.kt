@@ -23,8 +23,14 @@ class PXLPhotoAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     sealed class Item {
         class Header(val listHeader: ListHeader) : Item()
-        class Content(val data: PhotoWithImageScaleType) : Item()
+        class Content(val data: PhotoWithImageScaleType, var itemType: ItemType) : Item()
         class LoadMore(var loading:Boolean, val loadMoreTextViewStyle: TextViewStyle) : Item()
+    }
+
+    sealed class ItemType {
+        object List : ItemType()
+        object Grid : ItemType()
+        class Mosaic(var isLarge: Boolean = false) : ItemType()
     }
 
     val list: ArrayList<Item> = ArrayList()
@@ -37,7 +43,7 @@ class PXLPhotoAdapter(
             is Item.Header -> TYPE_HEADER
             is Item.Content -> TYPE_ITEM
             is Item.LoadMore -> TYPE_LOAD_MORE
-
+            else -> TYPE_ITEM
         }
     }
 
@@ -63,12 +69,9 @@ class PXLPhotoAdapter(
                 holder.itemView.setOnClickListener(null)
             }
             is PXLPhotoViewHolder -> {
-                if(holder.itemView.layoutParams is StaggeredGridLayoutManager.LayoutParams){
-
-                }
-
                 val data = item as Item.Content
-                holder.setData(data.data, showingDebugView)
+
+                holder.setData(data.data, data.itemType, showingDebugView)
                 holder.itemView.setOnClickListener {
                     onPhotoClickedListener?.also {
                         it(holder.itemView, data.data)

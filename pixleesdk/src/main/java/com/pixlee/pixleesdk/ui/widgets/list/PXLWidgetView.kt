@@ -9,6 +9,7 @@ import androidx.lifecycle.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
@@ -16,11 +17,14 @@ import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
+import com.pixlee.pixleesdk.ui.widgets.mosaic.SpanSize
+import com.pixlee.pixleesdk.ui.widgets.mosaic.SpannedGridLayoutManager
 import com.pixlee.pixleesdk.util.AutoPlayUtils
 import com.pixlee.pixleesdk.util.EventObserver
 import com.pixlee.pixleesdk.util.GridSpacingItemDecoration
 import com.pixlee.pixleesdk.util.px
 import kotlinx.coroutines.*
+import kotlin.random.Random
 
 
 /**
@@ -36,6 +40,10 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
         data class Grid(var gridSpan: Int = 2,
                         var lineSpace: Space = Space(),
                         var listHeader: ListHeader? = null) : ViewType()
+
+        data class Mosaic(
+            var gridSpan: Int = 4,
+            var lineSpace: Space = Space()) : ViewType()
     }
 
     protected val scope = CoroutineScope(Job() + Dispatchers.Main)
@@ -55,6 +63,7 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
     }
 
     var linearLayoutManager: LinearLayoutManager? = null
+    var spannedGridLayoutManager: SpannedGridLayoutManager? = null
     var gridLayoutManager: GridLayoutManager? = null
     var spacingDecoration: GridSpacingItemDecoration? = null
 
@@ -74,6 +83,7 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                         pxlPhotoAdapter.notifyItemRemoved(0)
                     }
                     gridLayoutManager = null
+                    spannedGridLayoutManager = null
                     linearLayoutManager = LinearLayoutManager(context).apply {
                         layoutManager = this
                     }
@@ -106,11 +116,8 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                     }
 
                     linearLayoutManager = null
+                    spannedGridLayoutManager = null
                     if (gridLayoutManager == null) {
-//                        gridLayoutManager = StaggeredGridLayoutManager(value.gridSpan, StaggeredGridLayoutManager.VERTICAL).apply {
-//                            layoutManager = this
-//                        }
-
                         gridLayoutManager = GridLayoutManager(context, value.gridSpan).apply {
                             layoutManager = this
                         }
@@ -133,11 +140,6 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                         gridLayoutManager?.spanCount = value.gridSpan
                     }
 
-
-//                    spacingDecoration?.apply {
-//                        removeItemDecoration(this)
-//                    }
-
                     if (spacingDecoration == null) {
                         spacingDecoration = GridSpacingItemDecoration(value.gridSpan, value.lineSpace.lineWidthInPixel, value.lineSpace.includingEdge, value.listHeader != null).apply {
                             addItemDecoration(this)
@@ -149,6 +151,53 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
 
                         spacingDecoration?.includingTitle = value.listHeader != null
                         pxlPhotoAdapter.notifyDataSetChanged()
+                    }
+
+                    pxlPhotoAdapter.infiniteScroll = false
+                }
+                is ViewType.Mosaic -> {
+                    linearLayoutManager = null
+                    gridLayoutManager = null
+                    val gridSpan = 4
+                    if (spannedGridLayoutManager == null) {
+                        spannedGridLayoutManager = SpannedGridLayoutManager(orientation = SpannedGridLayoutManager.Orientation.VERTICAL, gridSpan).apply {
+                            layoutManager = this
+                        }
+                    }
+
+                    spannedGridLayoutManager?.itemOrderIsStable = true
+
+                    refreshItemType(value)
+
+                    if (spacingDecoration == null) {
+                        spacingDecoration = GridSpacingItemDecoration(gridSpan, value.lineSpace.lineWidthInPixel, value.lineSpace.includingEdge, false).apply {
+                            addItemDecoration(this)
+                        }
+                    } else {
+                        spacingDecoration?.spanCount = gridSpan
+                        spacingDecoration?.spacingPx = value.lineSpace.lineWidthInPixel
+                        spacingDecoration?.includingEdge = value.lineSpace.includingEdge
+
+                        spacingDecoration?.includingTitle = false
+                        pxlPhotoAdapter.notifyDataSetChanged()
+                    }
+
+                    spannedGridLayoutManager?.spanSizeLookup = SpannedGridLayoutManager.SpanSizeLookup { position ->
+                        val item = pxlPhotoAdapter.list[position]
+                        when (item){
+                            is PXLPhotoAdapter.Item.Content -> {
+                                val itemType = item.itemType
+                                if (itemType is PXLPhotoAdapter.ItemType.Mosaic && itemType.isLarge){
+                                    SpanSize(2, 2)
+                                } else {
+                                    SpanSize(1, 1)
+                                }
+                            }
+                            else -> {
+                                SpanSize(2, 2)
+                            }
+                        }
+
                     }
 
                     pxlPhotoAdapter.infiniteScroll = false
@@ -239,6 +288,24 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
         pxlPhotoAdapter.notifyDataSetChanged()
 
         loadAlbum()
+    }
+
+    fun generateMosaic(): PXLPhotoAdapter.ItemType.Mosaic {
+        return PXLPhotoAdapter.ItemType.Mosaic(isLarge = (0..1).random() == 0)
+    }
+
+    fun refreshItemType(viewType: ViewType) {
+        pxlPhotoAdapter.list.forEach {
+            when(it) {
+                is PXLPhotoAdapter.Item.Content -> {
+                    when(viewType) {
+                        is ViewType.List -> it.itemType = PXLPhotoAdapter.ItemType.List
+                        is ViewType.Grid -> it.itemType = PXLPhotoAdapter.ItemType.Grid
+                        is ViewType.Mosaic -> it.itemType = generateMosaic()
+                    }
+                }
+            }
+        }
     }
 
     fun loadAlbum() {
@@ -342,7 +409,30 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                 if (list.isNotEmpty()) {
                     val position = pxlPhotoAdapter.list.count()
                     list.forEach {
-                        pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.Content(it))
+                        pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.Content(it, PXLPhotoAdapter.ItemType.Grid))
+                    }
+                    lastItem?.also {
+                        pxlPhotoAdapter.list.add(it)
+                    }
+                    pxlPhotoAdapter.notifyItemRangeInserted(position, pxlPhotoAdapter.list.count() - position)
+                }
+                fireOpenAndVisible()
+            }
+            is ViewType.Mosaic -> {
+                clearOldList(type)
+                var lastItem = pxlPhotoAdapter.list.lastOrNull()
+                if(lastItem!=null && lastItem is PXLPhotoAdapter.Item.LoadMore){
+                    val position = pxlPhotoAdapter.list.count() - 1
+                    pxlPhotoAdapter.list.removeAt(position)
+                    pxlPhotoAdapter.notifyItemRemoved(position)
+                } else {
+                    lastItem = null
+                }
+
+                if (list.isNotEmpty()) {
+                    val position = pxlPhotoAdapter.list.count()
+                    list.forEach {
+                        pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.Content(it, generateMosaic()))
                     }
                     lastItem?.also {
                         pxlPhotoAdapter.list.add(it)
