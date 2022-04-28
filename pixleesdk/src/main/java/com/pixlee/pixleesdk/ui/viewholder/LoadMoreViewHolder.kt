@@ -26,7 +26,7 @@ class LoadMoreViewHolder(val binding: ItemLoadMoreBinding) :
             false -> {
                 binding.tvLoadMore.visibility = View.VISIBLE
                 binding.tvLoadMore.isEnabled = true
-                binding.lottieView.visibility = View.GONE
+                binding.lottieView.visibility = View.INVISIBLE
             }
         }
     }

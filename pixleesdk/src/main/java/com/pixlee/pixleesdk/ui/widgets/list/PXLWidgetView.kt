@@ -204,7 +204,7 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                                 }
                             }
                             else -> {
-                                SpanSize(2, 2)
+                                SpanSize(4, 1)
                             }
                         }
 
@@ -218,6 +218,7 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
     fun initiate(widgetTypeForAnalytics: String,
                  viewType: ViewType,
                  cellHeightInPixel: Int = 200.px.toInt(),
+                 sourceIconColor: Int? = null,
                  apiParameters: PXLKtxBaseAlbum.Params,
                  configuration: PXLPhotoView.Configuration = PXLPhotoView.Configuration(),
                  loadMoreTextViewStyle: TextViewStyle? = null, // if null, the view is gone
@@ -295,6 +296,7 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
             }
         })
 
+        pxlPhotoAdapter.sourceIconColor = sourceIconColor
         pxlPhotoAdapter.notifyDataSetChanged()
 
         loadAlbum()

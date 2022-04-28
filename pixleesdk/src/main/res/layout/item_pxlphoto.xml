@@ -12,6 +12,17 @@
         android:layout_height="wrap_content"
         />
 
+    <ImageView
+        android:id="@+id/ivSourceIcon"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:scaleType="fitCenter"
+        android:layout_margin="5dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        tools:src="@drawable/icon_instagram"
+        />
+
     <TextView
         android:id="@+id/tvPercent"
         android:layout_width="match_parent"

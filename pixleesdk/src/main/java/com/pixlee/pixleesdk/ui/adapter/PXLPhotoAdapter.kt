@@ -19,6 +19,7 @@ class PXLPhotoAdapter(
         var onPhotoClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null,
         var onLoadMoreClickedListener: (() -> Unit)? = null,
         var infiniteScroll: Boolean = false,
+        var sourceIconColor: Int? =null,
         var showingDebugView: Boolean = false
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     sealed class Item {
@@ -71,7 +72,7 @@ class PXLPhotoAdapter(
             is PXLPhotoViewHolder -> {
                 val data = item as Item.Content
 
-                holder.setData(data.data, data.itemType, showingDebugView)
+                holder.setData(data.data, data.itemType, sourceIconColor, showingDebugView)
                 holder.itemView.setOnClickListener {
                     onPhotoClickedListener?.also {
                         it(holder.itemView, data.data)
