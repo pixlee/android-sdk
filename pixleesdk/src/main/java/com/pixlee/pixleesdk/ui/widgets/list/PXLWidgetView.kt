@@ -9,7 +9,6 @@ import androidx.lifecycle.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.pixlee.pixleesdk.R
 import com.pixlee.pixleesdk.client.PXLKtxAlbum
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
@@ -19,12 +18,8 @@ import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.ui.widgets.mosaic.SpanSize
 import com.pixlee.pixleesdk.ui.widgets.mosaic.SpannedGridLayoutManager
-import com.pixlee.pixleesdk.util.AutoPlayUtils
-import com.pixlee.pixleesdk.util.EventObserver
-import com.pixlee.pixleesdk.util.GridSpacingItemDecoration
-import com.pixlee.pixleesdk.util.px
+import com.pixlee.pixleesdk.util.*
 import kotlinx.coroutines.*
-import kotlin.random.Random
 
 
 /**
@@ -65,8 +60,8 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
     var linearLayoutManager: LinearLayoutManager? = null
     var spannedGridLayoutManager: SpannedGridLayoutManager? = null
     var gridLayoutManager: GridLayoutManager? = null
-    var spacingDecoration: GridSpacingItemDecoration? = null
-
+    var gridSpacingDecoration: GridSpacingItemDecoration? = null
+    var spannedGridSpacingDecoration: SpannedGridSpacingItemDecoration? = null
     fun initView() {
         this.adapter = pxlPhotoAdapter
         addViewModelListeners()
@@ -88,10 +83,15 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                         layoutManager = this
                     }
                     pxlPhotoAdapter.infiniteScroll = value.infiniteScroll
-                    spacingDecoration?.apply {
+                    gridSpacingDecoration?.apply {
                         removeItemDecoration(this)
                     }
-                    spacingDecoration = null
+                    gridSpacingDecoration = null
+
+                    spannedGridSpacingDecoration?.apply {
+                        removeItemDecoration(this)
+                    }
+                    spannedGridSpacingDecoration = null
 
                 }
                 is ViewType.Grid -> {
@@ -140,18 +140,24 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                         gridLayoutManager?.spanCount = value.gridSpan
                     }
 
-                    if (spacingDecoration == null) {
-                        spacingDecoration = GridSpacingItemDecoration(value.gridSpan, value.lineSpace.lineWidthInPixel, value.lineSpace.includingEdge, value.listHeader != null).apply {
+                    if (gridSpacingDecoration == null) {
+                        gridSpacingDecoration = GridSpacingItemDecoration(value.gridSpan, value.lineSpace.lineWidthInPixel, value.lineSpace.includingEdge, value.listHeader != null).apply {
                             addItemDecoration(this)
                         }
                     } else {
-                        spacingDecoration?.spanCount = value.gridSpan
-                        spacingDecoration?.spacingPx = value.lineSpace.lineWidthInPixel
-                        spacingDecoration?.includingEdge = value.lineSpace.includingEdge
+                        gridSpacingDecoration?.spanCount = value.gridSpan
+                        gridSpacingDecoration?.spacingPx = value.lineSpace.lineWidthInPixel
+                        gridSpacingDecoration?.includingEdge = value.lineSpace.includingEdge
 
-                        spacingDecoration?.includingTitle = value.listHeader != null
+                        gridSpacingDecoration?.includingTitle = value.listHeader != null
                         pxlPhotoAdapter.notifyDataSetChanged()
                     }
+
+                    spannedGridSpacingDecoration?.apply {
+                        removeItemDecoration(this)
+                    }
+                    spannedGridSpacingDecoration = null
+
 
                     pxlPhotoAdapter.infiniteScroll = false
                 }
@@ -169,16 +175,20 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
 
                     refreshItemType(value)
 
-                    if (spacingDecoration == null) {
-                        spacingDecoration = GridSpacingItemDecoration(gridSpan, value.lineSpace.lineWidthInPixel, value.lineSpace.includingEdge, false).apply {
+                    gridSpacingDecoration?.apply {
+                        removeItemDecoration(this)
+                    }
+                    gridSpacingDecoration = null
+
+                    if (spannedGridSpacingDecoration == null) {
+                        spannedGridSpacingDecoration = SpannedGridSpacingItemDecoration(spannedGridLayoutManager!!, gridSpan, value.lineSpace.lineWidthInPixel, value.lineSpace.includingEdge).apply {
                             addItemDecoration(this)
                         }
                     } else {
-                        spacingDecoration?.spanCount = gridSpan
-                        spacingDecoration?.spacingPx = value.lineSpace.lineWidthInPixel
-                        spacingDecoration?.includingEdge = value.lineSpace.includingEdge
+                        spannedGridSpacingDecoration?.spanCount = gridSpan
+                        spannedGridSpacingDecoration?.spacingPx = value.lineSpace.lineWidthInPixel
+                        spannedGridSpacingDecoration?.includingEdge = value.lineSpace.includingEdge
 
-                        spacingDecoration?.includingTitle = false
                         pxlPhotoAdapter.notifyDataSetChanged()
                     }
 

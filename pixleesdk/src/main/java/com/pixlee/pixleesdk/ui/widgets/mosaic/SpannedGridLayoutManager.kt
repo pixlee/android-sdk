@@ -54,7 +54,7 @@ open class SpannedGridLayoutManager(val orientation: Orientation,
     /**
      * Helper get free rects to place views
      */
-    protected lateinit var rectsHelper: RectsHelper
+    lateinit var rectsHelper: RectsHelper
 
     /**
      * First visible position in layout - changes with recycling
@@ -256,22 +256,11 @@ open class SpannedGridLayoutManager(val orientation: Orientation,
      * Measure child view using [RectsHelper]
      */
     protected open fun measureChild(position: Int, view: View) {
-
-        val freeRectsHelper = this.rectsHelper
-
-        val itemWidth = freeRectsHelper.itemSize
-        val itemHeight = freeRectsHelper.itemSize
-
-        val spanSize = spanSizeLookup?.getSpanSize(position) ?: SpanSize(1, 1)
-
-        val usedSpan = if (orientation == Orientation.HORIZONTAL) spanSize.height else spanSize.width
-
-        if (usedSpan > this.spans || usedSpan < 1) {
-            throw InvalidSpanSizeException(errorSize = usedSpan, maxSpanSize = spans)
-        }
+        val itemWidth = this.rectsHelper.itemSize
+        val itemHeight = this.rectsHelper.itemSize
 
         // This rect contains just the row and column number - i.e.: [0, 0, 1, 1]
-        val rect = freeRectsHelper.findRect(position, spanSize)
+        val rect = getItemIndex(position)
 
         // Multiply the rect for item width and height to get positions
         val left = rect.left * itemWidth
@@ -748,6 +737,17 @@ open class SpannedGridLayoutManager(val orientation: Orientation,
             val firstVisibleItem = savedState.firstVisibleItem
             scrollToPosition(firstVisibleItem)
         }
+    }
+
+    fun getItemIndex(position: Int): Rect {
+        val spanSize: SpanSize = spanSizeLookup?.getSpanSize(position) ?: SpanSize(1, 1)
+        val usedSpan = if (orientation == SpannedGridLayoutManager.Orientation.HORIZONTAL) spanSize.height else spanSize.width
+
+        if (usedSpan > spans || usedSpan < 1) {
+            throw InvalidSpanSizeException(errorSize = usedSpan, maxSpanSize = spans)
+        }
+
+        return rectsHelper.findRect(position, spanSize)
     }
 
     companion object {
