@@ -24,21 +24,18 @@ class PXLPhotoViewHolder(val binding: ItemPxlphotoBinding) :
     fun setData(data: PhotoWithImageScaleType, itemType: PXLPhotoAdapter.ItemType, sourceIconColor: Int? = null, showingDebugView: Boolean = false) {
         when (itemType) {
             is PXLPhotoAdapter.ItemType.Mosaic -> {
-                Log.e("hong", "hong data.heightInPixel: ${data.heightInPixel}, Mosaic")
                 binding.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                 binding.root.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
                 binding.pxlPhotoView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                 binding.pxlPhotoView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             }
             is PXLPhotoAdapter.ItemType.Horizontal -> {
-                Log.e("hong", "hong data.heightInPixel: ${data.heightInPixel}, Horizontal")
                 binding.root.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 binding.root.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
                 binding.pxlPhotoView.layoutParams.width = data.heightInPixel
                 binding.pxlPhotoView.layoutParams.height = data.heightInPixel
             }
             else -> {
-                Log.e("hong", "hong data.heightInPixel: ${data.heightInPixel}, others")
                 binding.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                 binding.root.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 binding.pxlPhotoView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
