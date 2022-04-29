@@ -1,4 +1,4 @@
-package com.pixlee.pixleesdk.util
+package com.pixlee.pixleesdk.ui.decoration
 
 import android.graphics.Rect
 import android.util.Log

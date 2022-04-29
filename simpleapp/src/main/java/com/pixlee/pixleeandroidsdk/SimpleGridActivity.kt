@@ -65,8 +65,7 @@ class SimpleGridActivity : AppCompatActivity() {
         // you can customize color, size if you need
         binding.widget.initiate(
                 widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
-                viewType = PXLWidgetView.ViewType.Grid(),
-                cellHeightInPixel = cellHeightInPixel,
+                viewType = PXLWidgetView.ViewType.Grid(cellHeightInPixel = cellHeightInPixel),
                 apiParameters = PXLKtxBaseAlbum.Params(
                         // album images
                         searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU),

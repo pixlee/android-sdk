@@ -43,6 +43,7 @@ class DynamicDemoActivity : AppCompatActivity() {
     }
 
     var cellHeightInPixel = 200.px.toInt()
+    var horizontalCellSizeInPixel = 200.px.toInt()
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityDynamicPhotosBinding.inflate(layoutInflater)
@@ -52,10 +53,11 @@ class DynamicDemoActivity : AppCompatActivity() {
         binding.widget.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 try {
-                    if (binding.widget == null)
+                    if (binding.vBody == null)
                         return
 
-                    cellHeightInPixel = binding.widget.measuredHeight / 2
+                    cellHeightInPixel = binding.vBody.measuredHeight / 2
+                    horizontalCellSizeInPixel = (binding.vBody.measuredWidth * 0.4f).toInt()
                     initiateList()
                     binding.widget.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
@@ -71,7 +73,6 @@ class DynamicDemoActivity : AppCompatActivity() {
         binding.widget.initiate(
                 widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
                 viewType = getViewType(),
-                cellHeightInPixel = cellHeightInPixel,
                 sourceIconColor = Color.DKGRAY,
                 apiParameters = getAPIParametersToGetPhotos(),
                 configuration = getConfiguration(),
@@ -103,14 +104,21 @@ class DynamicDemoActivity : AppCompatActivity() {
     private fun getViewType(): PXLWidgetView.ViewType {
         return if (binding.leftLayout.radioGrid.isChecked) {
             PXLWidgetView.ViewType.Grid(
+                cellHeightInPixel = cellHeightInPixel,
                 gridSpan = getGridSpan(),
                 lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt()),
                 listHeader = getHeader()
             )
         } else if (binding.leftLayout.radioMosaic.isChecked) {
             PXLWidgetView.ViewType.Mosaic(lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt()))
+        } else if (binding.leftLayout.radioHorizontal.isChecked) {
+            PXLWidgetView.ViewType.Horizontal(
+                squareSizeInPixel= horizontalCellSizeInPixel,
+                lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt())
+            )
         } else {
             PXLWidgetView.ViewType.List(
+                cellHeightInPixel = cellHeightInPixel,
                 infiniteScroll = binding.leftLayout.radioInfiniteScrollOn.isChecked,
                 autoPlayVideo = binding.leftLayout.radioAutoPlayVideoOn.isChecked,
                 alphaForStoppedVideos = 1f
@@ -232,17 +240,17 @@ class DynamicDemoActivity : AppCompatActivity() {
         val viewType = binding.widget.currentViewType
         if (viewType is PXLWidgetView.ViewType.Grid) {
             val allLineSpace = getLineSpace().px.toInt() * (span - 1)
-            cellHeightInPixel = (binding.widget.measuredWidth - allLineSpace) / span
+            cellHeightInPixel = (binding.vBody.measuredWidth - allLineSpace) / span
 
             binding.widget.currentViewType = viewType.copy().apply {
                 gridSpan = span
             }
         } else if (viewType is PXLWidgetView.ViewType.Mosaic) {
             val allLineSpace = getLineSpace().px.toInt() * (2 - 1)
-            cellHeightInPixel = (binding.widget.measuredWidth - allLineSpace) / 2
+            cellHeightInPixel = (binding.vBody.measuredWidth - allLineSpace) / 2
 
         } else {
-            cellHeightInPixel = binding.widget.measuredHeight / 2
+            cellHeightInPixel = horizontalCellSizeInPixel
         }
 
         binding.widget.viewModel.cellHeightInPixel = cellHeightInPixel
@@ -250,8 +258,12 @@ class DynamicDemoActivity : AppCompatActivity() {
         binding.widget.pxlPhotoAdapter.list.forEach {
             when (it) {
                 is PXLPhotoAdapter.Item.Content -> {
-                    it.data.heightInPixel = binding.widget.viewModel.cellHeightInPixel
-                    it.data.configuration.pxlPhotoSize = binding.widget.viewModel.customizedConfiguration.pxlPhotoSize
+                    when (viewType){
+                        is PXLWidgetView.ViewType.Grid, is PXLWidgetView.ViewType.List -> {
+                            it.data.heightInPixel = binding.widget.viewModel.cellHeightInPixel
+                            it.data.configuration.pxlPhotoSize = binding.widget.viewModel.customizedConfiguration.pxlPhotoSize
+                        }
+                    }
                 }
             }
         }

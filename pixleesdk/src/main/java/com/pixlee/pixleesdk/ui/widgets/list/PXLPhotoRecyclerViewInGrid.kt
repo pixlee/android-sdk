@@ -9,7 +9,7 @@ import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.TextPadding
-import com.pixlee.pixleesdk.util.GridSpacingItemDecoration
+import com.pixlee.pixleesdk.ui.decoration.GridSpacingItemDecoration
 import com.pixlee.pixleesdk.util.px
 
 sealed class ListHeader {

@@ -73,7 +73,10 @@
                     style="@style/filterRadioButton"
                     android:id="@+id/radioMosaic"
                     android:text="Mosaic" />
-
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    style="@style/filterRadioButton"
+                    android:id="@+id/radioHorizontal"
+                    android:text="Horizontal" />
             </RadioGroup>
 
             <!-- Grid -->
