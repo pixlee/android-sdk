@@ -26,7 +26,7 @@ fun ImageView.setCompatColorFilter(@ColorInt color: Int? = null) {
     }
 }
 
-fun ImageView.setCompatIconWithColor(@ColorInt color: Int, @DrawableRes drawable: Int) {
+fun ImageView.setCompatIconWithColor(@ColorInt color: Int?, @DrawableRes drawable: Int) {
     setBackgroundResource(drawable)
     setCompatColorFilter(color)
 }

@@ -1,6 +1,7 @@
 package com.pixlee.pixleesdk.ui.viewholder
 
 import android.os.Parcelable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +38,7 @@ class PXLPhotoViewHolder(val binding: ItemPxlphotoBinding) :
 
         val isIconVisible = sourceIconColor!=null && data.pxlPhoto.sourceIconImage() != 0
         binding.ivSourceIcon.visibility = if(isIconVisible) View.VISIBLE else View.GONE
-        binding.ivSourceIcon.setCompatIconWithColor(sourceIconColor!!, data.pxlPhoto.sourceIconImage())
+        binding.ivSourceIcon.setCompatIconWithColor(sourceIconColor, data.pxlPhoto.sourceIconImage())
 
 
 
