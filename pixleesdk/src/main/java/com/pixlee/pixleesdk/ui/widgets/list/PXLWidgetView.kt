@@ -171,8 +171,6 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                         }
                     }
 
-                    spannedGridLayoutManager?.itemOrderIsStable = true
-
                     refreshItemType(value)
 
                     gridSpacingDecoration?.apply {
