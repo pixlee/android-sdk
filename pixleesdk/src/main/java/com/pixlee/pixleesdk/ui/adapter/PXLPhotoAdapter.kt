@@ -93,10 +93,13 @@ class PXLPhotoAdapter(
             is LoadMoreViewHolder -> {
                 val data = item as Item.LoadMore
                 holder.setData(data)
-                holder.binding.tvLoadMore.setOnClickListener {
-                    onLoadMoreClickedListener?.also {
-                        it()
+                holder.binding.root.setOnClickListener {
+                    if(holder.binding.tvLoadMore.visibility == View.VISIBLE){
+                        onLoadMoreClickedListener?.also {
+                            it()
+                        }
                     }
+
                 }
             }
         }

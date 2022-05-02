@@ -38,7 +38,7 @@ class PXLPhotoViewHolder(val binding: ItemPxlphotoBinding) :
             else -> {
                 binding.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                 binding.root.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                binding.pxlPhotoView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+                binding.pxlPhotoView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                 binding.pxlPhotoView.layoutParams.height = data.heightInPixel
             }
         }

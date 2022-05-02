@@ -56,8 +56,7 @@ class DynamicDemoActivity : AppCompatActivity() {
                     if (binding.vBody == null)
                         return
 
-                    cellHeightInPixel = binding.vBody.measuredHeight / 2
-                    horizontalCellSizeInPixel = (binding.vBody.measuredWidth * 0.4f).toInt()
+                    calculateCellHeight()
                     initiateList()
                     binding.widget.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
@@ -66,6 +65,11 @@ class DynamicDemoActivity : AppCompatActivity() {
 
             }
         })
+    }
+
+    fun calculateCellHeight() {
+        cellHeightInPixel = binding.vBody.measuredHeight / 2
+        horizontalCellSizeInPixel = (binding.vBody.measuredWidth * 0.4f).toInt()
     }
 
     private fun initiateList() {
@@ -244,19 +248,25 @@ class DynamicDemoActivity : AppCompatActivity() {
 
     fun changeSpan(span: Int) {
         val viewType = binding.widget.currentViewType
-        if (viewType is PXLWidgetView.ViewType.Grid) {
-            val allLineSpace = getLineSpace().px.toInt() * (span - 1)
-            cellHeightInPixel = (binding.vBody.measuredWidth - allLineSpace) / span
+        when (viewType) {
+            is PXLWidgetView.ViewType.Grid -> {
+                val allLineSpace = getLineSpace().px.toInt() * (span - 1)
+                cellHeightInPixel = (binding.vBody.measuredWidth - allLineSpace) / span
 
-            binding.widget.currentViewType = viewType.copy().apply {
-                gridSpan = span
+                binding.widget.currentViewType = viewType.copy().apply {
+                    gridSpan = span
+                }
             }
-        } else if (viewType is PXLWidgetView.ViewType.Mosaic) {
-            val allLineSpace = getLineSpace().px.toInt() * (2 - 1)
-            cellHeightInPixel = (binding.vBody.measuredWidth - allLineSpace) / 2
-
-        } else {
-            cellHeightInPixel = horizontalCellSizeInPixel
+            is PXLWidgetView.ViewType.Mosaic -> {
+                val allLineSpace = getLineSpace().px.toInt() * (2 - 1)
+                cellHeightInPixel = (binding.vBody.measuredWidth - allLineSpace) / 2
+            }
+            is PXLWidgetView.ViewType.Horizontal -> {
+                cellHeightInPixel = horizontalCellSizeInPixel
+            }
+            else -> {
+                calculateCellHeight()
+            }
         }
 
         binding.widget.viewModel.cellHeightInPixel = cellHeightInPixel
