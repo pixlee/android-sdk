@@ -25,7 +25,7 @@ class PXLPhotoAdapter(
     sealed class Item {
         class Header(val listHeader: ListHeader) : Item()
         class Content(val data: PhotoWithImageScaleType, var itemType: ItemType) : Item()
-        class LoadMore(var loading:Boolean, val loadMoreTextViewStyle: TextViewStyle, var itemType: ItemType) : Item()
+        class LoadMore(var loading:Boolean, val loadMoreTextViewStyle: TextViewStyle, var itemType: ItemType, var width: Int? = null) : Item()
     }
 
     sealed class ItemType {

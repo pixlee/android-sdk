@@ -2,7 +2,6 @@ package com.pixlee.pixleesdk.ui.widgets.list
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.*
@@ -63,6 +62,7 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
         scope.cancel()
     }
 
+    var snapHelper: SnapHelper? = null
     var linearLayoutManager: LinearLayoutManager? = null
     var spannedGridLayoutManager: SpannedGridLayoutManager? = null
     var gridLayoutManager: GridLayoutManager? = null
@@ -84,6 +84,10 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                 is ViewType.Grid -> this.layoutParams.height = LayoutParams.MATCH_PARENT
                 is ViewType.Mosaic -> this.layoutParams.height = LayoutParams.MATCH_PARENT
                 is ViewType.Horizontal -> this.layoutParams.height = value.squareSizeInPixel
+            }
+
+            if(!(value is ViewType.Horizontal)){
+                snapHelper = null
             }
 
             when (value) {
@@ -257,10 +261,11 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
 
                     pxlPhotoAdapter.infiniteScroll = false
                     pxlPhotoAdapter.notifyDataSetChanged()
-                    val helper: SnapHelper = LinearSnapHelper()
-//                    val helper: SnapHelper = PagerSnapHelper()
 
-                    helper.attachToRecyclerView(this)
+                    if(snapHelper==null) {
+                        snapHelper = LinearSnapHelper()
+                        snapHelper?.attachToRecyclerView(this)
+                    }
 
                 }
             }
@@ -365,6 +370,16 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
     fun updateItemType(viewType: ViewType) {
         pxlPhotoAdapter.list.forEach {
             when(it) {
+                is PXLPhotoAdapter.Item.LoadMore -> {
+                    it.width = when(viewType) {
+                        is ViewType.List -> viewType.cellHeightInPixel
+                        is ViewType.Grid -> viewType.cellHeightInPixel
+                        is ViewType.Horizontal -> viewType.squareSizeInPixel
+                        else -> null
+                    }
+
+                    it.itemType = getItemType()
+                }
                 is PXLPhotoAdapter.Item.Content -> {
                     when(viewType) {
                         is ViewType.List -> it.itemType = PXLPhotoAdapter.ItemType.List
@@ -372,6 +387,13 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                         is ViewType.Mosaic -> it.itemType = generateMosaic()
                         is ViewType.Horizontal -> it.itemType = PXLPhotoAdapter.ItemType.Horizontal
                     }
+
+                    when(viewType) {
+                        is ViewType.List -> it.data.heightInPixel = viewType.cellHeightInPixel
+                        is ViewType.Grid -> it.data.heightInPixel = viewType.cellHeightInPixel
+                        is ViewType.Horizontal -> it.data.heightInPixel = viewType.squareSizeInPixel
+                    }
+
                 }
             }
         }
@@ -404,6 +426,11 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
         lifecycleOwner.lifecycle.addObserver(this)
 
         viewModel.loading.observe(lifecycleOwner, Observer {
+            val loadingWidth = when (val viewType = currentViewType) {
+                is ViewType.Horizontal -> viewType.squareSizeInPixel
+                else -> null
+            }
+
             when (it) {
                 is ListViewModel.LoadState.Hide -> {
                     val lastItem = pxlPhotoAdapter.list.lastOrNull()
@@ -418,7 +445,7 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                     val lastPosition = pxlPhotoAdapter.list.count() - 1
                     val lastItem = pxlPhotoAdapter.list.lastOrNull()
                     if (lastItem == null || lastItem !is PXLPhotoAdapter.Item.LoadMore) {
-                        pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.LoadMore(loading = false, loadMoreTextViewStyle = it.loadMoreTextViewStyle, itemType = getItemType()))
+                        pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.LoadMore(loading = false, loadMoreTextViewStyle = it.loadMoreTextViewStyle, itemType = getItemType(), width = loadingWidth))
                         pxlPhotoAdapter.notifyItemInserted(pxlPhotoAdapter.list.size - 1)
                     } else {
                         if(lastItem.loading){
@@ -431,7 +458,7 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                     val lastPosition = pxlPhotoAdapter.list.count() - 1
                     val lastItem = pxlPhotoAdapter.list.lastOrNull()
                     if (lastItem == null || lastItem !is PXLPhotoAdapter.Item.LoadMore) {
-                        pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.LoadMore(loading = true, loadMoreTextViewStyle = it.loadMoreTextViewStyle, itemType = getItemType()))
+                        pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.LoadMore(loading = true, loadMoreTextViewStyle = it.loadMoreTextViewStyle, itemType = getItemType(), width = loadingWidth))
                         pxlPhotoAdapter.notifyItemInserted(pxlPhotoAdapter.list.size - 1)
                     } else {
                         if(!lastItem.loading){

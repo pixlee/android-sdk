@@ -195,7 +195,13 @@ class DynamicDemoActivity : AppCompatActivity() {
         }
 
         binding.leftLayout.radioViewType.setOnCheckedChangeListener { group, checkedId ->
-            binding.leftLayout.vGrid.visibility = if (R.id.radioGrid == checkedId) View.VISIBLE else View.GONE
+            binding.leftLayout.vGrid.visibility = when(checkedId){
+                R.id.radioGrid, R.id.radioMosaic, R.id.radioHorizontal -> View.VISIBLE
+                else -> View.GONE
+            }
+
+            binding.leftLayout.vGridOption.visibility = if (R.id.radioGrid == checkedId) View.VISIBLE else View.GONE
+
             binding.leftLayout.vList.visibility = if (R.id.radioList == checkedId) View.VISIBLE else View.GONE
             refreshViewType()
             changeSpan(getGridSpan())

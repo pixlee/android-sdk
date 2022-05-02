@@ -85,28 +85,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+                tools:visibility="visible"
                 android:orientation="vertical">
                 <TextView style="@style/filterHeaderTextView" android:text="Grid Options" android:layout_marginTop="10dp"/>
-                <TextView style="@style/filterBulletTextView" android:text="gridSpan" />
-                <RadioGroup style="@style/filterContentView" android:id="@+id/radioGridCount">
-                    <com.google.android.material.radiobutton.MaterialRadioButton
-                        style="@style/filterRadioButton"
-                        android:id="@+id/radioGridCount2"
-                        android:checked="true"
-                        android:text="2" />
-                    <com.google.android.material.radiobutton.MaterialRadioButton
-                        style="@style/filterRadioButton"
-                        android:id="@+id/radioGridCount3"
-                        android:text="3" />
-                    <com.google.android.material.radiobutton.MaterialRadioButton
-                        style="@style/filterRadioButton"
-                        android:id="@+id/radioGridCount4"
-                        android:text="4" />
-                    <com.google.android.material.radiobutton.MaterialRadioButton
-                        style="@style/filterRadioButton"
-                        android:id="@+id/radioGridCount5"
-                        android:text="5" />
-                </RadioGroup>
 
                 <TextView style="@style/filterBulletTextView" android:text="lineSpace" />
                 <com.google.android.material.textfield.TextInputLayout
@@ -125,23 +106,51 @@
                         android:maxLength="20"
                         android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
-                <TextView style="@style/filterBulletTextView" android:text="Header" />
-                <RadioGroup style="@style/filterContentView" android:id="@+id/radio_header">
-                    <com.google.android.material.radiobutton.MaterialRadioButton
-                        style="@style/filterRadioButton"
-                        android:id="@+id/radio_header_no"
-                        android:checked="true"
-                        android:text="No Header" />
-                    <com.google.android.material.radiobutton.MaterialRadioButton
-                        style="@style/filterRadioButton"
-                        android:id="@+id/radio_header_image"
-                        android:checked="true"
-                        android:text="Image Header" />
-                    <com.google.android.material.radiobutton.MaterialRadioButton
-                        style="@style/filterRadioButton"
-                        android:id="@+id/radio_header_text"
-                        android:text="Text Image" />
-                </RadioGroup>
+
+                <LinearLayout
+                    android:id="@+id/v_grid_option"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView style="@style/filterBulletTextView" android:text="gridSpan" />
+                    <RadioGroup style="@style/filterContentView" android:id="@+id/radioGridCount">
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGridCount2"
+                            android:checked="true"
+                            android:text="2" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGridCount3"
+                            android:text="3" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGridCount4"
+                            android:text="4" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radioGridCount5"
+                            android:text="5" />
+                    </RadioGroup>
+
+                    <TextView style="@style/filterBulletTextView" android:text="Header" />
+                    <RadioGroup style="@style/filterContentView" android:id="@+id/radio_header">
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radio_header_no"
+                            android:checked="true"
+                            android:text="No Header" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radio_header_image"
+                            android:checked="true"
+                            android:text="Image Header" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            style="@style/filterRadioButton"
+                            android:id="@+id/radio_header_text"
+                            android:text="Text Image" />
+                    </RadioGroup>
+                </LinearLayout>
             </LinearLayout>
             <!-- List -->
             <LinearLayout
