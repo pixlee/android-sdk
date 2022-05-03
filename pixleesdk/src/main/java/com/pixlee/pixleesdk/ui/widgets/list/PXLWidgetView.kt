@@ -2,7 +2,6 @@ package com.pixlee.pixleesdk.ui.widgets.list
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.*
@@ -347,7 +346,7 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
     }
 
     fun updateItemTypeOnListData(viewType: ViewType) {
-        pxlPhotoAdapter.list.forEachIndexed { index, item ->
+        pxlPhotoAdapter.list.forEach { item ->
             when(item) {
                 is PXLPhotoAdapter.Item.LoadMore -> {
                     item.width = if(viewType is ViewType.Horizontal) viewType.squareSizeInPixel else null
@@ -357,7 +356,7 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                     item.itemType = when(viewType) {
                         is ViewType.List -> PXLPhotoAdapter.ItemType.List
                         is ViewType.Grid -> PXLPhotoAdapter.ItemType.Grid
-                        is ViewType.Mosaic -> generateMosaic(viewType, index)
+                        is ViewType.Mosaic -> generateRandomMosaicCellSize()
                         is ViewType.Horizontal -> PXLPhotoAdapter.ItemType.Horizontal
                     }
 
@@ -376,58 +375,14 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
         return when(viewType){
             is ViewType.List -> PXLPhotoAdapter.ItemType.List
             is ViewType.Grid -> PXLPhotoAdapter.ItemType.Grid
-            is ViewType.Mosaic -> generateMosaic(viewType)
+            is ViewType.Mosaic -> generateRandomMosaicCellSize()
             is ViewType.Horizontal -> PXLPhotoAdapter.ItemType.Horizontal
             else -> PXLPhotoAdapter.ItemType.List
         }
     }
 
-    /**
-     * this is to track where the last cell is located in a row.
-     * Range: 0 - Mosaic.gridSpan
-     */
-    var squareSpanIndex: Int = 0
-    var shouldLastTwoCellsBeSmall: Boolean = false
-    fun generateMosaic(mosaic: ViewType.Mosaic, listIndex: Int? = null): PXLPhotoAdapter.ItemType.Mosaic {
-        val totalSquareSpan = mosaic.gridSpan * 2
-        var isLarge = (0..1).random() == 0
-        val isRowEmpty = pxlPhotoAdapter.list.isEmpty() || (pxlPhotoAdapter.list.size==1 || pxlPhotoAdapter.list.get(0) is PXLPhotoAdapter.Item.LoadMore)
-        val isRowFull = squareSpanIndex == totalSquareSpan
-
-        if(pxlPhotoAdapter.list.isNotEmpty()){
-            val index = (listIndex ?: pxlPhotoAdapter.list.size) - 1
-            spannedGridLayoutManager?.getItemIndex(index)?.let{ rect ->
-                Log.e("hong", "hong rect[${index}] left: ${rect.left}, top: ${rect.top}, right: ${rect.right}, bottom: ${rect.bottom}")
-            }
-        }
-
-        if (isRowEmpty || isRowFull) {
-            // reset stack
-            squareSpanIndex = 0
-
-        } else if (shouldLastTwoCellsBeSmall && squareSpanIndex + 2 >= totalSquareSpan || // last two items should be small if first one is small and the second one is large
-            squareSpanIndex + 1 == mosaic.gridSpan // last item is always small if there's only 1 span left
-        ) {
-            // small cell should be generated
-            isLarge = false
-        } else if (shouldLastTwoCellsBeSmall && squareSpanIndex + 2 >= totalSquareSpan) {
-            isLarge = false
-        }
-
-        val squareSpan = if (isLarge) 4 else 1
-
-        // mark that the last two cells should be small
-        if (squareSpanIndex == 1 && isLarge)
-            shouldLastTwoCellsBeSmall = true
-
-        // overflow
-        if(squareSpanIndex + squareSpan > totalSquareSpan)
-            squareSpanIndex = squareSpanIndex + squareSpan - totalSquareSpan
-        else {
-            squareSpanIndex += squareSpan
-        }
-
-        return PXLPhotoAdapter.ItemType.Mosaic(isLarge = isLarge)
+    fun generateRandomMosaicCellSize(): PXLPhotoAdapter.ItemType.Mosaic {
+        return PXLPhotoAdapter.ItemType.Mosaic(isLarge = (0..1).random() == 0)
     }
 
     fun loadAlbum() {
@@ -560,7 +515,7 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                 if (list.isNotEmpty()) {
                     val position = pxlPhotoAdapter.list.count()
                     list.forEach {
-                        val itemType = if (viewType is ViewType.Mosaic) generateMosaic(viewType) else PXLPhotoAdapter.ItemType.Horizontal
+                        val itemType = if (viewType is ViewType.Mosaic) generateRandomMosaicCellSize() else PXLPhotoAdapter.ItemType.Horizontal
                         pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.Content(it, itemType))
                     }
                     lastItem?.also {
