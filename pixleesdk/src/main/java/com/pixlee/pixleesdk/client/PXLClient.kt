@@ -26,7 +26,7 @@ class PXLClient(val context: Context) {
         var regionId: Int? = null
 
         // if this is true, you can delegate the SDK to fire most analytics events for you. for more information, please read README.md
-        var autoAnalyticsEnabled: Boolean = false
+        var autoAnalyticsEnabled: Boolean = true
 
         /***
          * Must be called before use. Sets the api key.
