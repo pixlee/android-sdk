@@ -2,6 +2,7 @@ package com.pixlee.pixleesdk.ui.widgets.list
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.*
@@ -77,9 +78,9 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
         set(value) {
             field = value
 
-            updateViewTypeOnView(value)
-            updateItemTypeOnListData(value)
+            updateCellHeightInViewModel(value)
             updateViewHeight(value)
+
 
             // clear unused variables
             if (value !is ViewType.List || value !is ViewType.Horizontal) {
@@ -234,6 +235,10 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                 }
             }
             pxlPhotoAdapter.notifyDataSetChanged()
+            post {
+                updateItemTypeOnListData(value)
+                pxlPhotoAdapter.notifyDataSetChanged()
+            }
         }
 
     fun initiate(widgetTypeForAnalytics: String,
@@ -253,7 +258,7 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
 
         viewModel.init(apiParameters)
         viewModel.customizedConfiguration = configuration
-        updateViewTypeOnView(viewType)
+        updateCellHeightInViewModel(viewType)
 
         viewModel.loadMoreTextViewStyle = loadMoreTextViewStyle
 
@@ -332,7 +337,7 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
         }
     }
 
-    fun updateViewTypeOnView(viewType: ViewType){
+    fun updateCellHeightInViewModel(viewType: ViewType){
         viewModel.cellHeightInPixel = when(viewType){
             is ViewType.List -> viewType.cellHeightInPixel
             is ViewType.Grid -> viewType.cellHeightInPixel
@@ -342,42 +347,87 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
     }
 
     fun updateItemTypeOnListData(viewType: ViewType) {
-        pxlPhotoAdapter.list.forEach {
-            when(it) {
+        pxlPhotoAdapter.list.forEachIndexed { index, item ->
+            when(item) {
                 is PXLPhotoAdapter.Item.LoadMore -> {
-                    it.width = if(viewType is ViewType.Horizontal) viewType.squareSizeInPixel else null
-                    it.itemType = getItemType(viewType)
+                    item.width = if(viewType is ViewType.Horizontal) viewType.squareSizeInPixel else null
+                    item.itemType = getItemType(viewType)
                 }
                 is PXLPhotoAdapter.Item.Content -> {
-                    it.itemType = when(viewType) {
+                    item.itemType = when(viewType) {
                         is ViewType.List -> PXLPhotoAdapter.ItemType.List
                         is ViewType.Grid -> PXLPhotoAdapter.ItemType.Grid
-                        is ViewType.Mosaic -> generateMosaic()
+                        is ViewType.Mosaic -> generateMosaic(viewType, index)
                         is ViewType.Horizontal -> PXLPhotoAdapter.ItemType.Horizontal
                     }
 
                     when(viewType) {
-                        is ViewType.List -> it.data.heightInPixel = viewType.cellHeightInPixel
-                        is ViewType.Grid -> it.data.heightInPixel = viewType.cellHeightInPixel
-                        is ViewType.Horizontal -> it.data.heightInPixel = viewType.squareSizeInPixel
+                        is ViewType.List -> item.data.heightInPixel = viewType.cellHeightInPixel
+                        is ViewType.Grid -> item.data.heightInPixel = viewType.cellHeightInPixel
+                        is ViewType.Horizontal -> item.data.heightInPixel = viewType.squareSizeInPixel
                     }
                 }
             }
         }
+
     }
 
     fun getItemType(viewType: ViewType? = currentViewType): PXLPhotoAdapter.ItemType {
         return when(viewType){
             is ViewType.List -> PXLPhotoAdapter.ItemType.List
             is ViewType.Grid -> PXLPhotoAdapter.ItemType.Grid
-            is ViewType.Mosaic -> generateMosaic()
+            is ViewType.Mosaic -> generateMosaic(viewType)
             is ViewType.Horizontal -> PXLPhotoAdapter.ItemType.Horizontal
             else -> PXLPhotoAdapter.ItemType.List
         }
     }
 
-    fun generateMosaic(): PXLPhotoAdapter.ItemType.Mosaic {
-        return PXLPhotoAdapter.ItemType.Mosaic(isLarge = (0..1).random() == 0)
+    /**
+     * this is to track where the last cell is located in a row.
+     * Range: 0 - Mosaic.gridSpan
+     */
+    var squareSpanIndex: Int = 0
+    var shouldLastTwoCellsBeSmall: Boolean = false
+    fun generateMosaic(mosaic: ViewType.Mosaic, listIndex: Int? = null): PXLPhotoAdapter.ItemType.Mosaic {
+        val totalSquareSpan = mosaic.gridSpan * 2
+        var isLarge = (0..1).random() == 0
+        val isRowEmpty = pxlPhotoAdapter.list.isEmpty() || (pxlPhotoAdapter.list.size==1 || pxlPhotoAdapter.list.get(0) is PXLPhotoAdapter.Item.LoadMore)
+        val isRowFull = squareSpanIndex == totalSquareSpan
+
+        if(pxlPhotoAdapter.list.isNotEmpty()){
+            val index = (listIndex ?: pxlPhotoAdapter.list.size) - 1
+            spannedGridLayoutManager?.getItemIndex(index)?.let{ rect ->
+                Log.e("hong", "hong rect[${index}] left: ${rect.left}, top: ${rect.top}, right: ${rect.right}, bottom: ${rect.bottom}")
+            }
+        }
+
+        if (isRowEmpty || isRowFull) {
+            // reset stack
+            squareSpanIndex = 0
+
+        } else if (shouldLastTwoCellsBeSmall && squareSpanIndex + 2 >= totalSquareSpan || // last two items should be small if first one is small and the second one is large
+            squareSpanIndex + 1 == mosaic.gridSpan // last item is always small if there's only 1 span left
+        ) {
+            // small cell should be generated
+            isLarge = false
+        } else if (shouldLastTwoCellsBeSmall && squareSpanIndex + 2 >= totalSquareSpan) {
+            isLarge = false
+        }
+
+        val squareSpan = if (isLarge) 4 else 1
+
+        // mark that the last two cells should be small
+        if (squareSpanIndex == 1 && isLarge)
+            shouldLastTwoCellsBeSmall = true
+
+        // overflow
+        if(squareSpanIndex + squareSpan > totalSquareSpan)
+            squareSpanIndex = squareSpanIndex + squareSpan - totalSquareSpan
+        else {
+            squareSpanIndex += squareSpan
+        }
+
+        return PXLPhotoAdapter.ItemType.Mosaic(isLarge = isLarge)
     }
 
     fun loadAlbum() {
@@ -510,7 +560,7 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                 if (list.isNotEmpty()) {
                     val position = pxlPhotoAdapter.list.count()
                     list.forEach {
-                        val itemType = if (viewType is ViewType.Mosaic) generateMosaic() else PXLPhotoAdapter.ItemType.Horizontal
+                        val itemType = if (viewType is ViewType.Mosaic) generateMosaic(viewType) else PXLPhotoAdapter.ItemType.Horizontal
                         pxlPhotoAdapter.list.add(PXLPhotoAdapter.Item.Content(it, itemType))
                     }
                     lastItem?.also {

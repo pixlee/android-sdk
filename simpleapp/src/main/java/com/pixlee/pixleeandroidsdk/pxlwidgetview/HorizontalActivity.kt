@@ -76,8 +76,8 @@ class HorizontalActivity : AppCompatActivity() {
                         filterOptions = PXLAlbumFilterOptions().apply {
                             // hasProduct and hasPermission are often used together for displaying photos with tagged products and gotten the permission from their creators
                             // if you don't see any photos after the loading is done, go to https://app.pixlee.com/app#albums/{your album id} and make sure your photos have the same filter conditions as your filterOptions.
-//                            hasProduct = true
-//                            hasPermission = true
+                            hasProduct = true
+                            hasPermission = true
 
                             // more filter options
                             // - hasPermission = true

@@ -113,11 +113,11 @@ class DynamicDemoActivity : AppCompatActivity() {
             PXLWidgetView.ViewType.Grid(
                 cellHeightInPixel = cellHeightInPixel,
                 gridSpan = getGridSpan(),
-                lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt(), includingEdge = true),
+                lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt(), includingEdge = false),
                 listHeader = getHeader()
             )
         } else if (binding.leftLayout.radioMosaic.isChecked) {
-            PXLWidgetView.ViewType.Mosaic(lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt(), includingEdge = true))
+            PXLWidgetView.ViewType.Mosaic(gridSpan = 4, lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt(), includingEdge = false))
         } else if (binding.leftLayout.radioHorizontal.isChecked) {
             PXLWidgetView.ViewType.Horizontal(
                 squareSizeInPixel = horizontalCellSizeInPixel,
@@ -141,8 +141,8 @@ class DynamicDemoActivity : AppCompatActivity() {
                 filterOptions = PXLAlbumFilterOptions().apply {
                     // hasProduct and hasPermission are often used together for displaying photos with tagged products and gotten the permission from their creators
                     // if you don't see any photos after the loading is done, go to https://app.pixlee.com/app#albums/{your album id} and make sure your photos have the same filter conditions as your filterOptions.
-                    hasProduct = true
-                    hasPermission = true
+//                    hasProduct = true
+//                    hasPermission = true
 
                     // more filter options
                     // - hasPermission = true

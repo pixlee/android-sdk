@@ -85,7 +85,7 @@ class GridActivity : AppCompatActivity() {
                         },
                         sortOptions = PXLAlbumSortOptions().apply {
                             sortType = PXLAlbumSortType.RECENCY
-                            descending = false
+                            descending = true
                         }
                 ),
                 configuration = PXLPhotoView.Configuration().apply {

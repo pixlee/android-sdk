@@ -48,7 +48,7 @@ import kotlinx.android.parcel.Parcelize
 class PXLPhotoView : RelativeLayout {
     @Parcelize
     data class Configuration(
-            var pxlPhotoSize: PXLPhotoSize = PXLPhotoSize.ORIGINAL, // PXLPhotoSize [THUMBNAIL, MEDIUM, BIG, ORIGINAL]
+            var pxlPhotoSize: PXLPhotoSize = PXLPhotoSize.BIG, // PXLPhotoSize [THUMBNAIL, MEDIUM, BIG, ORIGINAL]
             var imageScaleType: ImageScaleType = ImageScaleType.FIT_CENTER,
             var mainTextViewStyle: TextViewStyle? = null, // if null, the view is gone
             var subTextViewStyle: TextViewStyle? = null, // if null, the view is gone
