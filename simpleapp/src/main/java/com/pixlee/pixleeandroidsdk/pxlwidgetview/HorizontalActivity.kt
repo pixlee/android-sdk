@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk
+package com.pixlee.pixleeandroidsdk.pxlwidgetview
 
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -6,6 +6,9 @@ import android.os.Bundle
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.pixlee.pixleeandroidsdk.BuildConfig
+import com.pixlee.pixleeandroidsdk.R
+import com.pixlee.pixleeandroidsdk.ViewerActivity
 import com.pixlee.pixleeandroidsdk.databinding.ActivitySimpleDemoBinding
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
@@ -17,12 +20,13 @@ import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextPadding
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.ui.widgets.list.PXLWidgetView
+import com.pixlee.pixleesdk.ui.widgets.list.Space
 import com.pixlee.pixleesdk.util.px
 
 /**
  * Created by sungjun on 3/23/21.
  */
-class SimpleGridActivity : AppCompatActivity() {
+class HorizontalActivity : AppCompatActivity() {
     val listHeightRatio = 0.5f
 
     private var _binding: ActivitySimpleDemoBinding? = null
@@ -50,7 +54,7 @@ class SimpleGridActivity : AppCompatActivity() {
                     if (binding.widget == null)
                         return
 
-                    initiateList((binding.widget.measuredHeight * listHeightRatio).toInt())
+                    initiateList((binding.widget.measuredWidth * 0.4f).toInt())
 
                     binding.widget.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
@@ -61,19 +65,19 @@ class SimpleGridActivity : AppCompatActivity() {
         })
     }
 
-    private fun initiateList(cellHeightInPixel: Int) {
+    private fun initiateList(squareSizeInPixel: Int) {
         // you can customize color, size if you need
         binding.widget.initiate(
                 widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
-                viewType = PXLWidgetView.ViewType.Grid(cellHeightInPixel = cellHeightInPixel),
+                viewType = PXLWidgetView.ViewType.Horizontal(squareSizeInPixel = squareSizeInPixel, lineWidthInPixel = 4.px.toInt()),
                 apiParameters = PXLKtxBaseAlbum.Params(
                         // album images
                         searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU),
                         filterOptions = PXLAlbumFilterOptions().apply {
                             // hasProduct and hasPermission are often used together for displaying photos with tagged products and gotten the permission from their creators
                             // if you don't see any photos after the loading is done, go to https://app.pixlee.com/app#albums/{your album id} and make sure your photos have the same filter conditions as your filterOptions.
-                            hasProduct = true
-                            hasPermission = true
+//                            hasProduct = true
+//                            hasPermission = true
 
                             // more filter options
                             // - hasPermission = true
@@ -82,7 +86,7 @@ class SimpleGridActivity : AppCompatActivity() {
                         },
                         sortOptions = PXLAlbumSortOptions().apply {
                             sortType = PXLAlbumSortType.RECENCY
-                            descending = false
+                            descending = true
                         }
                 ),
                 configuration = PXLPhotoView.Configuration().apply {

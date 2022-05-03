@@ -43,7 +43,7 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
             var lineSpace: Space = Space()) : ViewType()
 
         data class Horizontal(var squareSizeInPixel: Int = 100.px.toInt(),
-                              var lineSpace: Space = Space()) : ViewType()
+                              var lineWidthInPixel: Int = 4.px.toInt()) : ViewType()
     }
 
     protected val scope = CoroutineScope(Job() + Dispatchers.Main)
@@ -62,7 +62,6 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
         scope.cancel()
     }
 
-    var snapHelper: SnapHelper? = null
     var linearLayoutManager: LinearLayoutManager? = null
     var spannedGridLayoutManager: SpannedGridLayoutManager? = null
     var gridLayoutManager: GridLayoutManager? = null
@@ -90,8 +89,6 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
             if (value !is ViewType.Horizontal) {
                 horizontalSpacingItemDecoration?.apply { removeItemDecoration(this) }
                 horizontalSpacingItemDecoration = null
-                snapHelper?.attachToRecyclerView(null)
-                snapHelper = null
             }
 
             if (value !is ViewType.Mosaic) {
@@ -132,20 +129,14 @@ class PXLWidgetView : BaseRecyclerView, LifecycleObserver {
                     }
 
                     if (horizontalSpacingItemDecoration == null) {
-                        horizontalSpacingItemDecoration = HorizontalSpacingItemDecoration(value.lineSpace.lineWidthInPixel).apply {
+                        horizontalSpacingItemDecoration = HorizontalSpacingItemDecoration(value.lineWidthInPixel).apply {
                             addItemDecoration(this)
                         }
                     } else {
-                        horizontalSpacingItemDecoration?.spacingPx = value.lineSpace.lineWidthInPixel
+                        horizontalSpacingItemDecoration?.spacingPx = value.lineWidthInPixel
                     }
 
                     pxlPhotoAdapter.infiniteScroll = false
-
-                    if(snapHelper==null) {
-                        snapHelper = LinearSnapHelper()
-                        snapHelper?.attachToRecyclerView(this)
-                    }
-
                 }
                 is ViewType.Grid -> {
                     if (pxlPhotoAdapter.list.isNotEmpty() && value.listHeader != null && pxlPhotoAdapter.list[0] is PXLPhotoAdapter.Item.Header) {

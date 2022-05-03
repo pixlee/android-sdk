@@ -10,13 +10,33 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Simple"
+            android:text="PXLWidgetView"
             android:textStyle="bold"
             android:textColor="?attr/colorOnSurface"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:layout_marginTop="@dimen/margin"
             android:layout_marginLeft="@dimen/margin"
             android:layout_marginRight="@dimen/margin"/>
+        <com.google.android.material.button.MaterialButton
+            style="@style/NextButtonDefault"
+            android:id="@+id/mosaic"
+            android:textSize="14sp"
+            android:paddingTop="16sp"
+            android:paddingBottom="13dp"
+            android:text="Mosaic"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginRight="@dimen/margin"
+            />
+        <com.google.android.material.button.MaterialButton
+            style="@style/NextButtonDefault"
+            android:id="@+id/horizontal"
+            android:textSize="14sp"
+            android:paddingTop="16sp"
+            android:paddingBottom="13dp"
+            android:text="Horizontal"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginRight="@dimen/margin"
+            />
         <com.google.android.material.button.MaterialButton
             style="@style/NextButtonDefault"
             android:id="@+id/grid"
@@ -42,7 +62,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Advanced"
+            android:text="Advanced PXLWidgetView"
             android:textStyle="bold"
             android:textColor="?attr/colorOnSurface"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"

@@ -1,4 +1,4 @@
-package com.pixlee.pixleeandroidsdk
+package com.pixlee.pixleeandroidsdk.pxlwidgetview
 
 import android.graphics.Color
 import android.os.Bundle
@@ -14,6 +14,9 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.pixlee.pixleeandroidsdk.BuildConfig
+import com.pixlee.pixleeandroidsdk.R
+import com.pixlee.pixleeandroidsdk.ViewerActivity
 import com.pixlee.pixleeandroidsdk.databinding.ActivityDynamicPhotosBinding
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
@@ -110,15 +113,15 @@ class DynamicDemoActivity : AppCompatActivity() {
             PXLWidgetView.ViewType.Grid(
                 cellHeightInPixel = cellHeightInPixel,
                 gridSpan = getGridSpan(),
-                lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt()),
+                lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt(), includingEdge = true),
                 listHeader = getHeader()
             )
         } else if (binding.leftLayout.radioMosaic.isChecked) {
-            PXLWidgetView.ViewType.Mosaic(lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt()))
+            PXLWidgetView.ViewType.Mosaic(lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt(), includingEdge = true))
         } else if (binding.leftLayout.radioHorizontal.isChecked) {
             PXLWidgetView.ViewType.Horizontal(
-                squareSizeInPixel= horizontalCellSizeInPixel,
-                lineSpace = Space(lineWidthInPixel = getLineSpace().px.toInt())
+                squareSizeInPixel = horizontalCellSizeInPixel,
+                lineWidthInPixel = getLineSpace().px.toInt()
             )
         } else {
             PXLWidgetView.ViewType.List(
