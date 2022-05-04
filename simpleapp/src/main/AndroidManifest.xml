@@ -30,18 +30,30 @@
             android:theme="@style/Theme.Androidsdk.NoActionBar"/>
 
         <activity
-            android:name=".DynamicDemoActivity"
+            android:name=".pxlwidgetview.DynamicDemoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Androidsdk.NoActionBar"/>
 
         <activity
-            android:name=".SimpleGridActivity"
+            android:name=".pxlwidgetview.MosaicActivity"
+            android:screenOrientation="portrait"
+            android:label="Mosaic"
+            android:theme="@style/Theme.Androidsdk.NoActionBar"/>
+
+        <activity
+            android:name=".pxlwidgetview.HorizontalActivity"
+            android:screenOrientation="portrait"
+            android:label="Horizontal"
+            android:theme="@style/Theme.Androidsdk.NoActionBar"/>
+
+        <activity
+            android:name=".pxlwidgetview.GridActivity"
             android:screenOrientation="portrait"
             android:label="Grid"
             android:theme="@style/Theme.Androidsdk.NoActionBar"/>
 
         <activity
-            android:name=".SimpleListActivity"
+            android:name=".pxlwidgetview.ListActivity"
             android:screenOrientation="portrait"
             android:label="List"
             android:theme="@style/Theme.Androidsdk.NoActionBar"/>

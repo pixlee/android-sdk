@@ -1,5 +1,6 @@
 package com.pixlee.pixleesdk.ui.viewholder
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,17 @@ class LoadMoreViewHolder(val binding: ItemLoadMoreBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
     fun setData(loadMore: PXLPhotoAdapter.Item.LoadMore) {
+        when (loadMore.itemType) {
+            is PXLPhotoAdapter.ItemType.Horizontal -> {
+                binding.root.layoutParams.width = loadMore.width ?: ViewGroup.LayoutParams.WRAP_CONTENT
+                binding.root.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+            else -> {
+                binding.root.layoutParams.width = loadMore.width ?: ViewGroup.LayoutParams.MATCH_PARENT
+                binding.root.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
+        }
+
         binding.tvLoadMore.setTextViewStyle(loadMore.loadMoreTextViewStyle)
         when(loadMore.loading){
             true -> {
@@ -26,7 +38,7 @@ class LoadMoreViewHolder(val binding: ItemLoadMoreBinding) :
             false -> {
                 binding.tvLoadMore.visibility = View.VISIBLE
                 binding.tvLoadMore.isEnabled = true
-                binding.lottieView.visibility = View.GONE
+                binding.lottieView.visibility = View.INVISIBLE
             }
         }
     }

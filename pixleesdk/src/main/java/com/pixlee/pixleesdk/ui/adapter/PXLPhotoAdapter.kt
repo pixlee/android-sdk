@@ -19,12 +19,20 @@ class PXLPhotoAdapter(
         var onPhotoClickedListener: ((view: View, photoWithImageScaleType: PhotoWithImageScaleType) -> Unit)? = null,
         var onLoadMoreClickedListener: (() -> Unit)? = null,
         var infiniteScroll: Boolean = false,
+        var sourceIconColor: Int? =null,
         var showingDebugView: Boolean = false
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     sealed class Item {
         class Header(val listHeader: ListHeader) : Item()
-        class Content(val data: PhotoWithImageScaleType) : Item()
-        class LoadMore(var loading:Boolean, val loadMoreTextViewStyle: TextViewStyle) : Item()
+        class Content(val data: PhotoWithImageScaleType, var itemType: ItemType) : Item()
+        class LoadMore(var loading:Boolean, val loadMoreTextViewStyle: TextViewStyle, var itemType: ItemType, var width: Int? = null) : Item()
+    }
+
+    sealed class ItemType {
+        object List : ItemType()
+        object Grid : ItemType()
+        class Mosaic(var isLarge: Boolean = false) : ItemType()
+        object Horizontal : ItemType()
     }
 
     val list: ArrayList<Item> = ArrayList()
@@ -37,7 +45,7 @@ class PXLPhotoAdapter(
             is Item.Header -> TYPE_HEADER
             is Item.Content -> TYPE_ITEM
             is Item.LoadMore -> TYPE_LOAD_MORE
-
+            else -> TYPE_ITEM
         }
     }
 
@@ -63,12 +71,9 @@ class PXLPhotoAdapter(
                 holder.itemView.setOnClickListener(null)
             }
             is PXLPhotoViewHolder -> {
-                if(holder.itemView.layoutParams is StaggeredGridLayoutManager.LayoutParams){
-
-                }
-
                 val data = item as Item.Content
-                holder.setData(data.data, showingDebugView)
+
+                holder.setData(data.data, data.itemType, sourceIconColor, showingDebugView)
                 holder.itemView.setOnClickListener {
                     onPhotoClickedListener?.also {
                         it(holder.itemView, data.data)
@@ -88,10 +93,13 @@ class PXLPhotoAdapter(
             is LoadMoreViewHolder -> {
                 val data = item as Item.LoadMore
                 holder.setData(data)
-                holder.binding.tvLoadMore.setOnClickListener {
-                    onLoadMoreClickedListener?.also {
-                        it()
+                holder.binding.root.setOnClickListener {
+                    if(holder.binding.tvLoadMore.visibility == View.VISIBLE){
+                        onLoadMoreClickedListener?.also {
+                            it()
+                        }
                     }
+
                 }
             }
         }

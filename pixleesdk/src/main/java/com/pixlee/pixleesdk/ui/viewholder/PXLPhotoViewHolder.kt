@@ -1,14 +1,17 @@
 package com.pixlee.pixleesdk.ui.viewholder
 
 import android.os.Parcelable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.databinding.ItemPxlphotoBinding
+import com.pixlee.pixleesdk.ui.adapter.PXLPhotoAdapter
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.util.px
+import com.pixlee.pixleesdk.util.setCompatIconWithColor
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -18,12 +21,39 @@ import kotlinx.android.parcel.Parcelize
 class PXLPhotoViewHolder(val binding: ItemPxlphotoBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-    fun setData(data: PhotoWithImageScaleType, showingDebugView: Boolean = false) {
-        binding.pxlPhotoView.layoutParams.height = data.heightInPixel
+    fun setData(data: PhotoWithImageScaleType, itemType: PXLPhotoAdapter.ItemType, sourceIconColor: Int? = null, showingDebugView: Boolean = false) {
+        when (itemType) {
+            is PXLPhotoAdapter.ItemType.Mosaic -> {
+                binding.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                binding.root.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+                binding.pxlPhotoView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                binding.pxlPhotoView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+            is PXLPhotoAdapter.ItemType.Horizontal -> {
+                binding.root.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                binding.root.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+                binding.pxlPhotoView.layoutParams.width = data.heightInPixel
+                binding.pxlPhotoView.layoutParams.height = data.heightInPixel
+            }
+            else -> {
+                binding.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                binding.root.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                binding.pxlPhotoView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                binding.pxlPhotoView.layoutParams.height = data.heightInPixel
+            }
+        }
+
+
         binding.pxlPhotoView.setConfiguration(configuration = data.configuration)
         binding.pxlPhotoView.setContent(data.pxlPhoto, data.configuration.imageScaleType)
         binding.pxlPhotoView.setLooping(data.isLoopingVideo)
         binding.pxlPhotoView.changeVolume(if(data.soundMuted) 0f else 1f)
+
+        val isIconVisible = sourceIconColor!=null && data.pxlPhoto.sourceIconImage() != 0
+        binding.ivSourceIcon.visibility = if(isIconVisible) View.VISIBLE else View.GONE
+        binding.ivSourceIcon.setCompatIconWithColor(sourceIconColor, data.pxlPhoto.sourceIconImage())
+
+
 
         binding.tv.visibility = if (showingDebugView) View.VISIBLE else View.GONE
         binding.tvPercent.visibility = if (showingDebugView) View.VISIBLE else View.GONE

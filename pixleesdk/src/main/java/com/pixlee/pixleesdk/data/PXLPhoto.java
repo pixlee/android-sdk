@@ -280,22 +280,27 @@ public class PXLPhoto implements Parcelable {
      * Returns a resource ID to an image representing the current photo's source
      * @return
      */
-    public Integer sourceIconImage() {
+    public int sourceIconImage() {
+        if(this.source==null)
+            return 0;
+
         switch (this.source) {
+            case "tiktok":
+                return R.drawable.icon_tiktok;
             case "instagram":
-                return R.drawable.instagram_2x;
+                return R.drawable.icon_instagram;
             case "facebook":
-                return R.drawable.facebook_2x;
+                return R.drawable.icon_facebook;
             case "pinterest":
-                return R.drawable.pinterest_2x;
+                return R.drawable.icon_pinterest;
             case "tumblr":
                 return R.drawable.tumblr_2x;
             case "twitter":
-                return R.drawable.twitter_2x;
+                return R.drawable.icon_twitter;
             case "vine":
                 return R.drawable.vine_2x;
             default:
-                return null;
+                return 0;
         }
     }
 

@@ -44,6 +44,7 @@ open class ListViewModel(val pxlKtxAlbum: PXLKtxAlbum) {
 
     var loadMoreTextViewStyle: TextViewStyle? = null
     var cellHeightInPixel: Int = 200.px.toInt()
+
     val allPXLPhotos = ArrayList<PXLPhoto>()
     var canLoadMore = true
 

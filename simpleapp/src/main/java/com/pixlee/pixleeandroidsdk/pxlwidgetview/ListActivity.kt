@@ -1,11 +1,15 @@
-package com.pixlee.pixleeandroidsdk
+package com.pixlee.pixleeandroidsdk.pxlwidgetview
 
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.ViewTreeObserver
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.pixlee.pixleeandroidsdk.BuildConfig
+import com.pixlee.pixleeandroidsdk.R
+import com.pixlee.pixleeandroidsdk.ViewerActivity
 import com.pixlee.pixleeandroidsdk.databinding.ActivitySimpleDemoBinding
 import com.pixlee.pixleesdk.client.PXLKtxBaseAlbum
 import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
@@ -22,7 +26,7 @@ import com.pixlee.pixleesdk.util.px
 /**
  * Created by sungjun on 3/23/21.
  */
-class SimpleGridActivity : AppCompatActivity() {
+class ListActivity : AppCompatActivity() {
     val listHeightRatio = 0.5f
 
     private var _binding: ActivitySimpleDemoBinding? = null
@@ -37,7 +41,6 @@ class SimpleGridActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivitySimpleDemoBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setSupportActionBar(binding.toolbar)
         binding.toolbar.navigationIcon?.setColorFilter(
                 ContextCompat.getColor(this, R.color.grey_60),
@@ -50,7 +53,7 @@ class SimpleGridActivity : AppCompatActivity() {
                     if (binding.widget == null)
                         return
 
-                    initiateList((binding.widget.measuredHeight * listHeightRatio).toInt())
+                    initwidget((binding.widget.measuredHeight * listHeightRatio).toInt())
 
                     binding.widget.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 } catch (e: Exception) {
@@ -61,12 +64,11 @@ class SimpleGridActivity : AppCompatActivity() {
         })
     }
 
-    private fun initiateList(cellHeightInPixel: Int) {
+    private fun initwidget(cellHeightInPixel: Int) {
         // you can customize color, size if you need
         binding.widget.initiate(
                 widgetTypeForAnalytics = "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
-                viewType = PXLWidgetView.ViewType.Grid(),
-                cellHeightInPixel = cellHeightInPixel,
+                viewType = PXLWidgetView.ViewType.List(cellHeightInPixel = cellHeightInPixel),
                 apiParameters = PXLKtxBaseAlbum.Params(
                         // album images
                         searchId = PXLKtxBaseAlbum.SearchId.Album(BuildConfig.PIXLEE_ALBUM_ID), // product images: searchId = PXLKtxBaseAlbum.SearchId.Product(BuildConfig.PIXLEE_SKU),
@@ -83,7 +85,7 @@ class SimpleGridActivity : AppCompatActivity() {
                         },
                         sortOptions = PXLAlbumSortOptions().apply {
                             sortType = PXLAlbumSortType.RECENCY
-                            descending = false
+                            descending = true
                         }
                 ),
                 configuration = PXLPhotoView.Configuration().apply {
@@ -91,14 +93,15 @@ class SimpleGridActivity : AppCompatActivity() {
                     imageScaleType = ImageScaleType.CENTER_CROP
                 },
                 loadMoreTextViewStyle = TextViewStyle().apply {
-                    text = "Load More"
-                    textPadding = TextPadding(0, 22.px.toInt(), 0, 22.px.toInt())
-                    size = 24.px
-                    color = Color.BLACK
+                    text = "Tap to load more"
+                    textPadding = TextPadding(10.px.toInt(), 10.px.toInt(), 10.px.toInt(), 10.px.toInt())
+                    size = 30.px
+                    color = Color.BLUE
                 },
                 onPhotoClickedListener = { view, photoWithImageScaleType ->
-                    // TODO: open lightbox
+                    // TODO: you can add your business logic here
                     ViewerActivity.launch(this, photoWithImageScaleType)
+                    Toast.makeText(this, "onItemClickedListener", Toast.LENGTH_SHORT).show()
                 }
         )
     }
