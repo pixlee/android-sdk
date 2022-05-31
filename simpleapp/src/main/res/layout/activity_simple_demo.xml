@@ -23,11 +23,26 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.pixlee.pixleesdk.ui.widgets.list.PXLWidgetView
-        android:id="@+id/widget"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:scrollingCache="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <com.pixlee.pixleesdk.ui.widgets.list.PXLWidgetView
+            android:id="@+id/widget"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:scrollingCache="true"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvDebugText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:padding="30dp"
+            android:background="@color/black_800"
+            android:textColor="#ffffff"
+            android:alpha="0"
+            />
+    </RelativeLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

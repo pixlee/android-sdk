@@ -7,6 +7,7 @@ import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ViewerActivity
@@ -16,12 +17,14 @@ import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
 import com.pixlee.pixleesdk.data.PXLAlbumSortOptions
 import com.pixlee.pixleesdk.enums.PXLAlbumSortType
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
+import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextPadding
 import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.ui.widgets.list.PXLWidgetView
 import com.pixlee.pixleesdk.util.px
+import kotlinx.coroutines.launch
 
 /**
  * Created by sungjun on 3/23/21.
@@ -46,6 +49,10 @@ class ListActivity : AppCompatActivity() {
                 ContextCompat.getColor(this, R.color.grey_60),
                 PorterDuff.Mode.SRC_ATOP
         )
+
+        lifecycleScope.launch {
+            AnalyticsObserver.observe("PXLWidgetView.List", binding.tvDebugText)
+        }
 
         binding.widget.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {

@@ -3,9 +3,9 @@ package com.pixlee.pixleeandroidsdk.pxlwidgetview
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.pixlee.pixleeandroidsdk.BuildConfig
 import com.pixlee.pixleeandroidsdk.R
 import com.pixlee.pixleeandroidsdk.ViewerActivity
@@ -15,6 +15,7 @@ import com.pixlee.pixleesdk.data.PXLAlbumFilterOptions
 import com.pixlee.pixleesdk.data.PXLAlbumSortOptions
 import com.pixlee.pixleesdk.enums.PXLAlbumSortType
 import com.pixlee.pixleesdk.enums.PXLPhotoSize
+import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
 import com.pixlee.pixleesdk.ui.widgets.ImageScaleType
 import com.pixlee.pixleesdk.ui.widgets.PXLPhotoView
 import com.pixlee.pixleesdk.ui.widgets.TextPadding
@@ -22,13 +23,12 @@ import com.pixlee.pixleesdk.ui.widgets.TextViewStyle
 import com.pixlee.pixleesdk.ui.widgets.list.PXLWidgetView
 import com.pixlee.pixleesdk.ui.widgets.list.Space
 import com.pixlee.pixleesdk.util.px
+import kotlinx.coroutines.launch
 
 /**
  * Created by sungjun on 3/23/21.
  */
 class MosaicActivity : AppCompatActivity() {
-    val listHeightRatio = 0.5f
-
     private var _binding: ActivitySimpleDemoBinding? = null
     private val binding get() = _binding!!
 
@@ -48,6 +48,10 @@ class MosaicActivity : AppCompatActivity() {
                 PorterDuff.Mode.SRC_ATOP
         )
 
+        lifecycleScope.launch {
+            AnalyticsObserver.observe("PXLWidgetView.Horizontal", binding.tvDebugText)
+        }
+
         initiateList()
     }
 
@@ -62,8 +66,8 @@ class MosaicActivity : AppCompatActivity() {
                         filterOptions = PXLAlbumFilterOptions().apply {
                             // hasProduct and hasPermission are often used together for displaying photos with tagged products and gotten the permission from their creators
                             // if you don't see any photos after the loading is done, go to https://app.pixlee.com/app#albums/{your album id} and make sure your photos have the same filter conditions as your filterOptions.
-                            hasProduct = true
-                            hasPermission = true
+//                            hasProduct = true
+//                            hasPermission = true
 
                             // more filter options
                             // - hasPermission = true

@@ -69,12 +69,25 @@ dependencies {
      * libraries for app. you don't need to use these
      */
     testImplementation "junit:junit:$junit"
+    androidTestImplementation "com.fasterxml.jackson.core:jackson-databind:$jackson"
     androidTestImplementation "androidx.test:runner:$androidxRunner"
-    androidTestImplementation "androidx.test.ext:junit:$extJUnitVersion"
+    androidTestImplementation "androidx.test:rules:$androidXrules"
+    androidTestImplementation 'androidx.test.ext:junit:' + rootProject.extJUnitVersion
+    androidTestImplementation "androidx.test.ext:junit-ktx:$extJUnitVersion"
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:' + rootProject.espressoVersion
+    androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:$jakeWhartonOkhttpOdlingResource"
     implementation "androidx.appcompat:appcompat:$androidxAppcompat"
     implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"
     implementation "com.google.android.material:material:$material"
     implementation "androidx.multidex:multidex:2.0.1"
+
+    /**
+     * Architecture Component
+     */
+//    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
 
     /**
      * Kotlin

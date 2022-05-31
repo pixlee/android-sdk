@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.pixlee.pixleeandroidsdk.databinding.ActivityViewerBinding
+import com.pixlee.pixleesdk.network.observer.AnalyticsObserver
 import com.pixlee.pixleesdk.ui.viewholder.PhotoWithVideoInfo
 import com.pixlee.pixleesdk.ui.viewholder.ProductViewHolder
 import com.pixlee.pixleesdk.ui.widgets.CurrencyTextStyle
@@ -17,6 +19,7 @@ import com.pixlee.pixleesdk.ui.widgets.PXLPhotoProductView
 import com.pixlee.pixleesdk.ui.widgets.TextStyle
 import com.pixlee.pixleesdk.util.PXLViewUtil
 import com.pixlee.pixleesdk.util.px
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -54,6 +57,9 @@ class ViewerActivity : AppCompatActivity() {
             return
         }
 
+        lifecycleScope.launch {
+            AnalyticsObserver.observe("Lightbox", binding.tvDebugTextViewer)
+        }
         init(item)
     }
 
