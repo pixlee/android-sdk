@@ -625,7 +625,7 @@ public abstract class PXLBaseAlbum {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < this.photos.size(); i++) {
             try {
-                stringBuilder.append(this.photos.get(i).id);
+                stringBuilder.append(this.photos.get(i).albumPhotoId);
                 if (i != this.photos.size() - 1) {
                     stringBuilder.append(",");
                 }
