@@ -76,6 +76,9 @@ dependencies {
     implementation "com.google.android.material:material:$material"
     implementation "androidx.multidex:multidex:2.0.1"
 
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
+
     /**
      * Kotlin
      */
@@ -85,4 +88,9 @@ dependencies {
      * Pixlee SDK
      */
     implementation project(':pixleesdk')
+
+    /**
+     * Lottie for animation
+     */
+    implementation "com.airbnb.android:lottie:$lottie"
 }

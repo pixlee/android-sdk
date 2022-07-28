@@ -58,6 +58,12 @@
             android:label="List"
             android:theme="@style/Theme.Androidsdk.NoActionBar"/>
 
+        <activity
+            android:name=".pxlwidgetview.WidgetActivity"
+            android:screenOrientation="portrait"
+            android:label="Widget"
+            android:theme="@style/Theme.Androidsdk.NoActionBar"/>
+
     </application>
 
 </manifest>

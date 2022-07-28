@@ -50,6 +50,7 @@ open class PXLKtxBaseAlbum {
     sealed class SearchId {
         class Album(val id: String) : SearchId()
         class Product(val sku: String) : SearchId()
+        class Widget(val id: Long) : SearchId()
     }
 
     // request parameters

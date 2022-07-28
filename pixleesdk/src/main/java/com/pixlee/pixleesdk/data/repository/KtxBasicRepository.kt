@@ -8,7 +8,6 @@ import com.pixlee.pixleesdk.util.toHMAC
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
-import retrofit2.http.Query
 import java.io.File
 import java.util.*
 
@@ -19,6 +18,21 @@ import java.util.*
  * The entry point for accessing basic data.
  */
 interface KtxBasicDataSource {
+    suspend fun getDisplayOption(widget_id: Long): WidgetResult
+
+    /**
+     * @param widget_id: widget id
+     * @param unique_id: unique_id, range (0,5), this is to sort items dynamically
+     * @param per_page: how many PXLPhotos you want to receive in a response
+     * @param page: this is for pagination, range [(]1 - N], example: first page is 1, the next page is 2, 3, 4, ...
+     */
+    suspend fun getWidgetPhotos(
+        widget_id: Long,
+        unique_id: Int?,
+        per_page: Int,
+        page: Int
+    ): PhotoResult
+
     /**
      * @param sku: product's sku
      * @param filter: filtering options
@@ -29,11 +43,11 @@ interface KtxBasicDataSource {
      * @return PhotoResult
      */
     suspend fun getPhotosWithSKU(
-            sku: String,
-            filters: PXLAlbumFilterOptions?,
-            sort: PXLAlbumSortOptions?,
-            per_page: Int,
-            page: Int
+        sku: String,
+        filters: PXLAlbumFilterOptions?,
+        sort: PXLAlbumSortOptions?,
+        per_page: Int,
+        page: Int
     ): PhotoResult
 
     /**
@@ -46,11 +60,11 @@ interface KtxBasicDataSource {
      * * @return PhotoResult
      */
     suspend fun getPhotosWithID(
-            album_id: String,
-            filters: PXLAlbumFilterOptions?,
-            sort: PXLAlbumSortOptions?,
-            per_page: Int,
-            page: Int
+        album_id: String,
+        filters: PXLAlbumFilterOptions?,
+        sort: PXLAlbumSortOptions?,
+        per_page: Int,
+        page: Int
     ): PhotoResult
 
     /**
@@ -96,6 +110,14 @@ interface KtxBasicDataSource {
  * This object loads data from and uploads data to the server using BasicAPI.java, a Retrofit HTTP API class.
  */
 class KtxBasicRepository(var api: KtxBasicAPI) : KtxBasicDataSource {
+    override suspend fun getWidgetPhotos(widget_id: Long, unique_id: Int?, per_page: Int, page: Int): PhotoResult {
+        return api.getWidgetPhotos(PXLClient.apiKey, widget_id, unique_id, per_page, page)
+    }
+
+    override suspend fun getDisplayOption(widget_id: Long): WidgetResult {
+        return api.getDisplayOption(PXLClient.apiKey, widget_id)
+    }
+
     override suspend fun getPhotosWithSKU(sku: String, filters: PXLAlbumFilterOptions?, sort: PXLAlbumSortOptions?, per_page: Int, page: Int): PhotoResult {
         return api.getPhotosWithSKU(sku, PXLClient.apiKey, filters?.toParamString(), sort?.toParamString(), per_page, page, PXLClient.regionId)
     }

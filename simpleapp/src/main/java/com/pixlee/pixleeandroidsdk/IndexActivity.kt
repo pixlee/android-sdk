@@ -21,6 +21,9 @@ class IndexActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityIndexBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.widget.setOnClickListener {
+            startActivity(Intent(this, WidgetActivity::class.java))
+        }
 
         binding.mosaic.setOnClickListener {
             startActivity(Intent(this, MosaicActivity::class.java))

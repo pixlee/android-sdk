@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -64,9 +65,11 @@ class ViewerActivity : AppCompatActivity() {
         // give a padding to the top as much as the status bar's height
         binding.pxlPhotoProductView.addPaddingToHeader(0, PXLViewUtil.getStatusBarHeight(this), 0, 0)
 
+        Log.e("item.isHotspots", "item.isHotspots: ${item.isHotspots}")
         // set your ui settings
         binding.pxlPhotoProductView
                 .setContent(photoInfo = item,
+                        showHotspots = item.isHotspots,
                         headerConfiguration = PXLPhotoProductView.Configuration().apply {
                             backButton = PXLPhotoProductView.CircleButton().apply {
                                 onClickListener = {

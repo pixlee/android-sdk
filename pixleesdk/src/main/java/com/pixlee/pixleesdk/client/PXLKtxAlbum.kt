@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.pixlee.pixleesdk.data.PXLPhoto
 import com.pixlee.pixleesdk.data.PhotoResult
+import com.pixlee.pixleesdk.data.WidgetResult
 import com.pixlee.pixleesdk.data.repository.KtxAnalyticsDataSource
 import com.pixlee.pixleesdk.data.repository.KtxBasicDataSource
 import com.pixlee.pixleesdk.enums.PXLWidgetType
@@ -66,6 +67,7 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
             when (it.searchId) {
                 is SearchId.Album -> ktxBasicDataSource.getPhotosWithID(it.searchId.id, it.filterOptions, it.sortOptions, it.perPage, page)
                 is SearchId.Product -> ktxBasicDataSource.getPhotosWithSKU(it.searchId.sku, it.filterOptions, it.sortOptions, it.perPage, page)
+                is SearchId.Widget -> ktxBasicDataSource.getWidgetPhotos(it.searchId.id, 0, it.perPage, page)
             }.apply {
                 // update albumId with the albumId from the response
                 currentAlbumId = albumId
@@ -92,6 +94,14 @@ class PXLKtxAlbum : PXLKtxBaseAlbum {
                 Log.e("KTXAlbum", "after load ui , albumId: $albumId")
             }
         }
+    }
+
+    suspend fun getWidgetPhotos(filter_id: Long): PhotoResult {
+        return ktxBasicDataSource.getWidgetPhotos(filter_id, 0, per_page = getPerPageParam(), page = lastPageLoaded)
+    }
+
+    suspend fun getDisplayOption(filter_id: Long): WidgetResult {
+        return ktxBasicDataSource.getDisplayOption(filter_id)
     }
 
     /**

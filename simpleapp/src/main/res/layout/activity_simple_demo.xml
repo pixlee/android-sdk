@@ -23,11 +23,21 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.pixlee.pixleesdk.ui.widgets.list.PXLWidgetView
-        android:id="@+id/widget"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:scrollingCache="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <com.pixlee.pixleesdk.ui.widgets.list.PXLWidgetView
+            android:id="@+id/widget"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:scrollingCache="true"/>
+        <com.pixlee.pixleesdk.ui.widgets.PXLLoading
+            android:id="@+id/pxl_loading"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

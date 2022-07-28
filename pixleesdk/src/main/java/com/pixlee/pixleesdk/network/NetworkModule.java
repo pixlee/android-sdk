@@ -80,7 +80,11 @@ public class NetworkModule {
         );
     }
 
-    public static final String url = "https://distillery.pixlee.com/";
+//    public static final String url = "https://distillery.pixlee.com/";
+//    public static final String analyticsUrl = "https://inbound-analytics.pixlee.com/events/";
+
+//    public static final String url = "https://distillery.pixlee.com/";
+    public static final String url = "https://1b4d-222-98-205-98.ngrok.io/";
     public static final String analyticsUrl = "https://inbound-analytics.pixlee.com/events/";
 
     private static final Long timeout_read = 60L;
@@ -103,6 +107,7 @@ public class NetworkModule {
                 .baseUrl(url)
                 .addConverterFactory(ScalarsConverterFactory.create()) // this converts the response to string if declared in the APIs
                 .addConverterFactory(MoshiConverterFactory.create(provideMoshi()).asLenient()) // this converts json into classes if declared in the APIs
+
                 .client(okHttpClient)
                 .build();
     }
