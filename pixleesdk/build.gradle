@@ -72,7 +72,6 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-databind:$jackson"
 
     implementation "androidx.appcompat:appcompat:$androidxAppcompat"
-    implementation "com.google.android.material:material:$material"
     /**
      * Network
      */
