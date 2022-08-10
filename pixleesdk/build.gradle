@@ -110,7 +110,7 @@ dependencies {
 
     compileOnly "org.checkerframework:checker-qual:$checkerframeworkVersion"
     implementation "com.google.android.exoplayer:exoplayer-core:$exoPlayer"
-    implementation "com.google.android.exoplayer:exoplayer-dash:$exoPlayer"
+//    implementation "com.google.android.exoplayer:exoplayer-dash:$exoPlayer"
     implementation "com.google.android.exoplayer:exoplayer-ui:$exoPlayer"
 //    implementation "com.google.android.exoplayer:extension-ima:$exoPlayer"
     implementation "com.google.android.exoplayer:extension-cronet:$exoPlayer"
