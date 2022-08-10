@@ -121,7 +121,7 @@ class WidgetActivity : AppCompatActivity() {
         }
 
         binding.widget.initiate(
-            widgetTypeForAnalytics = widgetResult.widgetType, // this will be used when this view automatically fires openedWidget, widgetVisible analytics
+            widgetTypeForAnalytics = widgetResult.widgetType ?: "your_widget_type", // this will be used when this view automatically fires openedWidget, widgetVisible analytics
             viewType = viewType,
             apiParameters = PXLKtxBaseAlbum.Params(
                 // album images
