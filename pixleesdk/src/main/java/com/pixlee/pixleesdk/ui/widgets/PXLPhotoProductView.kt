@@ -9,14 +9,12 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.animation.*
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.view.ViewCompat
-import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -42,7 +40,6 @@ import com.pixlee.pixleesdk.util.HotspotsReader
 import com.pixlee.pixleesdk.util.px
 import com.pixlee.pixleesdk.util.setCompatIconWithColor
 import kotlinx.coroutines.*
-import java.util.*
 
 
 /**
@@ -153,7 +150,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
         headerConfiguration.backButton?.apply {
             binding.vBack.setOnClickListener { onClickListener?.let { it() } }
             binding.vBack.background = GradientDrawable().apply {
-                shape = android.graphics.drawable.GradientDrawable.OVAL
+                shape = GradientDrawable.OVAL
                 setColor(backgroundColor)
             }
             binding.vBack.setPadding(padding, padding, padding, padding)
@@ -171,7 +168,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                 onCheckedListener?.let { it1 -> it1(isMutted) }
             }
             binding.vMute.background = GradientDrawable().apply {
-                shape = android.graphics.drawable.GradientDrawable.OVAL
+                shape = GradientDrawable.OVAL
                 setColor(backgroundColor)
             }
             binding.vMute.setPadding(padding, padding, padding, padding)
@@ -276,7 +273,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                                                     layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
                                                     setImageResource(R.drawable.outline_local_offer_black_24)
                                                     background = GradientDrawable().apply {
-                                                        shape = android.graphics.drawable.GradientDrawable.OVAL
+                                                        shape = GradientDrawable.OVAL
                                                         setColor(Color.WHITE)
                                                     }
                                                     val padding = 10.px.toInt()
@@ -284,7 +281,7 @@ class PXLPhotoProductView : FrameLayout, LifecycleObserver {
                                                     ViewCompat.setElevation(this, 20f)
                                                     val position = reader.getHotspotsPosition(boundingBoxProduct)
                                                     apply {
-                                                        doOnPreDraw {
+                                                        post {
                                                             x = position.x - (width.toFloat() / 2f)
                                                             y = position.y - (height.toFloat() / 2f)
                                                         }
