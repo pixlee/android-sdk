@@ -69,7 +69,7 @@ dependencies {
      */
 
     testImplementation 'org.json:json:20200518'
-    testImplementation "com.fasterxml.jackson.core:jackson-databind:$jackson"
+    testImplementation "com.google.code.gson:gson:$gson"
     //testImplementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8"
     testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp3"
 
@@ -78,7 +78,7 @@ dependencies {
 
     androidTestImplementation 'androidx.test.ext:junit:' + rootProject.extJUnitVersion
     androidTestImplementation "androidx.test.ext:junit-ktx:" + rootProject.extJUnitVersion
-    androidTestImplementation "com.fasterxml.jackson.core:jackson-databind:$jackson"
+    androidTestImplementation "com.google.code.gson:gson:$gson"
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:' + rootProject.espressoVersion
     androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:$jakeWhartonOkhttpOdlingResource"
 

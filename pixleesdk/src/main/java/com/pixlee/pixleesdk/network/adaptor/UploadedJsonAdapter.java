@@ -2,7 +2,7 @@ package com.pixlee.pixleesdk.network.adaptor;
 
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.pixlee.pixleesdk.network.annotation.FieldUploadedJson;
 import com.squareup.moshi.FromJson;
 import com.squareup.moshi.JsonReader;
@@ -26,9 +26,7 @@ public class UploadedJsonAdapter {
             return reader.nextNull();
         } else {
             try {
-                ObjectMapper mapper = new ObjectMapper();
-                String data = mapper.writeValueAsString(reader.readJsonValue());
-                return new JSONObject(data);
+                return new JSONObject(new Gson().toJson(reader.readJsonValue()));
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -63,7 +63,7 @@ ext {
     checkerframeworkVersion = '3.13.0'
     exoPlayer="2.16.1"
     supportLibraryVersion = '27.0.0'
-    jackson = '2.10.3'
+    gson = '2.9.1'
     junit = '4.13.2'
     androidxRunner = '1.4.0'
     androidXrules = '1.4.0'
