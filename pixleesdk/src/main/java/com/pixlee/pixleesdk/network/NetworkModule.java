@@ -1,6 +1,5 @@
 package com.pixlee.pixleesdk.network;
 
-import android.os.Build;
 import android.util.Log;
 
 import com.orhanobut.logger.Logger;
@@ -115,18 +114,6 @@ public class NetworkModule {
                     .connectTimeout(timeout_connect, TimeUnit.SECONDS)
                     .readTimeout(timeout_read, TimeUnit.SECONDS)
                     .writeTimeout(timeout_write, TimeUnit.SECONDS);
-
-            // enable Tls12 on Pre Lollipop
-            try {
-                if (Build.VERSION.SDK_INT < 21) {
-                    TLSSocketFactory tlsSocketFactory = new TLSSocketFactory();
-                    if (tlsSocketFactory.getTrustManager() != null) {
-                        ok.sslSocketFactory(tlsSocketFactory, tlsSocketFactory.getTrustManager());
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
             if (BuildConfig.DEBUG) {
                 HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
