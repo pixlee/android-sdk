@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="NextButtonDefault" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+    <style name="NextButtonDefault" >
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:includeFontPadding">false</item>
@@ -12,7 +12,7 @@
     </style>
 
 
-    <style name="NextButtonOutLined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+    <style name="NextButtonOutLined" >
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:includeFontPadding">false</item>
@@ -27,7 +27,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Title</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:background">@color/red_200</item>
         <item name="android:fontFamily">sans-serif-medium</item>
@@ -50,7 +50,7 @@
         <item name="android:paddingRight">10dp</item>
     </style>
 
-    <style name="filterContentTextInputLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="filterContentTextInputLayout" >
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">20dp</item>

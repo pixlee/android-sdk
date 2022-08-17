@@ -72,7 +72,6 @@ dependencies {
     testImplementation "junit:junit:$junit"
     androidTestImplementation "androidx.test:runner:$androidxRunner"
     androidTestImplementation "androidx.test.ext:junit:$extJUnitVersion"
-    implementation "androidx.appcompat:appcompat:$androidxAppcompat"
     implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"
     implementation "com.google.android.material:material:$material"
     implementation "androidx.multidex:multidex:2.0.1"
