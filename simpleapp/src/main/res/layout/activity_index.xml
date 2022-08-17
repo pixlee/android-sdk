@@ -12,12 +12,12 @@
             android:layout_height="wrap_content"
             android:text="PXLWidgetView"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
+            android:textColor="@color/colorPrimary"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:layout_marginTop="@dimen/margin"
             android:layout_marginLeft="@dimen/margin"
             android:layout_marginRight="@dimen/margin"/>
-        <com.google.android.material.button.MaterialButton
+        <Button
             style="@style/NextButtonDefault"
             android:id="@+id/mosaic"
             android:textSize="14sp"
@@ -27,7 +27,7 @@
             android:layout_marginLeft="@dimen/margin"
             android:layout_marginRight="@dimen/margin"
             />
-        <com.google.android.material.button.MaterialButton
+        <Button
             style="@style/NextButtonDefault"
             android:id="@+id/horizontal"
             android:textSize="14sp"
@@ -37,7 +37,7 @@
             android:layout_marginLeft="@dimen/margin"
             android:layout_marginRight="@dimen/margin"
             />
-        <com.google.android.material.button.MaterialButton
+        <Button
             style="@style/NextButtonDefault"
             android:id="@+id/grid"
             android:textSize="14sp"
@@ -48,7 +48,7 @@
             android:layout_marginRight="@dimen/margin"
             />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             style="@style/NextButtonDefault"
             android:id="@+id/list"
             android:textSize="14sp"
@@ -64,12 +64,12 @@
             android:layout_height="wrap_content"
             android:text="Advanced PXLWidgetView"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
+            android:textColor="@color/colorPrimary"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:layout_marginTop="@dimen/margin"
             android:layout_marginLeft="@dimen/margin"
             android:layout_marginRight="@dimen/margin"/>
-        <com.google.android.material.button.MaterialButton
+        <Button
             style="@style/NextButtonDefault"
             android:id="@+id/dynamic"
             android:textSize="14sp"

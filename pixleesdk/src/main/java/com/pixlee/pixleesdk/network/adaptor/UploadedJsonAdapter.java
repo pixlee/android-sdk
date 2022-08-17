@@ -1,18 +1,13 @@
 package com.pixlee.pixleesdk.network.adaptor;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
 import com.pixlee.pixleesdk.network.annotation.FieldUploadedJson;
 import com.squareup.moshi.FromJson;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.ToJson;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UploadedJsonAdapter {
@@ -31,9 +26,7 @@ public class UploadedJsonAdapter {
             return reader.nextNull();
         } else {
             try {
-                ObjectMapper mapper = new ObjectMapper();
-                String data = mapper.writeValueAsString(reader.readJsonValue());
-                return new JSONObject(data);
+                return new JSONObject(new Gson().toJson(reader.readJsonValue()));
             } catch (Exception e) {
                 e.printStackTrace();
             }

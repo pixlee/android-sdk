@@ -57,11 +57,12 @@ android {
             }
         }
     }
-
     packagingOptions {
-        exclude 'META-INF/AL2.0'
-        exclude 'META-INF/LGPL2.1'
+        resources {
+            excludes += ['META-INF/AL2.0', 'META-INF/LGPL2.1']
+        }
     }
+
 }
 
 dependencies {
@@ -71,7 +72,6 @@ dependencies {
     testImplementation "junit:junit:$junit"
     androidTestImplementation "androidx.test:runner:$androidxRunner"
     androidTestImplementation "androidx.test.ext:junit:$extJUnitVersion"
-    implementation "androidx.appcompat:appcompat:$androidxAppcompat"
     implementation "androidx.constraintlayout:constraintlayout:$androidxConstraint"
     implementation "com.google.android.material:material:$material"
     implementation "androidx.multidex:multidex:2.0.1"
