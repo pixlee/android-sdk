@@ -55,7 +55,6 @@ class PXLClient(val context: Context) {
     init {
         requireNotNull(PXLClient.apiKey) { "no apiKey, please set apiKey before start" }
         Logger.addLogAdapter(AndroidLogAdapter())
-        context.applicationContext
         android_id = Secure.getString(context.applicationContext.contentResolver, Secure.ANDROID_ID)
     }
 
