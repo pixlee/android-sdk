@@ -14,7 +14,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 /**
  * Created by sungjun on 9/18/20.
  */
-class PXLClient(val context: Context) {
+class PXLClient {
     companion object{
         val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
         private var mInstance: PXLClient? = null
@@ -46,16 +46,16 @@ class PXLClient(val context: Context) {
         @Synchronized
         fun getInstance(context: Context): PXLClient {
             if (mInstance == null) {
-                mInstance = PXLClient(context)
+                mInstance = PXLClient()
+                android_id = Secure.getString(context.applicationContext.contentResolver, Secure.ANDROID_ID)
             }
             return mInstance!!
         }
     }
 
     init {
-        requireNotNull(PXLClient.apiKey) { "no apiKey, please set apiKey before start" }
+        requireNotNull(apiKey) { "no apiKey, please set apiKey before start" }
         Logger.addLogAdapter(AndroidLogAdapter())
-        android_id = Secure.getString(context.applicationContext.contentResolver, Secure.ANDROID_ID)
     }
 
     /**
