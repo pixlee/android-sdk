@@ -804,6 +804,11 @@ this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhoto
 
 ### viewType Options
 To set the layout of this view, you have to set viewType to your PXLWidgetView like this `PXLWidgetView.initiate(viewType = {your view type})`.
+
+| List                                                                        |Grid| Mosaic                                                                                                                         | Horizontal                                                                                                                     |
+|-----------------------------------------------------------------------------|---|--------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+|<img src="https://i.ibb.co/5rwSKcx/ezgif-com-gif-      maker-1.gif" height="300">| <img src="https://i.ibb.co/80gWSvL/ezgif-com-gif-maker-2.gif" height="300">| <img src="https://user-images.githubusercontent.com/6112156/166413474-ba4f3215-e94b-4ccd-9126-42154d4f47d8.png" height="300"/> | <img src="https://user-images.githubusercontent.com/6112156/166413492-3af85984-3337-4719-aaa8-464fb36babfd.png" height="300"/> |
+
 - List ([example in demo](https://github.com/pixlee/android-sdk/blob/005feadfa2c0d6c205cb615b2c7a0e7f5dec2f31/simpleapp/src/main/java/com/pixlee/pixleeandroidsdk/pxlwidgetview/ListActivity.kt))
   ```kotlin
   PXLWidgetView.ViewType.List(cellHeightInPixel: Int = 200.px.toInt(),  // fixed height of the cell
