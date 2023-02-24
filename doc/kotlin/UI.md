@@ -12,6 +12,8 @@ You can use these UI components after you retrive PXLPhoto data via our API [API
         - [PXLWidgetView (Recommended)](#PXLWidgetView-(Recommended)) : A RecyclerView displaying a list of PXLPhoto (API, [list, grid], auto video playing, an infinite scroll)
 - Detail with Product
     - [PXLPhotoProductView](#PXLPhotoProductView) : A fullscreen view displaying PXLPhoto with a list of PXLPhoto
+- [PXLWidgetView (Recommended)](#pxlwidgetview-recommended)
+   - [viewType Options](#viewtype-options)
 - [PXLPhotoView](#PXLPhotoView) : A view to display PXLPhoto
 
 ## Automatic Analytics with UI Components
@@ -796,17 +798,61 @@ fun getTitleGif(): ListHeader{
 
 ## PXLWidgetView (Recommended)
 this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhotoView and PXLPhotoViewHolder. Please check DyamicDemoActivity.kt, SimpleGridActivity.kt and SimpleListActivity for example codes in the demo app.
-- you can display photos in grid or list
+- you can display photos in different layouts, 
 - you customize the height of items.
 - this view can automatically retrieve the photos of your album or product
-### when it is List Mode
-- infinite scroll is available here.
-- auto video playing is available.
-### when it is Grid Mode
-- you can customize most of ui elements if needed.
-- you can add a header text to the list.
-- you set a header to the grid list.
 
+### viewType Options
+To set the layout of this view, you have to set viewType to your PXLWidgetView like this `PXLWidgetView.initiate(viewType = {your view type})`.
+
+| List                                                                        |Grid| Mosaic                                                                                                                         | Horizontal                                                                                                                     |
+|-----------------------------------------------------------------------------|---|--------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+|<img src="https://i.ibb.co/5rwSKcx/ezgif-com-gif-      maker-1.gif" height="300">| <img src="https://i.ibb.co/80gWSvL/ezgif-com-gif-maker-2.gif" height="300">| <img src="https://user-images.githubusercontent.com/6112156/166413474-ba4f3215-e94b-4ccd-9126-42154d4f47d8.png" height="300"/> | <img src="https://user-images.githubusercontent.com/6112156/166413492-3af85984-3337-4719-aaa8-464fb36babfd.png" height="300"/> |
+
+- List ([example in demo](https://github.com/pixlee/android-sdk/blob/005feadfa2c0d6c205cb615b2c7a0e7f5dec2f31/simpleapp/src/main/java/com/pixlee/pixleeandroidsdk/pxlwidgetview/ListActivity.kt))
+  ```kotlin
+  PXLWidgetView.ViewType.List(cellHeightInPixel: Int = 200.px.toInt(),  // fixed height of the cell
+                        infiniteScroll: Boolean = false,     // true: infinite scroll or false: a normal scroll 
+                        autoPlayVideo: Boolean = false,      // true: auto play video or false: do not play video
+                        alphaForStoppedVideos: Float = 1f    // alpha value of cells when a video is being auto played. If you don't want this, just use the default value which is 1f.  
+  ) : ViewType()
+  ```
+
+- Grid ([example in demo](https://github.com/pixlee/android-sdk/blob/005feadfa2c0d6c205cb615b2c7a0e7f5dec2f31/simpleapp/src/main/java/com/pixlee/pixleeandroidsdk/pxlwidgetview/GridActivity.kt))
+  ```kotlin
+  PXLWidgetView.ViewType.Grid(cellHeightInPixel: Int = 200.px.toInt(),  // fixed height of the cell
+                        gridSpan: Int = 2,                              // number of columns
+                        lineSpace: Space = Space(),                     // space between lines in pixel
+                        listHeader: ListHeader? = null                  // header of the list. not using it or giving it null will hide the header
+  ) : ViewType()    
+  ```
+  ```kotlin
+  class Space(lineWidthInPixel: Int = 4.px.toInt(),  // size in pixel 
+              includingEdge: Boolean = false)        // true: give padding to the edge of the list, false: do nothing
+   ```
+  ```kotlin
+  sealed class ListHeader {
+    class SpannableText(val spannable: Spannable, val padding:TextPadding = TextPadding()) : ListHeader() // text header
+    class Gif(url: String, heightInPixel: Int, imageScaleType: ImageScaleType) : ListHeader() // gif header
+  }
+  ```
+  - ListHeader options
+    - a ListHeader.SpannableText example https://github.com/pixlee/android-sdk/blob/005feadfa2c0d6c205cb615b2c7a0e7f5dec2f31/app/src/main/java/com/pixlee/pixleeandroidsdk/ui/gallery/KtxGalleryGridFragment.kt#L160-L177
+    - a ListHeader.Gif example https://github.com/pixlee/android-sdk/blob/005feadfa2c0d6c205cb615b2c7a0e7f5dec2f31/app/src/main/java/com/pixlee/pixleeandroidsdk/ui/gallery/KtxGalleryGridFragment.kt#L179-L181
+      - ImageScaleType https://github.com/pixlee/android-sdk/blob/005feadfa2c0d6c205cb615b2c7a0e7f5dec2f31/pixleesdk/src/main/java/com/pixlee/pixleesdk/ui/widgets/ImageScaleType.kt#L5-L21
+- Mosaic ([example in demo](https://github.com/pixlee/android-sdk/blob/005feadfa2c0d6c205cb615b2c7a0e7f5dec2f31/simpleapp/src/main/java/com/pixlee/pixleeandroidsdk/pxlwidgetview/MosaicActivity.kt))
+  ```kotlin
+  PXLWidgetView.ViewType.MosaicMosaic(gridSpan: Int = 4,        // number of the smaller columns
+                                   lineSpace: Space = Space()   // space between lines in pixel
+  ) : ViewType()
+  ```
+- Horizontal ([example in demo](https://github.com/pixlee/android-sdk/blob/005feadfa2c0d6c205cb615b2c7a0e7f5dec2f31/simpleapp/src/main/java/com/pixlee/pixleeandroidsdk/pxlwidgetview/HorizontalActivity.kt))
+  ```kotlin
+  PXLWidgetView.ViewType.Horizontal(squareSizeInPixel: Int = 100.px.toInt(),   // a pixel size of a square shape cell
+                                    lineWidthInPixel: Int = 4.px.toInt()       // a pixel size of a line between cells
+  ) : ViewType()
+  ```
+  
 #### Add View to your xml
 ```xml
 #!xml
