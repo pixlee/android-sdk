@@ -12,6 +12,8 @@ You can use these UI components after you retrive PXLPhoto data via our API [API
         - [PXLWidgetView (Recommended)](#PXLWidgetView-(Recommended)) : A RecyclerView displaying a list of PXLPhoto (API, [list, grid], auto video playing, an infinite scroll)
 - Detail with Product
     - [PXLPhotoProductView](#PXLPhotoProductView) : A fullscreen view displaying PXLPhoto with a list of PXLPhoto
+- [PXLWidgetView (Recommended)](#pxlwidgetview-recommended)
+   - [viewType Options](#viewtype-options)
 - [PXLPhotoView](#PXLPhotoView) : A view to display PXLPhoto
 
 ## Automatic Analytics with UI Components
