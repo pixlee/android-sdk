@@ -798,7 +798,7 @@ fun getTitleGif(): ListHeader{
 
 ## PXLWidgetView (Recommended)
 this is a class that extends RecyclerView providing an PXLPhotoAdapter, PXLPhotoView and PXLPhotoViewHolder. Please check DyamicDemoActivity.kt, SimpleGridActivity.kt and SimpleListActivity for example codes in the demo app.
-- you can display photos in grid or list
+- you can display photos in different layouts, 
 - you customize the height of items.
 - this view can automatically retrieve the photos of your album or product
 
